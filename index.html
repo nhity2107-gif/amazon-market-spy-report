@@ -15,6 +15,7 @@
     nav a.active { background: #102a43; border-color: #102a43; color: #fff; }
     main { max-width: 1280px; margin: 0 auto; padding: 22px; }
     h1 { font-size: 24px; margin: 0 0 16px; }
+    h2 { font-size: 17px; margin: 0 0 12px; }
     .summary { display: flex; flex-wrap: wrap; gap: 10px; margin: 0 0 16px; }
     .summary div { background: #ffffff; border: 1px solid #d8dee8; border-radius: 8px; padding: 10px 12px; min-width: 120px; }
     .summary strong { display: block; font-size: 20px; color: #102a43; }
@@ -53,6 +54,23 @@
     details { background: #fff; border: 1px solid #d8dee8; border-radius: 8px; margin: 0 0 14px; padding: 12px; }
     summary { cursor: pointer; font-weight: 700; }
     .source-grid { margin-top: 12px; display: grid; grid-template-columns: repeat(auto-fill, minmax(210px, 1fr)); gap: 10px; }
+    .niche-table { margin: 0 0 16px; }
+    .niche-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap: 14px; margin: 0 0 18px; }
+    .niche-card { background: #fff; border: 1px solid #d9dee7; border-radius: 8px; overflow: hidden; }
+    .niche-card.is-hidden, .niche-detail.is-hidden { display: none; }
+    .niche-card img { width: 100%; aspect-ratio: 1 / 1; object-fit: contain; display: block; background: #edf1f5; }
+    .niche-card-body { padding: 12px; display: grid; gap: 8px; }
+    .niche-card h3 { font-size: 16px; margin: 0; }
+    .niche-score { font-size: 24px; font-weight: 700; color: #102a43; }
+    .niche-stats { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px; font-size: 12px; color: #52606d; }
+    .niche-stats strong { display: block; color: #1f2933; font-size: 14px; }
+    .niche-product-title { font-size: 13px; line-height: 1.35; font-weight: 700; }
+    .niche-details { display: grid; gap: 12px; }
+    .niche-products { margin-top: 12px; display: grid; gap: 8px; }
+    .niche-product { display: grid; grid-template-columns: 72px minmax(0, 1fr); gap: 10px; border-top: 1px solid #edf1f5; padding-top: 8px; }
+    .niche-product img { width: 72px; height: 72px; object-fit: contain; background: #edf1f5; }
+    .niche-product-title a { color: #102a43; }
+    .niche-product-meta { margin-top: 5px; display: flex; flex-wrap: wrap; gap: 8px; font-size: 12px; color: #52606d; }
     .empty { background: #fff; border: 1px solid #d8dee8; border-radius: 8px; padding: 18px; color: #52606d; }
     .load-more { margin: 18px auto 0; display: block; border: 1px solid #102a43; border-radius: 6px; background: #102a43; color: #fff; padding: 10px 16px; cursor: pointer; font-weight: 700; }
   </style>
@@ -62,14 +80,13 @@
     <div class="bar">
       <div class="brand">Amazon Market Spy</div>
       <nav>
-        <a href="top_opportunities.html" class="active">Top 100</a>
+        <a href="top_opportunities.html" class="active">Top Opportunities</a>
         <a href="all_opportunities.html">All Opportunities</a>
         <a href="new_products.html">New Products</a>
         <a href="rising_products.html">Rising Products</a>
         <a href="seller_intelligence.html">Seller Intelligence</a>
-        <a href="source_explorer.html">Source Explorer</a>
-        <a href="non_pod_excluded.html">Non-POD Excluded</a>
-        <a href="image_gallery.html">Image Gallery</a>
+        <a href="niche_intelligence.html">Niche Intelligence</a>
+        <a href="non_pod_excluded.html">Excluded Non-POD</a>
       </nav>
     </div>
   </header>
@@ -105,6 +122,8 @@
             <div class="metric"><span>Rank Change:</span><strong>10</strong></div>
             <div class="metric"><span>Days Seen:</span><strong>2</strong></div>
             <div class="metric"><span>POD Score:</span><strong>80</strong></div>
+            <div class="metric"><span>Niche:</span><strong>Anniversary</strong></div>
+            <div class="metric"><span>Tags:</span><strong>Anniversary;Couple</strong></div>
           </div>
         </div>
       </article>
@@ -121,6 +140,8 @@
             <div class="metric"><span>Rank Change:</span><strong>1</strong></div>
             <div class="metric"><span>Days Seen:</span><strong>2</strong></div>
             <div class="metric"><span>POD Score:</span><strong>55</strong></div>
+            <div class="metric"><span>Niche:</span><strong>Father&#x27;s Day</strong></div>
+            <div class="metric"><span>Tags:</span><strong>Father&#x27;s Day;Coffee;Quote Mug;Birthday;Dad;Daughter;Son</strong></div>
           </div>
         </div>
       </article>
@@ -137,6 +158,8 @@
             <div class="metric"><span>Rank Change:</span><strong>1</strong></div>
             <div class="metric"><span>Days Seen:</span><strong>2</strong></div>
             <div class="metric"><span>POD Score:</span><strong>165</strong></div>
+            <div class="metric"><span>Niche:</span><strong>Father&#x27;s Day</strong></div>
+            <div class="metric"><span>Tags:</span><strong>Father&#x27;s Day;Coffee;Quote Mug</strong></div>
           </div>
         </div>
       </article>
@@ -153,6 +176,8 @@
             <div class="metric"><span>Rank Change:</span><strong>-2</strong></div>
             <div class="metric"><span>Days Seen:</span><strong>2</strong></div>
             <div class="metric"><span>POD Score:</span><strong>40</strong></div>
+            <div class="metric"><span>Niche:</span><strong>Father&#x27;s Day</strong></div>
+            <div class="metric"><span>Tags:</span><strong>Father&#x27;s Day;Coffee;Quote Mug;Birthday</strong></div>
           </div>
         </div>
       </article>
@@ -169,6 +194,8 @@
             <div class="metric"><span>Rank Change:</span><strong>0</strong></div>
             <div class="metric"><span>Days Seen:</span><strong>2</strong></div>
             <div class="metric"><span>POD Score:</span><strong>30</strong></div>
+            <div class="metric"><span>Niche:</span><strong>Father&#x27;s Day</strong></div>
+            <div class="metric"><span>Tags:</span><strong>Father&#x27;s Day;Dad;Coffee;Quote Mug;Birthday;Daughter;Son</strong></div>
           </div>
         </div>
       </article>
@@ -185,6 +212,8 @@
             <div class="metric"><span>Rank Change:</span><strong>1</strong></div>
             <div class="metric"><span>Days Seen:</span><strong>2</strong></div>
             <div class="metric"><span>POD Score:</span><strong>35</strong></div>
+            <div class="metric"><span>Niche:</span><strong>Father&#x27;s Day</strong></div>
+            <div class="metric"><span>Tags:</span><strong>Father&#x27;s Day;Coffee;Quote Mug</strong></div>
           </div>
         </div>
       </article>
@@ -201,6 +230,8 @@
             <div class="metric"><span>Rank Change:</span><strong>0</strong></div>
             <div class="metric"><span>Days Seen:</span><strong>2</strong></div>
             <div class="metric"><span>POD Score:</span><strong>30</strong></div>
+            <div class="metric"><span>Niche:</span><strong>Father&#x27;s Day</strong></div>
+            <div class="metric"><span>Tags:</span><strong>Father&#x27;s Day;Coffee;Birthday</strong></div>
           </div>
         </div>
       </article>
@@ -217,6 +248,8 @@
             <div class="metric"><span>Rank Change:</span><strong>0</strong></div>
             <div class="metric"><span>Days Seen:</span><strong>2</strong></div>
             <div class="metric"><span>POD Score:</span><strong>35</strong></div>
+            <div class="metric"><span>Niche:</span><strong>Father&#x27;s Day</strong></div>
+            <div class="metric"><span>Tags:</span><strong>Father&#x27;s Day;Coffee;Quote Mug;Anniversary;Birthday;Dad;Husband;Wife</strong></div>
           </div>
         </div>
       </article>
@@ -233,6 +266,8 @@
             <div class="metric"><span>Rank Change:</span><strong>0</strong></div>
             <div class="metric"><span>Days Seen:</span><strong>2</strong></div>
             <div class="metric"><span>POD Score:</span><strong>180</strong></div>
+            <div class="metric"><span>Niche:</span><strong>Father&#x27;s Day</strong></div>
+            <div class="metric"><span>Tags:</span><strong>Father&#x27;s Day;Mother&#x27;s Day;Coffee;Quote Mug;Birthday;Christmas</strong></div>
           </div>
         </div>
       </article>
@@ -249,6 +284,8 @@
             <div class="metric"><span>Rank Change:</span><strong>0</strong></div>
             <div class="metric"><span>Days Seen:</span><strong>2</strong></div>
             <div class="metric"><span>POD Score:</span><strong>200</strong></div>
+            <div class="metric"><span>Niche:</span><strong>Father&#x27;s Day</strong></div>
+            <div class="metric"><span>Tags:</span><strong>Father&#x27;s Day;Coffee;Quote Mug</strong></div>
           </div>
         </div>
       </article>
@@ -265,6 +302,8 @@
             <div class="metric"><span>Rank Change:</span><strong>0</strong></div>
             <div class="metric"><span>Days Seen:</span><strong>2</strong></div>
             <div class="metric"><span>POD Score:</span><strong>25</strong></div>
+            <div class="metric"><span>Niche:</span><strong>Father&#x27;s Day</strong></div>
+            <div class="metric"><span>Tags:</span><strong>Father&#x27;s Day;Coffee;Quote Mug</strong></div>
           </div>
         </div>
       </article>
@@ -281,6 +320,8 @@
             <div class="metric"><span>Rank Change:</span><strong>0</strong></div>
             <div class="metric"><span>Days Seen:</span><strong>2</strong></div>
             <div class="metric"><span>POD Score:</span><strong>95</strong></div>
+            <div class="metric"><span>Niche:</span><strong>Father&#x27;s Day</strong></div>
+            <div class="metric"><span>Tags:</span><strong>Father&#x27;s Day;Coffee;Quote Mug;Dad;Daughter;Husband;Kids;Son;Wife</strong></div>
           </div>
         </div>
       </article>
@@ -297,6 +338,8 @@
             <div class="metric"><span>Rank Change:</span><strong>0</strong></div>
             <div class="metric"><span>Days Seen:</span><strong>2</strong></div>
             <div class="metric"><span>POD Score:</span><strong>35</strong></div>
+            <div class="metric"><span>Niche:</span><strong>Father&#x27;s Day</strong></div>
+            <div class="metric"><span>Tags:</span><strong>Father&#x27;s Day;Coffee;Quote Mug;Dad;Daughter;Husband;Kids;Son;Wife</strong></div>
           </div>
         </div>
       </article>
@@ -313,6 +356,8 @@
             <div class="metric"><span>Rank Change:</span><strong>0</strong></div>
             <div class="metric"><span>Days Seen:</span><strong>2</strong></div>
             <div class="metric"><span>POD Score:</span><strong>35</strong></div>
+            <div class="metric"><span>Niche:</span><strong>Father&#x27;s Day</strong></div>
+            <div class="metric"><span>Tags:</span><strong>Father&#x27;s Day;Dad;Coffee;Quote Mug;Christmas;Son</strong></div>
           </div>
         </div>
       </article>
@@ -329,6 +374,8 @@
             <div class="metric"><span>Rank Change:</span><strong>-1</strong></div>
             <div class="metric"><span>Days Seen:</span><strong>2</strong></div>
             <div class="metric"><span>POD Score:</span><strong>25</strong></div>
+            <div class="metric"><span>Niche:</span><strong>Father&#x27;s Day</strong></div>
+            <div class="metric"><span>Tags:</span><strong>Father&#x27;s Day;Quote Mug;Dad</strong></div>
           </div>
         </div>
       </article>
@@ -345,6 +392,8 @@
             <div class="metric"><span>Rank Change:</span><strong>16</strong></div>
             <div class="metric"><span>Days Seen:</span><strong>2</strong></div>
             <div class="metric"><span>POD Score:</span><strong>80</strong></div>
+            <div class="metric"><span>Niche:</span><strong>Baptism</strong></div>
+            <div class="metric"><span>Tags:</span><strong>Baptism;Christian</strong></div>
           </div>
         </div>
       </article>
@@ -361,6 +410,8 @@
             <div class="metric"><span>Rank Change:</span><strong>13</strong></div>
             <div class="metric"><span>Days Seen:</span><strong>2</strong></div>
             <div class="metric"><span>POD Score:</span><strong>95</strong></div>
+            <div class="metric"><span>Niche:</span><strong>Dad</strong></div>
+            <div class="metric"><span>Tags:</span><strong>Dad;Father&#x27;s Day;Birthday</strong></div>
           </div>
         </div>
       </article>
@@ -377,6 +428,8 @@
             <div class="metric"><span>Rank Change:</span><strong>11</strong></div>
             <div class="metric"><span>Days Seen:</span><strong>2</strong></div>
             <div class="metric"><span>POD Score:</span><strong>95</strong></div>
+            <div class="metric"><span>Niche:</span><strong>Dog</strong></div>
+            <div class="metric"><span>Tags:</span><strong>Dog;Memorial</strong></div>
           </div>
         </div>
       </article>
@@ -393,6 +446,8 @@
             <div class="metric"><span>Rank Change:</span><strong>14</strong></div>
             <div class="metric"><span>Days Seen:</span><strong>2</strong></div>
             <div class="metric"><span>POD Score:</span><strong>95</strong></div>
+            <div class="metric"><span>Niche:</span><strong>Mother&#x27;s Day</strong></div>
+            <div class="metric"><span>Tags:</span><strong>Mother&#x27;s Day;Mom</strong></div>
           </div>
         </div>
       </article>
@@ -409,6 +464,8 @@
             <div class="metric"><span>Rank Change:</span><strong>14</strong></div>
             <div class="metric"><span>Days Seen:</span><strong>2</strong></div>
             <div class="metric"><span>POD Score:</span><strong>35</strong></div>
+            <div class="metric"><span>Niche:</span><strong>Graduation</strong></div>
+            <div class="metric"><span>Tags:</span><strong>Graduation</strong></div>
           </div>
         </div>
       </article>
@@ -425,6 +482,8 @@
             <div class="metric"><span>Rank Change:</span><strong>14</strong></div>
             <div class="metric"><span>Days Seen:</span><strong>2</strong></div>
             <div class="metric"><span>POD Score:</span><strong>35</strong></div>
+            <div class="metric"><span>Niche:</span><strong>Unknown</strong></div>
+            <div class="metric"><span>Tags:</span><strong>Unknown</strong></div>
           </div>
         </div>
       </article>
@@ -441,6 +500,8 @@
             <div class="metric"><span>Rank Change:</span><strong>20</strong></div>
             <div class="metric"><span>Days Seen:</span><strong>2</strong></div>
             <div class="metric"><span>POD Score:</span><strong>45</strong></div>
+            <div class="metric"><span>Niche:</span><strong>Mom</strong></div>
+            <div class="metric"><span>Tags:</span><strong>Mom</strong></div>
           </div>
         </div>
       </article>
@@ -457,6 +518,8 @@
             <div class="metric"><span>Rank Change:</span><strong>3</strong></div>
             <div class="metric"><span>Days Seen:</span><strong>2</strong></div>
             <div class="metric"><span>POD Score:</span><strong>25</strong></div>
+            <div class="metric"><span>Niche:</span><strong>Bible</strong></div>
+            <div class="metric"><span>Tags:</span><strong>Bible;Father&#x27;s Day;Coffee;Quote Mug;Christian</strong></div>
           </div>
         </div>
       </article>
@@ -473,6 +536,8 @@
             <div class="metric"><span>Rank Change:</span><strong>1</strong></div>
             <div class="metric"><span>Days Seen:</span><strong>2</strong></div>
             <div class="metric"><span>POD Score:</span><strong>35</strong></div>
+            <div class="metric"><span>Niche:</span><strong>Father&#x27;s Day</strong></div>
+            <div class="metric"><span>Tags:</span><strong>Father&#x27;s Day;4th of July;Coffee;Quote Mug;Anniversary</strong></div>
           </div>
         </div>
       </article>
@@ -489,6 +554,8 @@
             <div class="metric"><span>Rank Change:</span><strong>-1</strong></div>
             <div class="metric"><span>Days Seen:</span><strong>2</strong></div>
             <div class="metric"><span>POD Score:</span><strong>35</strong></div>
+            <div class="metric"><span>Niche:</span><strong>Father&#x27;s Day</strong></div>
+            <div class="metric"><span>Tags:</span><strong>Father&#x27;s Day;Coffee;Quote Mug;Birthday</strong></div>
           </div>
         </div>
       </article>
@@ -505,6 +572,8 @@
             <div class="metric"><span>Rank Change:</span><strong>-8</strong></div>
             <div class="metric"><span>Days Seen:</span><strong>2</strong></div>
             <div class="metric"><span>POD Score:</span><strong>40</strong></div>
+            <div class="metric"><span>Niche:</span><strong>Father&#x27;s Day</strong></div>
+            <div class="metric"><span>Tags:</span><strong>Father&#x27;s Day;Coffee;Quote Mug;Birthday</strong></div>
           </div>
         </div>
       </article>
@@ -521,6 +590,8 @@
             <div class="metric"><span>Rank Change:</span><strong>0</strong></div>
             <div class="metric"><span>Days Seen:</span><strong>3</strong></div>
             <div class="metric"><span>POD Score:</span><strong>105</strong></div>
+            <div class="metric"><span>Niche:</span><strong>Custom Doormat</strong></div>
+            <div class="metric"><span>Tags:</span><strong>Custom Doormat;4th of July;Anniversary;Family</strong></div>
           </div>
         </div>
       </article>
@@ -537,6 +608,8 @@
             <div class="metric"><span>Rank Change:</span><strong>0</strong></div>
             <div class="metric"><span>Days Seen:</span><strong>2</strong></div>
             <div class="metric"><span>POD Score:</span><strong>70</strong></div>
+            <div class="metric"><span>Niche:</span><strong>Dad</strong></div>
+            <div class="metric"><span>Tags:</span><strong>Dad;Father&#x27;s Day;Grandpa;Kids</strong></div>
           </div>
         </div>
       </article>
@@ -553,6 +626,8 @@
             <div class="metric"><span>Rank Change:</span><strong>0</strong></div>
             <div class="metric"><span>Days Seen:</span><strong>2</strong></div>
             <div class="metric"><span>POD Score:</span><strong>80</strong></div>
+            <div class="metric"><span>Niche:</span><strong>Dad</strong></div>
+            <div class="metric"><span>Tags:</span><strong>Dad;Custom Shirt;Grandpa</strong></div>
           </div>
         </div>
       </article>
@@ -569,6 +644,8 @@
             <div class="metric"><span>Rank Change:</span><strong>1</strong></div>
             <div class="metric"><span>Days Seen:</span><strong>2</strong></div>
             <div class="metric"><span>POD Score:</span><strong>125</strong></div>
+            <div class="metric"><span>Niche:</span><strong>Custom Shirt</strong></div>
+            <div class="metric"><span>Tags:</span><strong>Custom Shirt;Birthday</strong></div>
           </div>
         </div>
       </article>
@@ -585,6 +662,8 @@
             <div class="metric"><span>Rank Change:</span><strong>0</strong></div>
             <div class="metric"><span>Days Seen:</span><strong>2</strong></div>
             <div class="metric"><span>POD Score:</span><strong>45</strong></div>
+            <div class="metric"><span>Niche:</span><strong>Father&#x27;s Day</strong></div>
+            <div class="metric"><span>Tags:</span><strong>Father&#x27;s Day;Custom Shirt;Baby;Dad</strong></div>
           </div>
         </div>
       </article>
@@ -601,6 +680,8 @@
             <div class="metric"><span>Rank Change:</span><strong>0</strong></div>
             <div class="metric"><span>Days Seen:</span><strong>2</strong></div>
             <div class="metric"><span>POD Score:</span><strong>105</strong></div>
+            <div class="metric"><span>Niche:</span><strong>Custom Shirt</strong></div>
+            <div class="metric"><span>Tags:</span><strong>Custom Shirt;Grandma</strong></div>
           </div>
         </div>
       </article>
@@ -617,6 +698,8 @@
             <div class="metric"><span>Rank Change:</span><strong>0</strong></div>
             <div class="metric"><span>Days Seen:</span><strong>2</strong></div>
             <div class="metric"><span>POD Score:</span><strong>60</strong></div>
+            <div class="metric"><span>Niche:</span><strong>4th of July</strong></div>
+            <div class="metric"><span>Tags:</span><strong>4th of July;Anniversary;Family</strong></div>
           </div>
         </div>
       </article>
@@ -633,6 +716,8 @@
             <div class="metric"><span>Rank Change:</span><strong>0</strong></div>
             <div class="metric"><span>Days Seen:</span><strong>2</strong></div>
             <div class="metric"><span>POD Score:</span><strong>35</strong></div>
+            <div class="metric"><span>Niche:</span><strong>Mom</strong></div>
+            <div class="metric"><span>Tags:</span><strong>Mom;Mother&#x27;s Day</strong></div>
           </div>
         </div>
       </article>
@@ -649,6 +734,8 @@
             <div class="metric"><span>Rank Change:</span><strong>0</strong></div>
             <div class="metric"><span>Days Seen:</span><strong>2</strong></div>
             <div class="metric"><span>POD Score:</span><strong>150</strong></div>
+            <div class="metric"><span>Niche:</span><strong>Father&#x27;s Day</strong></div>
+            <div class="metric"><span>Tags:</span><strong>Father&#x27;s Day;Dad;Grandpa;Kids</strong></div>
           </div>
         </div>
       </article>
@@ -665,6 +752,8 @@
             <div class="metric"><span>Rank Change:</span><strong>0</strong></div>
             <div class="metric"><span>Days Seen:</span><strong>2</strong></div>
             <div class="metric"><span>POD Score:</span><strong>130</strong></div>
+            <div class="metric"><span>Niche:</span><strong>Couple</strong></div>
+            <div class="metric"><span>Tags:</span><strong>Couple</strong></div>
           </div>
         </div>
       </article>
@@ -681,6 +770,8 @@
             <div class="metric"><span>Rank Change:</span><strong>0</strong></div>
             <div class="metric"><span>Days Seen:</span><strong>3</strong></div>
             <div class="metric"><span>POD Score:</span><strong>35</strong></div>
+            <div class="metric"><span>Niche:</span><strong>Unknown</strong></div>
+            <div class="metric"><span>Tags:</span><strong>Unknown</strong></div>
           </div>
         </div>
       </article>
@@ -697,6 +788,8 @@
             <div class="metric"><span>Rank Change:</span><strong>0</strong></div>
             <div class="metric"><span>Days Seen:</span><strong>2</strong></div>
             <div class="metric"><span>POD Score:</span><strong>55</strong></div>
+            <div class="metric"><span>Niche:</span><strong>Custom Shirt</strong></div>
+            <div class="metric"><span>Tags:</span><strong>Custom Shirt</strong></div>
           </div>
         </div>
       </article>
@@ -713,6 +806,8 @@
             <div class="metric"><span>Rank Change:</span><strong>0</strong></div>
             <div class="metric"><span>Days Seen:</span><strong>2</strong></div>
             <div class="metric"><span>POD Score:</span><strong>150</strong></div>
+            <div class="metric"><span>Niche:</span><strong>Father&#x27;s Day</strong></div>
+            <div class="metric"><span>Tags:</span><strong>Father&#x27;s Day;Custom Shirt;Dad;Grandpa;Christmas;Kids</strong></div>
           </div>
         </div>
       </article>
@@ -729,6 +824,8 @@
             <div class="metric"><span>Rank Change:</span><strong>0</strong></div>
             <div class="metric"><span>Days Seen:</span><strong>2</strong></div>
             <div class="metric"><span>POD Score:</span><strong>80</strong></div>
+            <div class="metric"><span>Niche:</span><strong>Custom Shirt</strong></div>
+            <div class="metric"><span>Tags:</span><strong>Custom Shirt;Soccer;Kids</strong></div>
           </div>
         </div>
       </article>
@@ -745,6 +842,8 @@
             <div class="metric"><span>Rank Change:</span><strong>1</strong></div>
             <div class="metric"><span>Days Seen:</span><strong>2</strong></div>
             <div class="metric"><span>POD Score:</span><strong>95</strong></div>
+            <div class="metric"><span>Niche:</span><strong>Father&#x27;s Day</strong></div>
+            <div class="metric"><span>Tags:</span><strong>Father&#x27;s Day;Dad;Family</strong></div>
           </div>
         </div>
       </article>
@@ -761,6 +860,8 @@
             <div class="metric"><span>Rank Change:</span><strong>0</strong></div>
             <div class="metric"><span>Days Seen:</span><strong>2</strong></div>
             <div class="metric"><span>POD Score:</span><strong>45</strong></div>
+            <div class="metric"><span>Niche:</span><strong>4th of July</strong></div>
+            <div class="metric"><span>Tags:</span><strong>4th of July;Custom Shirt;Anniversary</strong></div>
           </div>
         </div>
       </article>
@@ -777,6 +878,8 @@
             <div class="metric"><span>Rank Change:</span><strong>0</strong></div>
             <div class="metric"><span>Days Seen:</span><strong>2</strong></div>
             <div class="metric"><span>POD Score:</span><strong>105</strong></div>
+            <div class="metric"><span>Niche:</span><strong>Dad</strong></div>
+            <div class="metric"><span>Tags:</span><strong>Dad;Father&#x27;s Day;Custom Shirt;Grandpa;Birthday;Christmas;Kids</strong></div>
           </div>
         </div>
       </article>
@@ -793,6 +896,8 @@
             <div class="metric"><span>Rank Change:</span><strong>0</strong></div>
             <div class="metric"><span>Days Seen:</span><strong>2</strong></div>
             <div class="metric"><span>POD Score:</span><strong>85</strong></div>
+            <div class="metric"><span>Niche:</span><strong>Unknown</strong></div>
+            <div class="metric"><span>Tags:</span><strong>Unknown</strong></div>
           </div>
         </div>
       </article>
@@ -809,6 +914,8 @@
             <div class="metric"><span>Rank Change:</span><strong>0</strong></div>
             <div class="metric"><span>Days Seen:</span><strong>2</strong></div>
             <div class="metric"><span>POD Score:</span><strong>140</strong></div>
+            <div class="metric"><span>Niche:</span><strong>Baseball</strong></div>
+            <div class="metric"><span>Tags:</span><strong>Baseball;Custom Shirt;4th of July</strong></div>
           </div>
         </div>
       </article>
@@ -825,6 +932,8 @@
             <div class="metric"><span>Rank Change:</span><strong>3</strong></div>
             <div class="metric"><span>Days Seen:</span><strong>2</strong></div>
             <div class="metric"><span>POD Score:</span><strong>105</strong></div>
+            <div class="metric"><span>Niche:</span><strong>Custom Shirt</strong></div>
+            <div class="metric"><span>Tags:</span><strong>Custom Shirt;Dad</strong></div>
           </div>
         </div>
       </article>
@@ -841,6 +950,8 @@
             <div class="metric"><span>Rank Change:</span><strong>0</strong></div>
             <div class="metric"><span>Days Seen:</span><strong>2</strong></div>
             <div class="metric"><span>POD Score:</span><strong>60</strong></div>
+            <div class="metric"><span>Niche:</span><strong>Baseball</strong></div>
+            <div class="metric"><span>Tags:</span><strong>Baseball;4th of July;Anniversary</strong></div>
           </div>
         </div>
       </article>
@@ -857,6 +968,8 @@
             <div class="metric"><span>Rank Change:</span><strong></strong></div>
             <div class="metric"><span>Days Seen:</span><strong>1</strong></div>
             <div class="metric"><span>POD Score:</span><strong>115</strong></div>
+            <div class="metric"><span>Niche:</span><strong>Coffee</strong></div>
+            <div class="metric"><span>Tags:</span><strong>Coffee;Personalized Mug;Dad;Mom;Son</strong></div>
           </div>
         </div>
       </article>
@@ -873,6 +986,8 @@
             <div class="metric"><span>Rank Change:</span><strong></strong></div>
             <div class="metric"><span>Days Seen:</span><strong>1</strong></div>
             <div class="metric"><span>POD Score:</span><strong>105</strong></div>
+            <div class="metric"><span>Niche:</span><strong>4th of July</strong></div>
+            <div class="metric"><span>Tags:</span><strong>4th of July;Anniversary;Family</strong></div>
           </div>
         </div>
       </article>
@@ -889,6 +1004,8 @@
             <div class="metric"><span>Rank Change:</span><strong>0</strong></div>
             <div class="metric"><span>Days Seen:</span><strong>3</strong></div>
             <div class="metric"><span>POD Score:</span><strong>165</strong></div>
+            <div class="metric"><span>Niche:</span><strong>Dad</strong></div>
+            <div class="metric"><span>Tags:</span><strong>Dad;Coffee;Personalized Mug</strong></div>
           </div>
         </div>
       </article>
@@ -905,6 +1022,8 @@
             <div class="metric"><span>Rank Change:</span><strong>0</strong></div>
             <div class="metric"><span>Days Seen:</span><strong>3</strong></div>
             <div class="metric"><span>POD Score:</span><strong>85</strong></div>
+            <div class="metric"><span>Niche:</span><strong>Dad</strong></div>
+            <div class="metric"><span>Tags:</span><strong>Dad;Baseball;Grandpa;Birthday;Christmas</strong></div>
           </div>
         </div>
       </article>
@@ -921,6 +1040,8 @@
             <div class="metric"><span>Rank Change:</span><strong>0</strong></div>
             <div class="metric"><span>Days Seen:</span><strong>3</strong></div>
             <div class="metric"><span>POD Score:</span><strong>45</strong></div>
+            <div class="metric"><span>Niche:</span><strong>Father&#x27;s Day</strong></div>
+            <div class="metric"><span>Tags:</span><strong>Father&#x27;s Day;Dad;Custom Shirt</strong></div>
           </div>
         </div>
       </article>
@@ -937,6 +1058,8 @@
             <div class="metric"><span>Rank Change:</span><strong>0</strong></div>
             <div class="metric"><span>Days Seen:</span><strong>3</strong></div>
             <div class="metric"><span>POD Score:</span><strong>95</strong></div>
+            <div class="metric"><span>Niche:</span><strong>Father&#x27;s Day</strong></div>
+            <div class="metric"><span>Tags:</span><strong>Father&#x27;s Day;Birthday;Christmas;Dad</strong></div>
           </div>
         </div>
       </article>
@@ -953,6 +1076,8 @@
             <div class="metric"><span>Rank Change:</span><strong>6</strong></div>
             <div class="metric"><span>Days Seen:</span><strong>3</strong></div>
             <div class="metric"><span>POD Score:</span><strong>60</strong></div>
+            <div class="metric"><span>Niche:</span><strong>Pet Memorial</strong></div>
+            <div class="metric"><span>Tags:</span><strong>Pet Memorial;Dog;Memorial</strong></div>
           </div>
         </div>
       </article>
@@ -969,6 +1094,8 @@
             <div class="metric"><span>Rank Change:</span><strong>0</strong></div>
             <div class="metric"><span>Days Seen:</span><strong>2</strong></div>
             <div class="metric"><span>POD Score:</span><strong>155</strong></div>
+            <div class="metric"><span>Niche:</span><strong>Dad</strong></div>
+            <div class="metric"><span>Tags:</span><strong>Dad;Grandpa;Kids</strong></div>
           </div>
         </div>
       </article>
@@ -985,6 +1112,8 @@
             <div class="metric"><span>Rank Change:</span><strong>6</strong></div>
             <div class="metric"><span>Days Seen:</span><strong>3</strong></div>
             <div class="metric"><span>POD Score:</span><strong>120</strong></div>
+            <div class="metric"><span>Niche:</span><strong>Custom Canvas</strong></div>
+            <div class="metric"><span>Tags:</span><strong>Custom Canvas</strong></div>
           </div>
         </div>
       </article>
@@ -1001,6 +1130,8 @@
             <div class="metric"><span>Rank Change:</span><strong>0</strong></div>
             <div class="metric"><span>Days Seen:</span><strong>2</strong></div>
             <div class="metric"><span>POD Score:</span><strong>35</strong></div>
+            <div class="metric"><span>Niche:</span><strong>Unknown</strong></div>
+            <div class="metric"><span>Tags:</span><strong>Unknown</strong></div>
           </div>
         </div>
       </article>
@@ -1017,6 +1148,8 @@
             <div class="metric"><span>Rank Change:</span><strong>0</strong></div>
             <div class="metric"><span>Days Seen:</span><strong>2</strong></div>
             <div class="metric"><span>POD Score:</span><strong>45</strong></div>
+            <div class="metric"><span>Niche:</span><strong>Custom Shirt</strong></div>
+            <div class="metric"><span>Tags:</span><strong>Custom Shirt</strong></div>
           </div>
         </div>
       </article>
@@ -1033,6 +1166,8 @@
             <div class="metric"><span>Rank Change:</span><strong>1</strong></div>
             <div class="metric"><span>Days Seen:</span><strong>2</strong></div>
             <div class="metric"><span>POD Score:</span><strong>45</strong></div>
+            <div class="metric"><span>Niche:</span><strong>Custom Shirt</strong></div>
+            <div class="metric"><span>Tags:</span><strong>Custom Shirt</strong></div>
           </div>
         </div>
       </article>
@@ -1049,6 +1184,8 @@
             <div class="metric"><span>Rank Change:</span><strong>0</strong></div>
             <div class="metric"><span>Days Seen:</span><strong>2</strong></div>
             <div class="metric"><span>POD Score:</span><strong>35</strong></div>
+            <div class="metric"><span>Niche:</span><strong>Unknown</strong></div>
+            <div class="metric"><span>Tags:</span><strong>Unknown</strong></div>
           </div>
         </div>
       </article>
@@ -1065,6 +1202,8 @@
             <div class="metric"><span>Rank Change:</span><strong>0</strong></div>
             <div class="metric"><span>Days Seen:</span><strong>2</strong></div>
             <div class="metric"><span>POD Score:</span><strong>45</strong></div>
+            <div class="metric"><span>Niche:</span><strong>Custom Shirt</strong></div>
+            <div class="metric"><span>Tags:</span><strong>Custom Shirt;Dad</strong></div>
           </div>
         </div>
       </article>
@@ -1081,6 +1220,8 @@
             <div class="metric"><span>Rank Change:</span><strong>1</strong></div>
             <div class="metric"><span>Days Seen:</span><strong>2</strong></div>
             <div class="metric"><span>POD Score:</span><strong>105</strong></div>
+            <div class="metric"><span>Niche:</span><strong>Father&#x27;s Day</strong></div>
+            <div class="metric"><span>Tags:</span><strong>Father&#x27;s Day;Custom Shirt;Dad;Grandpa;Birthday;Christmas</strong></div>
           </div>
         </div>
       </article>
@@ -1097,6 +1238,8 @@
             <div class="metric"><span>Rank Change:</span><strong>0</strong></div>
             <div class="metric"><span>Days Seen:</span><strong>2</strong></div>
             <div class="metric"><span>POD Score:</span><strong>35</strong></div>
+            <div class="metric"><span>Niche:</span><strong>Unknown</strong></div>
+            <div class="metric"><span>Tags:</span><strong>Unknown</strong></div>
           </div>
         </div>
       </article>
@@ -1113,6 +1256,8 @@
             <div class="metric"><span>Rank Change:</span><strong>0</strong></div>
             <div class="metric"><span>Days Seen:</span><strong>2</strong></div>
             <div class="metric"><span>POD Score:</span><strong>115</strong></div>
+            <div class="metric"><span>Niche:</span><strong>Father&#x27;s Day</strong></div>
+            <div class="metric"><span>Tags:</span><strong>Father&#x27;s Day;Custom Shirt;Dad;Kids</strong></div>
           </div>
         </div>
       </article>
@@ -1129,6 +1274,8 @@
             <div class="metric"><span>Rank Change:</span><strong>8</strong></div>
             <div class="metric"><span>Days Seen:</span><strong>2</strong></div>
             <div class="metric"><span>POD Score:</span><strong>105</strong></div>
+            <div class="metric"><span>Niche:</span><strong>Father&#x27;s Day</strong></div>
+            <div class="metric"><span>Tags:</span><strong>Father&#x27;s Day;Custom Shirt;Dad;Grandpa</strong></div>
           </div>
         </div>
       </article>
@@ -1145,6 +1292,8 @@
             <div class="metric"><span>Rank Change:</span><strong>0</strong></div>
             <div class="metric"><span>Days Seen:</span><strong>3</strong></div>
             <div class="metric"><span>POD Score:</span><strong>140</strong></div>
+            <div class="metric"><span>Niche:</span><strong>Custom Doormat</strong></div>
+            <div class="metric"><span>Tags:</span><strong>Custom Doormat;Family</strong></div>
           </div>
         </div>
       </article>
@@ -1161,6 +1310,8 @@
             <div class="metric"><span>Rank Change:</span><strong>0</strong></div>
             <div class="metric"><span>Days Seen:</span><strong>2</strong></div>
             <div class="metric"><span>POD Score:</span><strong>90</strong></div>
+            <div class="metric"><span>Niche:</span><strong>Custom Shirt</strong></div>
+            <div class="metric"><span>Tags:</span><strong>Custom Shirt</strong></div>
           </div>
         </div>
       </article>
@@ -1177,6 +1328,8 @@
             <div class="metric"><span>Rank Change:</span><strong>0</strong></div>
             <div class="metric"><span>Days Seen:</span><strong>2</strong></div>
             <div class="metric"><span>POD Score:</span><strong>105</strong></div>
+            <div class="metric"><span>Niche:</span><strong>Dad</strong></div>
+            <div class="metric"><span>Tags:</span><strong>Dad;Father&#x27;s Day;Kids</strong></div>
           </div>
         </div>
       </article>
@@ -1193,6 +1346,8 @@
             <div class="metric"><span>Rank Change:</span><strong>1</strong></div>
             <div class="metric"><span>Days Seen:</span><strong>2</strong></div>
             <div class="metric"><span>POD Score:</span><strong>130</strong></div>
+            <div class="metric"><span>Niche:</span><strong>Dad</strong></div>
+            <div class="metric"><span>Tags:</span><strong>Dad</strong></div>
           </div>
         </div>
       </article>
@@ -1209,6 +1364,8 @@
             <div class="metric"><span>Rank Change:</span><strong>0</strong></div>
             <div class="metric"><span>Days Seen:</span><strong>2</strong></div>
             <div class="metric"><span>POD Score:</span><strong>35</strong></div>
+            <div class="metric"><span>Niche:</span><strong>Unknown</strong></div>
+            <div class="metric"><span>Tags:</span><strong>Unknown</strong></div>
           </div>
         </div>
       </article>
@@ -1225,6 +1382,8 @@
             <div class="metric"><span>Rank Change:</span><strong>1</strong></div>
             <div class="metric"><span>Days Seen:</span><strong>2</strong></div>
             <div class="metric"><span>POD Score:</span><strong>60</strong></div>
+            <div class="metric"><span>Niche:</span><strong>Anniversary</strong></div>
+            <div class="metric"><span>Tags:</span><strong>Anniversary;Wedding;Couple</strong></div>
           </div>
         </div>
       </article>
@@ -1241,6 +1400,8 @@
             <div class="metric"><span>Rank Change:</span><strong>0</strong></div>
             <div class="metric"><span>Days Seen:</span><strong>2</strong></div>
             <div class="metric"><span>POD Score:</span><strong>45</strong></div>
+            <div class="metric"><span>Niche:</span><strong>Custom Shirt</strong></div>
+            <div class="metric"><span>Tags:</span><strong>Custom Shirt</strong></div>
           </div>
         </div>
       </article>
@@ -1257,6 +1418,8 @@
             <div class="metric"><span>Rank Change:</span><strong>-1</strong></div>
             <div class="metric"><span>Days Seen:</span><strong>3</strong></div>
             <div class="metric"><span>POD Score:</span><strong>45</strong></div>
+            <div class="metric"><span>Niche:</span><strong>Dog Dad</strong></div>
+            <div class="metric"><span>Tags:</span><strong>Dog Dad;Father&#x27;s Day;Cat;Custom Shirt;Dog;Dad;Husband</strong></div>
           </div>
         </div>
       </article>
@@ -1273,6 +1436,8 @@
             <div class="metric"><span>Rank Change:</span><strong>1</strong></div>
             <div class="metric"><span>Days Seen:</span><strong>2</strong></div>
             <div class="metric"><span>POD Score:</span><strong>105</strong></div>
+            <div class="metric"><span>Niche:</span><strong>Custom Shirt</strong></div>
+            <div class="metric"><span>Tags:</span><strong>Custom Shirt;Anniversary;Couple</strong></div>
           </div>
         </div>
       </article>
@@ -1289,6 +1454,8 @@
             <div class="metric"><span>Rank Change:</span><strong></strong></div>
             <div class="metric"><span>Days Seen:</span><strong>1</strong></div>
             <div class="metric"><span>POD Score:</span><strong>45</strong></div>
+            <div class="metric"><span>Niche:</span><strong>Personalized Mug</strong></div>
+            <div class="metric"><span>Tags:</span><strong>Personalized Mug;Dad</strong></div>
           </div>
         </div>
       </article>
@@ -1305,6 +1472,8 @@
             <div class="metric"><span>Rank Change:</span><strong></strong></div>
             <div class="metric"><span>Days Seen:</span><strong>1</strong></div>
             <div class="metric"><span>POD Score:</span><strong>105</strong></div>
+            <div class="metric"><span>Niche:</span><strong>Father&#x27;s Day</strong></div>
+            <div class="metric"><span>Tags:</span><strong>Father&#x27;s Day;Dad;Custom Shirt;Baby</strong></div>
           </div>
         </div>
       </article>
@@ -1321,6 +1490,8 @@
             <div class="metric"><span>Rank Change:</span><strong>0</strong></div>
             <div class="metric"><span>Days Seen:</span><strong>3</strong></div>
             <div class="metric"><span>POD Score:</span><strong>145</strong></div>
+            <div class="metric"><span>Niche:</span><strong>Father&#x27;s Day</strong></div>
+            <div class="metric"><span>Tags:</span><strong>Father&#x27;s Day;Dad;Grandpa</strong></div>
           </div>
         </div>
       </article>
@@ -1337,6 +1508,8 @@
             <div class="metric"><span>Rank Change:</span><strong>0</strong></div>
             <div class="metric"><span>Days Seen:</span><strong>3</strong></div>
             <div class="metric"><span>POD Score:</span><strong>35</strong></div>
+            <div class="metric"><span>Niche:</span><strong>Unknown</strong></div>
+            <div class="metric"><span>Tags:</span><strong>Unknown</strong></div>
           </div>
         </div>
       </article>
@@ -1353,6 +1526,8 @@
             <div class="metric"><span>Rank Change:</span><strong>0</strong></div>
             <div class="metric"><span>Days Seen:</span><strong>3</strong></div>
             <div class="metric"><span>POD Score:</span><strong>140</strong></div>
+            <div class="metric"><span>Niche:</span><strong>4th of July</strong></div>
+            <div class="metric"><span>Tags:</span><strong>4th of July;Anniversary;Family</strong></div>
           </div>
         </div>
       </article>
@@ -1369,6 +1544,8 @@
             <div class="metric"><span>Rank Change:</span><strong>-1</strong></div>
             <div class="metric"><span>Days Seen:</span><strong>3</strong></div>
             <div class="metric"><span>POD Score:</span><strong>155</strong></div>
+            <div class="metric"><span>Niche:</span><strong>Mom</strong></div>
+            <div class="metric"><span>Tags:</span><strong>Mom;Mother&#x27;s Day;Custom Shirt;Family</strong></div>
           </div>
         </div>
       </article>
@@ -1385,6 +1562,8 @@
             <div class="metric"><span>Rank Change:</span><strong>0</strong></div>
             <div class="metric"><span>Days Seen:</span><strong>2</strong></div>
             <div class="metric"><span>POD Score:</span><strong>35</strong></div>
+            <div class="metric"><span>Niche:</span><strong>Father&#x27;s Day</strong></div>
+            <div class="metric"><span>Tags:</span><strong>Father&#x27;s Day</strong></div>
           </div>
         </div>
       </article>
@@ -1401,6 +1580,8 @@
             <div class="metric"><span>Rank Change:</span><strong>-1</strong></div>
             <div class="metric"><span>Days Seen:</span><strong>3</strong></div>
             <div class="metric"><span>POD Score:</span><strong>140</strong></div>
+            <div class="metric"><span>Niche:</span><strong>Custom Doormat</strong></div>
+            <div class="metric"><span>Tags:</span><strong>Custom Doormat;4th of July;Anniversary;Family</strong></div>
           </div>
         </div>
       </article>
@@ -1417,6 +1598,8 @@
             <div class="metric"><span>Rank Change:</span><strong>0</strong></div>
             <div class="metric"><span>Days Seen:</span><strong>2</strong></div>
             <div class="metric"><span>POD Score:</span><strong>35</strong></div>
+            <div class="metric"><span>Niche:</span><strong>Unknown</strong></div>
+            <div class="metric"><span>Tags:</span><strong>Unknown</strong></div>
           </div>
         </div>
       </article>
@@ -1433,6 +1616,8 @@
             <div class="metric"><span>Rank Change:</span><strong>0</strong></div>
             <div class="metric"><span>Days Seen:</span><strong>2</strong></div>
             <div class="metric"><span>POD Score:</span><strong>45</strong></div>
+            <div class="metric"><span>Niche:</span><strong>Custom Shirt</strong></div>
+            <div class="metric"><span>Tags:</span><strong>Custom Shirt</strong></div>
           </div>
         </div>
       </article>
@@ -1449,6 +1634,8 @@
             <div class="metric"><span>Rank Change:</span><strong>1</strong></div>
             <div class="metric"><span>Days Seen:</span><strong>2</strong></div>
             <div class="metric"><span>POD Score:</span><strong>55</strong></div>
+            <div class="metric"><span>Niche:</span><strong>Custom Shirt</strong></div>
+            <div class="metric"><span>Tags:</span><strong>Custom Shirt</strong></div>
           </div>
         </div>
       </article>
@@ -1465,6 +1652,8 @@
             <div class="metric"><span>Rank Change:</span><strong>0</strong></div>
             <div class="metric"><span>Days Seen:</span><strong>2</strong></div>
             <div class="metric"><span>POD Score:</span><strong>35</strong></div>
+            <div class="metric"><span>Niche:</span><strong>Unknown</strong></div>
+            <div class="metric"><span>Tags:</span><strong>Unknown</strong></div>
           </div>
         </div>
       </article>
@@ -1481,6 +1670,8 @@
             <div class="metric"><span>Rank Change:</span><strong>0</strong></div>
             <div class="metric"><span>Days Seen:</span><strong>2</strong></div>
             <div class="metric"><span>POD Score:</span><strong>45</strong></div>
+            <div class="metric"><span>Niche:</span><strong>Custom Shirt</strong></div>
+            <div class="metric"><span>Tags:</span><strong>Custom Shirt</strong></div>
           </div>
         </div>
       </article>
@@ -1497,6 +1688,8 @@
             <div class="metric"><span>Rank Change:</span><strong>1</strong></div>
             <div class="metric"><span>Days Seen:</span><strong>2</strong></div>
             <div class="metric"><span>POD Score:</span><strong>80</strong></div>
+            <div class="metric"><span>Niche:</span><strong>Custom Shirt</strong></div>
+            <div class="metric"><span>Tags:</span><strong>Custom Shirt</strong></div>
           </div>
         </div>
       </article>
@@ -1513,6 +1706,8 @@
             <div class="metric"><span>Rank Change:</span><strong>0</strong></div>
             <div class="metric"><span>Days Seen:</span><strong>2</strong></div>
             <div class="metric"><span>POD Score:</span><strong>45</strong></div>
+            <div class="metric"><span>Niche:</span><strong>Custom Shirt</strong></div>
+            <div class="metric"><span>Tags:</span><strong>Custom Shirt;Dad</strong></div>
           </div>
         </div>
       </article>
@@ -1529,6 +1724,8 @@
             <div class="metric"><span>Rank Change:</span><strong>4</strong></div>
             <div class="metric"><span>Days Seen:</span><strong>2</strong></div>
             <div class="metric"><span>POD Score:</span><strong>45</strong></div>
+            <div class="metric"><span>Niche:</span><strong>Custom Shirt</strong></div>
+            <div class="metric"><span>Tags:</span><strong>Custom Shirt</strong></div>
           </div>
         </div>
       </article>
@@ -1545,6 +1742,8 @@
             <div class="metric"><span>Rank Change:</span><strong>0</strong></div>
             <div class="metric"><span>Days Seen:</span><strong>3</strong></div>
             <div class="metric"><span>POD Score:</span><strong>60</strong></div>
+            <div class="metric"><span>Niche:</span><strong>Family</strong></div>
+            <div class="metric"><span>Tags:</span><strong>Family</strong></div>
           </div>
         </div>
       </article>
@@ -1561,6 +1760,8 @@
             <div class="metric"><span>Rank Change:</span><strong>0</strong></div>
             <div class="metric"><span>Days Seen:</span><strong>2</strong></div>
             <div class="metric"><span>POD Score:</span><strong>90</strong></div>
+            <div class="metric"><span>Niche:</span><strong>Custom Shirt</strong></div>
+            <div class="metric"><span>Tags:</span><strong>Custom Shirt</strong></div>
           </div>
         </div>
       </article>
@@ -1577,6 +1778,8 @@
             <div class="metric"><span>Rank Change:</span><strong>0</strong></div>
             <div class="metric"><span>Days Seen:</span><strong>2</strong></div>
             <div class="metric"><span>POD Score:</span><strong>60</strong></div>
+            <div class="metric"><span>Niche:</span><strong>Unknown</strong></div>
+            <div class="metric"><span>Tags:</span><strong>Unknown</strong></div>
           </div>
         </div>
       </article>
@@ -1593,6 +1796,8 @@
             <div class="metric"><span>Rank Change:</span><strong>-2</strong></div>
             <div class="metric"><span>Days Seen:</span><strong>2</strong></div>
             <div class="metric"><span>POD Score:</span><strong>125</strong></div>
+            <div class="metric"><span>Niche:</span><strong>Dad</strong></div>
+            <div class="metric"><span>Tags:</span><strong>Dad;Custom Shirt;Kids</strong></div>
           </div>
         </div>
       </article>
@@ -1609,6 +1814,8 @@
             <div class="metric"><span>Rank Change:</span><strong>0</strong></div>
             <div class="metric"><span>Days Seen:</span><strong>2</strong></div>
             <div class="metric"><span>POD Score:</span><strong>35</strong></div>
+            <div class="metric"><span>Niche:</span><strong>Unknown</strong></div>
+            <div class="metric"><span>Tags:</span><strong>Unknown</strong></div>
           </div>
         </div>
       </article>
@@ -1625,6 +1832,8 @@
             <div class="metric"><span>Rank Change:</span><strong>-1</strong></div>
             <div class="metric"><span>Days Seen:</span><strong>2</strong></div>
             <div class="metric"><span>POD Score:</span><strong>70</strong></div>
+            <div class="metric"><span>Niche:</span><strong>Father&#x27;s Day</strong></div>
+            <div class="metric"><span>Tags:</span><strong>Father&#x27;s Day;Dad;Kids</strong></div>
           </div>
         </div>
       </article>
@@ -1641,6 +1850,8 @@
             <div class="metric"><span>Rank Change:</span><strong>0</strong></div>
             <div class="metric"><span>Days Seen:</span><strong>2</strong></div>
             <div class="metric"><span>POD Score:</span><strong>45</strong></div>
+            <div class="metric"><span>Niche:</span><strong>Custom Shirt</strong></div>
+            <div class="metric"><span>Tags:</span><strong>Custom Shirt</strong></div>
           </div>
         </div>
       </article>
@@ -1657,6 +1868,8 @@
             <div class="metric"><span>Rank Change:</span><strong>-1</strong></div>
             <div class="metric"><span>Days Seen:</span><strong>3</strong></div>
             <div class="metric"><span>POD Score:</span><strong>45</strong></div>
+            <div class="metric"><span>Niche:</span><strong>Custom Shirt</strong></div>
+            <div class="metric"><span>Tags:</span><strong>Custom Shirt</strong></div>
           </div>
         </div>
       </article>
@@ -1673,6 +1886,8 @@
             <div class="metric"><span>Rank Change:</span><strong>-2</strong></div>
             <div class="metric"><span>Days Seen:</span><strong>2</strong></div>
             <div class="metric"><span>POD Score:</span><strong>70</strong></div>
+            <div class="metric"><span>Niche:</span><strong>Dad</strong></div>
+            <div class="metric"><span>Tags:</span><strong>Dad;Father&#x27;s Day;Golf;Grandpa</strong></div>
           </div>
         </div>
       </article>
@@ -1689,6 +1904,8 @@
             <div class="metric"><span>Rank Change:</span><strong></strong></div>
             <div class="metric"><span>Days Seen:</span><strong>1</strong></div>
             <div class="metric"><span>POD Score:</span><strong>45</strong></div>
+            <div class="metric"><span>Niche:</span><strong>Personalized Mug</strong></div>
+            <div class="metric"><span>Tags:</span><strong>Personalized Mug;Dad;Son</strong></div>
           </div>
         </div>
       </article>
