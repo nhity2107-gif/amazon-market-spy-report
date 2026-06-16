@@ -26,7 +26,23 @@
     .image img { width: 100%; height: 100%; object-fit: contain; display: block; }
     .body { padding: 12px; }
     .title { font-size: 13px; font-weight: 700; line-height: 1.35; min-height: 52px; }
-    .meta { margin-top: 10px; display: grid; gap: 5px; font-size: 12px; color: #52606d; }
+    .controls { margin: 0 0 16px; display: flex; gap: 8px; align-items: center; }
+    .controls label { font-size: 12px; font-weight: 700; color: #52606d; }
+    .controls select { border: 1px solid #cad3df; border-radius: 6px; background: #fff; color: #102a43; padding: 8px 10px; font-size: 13px; }
+    .meta { margin-top: 10px; display: grid; gap: 8px; font-size: 12px; color: #52606d; }
+    .metric span, .category-rank span { display: block; font-size: 11px; font-weight: 700; color: #627d98; text-transform: uppercase; }
+    .metric strong, .category-rank strong { display: block; margin-top: 2px; font-size: 13px; color: #1f2933; font-weight: 700; }
+    .metric small { display: block; margin-top: 2px; font-size: 12px; color: #52606d; }
+    .category-rank { border: 1px solid #cfd8e3; border-left-width: 5px; border-radius: 7px; padding: 9px 10px; background: #f7f9fb; }
+    .category-rank strong { font-size: 15px; color: #102a43; }
+    .category-rank--green { border-color: #2f855a; background: #edf8f1; }
+    .category-rank--green strong { color: #276749; }
+    .category-rank--blue { border-color: #2b6cb0; background: #edf5ff; }
+    .category-rank--blue strong { color: #2c5282; }
+    .category-rank--orange { border-color: #c05621; background: #fff4e6; }
+    .category-rank--orange strong { color: #9c4221; }
+    .category-rank--gray { border-color: #9aa5b1; background: #f2f4f7; }
+    .category-rank--gray strong { color: #52606d; }
     .score { font-size: 15px; font-weight: 700; color: #102a43; }
     .table-wrap { overflow: auto; background: #fff; border: 1px solid #d8dee8; border-radius: 8px; }
     table { border-collapse: collapse; min-width: 100%; font-size: 13px; }
@@ -36,7 +52,7 @@
     td a, .card a { color: inherit; }
     details { background: #fff; border: 1px solid #d8dee8; border-radius: 8px; margin: 0 0 14px; padding: 12px; }
     summary { cursor: pointer; font-weight: 700; }
-    .source-grid { margin-top: 12px; display: grid; grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); gap: 10px; }
+    .source-grid { margin-top: 12px; display: grid; grid-template-columns: repeat(auto-fill, minmax(210px, 1fr)); gap: 10px; }
     .empty { background: #fff; border: 1px solid #d8dee8; border-radius: 8px; padding: 18px; color: #52606d; }
     .load-more { margin: 18px auto 0; display: block; border: 1px solid #102a43; border-radius: 6px; background: #102a43; color: #fff; padding: 10px 16px; cursor: pointer; font-weight: 700; }
   </style>
