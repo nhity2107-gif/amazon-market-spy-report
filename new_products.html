@@ -88,8 +88,48 @@
     .niche-product img { width: 72px; height: 72px; object-fit: contain; background: #edf1f5; }
     .niche-product-title a { color: #102a43; }
     .niche-product-meta { margin-top: 5px; display: flex; flex-wrap: wrap; gap: 8px; font-size: 12px; color: #52606d; }
+    .is-hidden { display: none !important; }
+    .drill-table tr[data-drill-row] { cursor: pointer; }
+    .drill-parent-row.is-expanded td { background: #f8fafc; }
+    .drill-row > td { background: #ffffff; padding: 0; }
+    .drill-control-header, .drill-control-cell { width: 92px; white-space: nowrap; }
+    .drill-toggle { width: 28px; height: 28px; border: 1px solid #9fb3c8; border-radius: 6px; background: #fff; color: #102a43; cursor: pointer; font-weight: 700; line-height: 1; }
+    .drill-product-count { margin-left: 8px; color: #52606d; font-size: 12px; }
+    .drill-panel { padding: 14px; border-top: 1px solid #d8dee8; }
+    .drill-toolbar { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 10px; margin: 0 0 12px; }
+    .drill-filters { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; }
+    .drill-filters label { display: inline-flex; gap: 6px; align-items: center; font-size: 12px; color: #334e68; }
+    .drill-actions { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; }
+    .drill-actions button, .quick-actions button, .quick-link { border: 1px solid #9fb3c8; border-radius: 6px; background: #fff; color: #102a43; padding: 7px 9px; font-size: 12px; line-height: 1.2; cursor: pointer; text-decoration: none; }
+    .drill-actions button:hover, .quick-actions button:hover, .quick-link:hover { border-color: #486581; }
+    .drill-status { font-size: 12px; color: #52606d; }
+    .drill-products { display: grid; gap: 8px; }
+    .drill-product { display: grid; grid-template-columns: 58px 72px minmax(0, 1fr); gap: 10px; align-items: start; border: 1px solid #e1e8f0; border-radius: 8px; background: #fff; padding: 9px; }
+    .drill-rank { font-size: 13px; font-weight: 700; color: #102a43; }
+    .drill-thumb { width: 72px; height: 72px; display: flex; align-items: center; justify-content: center; background: #edf1f5; border-radius: 6px; overflow: hidden; color: #829ab1; font-size: 11px; text-align: center; }
+    .drill-thumb img { width: 100%; height: 100%; object-fit: contain; display: block; }
+    .drill-thumb--empty { border: 1px dashed #bcccdc; }
+    .drill-main { min-width: 0; }
+    .drill-title { font-size: 13px; font-weight: 700; line-height: 1.35; color: #102a43; }
+    .drill-title a { color: #102a43; }
+    .drill-meta { margin-top: 7px; display: flex; flex-wrap: wrap; gap: 7px 12px; font-size: 12px; color: #52606d; }
+    .drill-meta strong { color: #334e68; }
+    .quick-actions { margin-top: 9px; display: flex; flex-wrap: wrap; gap: 7px; }
+    .niche-card-drilldown { margin: 4px 0 0; padding: 10px; }
+    .niche-card-drilldown .drill-panel { padding: 10px 0 0; border-top: 0; }
+    .niche-card-drilldown .drill-product { grid-template-columns: 42px 54px minmax(0, 1fr); }
+    .niche-card-drilldown .drill-thumb { width: 54px; height: 54px; }
     .empty { background: #fff; border: 1px solid #d8dee8; border-radius: 8px; padding: 18px; color: #52606d; }
     .load-more { margin: 18px auto 0; display: block; border: 1px solid #102a43; border-radius: 6px; background: #102a43; color: #fff; padding: 10px 16px; cursor: pointer; font-weight: 700; }
+    @media (max-width: 720px) {
+      main { padding: 14px; }
+      th, td { padding: 8px; }
+      .drill-panel { padding: 10px; }
+      .drill-product { grid-template-columns: 44px 58px minmax(0, 1fr); }
+      .drill-thumb { width: 58px; height: 58px; }
+      .drill-toolbar, .drill-actions { align-items: stretch; }
+      .drill-actions button, .quick-actions button, .quick-link { flex: 1 1 auto; text-align: center; }
+    }
   </style>
 </head>
 <body>
@@ -110,7 +150,7 @@
   <main>
     <h1>New Products</h1>
     <section class="summary">
-      <div><strong>32</strong><span>Records</span></div>
+      <div><strong>38</strong><span>Records</span></div>
     </section>
     <section class="controls">
       <label for="card-sort">Sort</label>
@@ -129,862 +169,601 @@
       </select>
     </section>
     <section class="grid" data-sortable-cards>
-      <article class="card" data-card-index="0" data-opportunity-score="74" data-display-rank-change="28" data-display-rank-velocity="4.0" data-top-percentile="23.53" data-category-rank="9007199254740991" data-subcategory-rank="9007199254740991" data-review-count="100" data-rank-change="28" data-pod-score="95">
-        <a href="https://www.amazon.com/Personalized-Family-Gifts-Canvas-poster/dp/B0BWSJ3KYL/ref=sr_1_8?dib=eyJ2IjoiMSJ9.M5pkWw4ieWYVD7B_AHguhChf5ji5c6NjLWKqrx_cJx93cQuUfHR0CpeTsgYgv_ip5VNbOg13az6rW3rq4xL2_s75hPb2mpETZbxndQaBQ3SorBMOEp2vZ8S7FhJLa41KHuy5jpNWSw3zr8mRUuNrGEm1JfE-xTPnnQqtLmqX7ENj_GABb4o7MpF5kUaJ8yjrTfXdArsta93ynUoUml6VBejNUKDSgT_E-RD6mXRRsqY.ArHMmJgITz57RFZ9Y7nlPnKlwsqLePsDqk-iy3JhWQY&amp;dib_tag=se&amp;m=A1JK5EDV3DM6K&amp;marketplaceID=ATVPDKIKX0DER&amp;nsdOptOutParam=true&amp;qid=1781857936&amp;s=merchant-items&amp;sr=1-8" target="_blank" rel="noopener"><div class="image"><img src="images/B0BWSJ3KYL.jpg" alt="Personalized Canvas For Father Birthday Gifts For Daddy Poster - Dads To The World You Are One Person Frame Picture Poster From Daughter Best Dad Photo Dad Canvas Christmas Gift"></div></a>
+      <article class="card" data-card-index="0" data-opportunity-score="91" data-display-rank-change="17" data-display-rank-velocity="2.43" data-top-percentile="4.48" data-category-rank="21433" data-subcategory-rank="152" data-review-count="78" data-rank-change="17" data-pod-score="110">
+        <a href="https://www.amazon.com/NAZENTI-Personalized-Anniversary-Decorations-Patriotic/dp/B0GS369Q3S/ref=sr_1_3?dib=eyJ2IjoiMSJ9.eLXnGi0GY8uMuyeLkOmsP2VL_Unpgpp0_Yu7am-fG4G444OL_BMWBbASeUNk5QSMc5kOvJSojiM9ikmaY-3DcFJ9A077EjYpvFkcUjuutFmr_SF3BXgzUkNy5HBEC5YpMV2rAkLAkrohsG7r91kjLcx1sRSsTyKDXBRwYaL5G0EiXbM-WHpZrX_GMaQtqOPFfMdhiGwnWRnDMumNYpuWhGTtci4752T8hTjwBhvYGGs.kBN6oT4vyNJoM9bCwkKr4vEhIstOD209UFrbDh2pE3Q&amp;dib_tag=se&amp;m=ADBAET893RY0A&amp;marketplaceID=ATVPDKIKX0DER&amp;nsdOptOutParam=true&amp;qid=1782103486&amp;s=merchant-items&amp;sr=1-3" target="_blank" rel="noopener"><div class="image"><img src="images/B0GS369Q3S.jpg" alt="NAZENTI Personalized 250 Years of Freedom Flag, Custom 250 Year American Anniversary Banner with Family Name, 250th American Anniversary Decorations, Patriotic Banner Gifts for Family, Friend A05"></div></a>
         <div class="body">
-          <div class="title">Personalized Canvas For Father Birthday Gifts For Daddy Poster - Dads To The World You Are One Person Frame Picture Poster From Daughter Best Dad Photo Dad Canvas Christmas Gift</div>
+          <div class="title">NAZENTI Personalized 250 Years of Freedom Flag, Custom 250 Year American Anniversary Banner with Family Name, 250th American Anniversary Decorations, Patriotic Banner Gifts for Family, Friend A05</div>
           <div class="meta">
-            <div class="metric score score-breakdown" tabindex="0" title="POD: 28/30
+            <div class="metric score score-breakdown" tabindex="0" title="POD: 30/30
 Momentum: 25/25
-Market: 0/20
+Market: 16/20
 Competition: 6/10
-Niche: 15/15" data-tooltip="POD: 28/30
+Niche: 14/15" data-tooltip="POD: 30/30
 Momentum: 25/25
-Market: 0/20
+Market: 16/20
 Competition: 6/10
-Niche: 15/15"><span>Opportunity Score:</span><strong>74</strong></div>
-            <div class="metric"><span>Seller:</span><strong>Lim Nature (WP)</strong></div>
+Niche: 14/15"><span>Opportunity Score:</span><strong>91</strong></div>
+            <div class="metric"><span>Seller:</span><strong>BEAUTIFS</strong></div>
             
+            <div class="category-rank category-rank--blue"><span>Amazon BSR:</span><strong>#21,433 in Home &amp; Kitchen</strong></div>
+            <div class="category-rank category-rank--green"><span>Best Subcategory Rank:</span><strong>#152 in Decorative Signs &amp; Plaques</strong></div>
             
-            
-            
-            <div class="metric"><span>Reviews:</span><strong>100 reviews</strong><small>Rating: 4.5</small></div>
-            <div class="metric"><span>Source Rank:</span><strong>#8</strong></div>
-            <div class="metric"><span>Source Rank Change:</span><strong>28</strong></div>
+            <div class="metric"><span>Reviews:</span><strong>78 reviews</strong><small>Rating: 4.4</small></div>
+            <div class="metric"><span>Source Rank:</span><strong>#3</strong></div>
+            <div class="metric"><span>Source Rank Change:</span><strong>17</strong></div>
             <div class="metric"><span>Days Seen:</span><strong>2</strong></div>
-            <div class="metric"><span>POD Score:</span><strong>95</strong></div>
-            <div class="metric"><span>Niche:</span><strong>Dad</strong></div>
-            <div class="metric"><span>Tags:</span><strong>Dad;Birthday;Christmas;Daughter</strong></div>
+            <div class="metric"><span>POD Score:</span><strong>110</strong></div>
+            <div class="metric"><span>Niche:</span><strong>Anniversary</strong></div>
+            <div class="metric"><span>Tags:</span><strong>Anniversary;Family</strong></div>
           </div>
         </div>
       </article>
-      <article class="card" data-card-index="1" data-opportunity-score="73" data-display-rank-change="34" data-display-rank-velocity="34.0" data-top-percentile="25.0" data-category-rank="9007199254740991" data-subcategory-rank="9007199254740991" data-review-count="35" data-rank-change="34" data-pod-score="95">
-        <a href="https://www.amazon.com/Personalized-Grandkids-Patriotic-Fireworks-American/dp/B0D56R9CNF/ref=sr_1_13?dib=eyJ2IjoiMSJ9.GAGCvnnyv2pv6VXtwUmLcd5GaZXeHBTWdROSKyIP9SYBaHkyKFZ4jNQZ4s0Vl-pwm9hsH4UXkRHNODneD4M_zACrrDpnEjC9o550oxSNhirqGqxugPo1_2l9VPemih_Xg8KJwk70vvtSIw5X5jJn5Otm9Jr90ja0yZDtqhNu3I0zB5mqNXigVDMfODoyzUJJ6vV9W6JrX0vcmAk1l7WPMFGa6cBNuR3cQfJFTSYtI4U.5Iu0PnPc-kjaOewf1eyZ7SEM5sBItRcfErEGsPuPwak&amp;dib_tag=se&amp;m=A1CNBPST728DFG&amp;marketplaceID=ATVPDKIKX0DER&amp;nsdOptOutParam=true&amp;qid=1781858211&amp;s=merchant-items&amp;sr=1-13" target="_blank" rel="noopener"><div class="image"><img src="images/B0D56R9CNF.jpg" alt="Personalized Grandma Shirt, 4th of July Grandma Shirt, Custom Mom Shirt with Kids Names, Patriotic, Independence, 250th"></div></a>
+      <article class="card" data-card-index="1" data-opportunity-score="86" data-display-rank-change="48" data-display-rank-velocity="6.86" data-top-percentile="17.91" data-category-rank="124224" data-subcategory-rank="2467" data-review-count="1073" data-rank-change="48" data-pod-score="155">
+        <a href="https://www.amazon.com/Personalized-Grandpa-Shirt-Customized-Granddaughter/dp/B09PV4WF27/ref=sr_1_12?dib=eyJ2IjoiMSJ9.eLXnGi0GY8uMuyeLkOmsP2VL_Unpgpp0_Yu7am-fG4G444OL_BMWBbASeUNk5QSMc5kOvJSojiM9ikmaY-3DcFJ9A077EjYpvFkcUjuutFmr_SF3BXgzUkNy5HBEC5YpMV2rAkLAkrohsG7r91kjLcx1sRSsTyKDXBRwYaL5G0EiXbM-WHpZrX_GMaQtqOPFfMdhiGwnWRnDMumNYpuWhGTtci4752T8hTjwBhvYGGs.kBN6oT4vyNJoM9bCwkKr4vEhIstOD209UFrbDh2pE3Q&amp;dib_tag=se&amp;m=ADBAET893RY0A&amp;marketplaceID=ATVPDKIKX0DER&amp;nsdOptOutParam=true&amp;qid=1782103486&amp;s=merchant-items&amp;sr=1-12" target="_blank" rel="noopener"><div class="image"><img src="images/B09PV4WF27.jpg" alt="IZI POD Personalized Grandpa Dad Shirt, Custom Grandpa Grandkids Name Shirt, Birthday Christmas Fathers Day Dad Grandpa Gift"></div></a>
+        <div class="body">
+          <div class="title">IZI POD Personalized Grandpa Dad Shirt, Custom Grandpa Grandkids Name Shirt, Birthday Christmas Fathers Day Dad Grandpa Gift</div>
+          <div class="meta">
+            <div class="metric score score-breakdown" tabindex="0" title="POD: 30/30
+Momentum: 25/25
+Market: 12/20
+Competition: 4/10
+Niche: 15/15" data-tooltip="POD: 30/30
+Momentum: 25/25
+Market: 12/20
+Competition: 4/10
+Niche: 15/15"><span>Opportunity Score:</span><strong>86</strong></div>
+            <div class="metric"><span>Seller:</span><strong>BEAUTIFS</strong></div>
+            
+            <div class="category-rank category-rank--orange"><span>Amazon BSR:</span><strong>#124,224 in Clothing, Shoes &amp; Jewelry</strong></div>
+            <div class="category-rank category-rank--green"><span>Best Subcategory Rank:</span><strong>#2,467 in Women&#x27;s Novelty T-Shirts</strong></div>
+            
+            <div class="metric"><span>Reviews:</span><strong>1,073 reviews</strong><small>Rating: 4.7</small></div>
+            <div class="metric"><span>Source Rank:</span><strong>#12</strong></div>
+            <div class="metric"><span>Source Rank Change:</span><strong>48</strong></div>
+            <div class="metric"><span>Days Seen:</span><strong>2</strong></div>
+            <div class="metric"><span>POD Score:</span><strong>155</strong></div>
+            <div class="metric"><span>Niche:</span><strong>Father&#x27;s Day</strong></div>
+            <div class="metric"><span>Tags:</span><strong>Father&#x27;s Day;Custom Shirt;Birthday;Christmas;Dad;Grandpa</strong></div>
+          </div>
+        </div>
+      </article>
+      <article class="card" data-card-index="2" data-opportunity-score="86" data-display-rank-change="35" data-display-rank-velocity="11.67" data-top-percentile="23.08" data-category-rank="322381" data-subcategory-rank="286" data-review-count="35" data-rank-change="35" data-pod-score="95">
+        <a href="https://www.amazon.com/Personalized-Grandkids-Patriotic-Fireworks-American/dp/B0D56RNJGQ/ref=sr_1_12?dib=eyJ2IjoiMSJ9.GAGCvnnyv2pv6VXtwUmLcd5GaZXeHBTWdROSKyIP9SbyTVdc7KnIkI2hzMv4cbEA0Z_LhF-ZXvweAbmrRaCO9xE0ZGAOZaqTTTESw9c441PqGqxugPo1_2l9VPemih_Xg8KJwk70vvtSIw5X5jJn5IkdUjS1QWG2bhkU_Zh0C5d5sXjxKegOzmk3YhKnANNWbI9OeRazPIkGCA47jVvJUZ8-35hY9BCOiL1OXaP23ZM.IMzPRqLh8BAOg_kSCaSDBl0GFeiSIgilE7P7Ii6pEmQ&amp;dib_tag=se&amp;m=A1CNBPST728DFG&amp;marketplaceID=ATVPDKIKX0DER&amp;nsdOptOutParam=true&amp;qid=1782103604&amp;s=merchant-items&amp;sr=1-12" target="_blank" rel="noopener"><div class="image"><img src="images/B0D56RNJGQ.jpg" alt="Personalized Grandma Shirt, 4th of July Grandma Shirt, Custom Mom Shirt with Kids Names, Patriotic, Independence, 250th"></div></a>
         <div class="body">
           <div class="title">Personalized Grandma Shirt, 4th of July Grandma Shirt, Custom Mom Shirt with Kids Names, Patriotic, Independence, 250th</div>
           <div class="meta">
             <div class="metric score score-breakdown" tabindex="0" title="POD: 28/30
 Momentum: 25/25
-Market: 0/20
+Market: 13/20
 Competition: 5/10
 Niche: 15/15" data-tooltip="POD: 28/30
 Momentum: 25/25
-Market: 0/20
+Market: 13/20
 Competition: 5/10
-Niche: 15/15"><span>Opportunity Score:</span><strong>73</strong></div>
+Niche: 15/15"><span>Opportunity Score:</span><strong>86</strong></div>
             <div class="metric"><span>Seller:</span><strong>FLYTOSKY</strong></div>
             
-            
-            
+            <div class="category-rank category-rank--gray"><span>Amazon BSR:</span><strong>#322,381 in Clothing, Shoes &amp; Jewelry</strong></div>
+            <div class="category-rank category-rank--green"><span>Best Subcategory Rank:</span><strong>#286 in Women&#x27;s Novelty Hoodies</strong></div>
             
             <div class="metric"><span>Reviews:</span><strong>35 reviews</strong><small>Rating: 4.2</small></div>
-            <div class="metric"><span>Source Rank:</span><strong>#13</strong></div>
-            <div class="metric"><span>Source Rank Change:</span><strong>34</strong></div>
-            <div class="metric"><span>Days Seen:</span><strong>2</strong></div>
+            <div class="metric"><span>Source Rank:</span><strong>#12</strong></div>
+            <div class="metric"><span>Source Rank Change:</span><strong>35</strong></div>
+            <div class="metric"><span>Days Seen:</span><strong>3</strong></div>
             <div class="metric"><span>POD Score:</span><strong>95</strong></div>
             <div class="metric"><span>Niche:</span><strong>4th of July</strong></div>
             <div class="metric"><span>Tags:</span><strong>4th of July;Custom Shirt;Grandma;Kids;Mom</strong></div>
           </div>
         </div>
       </article>
-      <article class="card" data-card-index="2" data-opportunity-score="71" data-display-rank-change="10" data-display-rank-velocity="10.0" data-top-percentile="64.52" data-category-rank="9007199254740991" data-subcategory-rank="9007199254740991" data-review-count="149" data-rank-change="10" data-pod-score="85">
-        <a href="https://www.amazon.com/Dad-Birthday-Gift-Ceramic-Coffee/dp/B0GLG2M8RR/ref=zg_bs_g_367142011_d_sccl_20/146-8683918-9644121?psc=1" target="_blank" rel="noopener"><div class="image"><img src="images/B0GLG2M8RR.jpg" alt="Dad Birthday Gift Ceramic Coffee Mug - The Man The Myth The Legend Double Sided Engraved Ceramic Cup for Dad Fathers Day Birt"></div></a>
+      <article class="card" data-card-index="3" data-opportunity-score="86" data-display-rank-change="27" data-display-rank-velocity="3.86" data-top-percentile="17.31" data-category-rank="532183" data-subcategory-rank="150" data-review-count="28" data-rank-change="27" data-pod-score="95">
+        <a href="https://www.amazon.com/UrbanNEST-Personalized-Embroidered-Sweatshirt-Sweatshirts/dp/B0G2GKT4FG/ref=sr_1_9?dib=eyJ2IjoiMSJ9.30orbNCZZERuNnn3OSr2s_38erxl6CDaDao_k9655scjhx86kfSDCJPh8thJ0aMVS-vR4tZ5C_47JcY6aeaYYzuqgCazoUBOFFZzVN7IFjKW9nfrmr2i6mKg3My0nsOmF8fYgriCvov7RRk3m_2WP4d6XoCCZ5WYUNNNqjVbzN-9z392Ig1Xt6EAO8GBlf07L5JyVtQ_Je4hLqgoPedYFfcdI9kIrMEOIQEZFjc7fYM.II2Xf1lHjw3g2CSxO-9hvQRM5FX6xHMr3OmnPltNTH4&amp;dib_tag=se&amp;m=A2B9DZ8JGHNNVQ&amp;marketplaceID=ATVPDKIKX0DER&amp;nsdOptOutParam=true&amp;qid=1782103689&amp;s=merchant-items&amp;sr=1-9" target="_blank" rel="noopener"><div class="image"><img src="images/B0G2GKT4FG.jpg" alt="UrbanNEST Personalized Floral Embroidered Applique Grandma Sweatshirt, Custom Grandma Gifts from Grandkids, Christmas 2025"></div></a>
         <div class="body">
-          <div class="title">Dad Birthday Gift Ceramic Coffee Mug - The Man The Myth The Legend Double Sided Engraved Ceramic Cup for Dad Fathers Day Birt</div>
-          <div class="meta">
-            <div class="metric score score-breakdown" tabindex="0" title="POD: 26/30
-Momentum: 25/25
-Market: 0/20
-Competition: 5/10
-Niche: 15/15" data-tooltip="POD: 26/30
-Momentum: 25/25
-Market: 0/20
-Competition: 5/10
-Niche: 15/15"><span>Opportunity Score:</span><strong>71</strong></div>
-            <div class="metric"><span>Seller:</span><strong>Mugs Best Sellers</strong></div>
-            
-            
-            
-            
-            <div class="metric"><span>Reviews:</span><strong>149 reviews</strong><small>Rating: 4.7</small></div>
-            <div class="metric"><span>Source Rank:</span><strong>#20</strong></div>
-            <div class="metric"><span>Source Rank Change:</span><strong>10</strong></div>
-            <div class="metric"><span>Days Seen:</span><strong>2</strong></div>
-            <div class="metric"><span>POD Score:</span><strong>85</strong></div>
-            <div class="metric"><span>Niche:</span><strong>Father&#x27;s Day</strong></div>
-            <div class="metric"><span>Tags:</span><strong>Father&#x27;s Day;Coffee;Quote Mug;Birthday;Dad</strong></div>
-          </div>
-        </div>
-      </article>
-      <article class="card" data-card-index="3" data-opportunity-score="70" data-display-rank-change="37" data-display-rank-velocity="37.0" data-top-percentile="16.42" data-category-rank="9007199254740991" data-subcategory-rank="9007199254740991" data-review-count="114" data-rank-change="37" data-pod-score="130">
-        <a href="https://www.amazon.com/Personalized-Dad-Shirt-Kids-Name/dp/B0C6JVZGST/ref=sr_1_11?dib=eyJ2IjoiMSJ9.9509vufMpKmPVNm5GYCoRgmn_QzbJKgBrbG4PnI97ftvQOO4-mW1mg_PVTIS-8-6p_1t0OiT2xPG3YCR6dnPHCK5ZtCrEgC_uuoirsUu-5zwY6nGHiRzBrSSnUCk0-po1vLViO23Yr-Wq7X2l8W2qWDYawr8mJ7hd30wF4072LNNI6L0PqodLlq4L1FlY0n_qghGrNQy-wfeZitYPStUDJmQWW-S98sDyEYsuxnDqOc.k-FsxP1HVmqpBezpC-rkOONeTGAOu3vmSuQnn_-4ptc&amp;dib_tag=se&amp;m=A2A6U8L88CPMNT&amp;marketplaceID=ATVPDKIKX0DER&amp;nsdOptOutParam=true&amp;qid=1781857971&amp;s=merchant-items&amp;sr=1-11" target="_blank" rel="noopener"><div class="image"><img src="images/B0C6JVZGST.jpg" alt="NAZENTI Personalized Papa Shirt with Kids Name - Custom Hand Drawn Childs Hold Hand Dad T-Shirt"></div></a>
-        <div class="body">
-          <div class="title">NAZENTI Personalized Papa Shirt with Kids Name - Custom Hand Drawn Childs Hold Hand Dad T-Shirt</div>
-          <div class="meta">
-            <div class="metric score score-breakdown" tabindex="0" title="POD: 30/30
-Momentum: 25/25
-Market: 0/20
-Competition: 5/10
-Niche: 10/15" data-tooltip="POD: 30/30
-Momentum: 25/25
-Market: 0/20
-Competition: 5/10
-Niche: 10/15"><span>Opportunity Score:</span><strong>70</strong></div>
-            <div class="metric"><span>Seller:</span><strong>Giant Big Hands</strong></div>
-            
-            
-            
-            
-            <div class="metric"><span>Reviews:</span><strong>114 reviews</strong><small>Rating: 4.6</small></div>
-            <div class="metric"><span>Source Rank:</span><strong>#11</strong></div>
-            <div class="metric"><span>Source Rank Change:</span><strong>37</strong></div>
-            <div class="metric"><span>Days Seen:</span><strong>3</strong></div>
-            <div class="metric"><span>POD Score:</span><strong>130</strong></div>
-            <div class="metric"><span>Niche:</span><strong>Custom Shirt</strong></div>
-            <div class="metric"><span>Tags:</span><strong>Custom Shirt;Dad;Kids</strong></div>
-          </div>
-        </div>
-      </article>
-      <article class="card" data-card-index="4" data-opportunity-score="68" data-display-rank-change="33" data-display-rank-velocity="8.25" data-top-percentile="25.49" data-category-rank="9007199254740991" data-subcategory-rank="9007199254740991" data-review-count="0" data-rank-change="33" data-pod-score="95">
-        <a href="https://www.amazon.com/UrbanNEST-Personalized-Embroidered-Sweatshirt-Appreciation/dp/B0GQGQTD8Y/ref=sr_1_13?dib=eyJ2IjoiMSJ9.30orbNCZZERuNnn3OSr2s_38erxl6CDaDao_k9655scjhx86kfSDCJPh8thJ0aMVT0Sf-BrpPDqjhNHtbFjtCTuqgCazoUBOFFZzVN7IFjIaKJswIbkzIfC9hASjsH-OWxB1pBZmJUGU4zlpkMXs9AXQ64dNRtRhfzFEdfVF3zCzeTt6D5E-MFTnXqVAingDzfxF_wbEoPsZsIeY_ez5eQUzERuK7eqO5k2_KVEAdx8.dQHyMsOy8fDb5QGeMKWdKhNXulW-NfYA5uaWIroBCA8&amp;dib_tag=se&amp;m=A2B9DZ8JGHNNVQ&amp;marketplaceID=ATVPDKIKX0DER&amp;nsdOptOutParam=true&amp;qid=1781858308&amp;s=merchant-items&amp;sr=1-13" target="_blank" rel="noopener"><div class="image"><img src="images/B0GQGQTD8Y.jpg" alt="UrbanNEST Personalized Embroidered EMT Quarter Zip Sweatshirt, Custom Emergency Medical Technician Shirt Hoodie for Women, EMS Graduation Gifts Idea, First Responder Appreciation Gift for EMT"></div></a>
-        <div class="body">
-          <div class="title">UrbanNEST Personalized Embroidered EMT Quarter Zip Sweatshirt, Custom Emergency Medical Technician Shirt Hoodie for Women, EMS Graduation Gifts Idea, First Responder Appreciation Gift for EMT</div>
+          <div class="title">UrbanNEST Personalized Floral Embroidered Applique Grandma Sweatshirt, Custom Grandma Gifts from Grandkids, Christmas 2025</div>
           <div class="meta">
             <div class="metric score score-breakdown" tabindex="0" title="POD: 28/30
 Momentum: 25/25
-Market: 0/20
-Competition: 0/10
+Market: 12/20
+Competition: 6/10
 Niche: 15/15" data-tooltip="POD: 28/30
 Momentum: 25/25
-Market: 0/20
-Competition: 0/10
-Niche: 15/15"><span>Opportunity Score:</span><strong>68</strong></div>
+Market: 12/20
+Competition: 6/10
+Niche: 15/15"><span>Opportunity Score:</span><strong>86</strong></div>
             <div class="metric"><span>Seller:</span><strong>HUCAO</strong></div>
             
+            <div class="category-rank category-rank--gray"><span>Amazon BSR:</span><strong>#532,183 in Clothing, Shoes &amp; Jewelry</strong></div>
+            <div class="category-rank category-rank--green"><span>Best Subcategory Rank:</span><strong>#150 in Women&#x27;s Novelty Sweatshirts</strong></div>
             
-            
-            
-            <div class="metric"><span>Reviews:</span><strong></strong><small>Rating: </small></div>
-            <div class="metric"><span>Source Rank:</span><strong>#13</strong></div>
-            <div class="metric"><span>Source Rank Change:</span><strong>33</strong></div>
+            <div class="metric"><span>Reviews:</span><strong>28 reviews</strong><small>Rating: 4.3</small></div>
+            <div class="metric"><span>Source Rank:</span><strong>#9</strong></div>
+            <div class="metric"><span>Source Rank Change:</span><strong>27</strong></div>
             <div class="metric"><span>Days Seen:</span><strong>2</strong></div>
             <div class="metric"><span>POD Score:</span><strong>95</strong></div>
             <div class="metric"><span>Niche:</span><strong>Custom Shirt</strong></div>
-            <div class="metric"><span>Tags:</span><strong>Custom Shirt;Graduation</strong></div>
+            <div class="metric"><span>Tags:</span><strong>Custom Shirt;Christmas;Grandma</strong></div>
           </div>
         </div>
       </article>
-      <article class="card" data-card-index="5" data-opportunity-score="61" data-display-rank-change="-36" data-display-rank-velocity="-36.0" data-top-percentile="71.64" data-category-rank="41727" data-subcategory-rank="484" data-review-count="0" data-rank-change="-36" data-pod-score="115">
-        <a href="https://www.amazon.com/Personalized-Dad-Shirt-Kids-Name/dp/B0C6JX3YJX/ref=is_sr_dp_2?dib=eyJ2IjoiMSJ9.9509vufMpKmPVNm5GYCoRgmn_QzbJKgBrbG4PnI97ftvQOO4-mW1mg_PVTIS-8-6p_1t0OiT2xPG3YCR6dnPHCK5ZtCrEgC_uuoirsUu-5zwY6nGHiRzBrSSnUCk0-po1vLViO23Yr-Wq7X2l8W2qWDYawr8mJ7hd30wF4072LNNI6L0PqodLlq4L1FlY0n_qghGrNQy-wfeZitYPStUDJmQWW-S98sDyEYsuxnDqOc.k-FsxP1HVmqpBezpC-rkOONeTGAOu3vmSuQnn_-4ptc&amp;dib_tag=se&amp;m=A2A6U8L88CPMNT&amp;marketplaceID=ATVPDKIKX0DER&amp;nsdOptOutParam=true&amp;qid=1781857971&amp;s=merchant-items&amp;sr=1-11" target="_blank" rel="noopener"><div class="image"><img src="images/B0C6JX3YJX.jpg" alt="NAZENTI Personalized Papa Shirt with Kids Name - Custom Hand Drawn Childs Hold Hand Dad T-Shirt"></div></a>
+      <article class="card" data-card-index="4" data-opportunity-score="85" data-display-rank-change="42" data-display-rank-velocity="8.4" data-top-percentile="29.41" data-category-rank="153425" data-subcategory-rank="229" data-review-count="0" data-rank-change="42" data-pod-score="110">
+        <a href="https://www.amazon.com/Famitrendz-Personalized-American-Anniversary-Patriotic/dp/B0H32HD5M9/ref=sr_1_15?dib=eyJ2IjoiMSJ9.9DOLCx3MCaO5EUK8udghfO9U6eMuhDug4oVt7heAD0hRt2TZr4zoIBtliNAhR6x4SN6pVPJH3S9uW73mLCx3imCF0bNowYWWZX-KhlSeSuewGpsCuR2nNs9OZZkluKLJZg6Pnt8DORbWppx4Jq5U1HMCgFc2xwKlQ7GuVQkyQdt32KKHWrUMNejxeQVhyd5CFqpBOandAUgU0qwCb3vRIse30-CAwHeq5ZAlgYcHLXg.H2g4vvFDYiWKKqBDO0jq_FEx6cbHMqbi_OigSDk8V4w&amp;dib_tag=se&amp;m=A3N5XVP1M3R7X7&amp;marketplaceID=ATVPDKIKX0DER&amp;nsdOptOutParam=true&amp;qid=1782103736&amp;s=merchant-items&amp;sr=1-15" target="_blank" rel="noopener"><div class="image"><img src="images/B0H32HD5M9.jpg" alt="Personalized Dad Grandpa Shirt Gift for Fathers Day, Custom Face Hawaiian Shirt Gift for Dad Husband Papa Grandpa"></div></a>
         <div class="body">
-          <div class="title">NAZENTI Personalized Papa Shirt with Kids Name - Custom Hand Drawn Childs Hold Hand Dad T-Shirt</div>
+          <div class="title">Personalized Dad Grandpa Shirt Gift for Fathers Day, Custom Face Hawaiian Shirt Gift for Dad Husband Papa Grandpa</div>
           <div class="meta">
             <div class="metric score score-breakdown" tabindex="0" title="POD: 30/30
-Momentum: 5/25
-Market: 16/20
+Momentum: 25/25
+Market: 15/20
 Competition: 0/10
-Niche: 10/15" data-tooltip="POD: 30/30
-Momentum: 5/25
-Market: 16/20
+Niche: 15/15" data-tooltip="POD: 30/30
+Momentum: 25/25
+Market: 15/20
 Competition: 0/10
-Niche: 10/15"><span>Opportunity Score:</span><strong>61</strong></div>
-            <div class="metric"><span>Seller:</span><strong>Giant Big Hands</strong></div>
+Niche: 15/15"><span>Opportunity Score:</span><strong>85</strong></div>
+            <div class="metric"><span>Seller:</span><strong>NTBN Trading LLC</strong></div>
             
-            <div class="category-rank category-rank--blue"><span>Amazon BSR:</span><strong>#41,727 in Clothing, Shoes &amp; Jewelry</strong></div>
-            <div class="category-rank category-rank--green"><span>Best Subcategory Rank:</span><strong>#484 in Men&#x27;s Novelty T-Shirts</strong></div>
+            <div class="category-rank category-rank--orange"><span>Amazon BSR:</span><strong>#153,425 in Clothing, Shoes &amp; Jewelry</strong></div>
+            <div class="category-rank category-rank--green"><span>Best Subcategory Rank:</span><strong>#229 in Men&#x27;s Novelty Button-Down Shirts</strong></div>
             
             <div class="metric"><span>Reviews:</span><strong></strong><small>Rating: </small></div>
-            <div class="metric"><span>Source Rank:</span><strong>#48</strong></div>
-            <div class="metric"><span>Source Rank Change:</span><strong>-36</strong></div>
-            <div class="metric"><span>Days Seen:</span><strong>3</strong></div>
-            <div class="metric"><span>POD Score:</span><strong>115</strong></div>
-            <div class="metric"><span>Niche:</span><strong>Custom Shirt</strong></div>
-            <div class="metric"><span>Tags:</span><strong>Custom Shirt;Dad;Kids</strong></div>
+            <div class="metric"><span>Source Rank:</span><strong>#15</strong></div>
+            <div class="metric"><span>Source Rank Change:</span><strong>42</strong></div>
+            <div class="metric"><span>Days Seen:</span><strong>2</strong></div>
+            <div class="metric"><span>POD Score:</span><strong>110</strong></div>
+            <div class="metric"><span>Niche:</span><strong>Father&#x27;s Day</strong></div>
+            <div class="metric"><span>Tags:</span><strong>Father&#x27;s Day;Custom Shirt;Dad;Grandpa;Husband</strong></div>
           </div>
         </div>
       </article>
-      <article class="card" data-card-index="6" data-opportunity-score="57" data-display-rank-change="11" data-display-rank-velocity="11.0" data-top-percentile="17.86" data-category-rank="9007199254740991" data-subcategory-rank="9007199254740991" data-review-count="0" data-rank-change="11" data-pod-score="75">
-        <a href="https://www.amazon.com/Personalized-Christian-Inspirational-Faith-Based-Daughter/dp/B0GSFNS3HH/ref=sr_1_5?dib=eyJ2IjoiMSJ9.1v1bZ7mBk-suUoovUehFEUemVGVMOEDCERRHmD7KcMuCdSaLOAq_tYWh-xoTv35XYeZKu8c_Mipe2WUbIRPaEot-1zhO3UCuTFHx70pJbbrLYaU4_L5w0OuqzKJ7YPCTPN6OXxqYBmIlhWR_nsJf_yKFK5jja0eN5Mug0aRv3tnuCTFlgNKYd0kyvqx9Z-SUW66uZgZUSjvLmJACRx82sBHC5kGB33Zflh3x__QiIwM.IVDTI5AfLrTBPM7wE95wkZhB3WjheiWFrHdCyYOHK1E&amp;dib_tag=se&amp;m=A3IJKC1NDEWYPR&amp;marketplaceID=ATVPDKIKX0DER&amp;nsdOptOutParam=true&amp;qid=1781858371&amp;s=merchant-items&amp;sr=1-5" target="_blank" rel="noopener"><div class="image"><img src="images/B0GSFNS3HH.jpg" alt="Personalized Christian Pillow for Girls with Name &amp; Birth Flower, God Says I Am Bible Verse Throw Pillow, Inspirational Faith-Based Bedroom Decor, Christian Gift for Daughter, Kids (Insert Included)"></div></a>
+      <article class="card" data-card-index="5" data-opportunity-score="81" data-display-rank-change="13" data-display-rank-velocity="4.33" data-top-percentile="5.26" data-category-rank="9535" data-subcategory-rank="32" data-review-count="19" data-rank-change="13" data-pod-score="75">
+        <a href="https://www.amazon.com/Wrappiness-Golf-Father-Brown-Leather/dp/B0F32JVJ1M/ref=sr_1_3?dib=eyJ2IjoiMSJ9.jsI4S8IlE1epletwsef3n_xiQndXskLf4bq_hU1Qi5vt88WwS82i-JW85T9unSymKXPuE0ixpEhFiiEMZE6FCou__uUFCOvKz2dQDZGClpjN2aElD96okae8qNRQSDI38zzyIxBnqdH_1zESzmC3qbDjSaYimhhf1x2LiryFcw4uT5XUX1anu8FWdAN5Gtsc_6lk5iqzoHtNPkefC40_yu-pC6Ki20q6klxjDkENvXg.wG0s8y-k89sdAdYnS3ORzmKQBJBvhdCgRt1Ga08hQhU&amp;dib_tag=se&amp;m=A1PCU8P64JFCQ2&amp;marketplaceID=ATVPDKIKX0DER&amp;nsdOptOutParam=true&amp;qid=1782103724&amp;s=merchant-items&amp;sr=1-3" target="_blank" rel="noopener"><div class="image"><img src="images/B0F32JVJ1M.jpg" alt="Wrappiness The Golf Father Golf Ball Bag - Golfer Accessories for Men Premium Leather Holder with Clip - Custom Golf Tee Pouch Unique Gift for Dad"></div></a>
         <div class="body">
-          <div class="title">Personalized Christian Pillow for Girls with Name &amp; Birth Flower, God Says I Am Bible Verse Throw Pillow, Inspirational Faith-Based Bedroom Decor, Christian Gift for Daughter, Kids (Insert Included)</div>
+          <div class="title">Wrappiness The Golf Father Golf Ball Bag - Golfer Accessories for Men Premium Leather Holder with Clip - Custom Golf Tee Pouch Unique Gift for Dad</div>
           <div class="meta">
             <div class="metric score score-breakdown" tabindex="0" title="POD: 22/30
 Momentum: 25/25
-Market: 0/20
-Competition: 0/10
+Market: 18/20
+Competition: 6/10
 Niche: 10/15" data-tooltip="POD: 22/30
 Momentum: 25/25
-Market: 0/20
-Competition: 0/10
-Niche: 10/15"><span>Opportunity Score:</span><strong>57</strong></div>
-            <div class="metric"><span>Seller:</span><strong>MA Commerce (MC)</strong></div>
+Market: 18/20
+Competition: 6/10
+Niche: 10/15"><span>Opportunity Score:</span><strong>81</strong></div>
+            <div class="metric"><span>Seller:</span><strong>Wrappiness</strong></div>
             
+            <div class="category-rank category-rank--green"><span>Amazon BSR:</span><strong>#9,535 in Sports &amp; Outdoors</strong></div>
+            <div class="category-rank category-rank--green"><span>Best Subcategory Rank:</span><strong>#32 in Golf Club Bag Accessories</strong></div>
             
-            
-            
-            <div class="metric"><span>Reviews:</span><strong></strong><small>Rating: </small></div>
-            <div class="metric"><span>Source Rank:</span><strong>#5</strong></div>
-            <div class="metric"><span>Source Rank Change:</span><strong>11</strong></div>
-            <div class="metric"><span>Days Seen:</span><strong>3</strong></div>
-            <div class="metric"><span>POD Score:</span><strong>75</strong></div>
-            <div class="metric"><span>Niche:</span><strong>Bible</strong></div>
-            <div class="metric"><span>Tags:</span><strong>Bible;Faith;Christian;Daughter;Kids</strong></div>
-          </div>
-        </div>
-      </article>
-      <article class="card" data-card-index="7" data-opportunity-score="55" data-display-rank-change="10" data-display-rank-velocity="5.0" data-top-percentile="84.72" data-category-rank="9007199254740991" data-subcategory-rank="9007199254740991" data-review-count="0" data-rank-change="10" data-pod-score="80">
-        <a href="https://www.amazon.com/NAZENTI-Custom-Personalized-Fathers-Daughter/dp/B0FBGS1KG2/ref=is_sr_dp_6?dib=eyJ2IjoiMSJ9.eLXnGi0GY8uMuyeLkOmsPxjOs7DylbTBR9HPFMDk4gTcnQ2u0dgY-dEQnwVhAZFHHqlfIRJ4RyxyKE0vA1zVEVJ9A077EjYpvFkcUjuutFkhXFmS0_n0xBqfAzORlibZRTcooQb00chrb6M3le-cmB000dZFxIHScdLaBOQdY06WEphcxwTNClQM7nF_SmfYqngGzDr7pbY7-ol2UEEAlITcarywWgOoLUamUYKuyZM.nkcQy9w95YGIVfCvCMxxF-ua0sKjlhB8HuTFxe52LFQ&amp;dib_tag=se&amp;m=ADBAET893RY0A&amp;marketplaceID=ATVPDKIKX0DER&amp;nsdOptOutParam=true&amp;qid=1781858079&amp;s=merchant-items&amp;sr=1-13" target="_blank" rel="noopener"><div class="image"></div></a>
-        <div class="body">
-          <div class="title">Title unavailable - open product</div>
-          <div class="meta">
-            <div class="metric score score-breakdown" tabindex="0" title="POD: 24/30
-Momentum: 21/25
-Market: 0/20
-Competition: 0/10
-Niche: 10/15" data-tooltip="POD: 24/30
-Momentum: 21/25
-Market: 0/20
-Competition: 0/10
-Niche: 10/15"><span>Opportunity Score:</span><strong>55</strong></div>
-            <div class="metric"><span>Seller:</span><strong>BEAUTIFS</strong></div>
-            
-            
-            
-            
-            <div class="metric"><span>Reviews:</span><strong></strong><small>Rating: </small></div>
-            <div class="metric"><span>Source Rank:</span><strong>#61</strong></div>
-            <div class="metric"><span>Source Rank Change:</span><strong>10</strong></div>
-            <div class="metric"><span>Days Seen:</span><strong>3</strong></div>
-            <div class="metric"><span>POD Score:</span><strong>80</strong></div>
-            <div class="metric"><span>Niche:</span><strong>Custom Shirt</strong></div>
-            <div class="metric"><span>Tags:</span><strong>Custom Shirt;Grandpa</strong></div>
-          </div>
-        </div>
-      </article>
-      <article class="card" data-card-index="8" data-opportunity-score="54" data-display-rank-change="13" data-display-rank-velocity="13.0" data-top-percentile="41.94" data-category-rank="9007199254740991" data-subcategory-rank="9007199254740991" data-review-count="656" data-rank-change="13" data-pod-score="35">
-        <a href="https://www.amazon.com/Worlds-Greatest-Farter-Funny-Fathers/dp/B08Y639YGX/ref=zg_bs_g_367142011_d_sccl_13/146-8683918-9644121?psc=1" target="_blank" rel="noopener"><div class="image"><img src="images/B08Y639YGX.jpg" alt="Funny Fathers Day Coffee Mug | Best Farter Ever Coffee Cup - Funny Fathers Day Mugs from Son Daughter Kids | Cool Christmas P"></div></a>
-        <div class="body">
-          <div class="title">Funny Fathers Day Coffee Mug | Best Farter Ever Coffee Cup - Funny Fathers Day Mugs from Son Daughter Kids | Cool Christmas P</div>
-          <div class="meta">
-            <div class="metric score score-breakdown" tabindex="0" title="POD: 10/30
-Momentum: 25/25
-Market: 0/20
-Competition: 4/10
-Niche: 15/15" data-tooltip="POD: 10/30
-Momentum: 25/25
-Market: 0/20
-Competition: 4/10
-Niche: 15/15"><span>Opportunity Score:</span><strong>54</strong></div>
-            <div class="metric"><span>Seller:</span><strong>Mugs Best Sellers</strong></div>
-            
-            
-            
-            
-            <div class="metric"><span>Reviews:</span><strong>656 reviews</strong><small>Rating: 4.7</small></div>
-            <div class="metric"><span>Source Rank:</span><strong>#13</strong></div>
+            <div class="metric"><span>Reviews:</span><strong>19 reviews</strong><small>Rating: 4.7</small></div>
+            <div class="metric"><span>Source Rank:</span><strong>#3</strong></div>
             <div class="metric"><span>Source Rank Change:</span><strong>13</strong></div>
             <div class="metric"><span>Days Seen:</span><strong>2</strong></div>
-            <div class="metric"><span>POD Score:</span><strong>35</strong></div>
-            <div class="metric"><span>Niche:</span><strong>Father&#x27;s Day</strong></div>
-            <div class="metric"><span>Tags:</span><strong>Father&#x27;s Day;Coffee;Quote Mug;Christmas;Daughter;Kids;Son</strong></div>
+            <div class="metric"><span>POD Score:</span><strong>75</strong></div>
+            <div class="metric"><span>Niche:</span><strong>Golf</strong></div>
+            <div class="metric"><span>Tags:</span><strong>Golf;Dad;Custom Shirt</strong></div>
           </div>
         </div>
       </article>
-      <article class="card" data-card-index="9" data-opportunity-score="54" data-display-rank-change="11" data-display-rank-velocity="11.0" data-top-percentile="58.06" data-category-rank="9007199254740991" data-subcategory-rank="9007199254740991" data-review-count="66" data-rank-change="11" data-pod-score="25">
-        <a href="https://www.amazon.com/Aurahouse-Officially-Pregnancy-Announcement-Expecting/dp/B0DYNWLBZ6/ref=zg_bs_g_9302388011_d_sccl_18/146-8683918-9644121?psc=1" target="_blank" rel="noopener"><div class="image"><img src="images/B0DYNWLBZ6.jpg" alt="Aurahouse First Fathers Day New Dad Gifts First Time, Officially Dad Jokes Mug, Pregnancy Announcement for Husband Funny, Gif"></div></a>
+      <article class="card" data-card-index="6" data-opportunity-score="77" data-display-rank-change="26" data-display-rank-velocity="6.5" data-top-percentile="29.63" data-category-rank="982237" data-subcategory-rank="2513" data-review-count="2" data-rank-change="26" data-pod-score="75">
+        <a href="https://www.amazon.com/NAZENTI-Anniversary-Personalized-Embroidered-Bicentennial/dp/B0GSVZG6RM/ref=sr_1_16?dib=eyJ2IjoiMSJ9.2GhYbl_BvZ_9yUnegPjDbNR9wulhqN7eeS15LYWx6kexkTzzLovSEnqGC4WyOpFnNWYk_I6bZsXFo41nqRswOmziYAGoO8uBy7-lYctRfXcJML1bsfpk8F_lWoDUrOlVVBBr1hKoq7ZLTolbUxS3wj0WuQyqx2uVf-IgaTKSGNECrdqVGdFyeqSBAwURnM6tmBVQQoWTzvAVEy_V_AJbWAjwGiMmiNavUpP-ytOTl3I.ylF6DW_ey-jWr0dVD6BOMI1aHZZIl3wijtch5W7qqL0&amp;dib_tag=se&amp;m=A1OCNDPMK0L29K&amp;marketplaceID=ATVPDKIKX0DER&amp;nsdOptOutParam=true&amp;qid=1782103504&amp;s=merchant-items&amp;sr=1-16" target="_blank" rel="noopener"><div class="image"><img src="images/B0GSVZG6RM.jpg" alt="NAZENTI 250 Anniversary USA Cap, Personalized Patriotic Embroidered Baseball Cap with Name, Gift for Men &amp; Women"></div></a>
         <div class="body">
-          <div class="title">Aurahouse First Fathers Day New Dad Gifts First Time, Officially Dad Jokes Mug, Pregnancy Announcement for Husband Funny, Gif</div>
+          <div class="title">NAZENTI 250 Anniversary USA Cap, Personalized Patriotic Embroidered Baseball Cap with Name, Gift for Men &amp; Women</div>
           <div class="meta">
-            <div class="metric score score-breakdown" tabindex="0" title="POD: 8/30
+            <div class="metric score score-breakdown" tabindex="0" title="POD: 22/30
+Momentum: 25/25
+Market: 10/20
+Competition: 5/10
+Niche: 15/15" data-tooltip="POD: 22/30
+Momentum: 25/25
+Market: 10/20
+Competition: 5/10
+Niche: 15/15"><span>Opportunity Score:</span><strong>77</strong></div>
+            <div class="metric"><span>Seller:</span><strong>Dily Pod</strong></div>
+            
+            <div class="category-rank category-rank--gray"><span>Amazon BSR:</span><strong>#982,237 in Clothing, Shoes &amp; Jewelry</strong></div>
+            <div class="category-rank category-rank--green"><span>Best Subcategory Rank:</span><strong>#2,513 in Women&#x27;s Novelty Baseball Caps</strong></div>
+            
+            <div class="metric"><span>Reviews:</span><strong>2 reviews</strong><small>Rating: 4.0</small></div>
+            <div class="metric"><span>Source Rank:</span><strong>#16</strong></div>
+            <div class="metric"><span>Source Rank Change:</span><strong>26</strong></div>
+            <div class="metric"><span>Days Seen:</span><strong>2</strong></div>
+            <div class="metric"><span>POD Score:</span><strong>75</strong></div>
+            <div class="metric"><span>Niche:</span><strong>Baseball</strong></div>
+            <div class="metric"><span>Tags:</span><strong>Baseball;4th of July;Anniversary</strong></div>
+          </div>
+        </div>
+      </article>
+      <article class="card" data-card-index="7" data-opportunity-score="75" data-display-rank-change="28" data-display-rank-velocity="7.0" data-top-percentile="30.77" data-category-rank="598890" data-subcategory-rank="652" data-review-count="1" data-rank-change="28" data-pod-score="60">
+        <a href="https://www.amazon.com/Personalized-Sweatshirt-Grandpa-Sweater-Husband/dp/B0GSTZFD1R/ref=sr_1_16?dib=eyJ2IjoiMSJ9.30orbNCZZERuNnn3OSr2s_38erxl6CDaDao_k9655scjhx86kfSDCJPh8thJ0aMVS-vR4tZ5C_47JcY6aeaYYzuqgCazoUBOFFZzVN7IFjKW9nfrmr2i6mKg3My0nsOmF8fYgriCvov7RRk3m_2WP4d6XoCCZ5WYUNNNqjVbzN-9z392Ig1Xt6EAO8GBlf07L5JyVtQ_Je4hLqgoPedYFfcdI9kIrMEOIQEZFjc7fYM.II2Xf1lHjw3g2CSxO-9hvQRM5FX6xHMr3OmnPltNTH4&amp;dib_tag=se&amp;m=A2B9DZ8JGHNNVQ&amp;marketplaceID=ATVPDKIKX0DER&amp;nsdOptOutParam=true&amp;qid=1782103689&amp;s=merchant-items&amp;sr=1-16" target="_blank" rel="noopener"><div class="image"><img src="images/B0GSTZFD1R.jpg" alt="Personalized Dad Zip Hoodie with Kid Names on Sleeve, Dad Sweatshirt, Dad Gifts, Grandpa Shirt, Father&#x27;s Day 2026"></div></a>
+        <div class="body">
+          <div class="title">Personalized Dad Zip Hoodie with Kid Names on Sleeve, Dad Sweatshirt, Dad Gifts, Grandpa Shirt, Father&#x27;s Day 2026</div>
+          <div class="meta">
+            <div class="metric score score-breakdown" tabindex="0" title="POD: 18/30
+Momentum: 25/25
+Market: 11/20
+Competition: 6/10
+Niche: 15/15" data-tooltip="POD: 18/30
+Momentum: 25/25
+Market: 11/20
+Competition: 6/10
+Niche: 15/15"><span>Opportunity Score:</span><strong>75</strong></div>
+            <div class="metric"><span>Seller:</span><strong>HUCAO</strong></div>
+            
+            <div class="category-rank category-rank--gray"><span>Amazon BSR:</span><strong>#598,890 in Clothing, Shoes &amp; Jewelry</strong></div>
+            <div class="category-rank category-rank--green"><span>Best Subcategory Rank:</span><strong>#652 in Women&#x27;s Novelty Hoodies</strong></div>
+            
+            <div class="metric"><span>Reviews:</span><strong>1 reviews</strong><small>Rating: 5.0</small></div>
+            <div class="metric"><span>Source Rank:</span><strong>#16</strong></div>
+            <div class="metric"><span>Source Rank Change:</span><strong>28</strong></div>
+            <div class="metric"><span>Days Seen:</span><strong>2</strong></div>
+            <div class="metric"><span>POD Score:</span><strong>60</strong></div>
+            <div class="metric"><span>Niche:</span><strong>Dad</strong></div>
+            <div class="metric"><span>Tags:</span><strong>Dad;Father&#x27;s Day;Custom Shirt;Grandpa;Kids</strong></div>
+          </div>
+        </div>
+      </article>
+      <article class="card" data-card-index="8" data-opportunity-score="74" data-display-rank-change="23" data-display-rank-velocity="2.3" data-top-percentile="11.11" data-category-rank="617245" data-subcategory-rank="18205" data-review-count="149" data-rank-change="23" data-pod-score="95">
+        <a href="https://www.amazon.com/NAZENTI-Personalized-Customized-Sweetheart-Valentines/dp/B0BS6GRL92/ref=sr_1_6?dib=eyJ2IjoiMSJ9.5ctkCUfTBtn6Sl0cMQTFwhMbmvUfAhfjuRDdkWvDR4U-fwUNoQGIP5vnYe63N5uaDrvtMBIQL0cdepH4QjuiHyBOAsQZWi4y_pholYtCzAi7KTKNQdLZuEmGtm7RHtKoyBgThepl7fSyvTwgkSohJ42wbT-qTVVuObCoD38Nk_g1SXprGfVy67GH4CELnyq282NT-Aw79XFtR8CftfZixtLpb3E-QTpdTtTRJcnz8Tg.5FNKG8kMp7eFal1wen3hNp9hHWapzyYJ1kde-kyzDgk&amp;dib_tag=se&amp;m=A28R89VR0HHNA3&amp;marketplaceID=ATVPDKIKX0DER&amp;nsdOptOutParam=true&amp;qid=1782103810&amp;s=merchant-items&amp;sr=1-6" target="_blank" rel="noopener"><div class="image"><img src="images/B0BS6GRL92.jpg" alt="NAZENTI Personalized Grandma Shirt, This Grandma Belongs to Heart with Names Shirts for Women, for Mom"></div></a>
+        <div class="body">
+          <div class="title">NAZENTI Personalized Grandma Shirt, This Grandma Belongs to Heart with Names Shirts for Women, for Mom</div>
+          <div class="meta">
+            <div class="metric score score-breakdown" tabindex="0" title="POD: 28/30
+Momentum: 25/25
+Market: 6/20
+Competition: 5/10
+Niche: 10/15" data-tooltip="POD: 28/30
+Momentum: 25/25
+Market: 6/20
+Competition: 5/10
+Niche: 10/15"><span>Opportunity Score:</span><strong>74</strong></div>
+            <div class="metric"><span>Seller:</span><strong>GoPod Shop</strong></div>
+            
+            <div class="category-rank category-rank--gray"><span>Amazon BSR:</span><strong>#617,245 in Clothing, Shoes &amp; Jewelry</strong></div>
+            <div class="category-rank category-rank--blue"><span>Best Subcategory Rank:</span><strong>#18,205 in Women&#x27;s T-Shirts</strong></div>
+            
+            <div class="metric"><span>Reviews:</span><strong>149 reviews</strong><small>Rating: 4.6</small></div>
+            <div class="metric"><span>Source Rank:</span><strong>#6</strong></div>
+            <div class="metric"><span>Source Rank Change:</span><strong>23</strong></div>
+            <div class="metric"><span>Days Seen:</span><strong>2</strong></div>
+            <div class="metric"><span>POD Score:</span><strong>95</strong></div>
+            <div class="metric"><span>Niche:</span><strong>Custom Shirt</strong></div>
+            <div class="metric"><span>Tags:</span><strong>Custom Shirt;Grandma;Mom</strong></div>
+          </div>
+        </div>
+      </article>
+      <article class="card" data-card-index="9" data-opportunity-score="61" data-display-rank-change="28" data-display-rank-velocity="2.8" data-top-percentile="2.94" data-category-rank="9007199254740991" data-subcategory-rank="9007199254740991" data-review-count="14" data-rank-change="28" data-pod-score="50">
+        <a href="https://www.amazon.com/Birthday-Gifts-Dad-Daughter-Wife/dp/B0FKMQCHB3/ref=sr_1_1?dib=eyJ2IjoiMSJ9.gBP_yaDePcefT7dU9ITUhvVA8hAgLyBajwFcVCbg9soEej33kf1YCXqH_t45NRF4w-Mbdp5Z_CEe_KO8QkdSAiy9nGj0Xbl4XXXwsyaHxxnthRcVzZp_TtzR4W_S1keYXxLGcLOT9LkjMKB46Od1VjQyE_GXvkYhuA_l3qCEq4pkjixMXioUjz5FxP9_gXdn4DbulzbQymETABrCxPP8OaNd9lBHupD8h4vH_TD76x0.FCBRhtPW2H8JBAX8JsDBilhAUvlUmMknzidTE9kRVBs&amp;dib_tag=se&amp;m=A143D6QWFZ303M&amp;marketplaceID=ATVPDKIKX0DER&amp;nsdOptOutParam=true&amp;qid=1782103514&amp;s=merchant-items&amp;sr=1-1" target="_blank" rel="noopener"><div class="image"><img src="images/B0FKMQCHB3.jpg" alt="Birthday Dad Gifts from Daughter Son Wife - Ideal Tool Dad Gifts for Father Daddy Step Bonus New Dads - Engraved 16FT Tape Measure Present for Birthday Fathers Day"></div></a>
+        <div class="body">
+          <div class="title">Birthday Dad Gifts from Daughter Son Wife - Ideal Tool Dad Gifts for Father Daddy Step Bonus New Dads - Engraved 16FT Tape Measure Present for Birthday Fathers Day</div>
+          <div class="meta">
+            <div class="metric score score-breakdown" tabindex="0" title="POD: 15/30
 Momentum: 25/25
 Market: 0/20
 Competition: 6/10
-Niche: 15/15" data-tooltip="POD: 8/30
+Niche: 15/15" data-tooltip="POD: 15/30
 Momentum: 25/25
 Market: 0/20
 Competition: 6/10
-Niche: 15/15"><span>Opportunity Score:</span><strong>54</strong></div>
-            <div class="metric"><span>Seller:</span><strong>Novelty Coffee Mugs Best Sellers</strong></div>
+Niche: 15/15"><span>Opportunity Score:</span><strong>61</strong></div>
+            <div class="metric"><span>Seller:</span><strong>Peties Store (WP)</strong></div>
             
             
             
             
-            <div class="metric"><span>Reviews:</span><strong>66 reviews</strong><small>Rating: 4.7</small></div>
-            <div class="metric"><span>Source Rank:</span><strong>#18</strong></div>
+            <div class="metric"><span>Reviews:</span><strong>14 reviews</strong><small>Rating: 5.0</small></div>
+            <div class="metric"><span>Source Rank:</span><strong>#1</strong></div>
+            <div class="metric"><span>Source Rank Change:</span><strong>28</strong></div>
+            <div class="metric"><span>Days Seen:</span><strong>2</strong></div>
+            <div class="metric"><span>POD Score:</span><strong>50</strong></div>
+            <div class="metric"><span>Niche:</span><strong>Dad</strong></div>
+            <div class="metric"><span>Tags:</span><strong>Dad;Father&#x27;s Day;Birthday;Daughter;Son;Wife</strong></div>
+          </div>
+        </div>
+      </article>
+      <article class="card" data-card-index="10" data-opportunity-score="55" data-display-rank-change="14" data-display-rank-velocity="2.0" data-top-percentile="44.12" data-category-rank="9007199254740991" data-subcategory-rank="9007199254740991" data-review-count="0" data-rank-change="14" data-pod-score="50">
+        <a href="https://www.amazon.com/Peties-com-Personalized-Leather-Journal-Anniversary/dp/B0GQ8HPQT9/ref=sr_1_15?dib=eyJ2IjoiMSJ9.gBP_yaDePcefT7dU9ITUhvVA8hAgLyBajwFcVCbg9soEej33kf1YCXqH_t45NRF4w-Mbdp5Z_CEe_KO8QkdSAiy9nGj0Xbl4XXXwsyaHxxnthRcVzZp_TtzR4W_S1keYXxLGcLOT9LkjMKB46Od1VjQyE_GXvkYhuA_l3qCEq4pkjixMXioUjz5FxP9_gXdn4DbulzbQymETABrCxPP8OaNd9lBHupD8h4vH_TD76x0.FCBRhtPW2H8JBAX8JsDBilhAUvlUmMknzidTE9kRVBs&amp;dib_tag=se&amp;m=A143D6QWFZ303M&amp;marketplaceID=ATVPDKIKX0DER&amp;nsdOptOutParam=true&amp;qid=1782103514&amp;s=merchant-items&amp;sr=1-15" target="_blank" rel="noopener"><div class="image"><img src="images/B0GQ8HPQT9.jpg" alt="Peties.com Personalized Leather Journal - Camping Lovers, RV Couple, Anniversary Travel Gift for Husband Wife, Memory Book with 8 Cover Colors - The Adventure Book Cartoon Couple Camping"></div></a>
+        <div class="body">
+          <div class="title">Peties.com Personalized Leather Journal - Camping Lovers, RV Couple, Anniversary Travel Gift for Husband Wife, Memory Book with 8 Cover Colors - The Adventure Book Cartoon Couple Camping</div>
+          <div class="meta">
+            <div class="metric score score-breakdown" tabindex="0" title="POD: 15/30
+Momentum: 25/25
+Market: 0/20
+Competition: 0/10
+Niche: 15/15" data-tooltip="POD: 15/30
+Momentum: 25/25
+Market: 0/20
+Competition: 0/10
+Niche: 15/15"><span>Opportunity Score:</span><strong>55</strong></div>
+            <div class="metric"><span>Seller:</span><strong>Peties Store (WP)</strong></div>
+            
+            
+            
+            
+            <div class="metric"><span>Reviews:</span><strong></strong><small>Rating: </small></div>
+            <div class="metric"><span>Source Rank:</span><strong>#15</strong></div>
+            <div class="metric"><span>Source Rank Change:</span><strong>14</strong></div>
+            <div class="metric"><span>Days Seen:</span><strong>2</strong></div>
+            <div class="metric"><span>POD Score:</span><strong>50</strong></div>
+            <div class="metric"><span>Niche:</span><strong>Camping</strong></div>
+            <div class="metric"><span>Tags:</span><strong>Camping;Reading;Anniversary;Couple;Husband;Wife</strong></div>
+          </div>
+        </div>
+      </article>
+      <article class="card" data-card-index="11" data-opportunity-score="51" data-display-rank-change="11" data-display-rank-velocity="2.2" data-top-percentile="92.16" data-category-rank="9007199254740991" data-subcategory-rank="9007199254740991" data-review-count="0" data-rank-change="11" data-pod-score="45">
+        <a href="https://www.amazon.com/Famitrendz-Personalized-American-Anniversary-Patriotic/dp/B0H1124TSG/ref=is_sr_dp_2?dib=eyJ2IjoiMSJ9.9DOLCx3MCaO5EUK8udghfO9U6eMuhDug4oVt7heAD0hRt2TZr4zoIBtliNAhR6x4SN6pVPJH3S9uW73mLCx3imCF0bNowYWWZX-KhlSeSuewGpsCuR2nNs9OZZkluKLJZg6Pnt8DORbWppx4Jq5U1HMCgFc2xwKlQ7GuVQkyQdt32KKHWrUMNejxeQVhyd5CFqpBOandAUgU0qwCb3vRIse30-CAwHeq5ZAlgYcHLXg.H2g4vvFDYiWKKqBDO0jq_FEx6cbHMqbi_OigSDk8V4w&amp;dib_tag=se&amp;m=A3N5XVP1M3R7X7&amp;marketplaceID=ATVPDKIKX0DER&amp;nsdOptOutParam=true&amp;qid=1782103736&amp;s=merchant-items&amp;sr=1-15" target="_blank" rel="noopener"><div class="image"></div></a>
+        <div class="body">
+          <div class="title">Best Dad Grandpa Usa</div>
+          <div class="meta">
+            <div class="metric score score-breakdown" tabindex="0" title="POD: 14/30
+Momentum: 22/25
+Market: 0/20
+Competition: 0/10
+Niche: 15/15" data-tooltip="POD: 14/30
+Momentum: 22/25
+Market: 0/20
+Competition: 0/10
+Niche: 15/15"><span>Opportunity Score:</span><strong>51</strong></div>
+            <div class="metric"><span>Seller:</span><strong>NTBN Trading LLC</strong></div>
+            
+            
+            
+            
+            <div class="metric"><span>Reviews:</span><strong></strong><small>Rating: </small></div>
+            <div class="metric"><span>Source Rank:</span><strong>#47</strong></div>
             <div class="metric"><span>Source Rank Change:</span><strong>11</strong></div>
             <div class="metric"><span>Days Seen:</span><strong>2</strong></div>
-            <div class="metric"><span>POD Score:</span><strong>25</strong></div>
-            <div class="metric"><span>Niche:</span><strong>Father&#x27;s Day</strong></div>
-            <div class="metric"><span>Tags:</span><strong>Father&#x27;s Day;Coffee;Quote Mug;Dad;Husband</strong></div>
+            <div class="metric"><span>POD Score:</span><strong>45</strong></div>
+            <div class="metric"><span>Niche:</span><strong>Custom Shirt</strong></div>
+            <div class="metric"><span>Tags:</span><strong>Custom Shirt;4th of July;Dad;Grandpa</strong></div>
           </div>
         </div>
       </article>
-      <article class="card" data-card-index="10" data-opportunity-score="51" data-display-rank-change="10" data-display-rank-velocity="5.0" data-top-percentile="81.94" data-category-rank="9007199254740991" data-subcategory-rank="9007199254740991" data-review-count="0" data-rank-change="10" data-pod-score="80">
-        <a href="https://www.amazon.com/NAZENTI-Custom-Personalized-Fathers-Daughter/dp/B0FBFFGLH5/ref=is_sr_dp_4?dib=eyJ2IjoiMSJ9.eLXnGi0GY8uMuyeLkOmsPxjOs7DylbTBR9HPFMDk4gTcnQ2u0dgY-dEQnwVhAZFHHqlfIRJ4RyxyKE0vA1zVEVJ9A077EjYpvFkcUjuutFkhXFmS0_n0xBqfAzORlibZRTcooQb00chrb6M3le-cmB000dZFxIHScdLaBOQdY06WEphcxwTNClQM7nF_SmfYqngGzDr7pbY7-ol2UEEAlITcarywWgOoLUamUYKuyZM.nkcQy9w95YGIVfCvCMxxF-ua0sKjlhB8HuTFxe52LFQ&amp;dib_tag=se&amp;m=ADBAET893RY0A&amp;marketplaceID=ATVPDKIKX0DER&amp;nsdOptOutParam=true&amp;qid=1781858079&amp;s=merchant-items&amp;sr=1-13" target="_blank" rel="noopener"><div class="image"></div></a>
+      <article class="card" data-card-index="12" data-opportunity-score="50" data-display-rank-change="-33" data-display-rank-velocity="-6.6" data-top-percentile="81.67" data-category-rank="9007199254740991" data-subcategory-rank="9007199254740991" data-review-count="0" data-rank-change="-33" data-pod-score="140">
+        <a href="https://www.amazon.com/NAZENTI-Personalized-American-Championship-Sportswea/dp/B0H55WYP9M/ref=cs_sr_dp_loc_6?dib=eyJ2IjoiMSJ9.ao0wl12br48i3pxxRbE6nogHbuWZzTO-AhZj8Qe4asRZWn6S5vTuSDH8Wo2zyknyJAlJRKHTpi3_wPJk-0uanGqR8I3iId-jheYHWmSPY62sQiuJdoFTyJKlGK8OvSl6luMKMUJu7x8l32TxoDu7kVy7aY5Rpir-NlFFuEUwHn3E17dQdvgfOc01DRsFAUPgXuN4LZt5_vTb4a46E1uJlxTjXKFPKvmrLhnKZMWoe0E.HDw-eJVAXO67PeiqR8S7eGVct6-ozJdWHhqo08MheMY&amp;dib_tag=se&amp;m=A1Q5NT9THA3OMK&amp;marketplaceID=ATVPDKIKX0DER&amp;nsdOptOutParam=true&amp;qid=1782103423&amp;s=merchant-items&amp;sr=1-11" target="_blank" rel="noopener"><div class="image"><img src="images/B0H55WYP9M.jpg" alt="Personalized USA Flag V-Neck Jersey Custom Name Number Patriotic American Shirt for Men Women"></div></a>
         <div class="body">
-          <div class="title">Title unavailable - open product</div>
+          <div class="title">Personalized USA Flag V-Neck Jersey Custom Name Number Patriotic American Shirt for Men Women</div>
           <div class="meta">
-            <div class="metric score score-breakdown" tabindex="0" title="POD: 24/30
-Momentum: 21/25
+            <div class="metric score score-breakdown" tabindex="0" title="POD: 30/30
+Momentum: 5/25
 Market: 0/20
 Competition: 0/10
-Niche: 6/15" data-tooltip="POD: 24/30
-Momentum: 21/25
+Niche: 15/15" data-tooltip="POD: 30/30
+Momentum: 5/25
 Market: 0/20
 Competition: 0/10
-Niche: 6/15"><span>Opportunity Score:</span><strong>51</strong></div>
-            <div class="metric"><span>Seller:</span><strong>BEAUTIFS</strong></div>
+Niche: 15/15"><span>Opportunity Score:</span><strong>50</strong></div>
+            <div class="metric"><span>Seller:</span><strong>FunGiftsNGoods</strong></div>
             
             
             
             
             <div class="metric"><span>Reviews:</span><strong></strong><small>Rating: </small></div>
-            <div class="metric"><span>Source Rank:</span><strong>#59</strong></div>
+            <div class="metric"><span>Source Rank:</span><strong>#49</strong></div>
+            <div class="metric"><span>Source Rank Change:</span><strong>-33</strong></div>
+            <div class="metric"><span>Days Seen:</span><strong>2</strong></div>
+            <div class="metric"><span>POD Score:</span><strong>140</strong></div>
+            <div class="metric"><span>Niche:</span><strong>Custom Shirt</strong></div>
+            <div class="metric"><span>Tags:</span><strong>Custom Shirt;4th of July</strong></div>
+          </div>
+        </div>
+      </article>
+      <article class="card" data-card-index="13" data-opportunity-score="46" data-display-rank-change="11" data-display-rank-velocity="2.2" data-top-percentile="94.12" data-category-rank="9007199254740991" data-subcategory-rank="9007199254740991" data-review-count="0" data-rank-change="11" data-pod-score="45">
+        <a href="https://www.amazon.com/Famitrendz-Personalized-American-Anniversary-Patriotic/dp/B0GZZS98FY/ref=is_sr_dp_3?dib=eyJ2IjoiMSJ9.9DOLCx3MCaO5EUK8udghfO9U6eMuhDug4oVt7heAD0hRt2TZr4zoIBtliNAhR6x4SN6pVPJH3S9uW73mLCx3imCF0bNowYWWZX-KhlSeSuewGpsCuR2nNs9OZZkluKLJZg6Pnt8DORbWppx4Jq5U1HMCgFc2xwKlQ7GuVQkyQdt32KKHWrUMNejxeQVhyd5CFqpBOandAUgU0qwCb3vRIse30-CAwHeq5ZAlgYcHLXg.H2g4vvFDYiWKKqBDO0jq_FEx6cbHMqbi_OigSDk8V4w&amp;dib_tag=se&amp;m=A3N5XVP1M3R7X7&amp;marketplaceID=ATVPDKIKX0DER&amp;nsdOptOutParam=true&amp;qid=1782103736&amp;s=merchant-items&amp;sr=1-15" target="_blank" rel="noopener"><div class="image"></div></a>
+        <div class="body">
+          <div class="title">Title unavailable - open product</div>
+          <div class="meta">
+            <div class="metric score score-breakdown" tabindex="0" title="POD: 14/30
+Momentum: 22/25
+Market: 0/20
+Competition: 0/10
+Niche: 10/15" data-tooltip="POD: 14/30
+Momentum: 22/25
+Market: 0/20
+Competition: 0/10
+Niche: 10/15"><span>Opportunity Score:</span><strong>46</strong></div>
+            <div class="metric"><span>Seller:</span><strong>NTBN Trading LLC</strong></div>
+            
+            
+            
+            
+            <div class="metric"><span>Reviews:</span><strong></strong><small>Rating: </small></div>
+            <div class="metric"><span>Source Rank:</span><strong>#48</strong></div>
+            <div class="metric"><span>Source Rank Change:</span><strong>11</strong></div>
+            <div class="metric"><span>Days Seen:</span><strong>2</strong></div>
+            <div class="metric"><span>POD Score:</span><strong>45</strong></div>
+            <div class="metric"><span>Niche:</span><strong>Custom Shirt</strong></div>
+            <div class="metric"><span>Tags:</span><strong>Custom Shirt;Dad;Grandpa</strong></div>
+          </div>
+        </div>
+      </article>
+      <article class="card" data-card-index="14" data-opportunity-score="46" data-display-rank-change="10" data-display-rank-velocity="1.0" data-top-percentile="37.21" data-category-rank="9007199254740991" data-subcategory-rank="9007199254740991" data-review-count="22" data-rank-change="10" data-pod-score="30">
+        <a href="https://www.amazon.com/Daddy-Carry-Ultrasound-Keychain-Fathers/dp/B0F5HBLRRN/ref=sr_1_16?dib=eyJ2IjoiMSJ9.UAAw9BPyviykEPjvONSuB09t19CwteSYgQEg1cXheiDfdn0PxOrhfr2TnhfZH4v0OI7KfeAHV9V8DrLqz5NzFBKkKbJmRv4oR2p1NIlb-RBaWZqxDPrUMWwNb0gKutILgZzZN270yZf0OpwjiuTdAgzQsEJDnUuSTNgAIh8XSB2K2kAPNaPxzshsdxcmc-87qjbLSl_RozojRrT3dHHuBf-QVFP78pXpoHLUiTFiUWA.UtsXuSVda4XjNHGhMKpNborTIgZ28jr1yV7sUtFveFw&amp;dib_tag=se&amp;m=A1HHNBJES4IIQK&amp;marketplaceID=ATVPDKIKX0DER&amp;nsdOptOutParam=true&amp;qid=1782103782&amp;s=merchant-items&amp;sr=1-16" target="_blank" rel="noopener"><div class="image"><img src="images/B0F5HBLRRN.jpg" alt="To Daddy Now You Can Carry Me Too From Bump, Ultrasound Keychain Gift For Dad Cant Wait To Meet You Daddy First Father&#x27;s Gift"></div></a>
+        <div class="body">
+          <div class="title">To Daddy Now You Can Carry Me Too From Bump, Ultrasound Keychain Gift For Dad Cant Wait To Meet You Daddy First Father&#x27;s Gift</div>
+          <div class="meta">
+            <div class="metric score score-breakdown" tabindex="0" title="POD: 9/30
+Momentum: 21/25
+Market: 0/20
+Competition: 6/10
+Niche: 10/15" data-tooltip="POD: 9/30
+Momentum: 21/25
+Market: 0/20
+Competition: 6/10
+Niche: 10/15"><span>Opportunity Score:</span><strong>46</strong></div>
+            <div class="metric"><span>Seller:</span><strong>LASFOUR (Warrior)</strong></div>
+            
+            
+            
+            
+            <div class="metric"><span>Reviews:</span><strong>22 reviews</strong><small>Rating: 4.4</small></div>
+            <div class="metric"><span>Source Rank:</span><strong>#16</strong></div>
             <div class="metric"><span>Source Rank Change:</span><strong>10</strong></div>
-            <div class="metric"><span>Days Seen:</span><strong>3</strong></div>
-            <div class="metric"><span>POD Score:</span><strong>80</strong></div>
-            <div class="metric"><span>Niche:</span><strong>Custom Shirt</strong></div>
-            <div class="metric"><span>Tags:</span><strong>Custom Shirt</strong></div>
+            <div class="metric"><span>Days Seen:</span><strong>2</strong></div>
+            <div class="metric"><span>POD Score:</span><strong>30</strong></div>
+            <div class="metric"><span>Niche:</span><strong>Dad</strong></div>
+            <div class="metric"><span>Tags:</span><strong>Dad</strong></div>
           </div>
         </div>
       </article>
-      <article class="card" data-card-index="11" data-opportunity-score="49" data-display-rank-change="-25" data-display-rank-velocity="-25.0" data-top-percentile="94.51" data-category-rank="1379956" data-subcategory-rank="636222" data-review-count="0" data-rank-change="-25" data-pod-score="95">
-        <a href="https://www.amazon.com/Personalized-Teacher-Shirts-Second-Grade/dp/B0B79Z5F42/ref=is_sr_dp_2?dib=eyJ2IjoiMSJ9.A2TtIexcAPhhf9lPGSPRf2YQZ57WOF8c-8BYHu5FxhPSB3Z88xh0LCoUYZTVObcWck_YqkCvIE7BPW6LMLAeYeu8er9UixNzNWifnhrxVElA1bJ10h6JQkCsvLFlyu1tYtdbocXP8U4dL23WvxX2mZX5Kh1FwdI4AWHbZFD3J-xfjuIE6UnQVkQxeC908FH6SMx6r_KslUeixapRHyw5jTolM3esSUtbGvJRZt_U5e8.52gIQ9JTTKZq36DA6i113-g42n0DrAnMCWxr_3jvywo&amp;dib_tag=se&amp;m=AJ6Y7DJI4UPZF&amp;marketplaceID=ATVPDKIKX0DER&amp;nsdOptOutParam=true&amp;qid=1781857999&amp;s=merchant-items&amp;sr=1-16" target="_blank" rel="noopener"><div class="image"><img src="images/B0B79Z5F42.jpg" alt="Personalized Teacher Shirts, Custom Teacher Shirt, Kindergarten Teacher, Preschool Teacher Shirts Teacher Gift,"></div></a>
+      <article class="card" data-card-index="15" data-opportunity-score="45" data-display-rank-change="-10" data-display-rank-velocity="-3.33" data-top-percentile="35.14" data-category-rank="9007199254740991" data-subcategory-rank="9007199254740991" data-review-count="0" data-rank-change="-10" data-pod-score="155">
+        <a href="https://www.amazon.com/Personalized-Dad-Shirt-Outline-Portrait/dp/B0F4KGKNCH/ref=sr_1_13?dib=eyJ2IjoiMSJ9.Bbms-2bxgL-jY29SHR4Brnkk6vZa3c-XWe8c2RexIdjK67JkXL2f991DC7mh5pzoVbbyLtxHkQWqKAV7U6bQP1vh5R5bafKO-__ycyoaCbYJaxrpZWVkG5hevT8D8MGvjejs1DPX1Q0n26b-tAzrdk--Y1OJK1dsS4iCDZyrSgkcQEVxtcTdGXebJ3aKb3CKhEOetIeQKJwUuZximHLbwXH8dNgximsDcKSzw57a-Qw.VqsaooEFEcE8-IQqvz6OGWDDBhSZAPdF_JbY2Ecr8cU&amp;dib_tag=se&amp;m=AJ8P8BSNENMZA&amp;marketplaceID=ATVPDKIKX0DER&amp;nsdOptOutParam=true&amp;qid=1782103549&amp;s=merchant-items&amp;sr=1-13" target="_blank" rel="noopener"><div class="image"><img src="images/B0F4KGKNCH.jpg" alt="Personalized Dad Shirt Outline, Custom Photo Portrait Outline Shirt for Him"></div></a>
         <div class="body">
-          <div class="title">Personalized Teacher Shirts, Custom Teacher Shirt, Kindergarten Teacher, Preschool Teacher Shirts Teacher Gift,</div>
+          <div class="title">Personalized Dad Shirt Outline, Custom Photo Portrait Outline Shirt for Him</div>
           <div class="meta">
-            <div class="metric score score-breakdown" tabindex="0" title="POD: 28/30
-Momentum: 5/25
-Market: 6/20
-Competition: 0/10
-Niche: 10/15" data-tooltip="POD: 28/30
-Momentum: 5/25
-Market: 6/20
-Competition: 0/10
-Niche: 10/15"><span>Opportunity Score:</span><strong>49</strong></div>
-            <div class="metric"><span>Seller:</span><strong>NicePod-LLC</strong></div>
-            
-            <div class="category-rank category-rank--gray"><span>Amazon BSR:</span><strong>#1,379,956 in Clothing, Shoes &amp; Jewelry</strong></div>
-            <div class="category-rank category-rank--gray"><span>Best Subcategory Rank:</span><strong>#636,222 in Women&#x27;s Novelty T-Shirts</strong></div>
-            
-            <div class="metric"><span>Reviews:</span><strong></strong><small>Rating: </small></div>
-            <div class="metric"><span>Source Rank:</span><strong>#86</strong></div>
-            <div class="metric"><span>Source Rank Change:</span><strong>-25</strong></div>
-            <div class="metric"><span>Days Seen:</span><strong>3</strong></div>
-            <div class="metric"><span>POD Score:</span><strong>95</strong></div>
-            <div class="metric"><span>Niche:</span><strong>Custom Shirt</strong></div>
-            <div class="metric"><span>Tags:</span><strong>Custom Shirt;Teacher</strong></div>
-          </div>
-        </div>
-      </article>
-      <article class="card" data-card-index="12" data-opportunity-score="49" data-display-rank-change="-25" data-display-rank-velocity="-25.0" data-top-percentile="95.6" data-category-rank="1379956" data-subcategory-rank="636222" data-review-count="0" data-rank-change="-25" data-pod-score="95">
-        <a href="https://www.amazon.com/Personalized-Teacher-Shirts-Second-Grade/dp/B0B6J2BSMK/ref=is_sr_dp_3?dib=eyJ2IjoiMSJ9.A2TtIexcAPhhf9lPGSPRf2YQZ57WOF8c-8BYHu5FxhPSB3Z88xh0LCoUYZTVObcWck_YqkCvIE7BPW6LMLAeYeu8er9UixNzNWifnhrxVElA1bJ10h6JQkCsvLFlyu1tYtdbocXP8U4dL23WvxX2mZX5Kh1FwdI4AWHbZFD3J-xfjuIE6UnQVkQxeC908FH6SMx6r_KslUeixapRHyw5jTolM3esSUtbGvJRZt_U5e8.52gIQ9JTTKZq36DA6i113-g42n0DrAnMCWxr_3jvywo&amp;dib_tag=se&amp;m=AJ6Y7DJI4UPZF&amp;marketplaceID=ATVPDKIKX0DER&amp;nsdOptOutParam=true&amp;qid=1781857999&amp;s=merchant-items&amp;sr=1-16" target="_blank" rel="noopener"><div class="image"><img src="images/B0B6J2BSMK.jpg" alt="Personalized Teacher Shirts, Custom Teacher Shirt, Kindergarten Teacher, Preschool Teacher Shirts Teacher Gift,"></div></a>
-        <div class="body">
-          <div class="title">Personalized Teacher Shirts, Custom Teacher Shirt, Kindergarten Teacher, Preschool Teacher Shirts Teacher Gift,</div>
-          <div class="meta">
-            <div class="metric score score-breakdown" tabindex="0" title="POD: 28/30
-Momentum: 5/25
-Market: 6/20
-Competition: 0/10
-Niche: 10/15" data-tooltip="POD: 28/30
-Momentum: 5/25
-Market: 6/20
-Competition: 0/10
-Niche: 10/15"><span>Opportunity Score:</span><strong>49</strong></div>
-            <div class="metric"><span>Seller:</span><strong>NicePod-LLC</strong></div>
-            
-            <div class="category-rank category-rank--gray"><span>Amazon BSR:</span><strong>#1,379,956 in Clothing, Shoes &amp; Jewelry</strong></div>
-            <div class="category-rank category-rank--gray"><span>Best Subcategory Rank:</span><strong>#636,222 in Women&#x27;s Novelty T-Shirts</strong></div>
-            
-            <div class="metric"><span>Reviews:</span><strong></strong><small>Rating: </small></div>
-            <div class="metric"><span>Source Rank:</span><strong>#87</strong></div>
-            <div class="metric"><span>Source Rank Change:</span><strong>-25</strong></div>
-            <div class="metric"><span>Days Seen:</span><strong>3</strong></div>
-            <div class="metric"><span>POD Score:</span><strong>95</strong></div>
-            <div class="metric"><span>Niche:</span><strong>Custom Shirt</strong></div>
-            <div class="metric"><span>Tags:</span><strong>Custom Shirt;Teacher</strong></div>
-          </div>
-        </div>
-      </article>
-      <article class="card" data-card-index="13" data-opportunity-score="49" data-display-rank-change="-25" data-display-rank-velocity="-25.0" data-top-percentile="96.7" data-category-rank="1379956" data-subcategory-rank="497529" data-review-count="0" data-rank-change="-25" data-pod-score="95">
-        <a href="https://www.amazon.com/Personalized-Teacher-Shirts-Second-Grade/dp/B0B7BK551S/ref=is_sr_dp_4?dib=eyJ2IjoiMSJ9.A2TtIexcAPhhf9lPGSPRf2YQZ57WOF8c-8BYHu5FxhPSB3Z88xh0LCoUYZTVObcWck_YqkCvIE7BPW6LMLAeYeu8er9UixNzNWifnhrxVElA1bJ10h6JQkCsvLFlyu1tYtdbocXP8U4dL23WvxX2mZX5Kh1FwdI4AWHbZFD3J-xfjuIE6UnQVkQxeC908FH6SMx6r_KslUeixapRHyw5jTolM3esSUtbGvJRZt_U5e8.52gIQ9JTTKZq36DA6i113-g42n0DrAnMCWxr_3jvywo&amp;dib_tag=se&amp;m=AJ6Y7DJI4UPZF&amp;marketplaceID=ATVPDKIKX0DER&amp;nsdOptOutParam=true&amp;qid=1781857999&amp;s=merchant-items&amp;sr=1-16" target="_blank" rel="noopener"><div class="image"><img src="images/B0B7BK551S.jpg" alt="Personalized Teacher Shirts, Custom Teacher Shirt, Kindergarten Teacher, Preschool Teacher Shirts Teacher Gift,"></div></a>
-        <div class="body">
-          <div class="title">Personalized Teacher Shirts, Custom Teacher Shirt, Kindergarten Teacher, Preschool Teacher Shirts Teacher Gift,</div>
-          <div class="meta">
-            <div class="metric score score-breakdown" tabindex="0" title="POD: 28/30
-Momentum: 5/25
-Market: 6/20
-Competition: 0/10
-Niche: 10/15" data-tooltip="POD: 28/30
-Momentum: 5/25
-Market: 6/20
-Competition: 0/10
-Niche: 10/15"><span>Opportunity Score:</span><strong>49</strong></div>
-            <div class="metric"><span>Seller:</span><strong>NicePod-LLC</strong></div>
-            
-            <div class="category-rank category-rank--gray"><span>Amazon BSR:</span><strong>#1,379,956 in Clothing, Shoes &amp; Jewelry</strong></div>
-            <div class="category-rank category-rank--gray"><span>Best Subcategory Rank:</span><strong>#497,529 in Men&#x27;s Fashion</strong></div>
-            
-            <div class="metric"><span>Reviews:</span><strong></strong><small>Rating: </small></div>
-            <div class="metric"><span>Source Rank:</span><strong>#88</strong></div>
-            <div class="metric"><span>Source Rank Change:</span><strong>-25</strong></div>
-            <div class="metric"><span>Days Seen:</span><strong>3</strong></div>
-            <div class="metric"><span>POD Score:</span><strong>95</strong></div>
-            <div class="metric"><span>Niche:</span><strong>Custom Shirt</strong></div>
-            <div class="metric"><span>Tags:</span><strong>Custom Shirt;Teacher</strong></div>
-          </div>
-        </div>
-      </article>
-      <article class="card" data-card-index="14" data-opportunity-score="49" data-display-rank-change="-25" data-display-rank-velocity="-25.0" data-top-percentile="97.8" data-category-rank="1379956" data-subcategory-rank="497529" data-review-count="0" data-rank-change="-25" data-pod-score="95">
-        <a href="https://www.amazon.com/Personalized-Teacher-Shirts-Second-Grade/dp/B0B7B9ZXDF/ref=is_sr_dp_5?dib=eyJ2IjoiMSJ9.A2TtIexcAPhhf9lPGSPRf2YQZ57WOF8c-8BYHu5FxhPSB3Z88xh0LCoUYZTVObcWck_YqkCvIE7BPW6LMLAeYeu8er9UixNzNWifnhrxVElA1bJ10h6JQkCsvLFlyu1tYtdbocXP8U4dL23WvxX2mZX5Kh1FwdI4AWHbZFD3J-xfjuIE6UnQVkQxeC908FH6SMx6r_KslUeixapRHyw5jTolM3esSUtbGvJRZt_U5e8.52gIQ9JTTKZq36DA6i113-g42n0DrAnMCWxr_3jvywo&amp;dib_tag=se&amp;m=AJ6Y7DJI4UPZF&amp;marketplaceID=ATVPDKIKX0DER&amp;nsdOptOutParam=true&amp;qid=1781857999&amp;s=merchant-items&amp;sr=1-16" target="_blank" rel="noopener"><div class="image"><img src="images/B0B7B9ZXDF.jpg" alt="Personalized Teacher Shirts, Custom Teacher Shirt, Kindergarten Teacher, Preschool Teacher Shirts Teacher Gift,"></div></a>
-        <div class="body">
-          <div class="title">Personalized Teacher Shirts, Custom Teacher Shirt, Kindergarten Teacher, Preschool Teacher Shirts Teacher Gift,</div>
-          <div class="meta">
-            <div class="metric score score-breakdown" tabindex="0" title="POD: 28/30
-Momentum: 5/25
-Market: 6/20
-Competition: 0/10
-Niche: 10/15" data-tooltip="POD: 28/30
-Momentum: 5/25
-Market: 6/20
-Competition: 0/10
-Niche: 10/15"><span>Opportunity Score:</span><strong>49</strong></div>
-            <div class="metric"><span>Seller:</span><strong>NicePod-LLC</strong></div>
-            
-            <div class="category-rank category-rank--gray"><span>Amazon BSR:</span><strong>#1,379,956 in Clothing, Shoes &amp; Jewelry</strong></div>
-            <div class="category-rank category-rank--gray"><span>Best Subcategory Rank:</span><strong>#497,529 in Men&#x27;s Fashion</strong></div>
-            
-            <div class="metric"><span>Reviews:</span><strong></strong><small>Rating: </small></div>
-            <div class="metric"><span>Source Rank:</span><strong>#89</strong></div>
-            <div class="metric"><span>Source Rank Change:</span><strong>-25</strong></div>
-            <div class="metric"><span>Days Seen:</span><strong>3</strong></div>
-            <div class="metric"><span>POD Score:</span><strong>95</strong></div>
-            <div class="metric"><span>Niche:</span><strong>Custom Shirt</strong></div>
-            <div class="metric"><span>Tags:</span><strong>Custom Shirt;Teacher</strong></div>
-          </div>
-        </div>
-      </article>
-      <article class="card" data-card-index="15" data-opportunity-score="43" data-display-rank-change="-25" data-display-rank-velocity="-25.0" data-top-percentile="98.9" data-category-rank="9007199254740991" data-subcategory-rank="9007199254740991" data-review-count="0" data-rank-change="-25" data-pod-score="95">
-        <a href="https://www.amazon.com/Personalized-Teacher-Shirts-Second-Grade/dp/B0B7S82LHL/ref=is_sr_dp_6?dib=eyJ2IjoiMSJ9.A2TtIexcAPhhf9lPGSPRf2YQZ57WOF8c-8BYHu5FxhPSB3Z88xh0LCoUYZTVObcWck_YqkCvIE7BPW6LMLAeYeu8er9UixNzNWifnhrxVElA1bJ10h6JQkCsvLFlyu1tYtdbocXP8U4dL23WvxX2mZX5Kh1FwdI4AWHbZFD3J-xfjuIE6UnQVkQxeC908FH6SMx6r_KslUeixapRHyw5jTolM3esSUtbGvJRZt_U5e8.52gIQ9JTTKZq36DA6i113-g42n0DrAnMCWxr_3jvywo&amp;dib_tag=se&amp;m=AJ6Y7DJI4UPZF&amp;marketplaceID=ATVPDKIKX0DER&amp;nsdOptOutParam=true&amp;qid=1781857999&amp;s=merchant-items&amp;sr=1-16" target="_blank" rel="noopener"><div class="image"><img src="images/B0B7S82LHL.jpg" alt="Personalized Teacher Shirts, Custom Teacher Shirt, Kindergarten Teacher, Preschool Teacher Shirts Teacher Gift,"></div></a>
-        <div class="body">
-          <div class="title">Personalized Teacher Shirts, Custom Teacher Shirt, Kindergarten Teacher, Preschool Teacher Shirts Teacher Gift,</div>
-          <div class="meta">
-            <div class="metric score score-breakdown" tabindex="0" title="POD: 28/30
+            <div class="metric score score-breakdown" tabindex="0" title="POD: 30/30
 Momentum: 5/25
 Market: 0/20
 Competition: 0/10
-Niche: 10/15" data-tooltip="POD: 28/30
+Niche: 10/15" data-tooltip="POD: 30/30
 Momentum: 5/25
 Market: 0/20
 Competition: 0/10
-Niche: 10/15"><span>Opportunity Score:</span><strong>43</strong></div>
-            <div class="metric"><span>Seller:</span><strong>NicePod-LLC</strong></div>
+Niche: 10/15"><span>Opportunity Score:</span><strong>45</strong></div>
+            <div class="metric"><span>Seller:</span><strong>july17</strong></div>
             
             
             
             
             <div class="metric"><span>Reviews:</span><strong></strong><small>Rating: </small></div>
-            <div class="metric"><span>Source Rank:</span><strong>#90</strong></div>
-            <div class="metric"><span>Source Rank Change:</span><strong>-25</strong></div>
-            <div class="metric"><span>Days Seen:</span><strong>3</strong></div>
-            <div class="metric"><span>POD Score:</span><strong>95</strong></div>
-            <div class="metric"><span>Niche:</span><strong>Custom Shirt</strong></div>
-            <div class="metric"><span>Tags:</span><strong>Custom Shirt;Teacher</strong></div>
-          </div>
-        </div>
-      </article>
-      <article class="card" data-card-index="16" data-opportunity-score="42" data-display-rank-change="-15" data-display-rank-velocity="-15.0" data-top-percentile="79.12" data-category-rank="9007199254740991" data-subcategory-rank="9007199254740991" data-review-count="0" data-rank-change="-15" data-pod-score="90">
-        <a href="https://www.amazon.com/Custom-Shirt-Gifts-Personalized-Lover/dp/B0BXQ52MVX/ref=is_sr_dp_2?dib=eyJ2IjoiMSJ9.A2TtIexcAPhhf9lPGSPRf2YQZ57WOF8c-8BYHu5FxhPSB3Z88xh0LCoUYZTVObcWck_YqkCvIE7BPW6LMLAeYeu8er9UixNzNWifnhrxVElA1bJ10h6JQkCsvLFlyu1tYtdbocXP8U4dL23WvxX2mZX5Kh1FwdI4AWHbZFD3J-xfjuIE6UnQVkQxeC908FH6SMx6r_KslUeixapRHyw5jTolM3esSUtbGvJRZt_U5e8.52gIQ9JTTKZq36DA6i113-g42n0DrAnMCWxr_3jvywo&amp;dib_tag=se&amp;m=AJ6Y7DJI4UPZF&amp;marketplaceID=ATVPDKIKX0DER&amp;nsdOptOutParam=true&amp;qid=1781857999&amp;s=merchant-items&amp;sr=1-13" target="_blank" rel="noopener"><div class="image"><img src="images/B0BXQ52MVX.jpg" alt="Custom Chef Shirt, Chef Gifts, t Shirt for Chef, Gifts for Chef, Personalized 3D Chef Shirt Gifts for Lover"></div></a>
-        <div class="body">
-          <div class="title">Custom Chef Shirt, Chef Gifts, t Shirt for Chef, Gifts for Chef, Personalized 3D Chef Shirt Gifts for Lover</div>
-          <div class="meta">
-            <div class="metric score score-breakdown" tabindex="0" title="POD: 27/30
-Momentum: 5/25
-Market: 0/20
-Competition: 0/10
-Niche: 10/15" data-tooltip="POD: 27/30
-Momentum: 5/25
-Market: 0/20
-Competition: 0/10
-Niche: 10/15"><span>Opportunity Score:</span><strong>42</strong></div>
-            <div class="metric"><span>Seller:</span><strong>NicePod-LLC</strong></div>
-            
-            
-            
-            
-            <div class="metric"><span>Reviews:</span><strong></strong><small>Rating: </small></div>
-            <div class="metric"><span>Source Rank:</span><strong>#72</strong></div>
-            <div class="metric"><span>Source Rank Change:</span><strong>-15</strong></div>
-            <div class="metric"><span>Days Seen:</span><strong>3</strong></div>
-            <div class="metric"><span>POD Score:</span><strong>90</strong></div>
-            <div class="metric"><span>Niche:</span><strong>Cooking</strong></div>
-            <div class="metric"><span>Tags:</span><strong>Cooking;Custom Shirt</strong></div>
-          </div>
-        </div>
-      </article>
-      <article class="card" data-card-index="17" data-opportunity-score="42" data-display-rank-change="-15" data-display-rank-velocity="-15.0" data-top-percentile="80.22" data-category-rank="9007199254740991" data-subcategory-rank="9007199254740991" data-review-count="0" data-rank-change="-15" data-pod-score="90">
-        <a href="https://www.amazon.com/Custom-Shirt-Gifts-Personalized-Lover/dp/B0BXQ368PD/ref=is_sr_dp_3?dib=eyJ2IjoiMSJ9.A2TtIexcAPhhf9lPGSPRf2YQZ57WOF8c-8BYHu5FxhPSB3Z88xh0LCoUYZTVObcWck_YqkCvIE7BPW6LMLAeYeu8er9UixNzNWifnhrxVElA1bJ10h6JQkCsvLFlyu1tYtdbocXP8U4dL23WvxX2mZX5Kh1FwdI4AWHbZFD3J-xfjuIE6UnQVkQxeC908FH6SMx6r_KslUeixapRHyw5jTolM3esSUtbGvJRZt_U5e8.52gIQ9JTTKZq36DA6i113-g42n0DrAnMCWxr_3jvywo&amp;dib_tag=se&amp;m=AJ6Y7DJI4UPZF&amp;marketplaceID=ATVPDKIKX0DER&amp;nsdOptOutParam=true&amp;qid=1781857999&amp;s=merchant-items&amp;sr=1-13" target="_blank" rel="noopener"><div class="image"><img src="images/B0BXQ368PD.jpg" alt="Custom Chef Shirt, Chef Gifts, t Shirt for Chef, Gifts for Chef, Personalized 3D Chef Shirt Gifts for Lover"></div></a>
-        <div class="body">
-          <div class="title">Custom Chef Shirt, Chef Gifts, t Shirt for Chef, Gifts for Chef, Personalized 3D Chef Shirt Gifts for Lover</div>
-          <div class="meta">
-            <div class="metric score score-breakdown" tabindex="0" title="POD: 27/30
-Momentum: 5/25
-Market: 0/20
-Competition: 0/10
-Niche: 10/15" data-tooltip="POD: 27/30
-Momentum: 5/25
-Market: 0/20
-Competition: 0/10
-Niche: 10/15"><span>Opportunity Score:</span><strong>42</strong></div>
-            <div class="metric"><span>Seller:</span><strong>NicePod-LLC</strong></div>
-            
-            
-            
-            
-            <div class="metric"><span>Reviews:</span><strong></strong><small>Rating: </small></div>
-            <div class="metric"><span>Source Rank:</span><strong>#73</strong></div>
-            <div class="metric"><span>Source Rank Change:</span><strong>-15</strong></div>
-            <div class="metric"><span>Days Seen:</span><strong>3</strong></div>
-            <div class="metric"><span>POD Score:</span><strong>90</strong></div>
-            <div class="metric"><span>Niche:</span><strong>Cooking</strong></div>
-            <div class="metric"><span>Tags:</span><strong>Cooking;Custom Shirt</strong></div>
-          </div>
-        </div>
-      </article>
-      <article class="card" data-card-index="18" data-opportunity-score="42" data-display-rank-change="-15" data-display-rank-velocity="-15.0" data-top-percentile="81.32" data-category-rank="9007199254740991" data-subcategory-rank="9007199254740991" data-review-count="0" data-rank-change="-15" data-pod-score="90">
-        <a href="https://www.amazon.com/Custom-Shirt-Gifts-Personalized-Lover/dp/B0BXQ2YQ9V/ref=is_sr_dp_4?dib=eyJ2IjoiMSJ9.A2TtIexcAPhhf9lPGSPRf2YQZ57WOF8c-8BYHu5FxhPSB3Z88xh0LCoUYZTVObcWck_YqkCvIE7BPW6LMLAeYeu8er9UixNzNWifnhrxVElA1bJ10h6JQkCsvLFlyu1tYtdbocXP8U4dL23WvxX2mZX5Kh1FwdI4AWHbZFD3J-xfjuIE6UnQVkQxeC908FH6SMx6r_KslUeixapRHyw5jTolM3esSUtbGvJRZt_U5e8.52gIQ9JTTKZq36DA6i113-g42n0DrAnMCWxr_3jvywo&amp;dib_tag=se&amp;m=AJ6Y7DJI4UPZF&amp;marketplaceID=ATVPDKIKX0DER&amp;nsdOptOutParam=true&amp;qid=1781857999&amp;s=merchant-items&amp;sr=1-13" target="_blank" rel="noopener"><div class="image"><img src="images/B0BXQ2YQ9V.jpg" alt="Custom Chef Shirt, Chef Gifts, t Shirt for Chef, Gifts for Chef, Personalized 3D Chef Shirt Gifts for Lover"></div></a>
-        <div class="body">
-          <div class="title">Custom Chef Shirt, Chef Gifts, t Shirt for Chef, Gifts for Chef, Personalized 3D Chef Shirt Gifts for Lover</div>
-          <div class="meta">
-            <div class="metric score score-breakdown" tabindex="0" title="POD: 27/30
-Momentum: 5/25
-Market: 0/20
-Competition: 0/10
-Niche: 10/15" data-tooltip="POD: 27/30
-Momentum: 5/25
-Market: 0/20
-Competition: 0/10
-Niche: 10/15"><span>Opportunity Score:</span><strong>42</strong></div>
-            <div class="metric"><span>Seller:</span><strong>NicePod-LLC</strong></div>
-            
-            
-            
-            
-            <div class="metric"><span>Reviews:</span><strong></strong><small>Rating: </small></div>
-            <div class="metric"><span>Source Rank:</span><strong>#74</strong></div>
-            <div class="metric"><span>Source Rank Change:</span><strong>-15</strong></div>
-            <div class="metric"><span>Days Seen:</span><strong>3</strong></div>
-            <div class="metric"><span>POD Score:</span><strong>90</strong></div>
-            <div class="metric"><span>Niche:</span><strong>Cooking</strong></div>
-            <div class="metric"><span>Tags:</span><strong>Cooking;Custom Shirt</strong></div>
-          </div>
-        </div>
-      </article>
-      <article class="card" data-card-index="19" data-opportunity-score="42" data-display-rank-change="-15" data-display-rank-velocity="-15.0" data-top-percentile="82.42" data-category-rank="9007199254740991" data-subcategory-rank="9007199254740991" data-review-count="0" data-rank-change="-15" data-pod-score="90">
-        <a href="https://www.amazon.com/Custom-Shirt-Gifts-Personalized-Lover/dp/B0BXQ5FQY3/ref=is_sr_dp_5?dib=eyJ2IjoiMSJ9.A2TtIexcAPhhf9lPGSPRf2YQZ57WOF8c-8BYHu5FxhPSB3Z88xh0LCoUYZTVObcWck_YqkCvIE7BPW6LMLAeYeu8er9UixNzNWifnhrxVElA1bJ10h6JQkCsvLFlyu1tYtdbocXP8U4dL23WvxX2mZX5Kh1FwdI4AWHbZFD3J-xfjuIE6UnQVkQxeC908FH6SMx6r_KslUeixapRHyw5jTolM3esSUtbGvJRZt_U5e8.52gIQ9JTTKZq36DA6i113-g42n0DrAnMCWxr_3jvywo&amp;dib_tag=se&amp;m=AJ6Y7DJI4UPZF&amp;marketplaceID=ATVPDKIKX0DER&amp;nsdOptOutParam=true&amp;qid=1781857999&amp;s=merchant-items&amp;sr=1-13" target="_blank" rel="noopener"><div class="image"><img src="images/B0BXQ5FQY3.jpg" alt="Custom Chef Shirt, Chef Gifts, t Shirt for Chef, Gifts for Chef, Personalized 3D Chef Shirt Gifts for Lover"></div></a>
-        <div class="body">
-          <div class="title">Custom Chef Shirt, Chef Gifts, t Shirt for Chef, Gifts for Chef, Personalized 3D Chef Shirt Gifts for Lover</div>
-          <div class="meta">
-            <div class="metric score score-breakdown" tabindex="0" title="POD: 27/30
-Momentum: 5/25
-Market: 0/20
-Competition: 0/10
-Niche: 10/15" data-tooltip="POD: 27/30
-Momentum: 5/25
-Market: 0/20
-Competition: 0/10
-Niche: 10/15"><span>Opportunity Score:</span><strong>42</strong></div>
-            <div class="metric"><span>Seller:</span><strong>NicePod-LLC</strong></div>
-            
-            
-            
-            
-            <div class="metric"><span>Reviews:</span><strong></strong><small>Rating: </small></div>
-            <div class="metric"><span>Source Rank:</span><strong>#75</strong></div>
-            <div class="metric"><span>Source Rank Change:</span><strong>-15</strong></div>
-            <div class="metric"><span>Days Seen:</span><strong>3</strong></div>
-            <div class="metric"><span>POD Score:</span><strong>90</strong></div>
-            <div class="metric"><span>Niche:</span><strong>Cooking</strong></div>
-            <div class="metric"><span>Tags:</span><strong>Cooking;Custom Shirt</strong></div>
-          </div>
-        </div>
-      </article>
-      <article class="card" data-card-index="20" data-opportunity-score="40" data-display-rank-change="-10" data-display-rank-velocity="-10.0" data-top-percentile="83.52" data-category-rank="1413065" data-subcategory-rank="12549" data-review-count="0" data-rank-change="-10" data-pod-score="45">
-        <a href="https://www.amazon.com/Personalized-Mothers-Matching-Outfits-mothers/dp/B0C46N4D3G/ref=is_sr_dp_2?dib=eyJ2IjoiMSJ9.A2TtIexcAPhhf9lPGSPRf2YQZ57WOF8c-8BYHu5FxhPSB3Z88xh0LCoUYZTVObcWck_YqkCvIE7BPW6LMLAeYeu8er9UixNzNWifnhrxVElA1bJ10h6JQkCsvLFlyu1tYtdbocXP8U4dL23WvxX2mZX5Kh1FwdI4AWHbZFD3J-xfjuIE6UnQVkQxeC908FH6SMx6r_KslUeixapRHyw5jTolM3esSUtbGvJRZt_U5e8.52gIQ9JTTKZq36DA6i113-g42n0DrAnMCWxr_3jvywo&amp;dib_tag=se&amp;m=AJ6Y7DJI4UPZF&amp;marketplaceID=ATVPDKIKX0DER&amp;nsdOptOutParam=true&amp;qid=1781857999&amp;s=merchant-items&amp;sr=1-14" target="_blank" rel="noopener"><div class="image"><img src="images/B0C46N4D3G.jpg" alt="Personalized Our First Mothers Day Matching Shirts, Mom Baby Matching Outfits Mothers Day 2023, Elephant Shirt"></div></a>
-        <div class="body">
-          <div class="title">Personalized Our First Mothers Day Matching Shirts, Mom Baby Matching Outfits Mothers Day 2023, Elephant Shirt</div>
-          <div class="meta">
-            <div class="metric score score-breakdown" tabindex="0" title="POD: 14/30
-Momentum: 5/25
-Market: 6/20
-Competition: 0/10
-Niche: 15/15" data-tooltip="POD: 14/30
-Momentum: 5/25
-Market: 6/20
-Competition: 0/10
-Niche: 15/15"><span>Opportunity Score:</span><strong>40</strong></div>
-            <div class="metric"><span>Seller:</span><strong>NicePod-LLC</strong></div>
-            
-            <div class="category-rank category-rank--gray"><span>Amazon BSR:</span><strong>#1,413,065 in Clothing, Shoes &amp; Jewelry</strong></div>
-            <div class="category-rank category-rank--blue"><span>Best Subcategory Rank:</span><strong>#12,549 in Baby Boys&#x27; Bodysuits</strong></div>
-            
-            <div class="metric"><span>Reviews:</span><strong></strong><small>Rating: </small></div>
-            <div class="metric"><span>Source Rank:</span><strong>#76</strong></div>
+            <div class="metric"><span>Source Rank:</span><strong>#13</strong></div>
             <div class="metric"><span>Source Rank Change:</span><strong>-10</strong></div>
-            <div class="metric"><span>Days Seen:</span><strong>3</strong></div>
-            <div class="metric"><span>POD Score:</span><strong>45</strong></div>
-            <div class="metric"><span>Niche:</span><strong>Mother&#x27;s Day</strong></div>
-            <div class="metric"><span>Tags:</span><strong>Mother&#x27;s Day;Custom Shirt;Baby;Mom</strong></div>
+            <div class="metric"><span>Days Seen:</span><strong>2</strong></div>
+            <div class="metric"><span>POD Score:</span><strong>155</strong></div>
+            <div class="metric"><span>Niche:</span><strong>Custom Shirt</strong></div>
+            <div class="metric"><span>Tags:</span><strong>Custom Shirt;Dad</strong></div>
           </div>
         </div>
       </article>
-      <article class="card" data-card-index="21" data-opportunity-score="40" data-display-rank-change="-10" data-display-rank-velocity="-10.0" data-top-percentile="84.62" data-category-rank="1413065" data-subcategory-rank="19922" data-review-count="0" data-rank-change="-10" data-pod-score="45">
-        <a href="https://www.amazon.com/Personalized-Mothers-Matching-Outfits-mothers/dp/B0C46PSTH9/ref=is_sr_dp_3?dib=eyJ2IjoiMSJ9.A2TtIexcAPhhf9lPGSPRf2YQZ57WOF8c-8BYHu5FxhPSB3Z88xh0LCoUYZTVObcWck_YqkCvIE7BPW6LMLAeYeu8er9UixNzNWifnhrxVElA1bJ10h6JQkCsvLFlyu1tYtdbocXP8U4dL23WvxX2mZX5Kh1FwdI4AWHbZFD3J-xfjuIE6UnQVkQxeC908FH6SMx6r_KslUeixapRHyw5jTolM3esSUtbGvJRZt_U5e8.52gIQ9JTTKZq36DA6i113-g42n0DrAnMCWxr_3jvywo&amp;dib_tag=se&amp;m=AJ6Y7DJI4UPZF&amp;marketplaceID=ATVPDKIKX0DER&amp;nsdOptOutParam=true&amp;qid=1781857999&amp;s=merchant-items&amp;sr=1-14" target="_blank" rel="noopener"><div class="image"><img src="images/B0C46PSTH9.jpg" alt="Personalized Our First Mothers Day Matching Shirts, Mom Baby Matching Outfits Mothers Day 2023, Elephant Shirt"></div></a>
-        <div class="body">
-          <div class="title">Personalized Our First Mothers Day Matching Shirts, Mom Baby Matching Outfits Mothers Day 2023, Elephant Shirt</div>
-          <div class="meta">
-            <div class="metric score score-breakdown" tabindex="0" title="POD: 14/30
-Momentum: 5/25
-Market: 6/20
-Competition: 0/10
-Niche: 15/15" data-tooltip="POD: 14/30
-Momentum: 5/25
-Market: 6/20
-Competition: 0/10
-Niche: 15/15"><span>Opportunity Score:</span><strong>40</strong></div>
-            <div class="metric"><span>Seller:</span><strong>NicePod-LLC</strong></div>
-            
-            <div class="category-rank category-rank--gray"><span>Amazon BSR:</span><strong>#1,413,065 in Clothing, Shoes &amp; Jewelry</strong></div>
-            <div class="category-rank category-rank--blue"><span>Best Subcategory Rank:</span><strong>#19,922 in Men&#x27;s T-Shirts</strong></div>
-            
-            <div class="metric"><span>Reviews:</span><strong></strong><small>Rating: </small></div>
-            <div class="metric"><span>Source Rank:</span><strong>#77</strong></div>
-            <div class="metric"><span>Source Rank Change:</span><strong>-10</strong></div>
-            <div class="metric"><span>Days Seen:</span><strong>3</strong></div>
-            <div class="metric"><span>POD Score:</span><strong>45</strong></div>
-            <div class="metric"><span>Niche:</span><strong>Mother&#x27;s Day</strong></div>
-            <div class="metric"><span>Tags:</span><strong>Mother&#x27;s Day;Custom Shirt;Baby;Mom</strong></div>
-          </div>
-        </div>
-      </article>
-      <article class="card" data-card-index="22" data-opportunity-score="40" data-display-rank-change="-10" data-display-rank-velocity="-10.0" data-top-percentile="85.71" data-category-rank="1413065" data-subcategory-rank="12096" data-review-count="0" data-rank-change="-10" data-pod-score="45">
-        <a href="https://www.amazon.com/Personalized-Mothers-Matching-Outfits-mothers/dp/B0C46PCJ2T/ref=is_sr_dp_4?dib=eyJ2IjoiMSJ9.A2TtIexcAPhhf9lPGSPRf2YQZ57WOF8c-8BYHu5FxhPSB3Z88xh0LCoUYZTVObcWck_YqkCvIE7BPW6LMLAeYeu8er9UixNzNWifnhrxVElA1bJ10h6JQkCsvLFlyu1tYtdbocXP8U4dL23WvxX2mZX5Kh1FwdI4AWHbZFD3J-xfjuIE6UnQVkQxeC908FH6SMx6r_KslUeixapRHyw5jTolM3esSUtbGvJRZt_U5e8.52gIQ9JTTKZq36DA6i113-g42n0DrAnMCWxr_3jvywo&amp;dib_tag=se&amp;m=AJ6Y7DJI4UPZF&amp;marketplaceID=ATVPDKIKX0DER&amp;nsdOptOutParam=true&amp;qid=1781857999&amp;s=merchant-items&amp;sr=1-14" target="_blank" rel="noopener"><div class="image"><img src="images/B0C46PCJ2T.jpg" alt="Personalized Our First Mothers Day Matching Shirts, Mom Baby Matching Outfits Mothers Day 2023, Elephant Shirt"></div></a>
-        <div class="body">
-          <div class="title">Personalized Our First Mothers Day Matching Shirts, Mom Baby Matching Outfits Mothers Day 2023, Elephant Shirt</div>
-          <div class="meta">
-            <div class="metric score score-breakdown" tabindex="0" title="POD: 14/30
-Momentum: 5/25
-Market: 6/20
-Competition: 0/10
-Niche: 15/15" data-tooltip="POD: 14/30
-Momentum: 5/25
-Market: 6/20
-Competition: 0/10
-Niche: 15/15"><span>Opportunity Score:</span><strong>40</strong></div>
-            <div class="metric"><span>Seller:</span><strong>NicePod-LLC</strong></div>
-            
-            <div class="category-rank category-rank--gray"><span>Amazon BSR:</span><strong>#1,413,065 in Clothing, Shoes &amp; Jewelry</strong></div>
-            <div class="category-rank category-rank--blue"><span>Best Subcategory Rank:</span><strong>#12,096 in Baby Girls&#x27; Bodysuits</strong></div>
-            
-            <div class="metric"><span>Reviews:</span><strong></strong><small>Rating: </small></div>
-            <div class="metric"><span>Source Rank:</span><strong>#78</strong></div>
-            <div class="metric"><span>Source Rank Change:</span><strong>-10</strong></div>
-            <div class="metric"><span>Days Seen:</span><strong>3</strong></div>
-            <div class="metric"><span>POD Score:</span><strong>45</strong></div>
-            <div class="metric"><span>Niche:</span><strong>Mother&#x27;s Day</strong></div>
-            <div class="metric"><span>Tags:</span><strong>Mother&#x27;s Day;Custom Shirt;Baby;Mom</strong></div>
-          </div>
-        </div>
-      </article>
-      <article class="card" data-card-index="23" data-opportunity-score="40" data-display-rank-change="-10" data-display-rank-velocity="-10.0" data-top-percentile="86.81" data-category-rank="1413065" data-subcategory-rank="12549" data-review-count="0" data-rank-change="-10" data-pod-score="45">
-        <a href="https://www.amazon.com/Personalized-Mothers-Matching-Outfits-mothers/dp/B0C46NHF9M/ref=is_sr_dp_5?dib=eyJ2IjoiMSJ9.A2TtIexcAPhhf9lPGSPRf2YQZ57WOF8c-8BYHu5FxhPSB3Z88xh0LCoUYZTVObcWck_YqkCvIE7BPW6LMLAeYeu8er9UixNzNWifnhrxVElA1bJ10h6JQkCsvLFlyu1tYtdbocXP8U4dL23WvxX2mZX5Kh1FwdI4AWHbZFD3J-xfjuIE6UnQVkQxeC908FH6SMx6r_KslUeixapRHyw5jTolM3esSUtbGvJRZt_U5e8.52gIQ9JTTKZq36DA6i113-g42n0DrAnMCWxr_3jvywo&amp;dib_tag=se&amp;m=AJ6Y7DJI4UPZF&amp;marketplaceID=ATVPDKIKX0DER&amp;nsdOptOutParam=true&amp;qid=1781857999&amp;s=merchant-items&amp;sr=1-14" target="_blank" rel="noopener"><div class="image"><img src="images/B0C46NHF9M.jpg" alt="Personalized Our First Mothers Day Matching Shirts, Mom Baby Matching Outfits Mothers Day 2023, Elephant Shirt"></div></a>
-        <div class="body">
-          <div class="title">Personalized Our First Mothers Day Matching Shirts, Mom Baby Matching Outfits Mothers Day 2023, Elephant Shirt</div>
-          <div class="meta">
-            <div class="metric score score-breakdown" tabindex="0" title="POD: 14/30
-Momentum: 5/25
-Market: 6/20
-Competition: 0/10
-Niche: 15/15" data-tooltip="POD: 14/30
-Momentum: 5/25
-Market: 6/20
-Competition: 0/10
-Niche: 15/15"><span>Opportunity Score:</span><strong>40</strong></div>
-            <div class="metric"><span>Seller:</span><strong>NicePod-LLC</strong></div>
-            
-            <div class="category-rank category-rank--gray"><span>Amazon BSR:</span><strong>#1,413,065 in Clothing, Shoes &amp; Jewelry</strong></div>
-            <div class="category-rank category-rank--blue"><span>Best Subcategory Rank:</span><strong>#12,549 in Baby Boys&#x27; Bodysuits</strong></div>
-            
-            <div class="metric"><span>Reviews:</span><strong></strong><small>Rating: </small></div>
-            <div class="metric"><span>Source Rank:</span><strong>#79</strong></div>
-            <div class="metric"><span>Source Rank Change:</span><strong>-10</strong></div>
-            <div class="metric"><span>Days Seen:</span><strong>3</strong></div>
-            <div class="metric"><span>POD Score:</span><strong>45</strong></div>
-            <div class="metric"><span>Niche:</span><strong>Mother&#x27;s Day</strong></div>
-            <div class="metric"><span>Tags:</span><strong>Mother&#x27;s Day;Custom Shirt;Baby;Mom</strong></div>
-          </div>
-        </div>
-      </article>
-      <article class="card" data-card-index="24" data-opportunity-score="40" data-display-rank-change="-10" data-display-rank-velocity="-10.0" data-top-percentile="87.91" data-category-rank="1413065" data-subcategory-rank="19922" data-review-count="0" data-rank-change="-10" data-pod-score="45">
-        <a href="https://www.amazon.com/Personalized-Mothers-Matching-Outfits-mothers/dp/B0C46PKX8F/ref=is_sr_dp_6?dib=eyJ2IjoiMSJ9.A2TtIexcAPhhf9lPGSPRf2YQZ57WOF8c-8BYHu5FxhPSB3Z88xh0LCoUYZTVObcWck_YqkCvIE7BPW6LMLAeYeu8er9UixNzNWifnhrxVElA1bJ10h6JQkCsvLFlyu1tYtdbocXP8U4dL23WvxX2mZX5Kh1FwdI4AWHbZFD3J-xfjuIE6UnQVkQxeC908FH6SMx6r_KslUeixapRHyw5jTolM3esSUtbGvJRZt_U5e8.52gIQ9JTTKZq36DA6i113-g42n0DrAnMCWxr_3jvywo&amp;dib_tag=se&amp;m=AJ6Y7DJI4UPZF&amp;marketplaceID=ATVPDKIKX0DER&amp;nsdOptOutParam=true&amp;qid=1781857999&amp;s=merchant-items&amp;sr=1-14" target="_blank" rel="noopener"><div class="image"><img src="images/B0C46PKX8F.jpg" alt="Personalized Our First Mothers Day Matching Shirts, Mom Baby Matching Outfits Mothers Day 2023, Elephant Shirt"></div></a>
-        <div class="body">
-          <div class="title">Personalized Our First Mothers Day Matching Shirts, Mom Baby Matching Outfits Mothers Day 2023, Elephant Shirt</div>
-          <div class="meta">
-            <div class="metric score score-breakdown" tabindex="0" title="POD: 14/30
-Momentum: 5/25
-Market: 6/20
-Competition: 0/10
-Niche: 15/15" data-tooltip="POD: 14/30
-Momentum: 5/25
-Market: 6/20
-Competition: 0/10
-Niche: 15/15"><span>Opportunity Score:</span><strong>40</strong></div>
-            <div class="metric"><span>Seller:</span><strong>NicePod-LLC</strong></div>
-            
-            <div class="category-rank category-rank--gray"><span>Amazon BSR:</span><strong>#1,413,065 in Clothing, Shoes &amp; Jewelry</strong></div>
-            <div class="category-rank category-rank--blue"><span>Best Subcategory Rank:</span><strong>#19,922 in Men&#x27;s T-Shirts</strong></div>
-            
-            <div class="metric"><span>Reviews:</span><strong></strong><small>Rating: </small></div>
-            <div class="metric"><span>Source Rank:</span><strong>#80</strong></div>
-            <div class="metric"><span>Source Rank Change:</span><strong>-10</strong></div>
-            <div class="metric"><span>Days Seen:</span><strong>3</strong></div>
-            <div class="metric"><span>POD Score:</span><strong>45</strong></div>
-            <div class="metric"><span>Niche:</span><strong>Mother&#x27;s Day</strong></div>
-            <div class="metric"><span>Tags:</span><strong>Mother&#x27;s Day;Custom Shirt;Baby;Mom</strong></div>
-          </div>
-        </div>
-      </article>
-      <article class="card" data-card-index="25" data-opportunity-score="31" data-display-rank-change="10" data-display-rank-velocity="10.0" data-top-percentile="68.09" data-category-rank="9007199254740991" data-subcategory-rank="9007199254740991" data-review-count="0" data-rank-change="10" data-pod-score="35">
-        <a href="https://www.amazon.com/Pofily-Sweatshirt-Personalized-Grandkids-Birthday/dp/B0G2C24BPW/ref=is_sr_dp_2?dib=eyJ2IjoiMSJ9.Vta8uR1VKqD0S26xo2siQBejkwRJlfSGzFi2of9qytLWcbY3AwSXze6qBjX6i2JKA5fVe-VlLUp9Hg0nyc2GI7PcLm_eOd9ThHA3jQpdrKwHl8f1bnkh-dNayR1g_fCFBI5qhvNaug2x8YuPAgOXBPNQSH5-myTsKAW8sU6e78HJ3HZbcMBwezlEKFkrHYWWo6UFh2fYdPf4tV2oBbYNyyxb3FpvGcSqn9v5FhDe9Es.qj7NA0-GYv3h2xHtgcL8DL_y6qVN-AjaHbcSF1EoTiE&amp;dib_tag=se&amp;m=A2EE0SSLB7X91Q&amp;marketplaceID=ATVPDKIKX0DER&amp;nsdOptOutParam=true&amp;qid=1781858273&amp;s=merchant-items&amp;sr=1-10" target="_blank" rel="noopener"><div class="image"></div></a>
+      <article class="card" data-card-index="16" data-opportunity-score="45" data-display-rank-change="21" data-display-rank-velocity="4.2" data-top-percentile="59.26" data-category-rank="9007199254740991" data-subcategory-rank="9007199254740991" data-review-count="0" data-rank-change="21" data-pod-score="45">
+        <a href="https://www.amazon.com/Famitrendz-Personalized-Firework-Patriotic-Independence/dp/B0FCML5GD2/ref=is_sr_dp_2?dib=eyJ2IjoiMSJ9.KJgSEJEUleTJdr5u8TJm5Hqv3EhPyM9njsPDy45aadZK-ytDrLj7EQUm7b33sUNT7qrdO1DZNHGXNrYPXl3VOllY0c5uYFMCO15MBfFAX9QgvBjmxGd_r_QS4-6aHcCWpjSTEeWxT3FUHEwaypLMpeHJbUl4a2BU4g7l505Ey6i6TZ3OdmgVhReMyEf5YsX8hLbbeyecvG6Jt0dMP3YHJPHCC6hJeA_887FJVHk9lnM.Gkj6XHARziSN2Rr-O7qc0_oxCUK-j3Uk0ulMuSgmwMY&amp;dib_tag=se&amp;m=A1BWPA8CM4JL9L&amp;marketplaceID=ATVPDKIKX0DER&amp;nsdOptOutParam=true&amp;qid=1782103707&amp;s=merchant-items&amp;sr=1-9" target="_blank" rel="noopener"><div class="image"></div></a>
         <div class="body">
           <div class="title">Title unavailable - open product</div>
           <div class="meta">
-            <div class="metric score score-breakdown" tabindex="0" title="POD: 10/30
-Momentum: 21/25
+            <div class="metric score score-breakdown" tabindex="0" title="POD: 14/30
+Momentum: 25/25
 Market: 0/20
 Competition: 0/10
-Niche: 0/15" data-tooltip="POD: 10/30
-Momentum: 21/25
+Niche: 6/15" data-tooltip="POD: 14/30
+Momentum: 25/25
 Market: 0/20
 Competition: 0/10
-Niche: 0/15"><span>Opportunity Score:</span><strong>31</strong></div>
-            <div class="metric"><span>Seller:</span><strong>POLIFY</strong></div>
+Niche: 6/15"><span>Opportunity Score:</span><strong>45</strong></div>
+            <div class="metric"><span>Seller:</span><strong>MABUSHOP</strong></div>
             
             
             
             
             <div class="metric"><span>Reviews:</span><strong></strong><small>Rating: </small></div>
             <div class="metric"><span>Source Rank:</span><strong>#32</strong></div>
-            <div class="metric"><span>Source Rank Change:</span><strong>10</strong></div>
+            <div class="metric"><span>Source Rank Change:</span><strong>21</strong></div>
             <div class="metric"><span>Days Seen:</span><strong>2</strong></div>
-            <div class="metric"><span>POD Score:</span><strong>35</strong></div>
-            <div class="metric"><span>Niche:</span><strong>Unknown</strong></div>
-            <div class="metric"><span>Tags:</span><strong>Unknown</strong></div>
+            <div class="metric"><span>POD Score:</span><strong>45</strong></div>
+            <div class="metric"><span>Niche:</span><strong>Custom Shirt</strong></div>
+            <div class="metric"><span>Tags:</span><strong>Custom Shirt</strong></div>
           </div>
         </div>
       </article>
-      <article class="card" data-card-index="26" data-opportunity-score="31" data-display-rank-change="10" data-display-rank-velocity="10.0" data-top-percentile="70.21" data-category-rank="9007199254740991" data-subcategory-rank="9007199254740991" data-review-count="0" data-rank-change="10" data-pod-score="35">
-        <a href="https://www.amazon.com/Pofily-Sweatshirt-Personalized-Grandkids-Birthday/dp/B0G2BZ2L1S/ref=is_sr_dp_3?dib=eyJ2IjoiMSJ9.Vta8uR1VKqD0S26xo2siQBejkwRJlfSGzFi2of9qytLWcbY3AwSXze6qBjX6i2JKA5fVe-VlLUp9Hg0nyc2GI7PcLm_eOd9ThHA3jQpdrKwHl8f1bnkh-dNayR1g_fCFBI5qhvNaug2x8YuPAgOXBPNQSH5-myTsKAW8sU6e78HJ3HZbcMBwezlEKFkrHYWWo6UFh2fYdPf4tV2oBbYNyyxb3FpvGcSqn9v5FhDe9Es.qj7NA0-GYv3h2xHtgcL8DL_y6qVN-AjaHbcSF1EoTiE&amp;dib_tag=se&amp;m=A2EE0SSLB7X91Q&amp;marketplaceID=ATVPDKIKX0DER&amp;nsdOptOutParam=true&amp;qid=1781858273&amp;s=merchant-items&amp;sr=1-10" target="_blank" rel="noopener"><div class="image"></div></a>
+      <article class="card" data-card-index="17" data-opportunity-score="45" data-display-rank-change="16" data-display-rank-velocity="3.2" data-top-percentile="61.11" data-category-rank="9007199254740991" data-subcategory-rank="9007199254740991" data-review-count="0" data-rank-change="16" data-pod-score="45">
+        <a href="https://www.amazon.com/Famitrendz-Personalized-Firework-Patriotic-Independence/dp/B0FCMKVGMX/ref=is_sr_dp_3?dib=eyJ2IjoiMSJ9.KJgSEJEUleTJdr5u8TJm5Hqv3EhPyM9njsPDy45aadZK-ytDrLj7EQUm7b33sUNT7qrdO1DZNHGXNrYPXl3VOllY0c5uYFMCO15MBfFAX9QgvBjmxGd_r_QS4-6aHcCWpjSTEeWxT3FUHEwaypLMpeHJbUl4a2BU4g7l505Ey6i6TZ3OdmgVhReMyEf5YsX8hLbbeyecvG6Jt0dMP3YHJPHCC6hJeA_887FJVHk9lnM.Gkj6XHARziSN2Rr-O7qc0_oxCUK-j3Uk0ulMuSgmwMY&amp;dib_tag=se&amp;m=A1BWPA8CM4JL9L&amp;marketplaceID=ATVPDKIKX0DER&amp;nsdOptOutParam=true&amp;qid=1782103707&amp;s=merchant-items&amp;sr=1-9" target="_blank" rel="noopener"><div class="image"></div></a>
         <div class="body">
           <div class="title">Title unavailable - open product</div>
           <div class="meta">
-            <div class="metric score score-breakdown" tabindex="0" title="POD: 10/30
-Momentum: 21/25
+            <div class="metric score score-breakdown" tabindex="0" title="POD: 14/30
+Momentum: 25/25
 Market: 0/20
 Competition: 0/10
-Niche: 0/15" data-tooltip="POD: 10/30
-Momentum: 21/25
+Niche: 6/15" data-tooltip="POD: 14/30
+Momentum: 25/25
 Market: 0/20
 Competition: 0/10
-Niche: 0/15"><span>Opportunity Score:</span><strong>31</strong></div>
-            <div class="metric"><span>Seller:</span><strong>POLIFY</strong></div>
+Niche: 6/15"><span>Opportunity Score:</span><strong>45</strong></div>
+            <div class="metric"><span>Seller:</span><strong>MABUSHOP</strong></div>
             
             
             
             
             <div class="metric"><span>Reviews:</span><strong></strong><small>Rating: </small></div>
             <div class="metric"><span>Source Rank:</span><strong>#33</strong></div>
-            <div class="metric"><span>Source Rank Change:</span><strong>10</strong></div>
+            <div class="metric"><span>Source Rank Change:</span><strong>16</strong></div>
             <div class="metric"><span>Days Seen:</span><strong>2</strong></div>
-            <div class="metric"><span>POD Score:</span><strong>35</strong></div>
-            <div class="metric"><span>Niche:</span><strong>Unknown</strong></div>
-            <div class="metric"><span>Tags:</span><strong>Unknown</strong></div>
+            <div class="metric"><span>POD Score:</span><strong>45</strong></div>
+            <div class="metric"><span>Niche:</span><strong>Custom Shirt</strong></div>
+            <div class="metric"><span>Tags:</span><strong>Custom Shirt</strong></div>
           </div>
         </div>
       </article>
-      <article class="card" data-card-index="27" data-opportunity-score="31" data-display-rank-change="10" data-display-rank-velocity="10.0" data-top-percentile="72.34" data-category-rank="9007199254740991" data-subcategory-rank="9007199254740991" data-review-count="0" data-rank-change="10" data-pod-score="35">
-        <a href="https://www.amazon.com/Pofily-Sweatshirt-Personalized-Grandkids-Birthday/dp/B0G2C3GCWJ/ref=is_sr_dp_4?dib=eyJ2IjoiMSJ9.Vta8uR1VKqD0S26xo2siQBejkwRJlfSGzFi2of9qytLWcbY3AwSXze6qBjX6i2JKA5fVe-VlLUp9Hg0nyc2GI7PcLm_eOd9ThHA3jQpdrKwHl8f1bnkh-dNayR1g_fCFBI5qhvNaug2x8YuPAgOXBPNQSH5-myTsKAW8sU6e78HJ3HZbcMBwezlEKFkrHYWWo6UFh2fYdPf4tV2oBbYNyyxb3FpvGcSqn9v5FhDe9Es.qj7NA0-GYv3h2xHtgcL8DL_y6qVN-AjaHbcSF1EoTiE&amp;dib_tag=se&amp;m=A2EE0SSLB7X91Q&amp;marketplaceID=ATVPDKIKX0DER&amp;nsdOptOutParam=true&amp;qid=1781858273&amp;s=merchant-items&amp;sr=1-10" target="_blank" rel="noopener"><div class="image"></div></a>
+      <article class="card" data-card-index="18" data-opportunity-score="45" data-display-rank-change="16" data-display-rank-velocity="3.2" data-top-percentile="62.96" data-category-rank="9007199254740991" data-subcategory-rank="9007199254740991" data-review-count="0" data-rank-change="16" data-pod-score="45">
+        <a href="https://www.amazon.com/Famitrendz-Personalized-Firework-Patriotic-Independence/dp/B0FCMLDQY4/ref=is_sr_dp_4?dib=eyJ2IjoiMSJ9.KJgSEJEUleTJdr5u8TJm5Hqv3EhPyM9njsPDy45aadZK-ytDrLj7EQUm7b33sUNT7qrdO1DZNHGXNrYPXl3VOllY0c5uYFMCO15MBfFAX9QgvBjmxGd_r_QS4-6aHcCWpjSTEeWxT3FUHEwaypLMpeHJbUl4a2BU4g7l505Ey6i6TZ3OdmgVhReMyEf5YsX8hLbbeyecvG6Jt0dMP3YHJPHCC6hJeA_887FJVHk9lnM.Gkj6XHARziSN2Rr-O7qc0_oxCUK-j3Uk0ulMuSgmwMY&amp;dib_tag=se&amp;m=A1BWPA8CM4JL9L&amp;marketplaceID=ATVPDKIKX0DER&amp;nsdOptOutParam=true&amp;qid=1782103707&amp;s=merchant-items&amp;sr=1-9" target="_blank" rel="noopener"><div class="image"></div></a>
         <div class="body">
           <div class="title">Title unavailable - open product</div>
           <div class="meta">
-            <div class="metric score score-breakdown" tabindex="0" title="POD: 10/30
-Momentum: 21/25
+            <div class="metric score score-breakdown" tabindex="0" title="POD: 14/30
+Momentum: 25/25
 Market: 0/20
 Competition: 0/10
-Niche: 0/15" data-tooltip="POD: 10/30
-Momentum: 21/25
+Niche: 6/15" data-tooltip="POD: 14/30
+Momentum: 25/25
 Market: 0/20
 Competition: 0/10
-Niche: 0/15"><span>Opportunity Score:</span><strong>31</strong></div>
-            <div class="metric"><span>Seller:</span><strong>POLIFY</strong></div>
+Niche: 6/15"><span>Opportunity Score:</span><strong>45</strong></div>
+            <div class="metric"><span>Seller:</span><strong>MABUSHOP</strong></div>
             
             
             
             
             <div class="metric"><span>Reviews:</span><strong></strong><small>Rating: </small></div>
             <div class="metric"><span>Source Rank:</span><strong>#34</strong></div>
-            <div class="metric"><span>Source Rank Change:</span><strong>10</strong></div>
+            <div class="metric"><span>Source Rank Change:</span><strong>16</strong></div>
             <div class="metric"><span>Days Seen:</span><strong>2</strong></div>
-            <div class="metric"><span>POD Score:</span><strong>35</strong></div>
-            <div class="metric"><span>Niche:</span><strong>Unknown</strong></div>
-            <div class="metric"><span>Tags:</span><strong>Unknown</strong></div>
+            <div class="metric"><span>POD Score:</span><strong>45</strong></div>
+            <div class="metric"><span>Niche:</span><strong>Custom Shirt</strong></div>
+            <div class="metric"><span>Tags:</span><strong>Custom Shirt</strong></div>
           </div>
         </div>
       </article>
-      <article class="card" data-card-index="28" data-opportunity-score="31" data-display-rank-change="10" data-display-rank-velocity="10.0" data-top-percentile="74.47" data-category-rank="9007199254740991" data-subcategory-rank="9007199254740991" data-review-count="0" data-rank-change="10" data-pod-score="35">
-        <a href="https://www.amazon.com/Pofily-Sweatshirt-Personalized-Grandkids-Birthday/dp/B0G2C4D232/ref=is_sr_dp_5?dib=eyJ2IjoiMSJ9.Vta8uR1VKqD0S26xo2siQBejkwRJlfSGzFi2of9qytLWcbY3AwSXze6qBjX6i2JKA5fVe-VlLUp9Hg0nyc2GI7PcLm_eOd9ThHA3jQpdrKwHl8f1bnkh-dNayR1g_fCFBI5qhvNaug2x8YuPAgOXBPNQSH5-myTsKAW8sU6e78HJ3HZbcMBwezlEKFkrHYWWo6UFh2fYdPf4tV2oBbYNyyxb3FpvGcSqn9v5FhDe9Es.qj7NA0-GYv3h2xHtgcL8DL_y6qVN-AjaHbcSF1EoTiE&amp;dib_tag=se&amp;m=A2EE0SSLB7X91Q&amp;marketplaceID=ATVPDKIKX0DER&amp;nsdOptOutParam=true&amp;qid=1781858273&amp;s=merchant-items&amp;sr=1-10" target="_blank" rel="noopener"><div class="image"></div></a>
+      <article class="card" data-card-index="19" data-opportunity-score="45" data-display-rank-change="15" data-display-rank-velocity="3.0" data-top-percentile="66.67" data-category-rank="9007199254740991" data-subcategory-rank="9007199254740991" data-review-count="0" data-rank-change="15" data-pod-score="45">
+        <a href="https://www.amazon.com/Famitrendz-Personalized-Firework-Patriotic-Independence/dp/B0D6KSQNYT/ref=is_sr_dp_6?dib=eyJ2IjoiMSJ9.KJgSEJEUleTJdr5u8TJm5Hqv3EhPyM9njsPDy45aadZK-ytDrLj7EQUm7b33sUNT7qrdO1DZNHGXNrYPXl3VOllY0c5uYFMCO15MBfFAX9QgvBjmxGd_r_QS4-6aHcCWpjSTEeWxT3FUHEwaypLMpeHJbUl4a2BU4g7l505Ey6i6TZ3OdmgVhReMyEf5YsX8hLbbeyecvG6Jt0dMP3YHJPHCC6hJeA_887FJVHk9lnM.Gkj6XHARziSN2Rr-O7qc0_oxCUK-j3Uk0ulMuSgmwMY&amp;dib_tag=se&amp;m=A1BWPA8CM4JL9L&amp;marketplaceID=ATVPDKIKX0DER&amp;nsdOptOutParam=true&amp;qid=1782103707&amp;s=merchant-items&amp;sr=1-9" target="_blank" rel="noopener"><div class="image"></div></a>
         <div class="body">
           <div class="title">Title unavailable - open product</div>
           <div class="meta">
-            <div class="metric score score-breakdown" tabindex="0" title="POD: 10/30
-Momentum: 21/25
+            <div class="metric score score-breakdown" tabindex="0" title="POD: 14/30
+Momentum: 25/25
 Market: 0/20
 Competition: 0/10
-Niche: 0/15" data-tooltip="POD: 10/30
-Momentum: 21/25
+Niche: 6/15" data-tooltip="POD: 14/30
+Momentum: 25/25
 Market: 0/20
 Competition: 0/10
-Niche: 0/15"><span>Opportunity Score:</span><strong>31</strong></div>
-            <div class="metric"><span>Seller:</span><strong>POLIFY</strong></div>
+Niche: 6/15"><span>Opportunity Score:</span><strong>45</strong></div>
+            <div class="metric"><span>Seller:</span><strong>MABUSHOP</strong></div>
             
             
             
             
             <div class="metric"><span>Reviews:</span><strong></strong><small>Rating: </small></div>
-            <div class="metric"><span>Source Rank:</span><strong>#35</strong></div>
-            <div class="metric"><span>Source Rank Change:</span><strong>10</strong></div>
+            <div class="metric"><span>Source Rank:</span><strong>#36</strong></div>
+            <div class="metric"><span>Source Rank Change:</span><strong>15</strong></div>
             <div class="metric"><span>Days Seen:</span><strong>2</strong></div>
-            <div class="metric"><span>POD Score:</span><strong>35</strong></div>
-            <div class="metric"><span>Niche:</span><strong>Unknown</strong></div>
-            <div class="metric"><span>Tags:</span><strong>Unknown</strong></div>
+            <div class="metric"><span>POD Score:</span><strong>45</strong></div>
+            <div class="metric"><span>Niche:</span><strong>Custom Shirt</strong></div>
+            <div class="metric"><span>Tags:</span><strong>Custom Shirt</strong></div>
           </div>
         </div>
       </article>
-      <article class="card" data-card-index="29" data-opportunity-score="31" data-display-rank-change="10" data-display-rank-velocity="10.0" data-top-percentile="76.6" data-category-rank="9007199254740991" data-subcategory-rank="9007199254740991" data-review-count="0" data-rank-change="10" data-pod-score="35">
-        <a href="https://www.amazon.com/Pofily-Sweatshirt-Personalized-Grandkids-Birthday/dp/B0G2C125RC/ref=is_sr_dp_6?dib=eyJ2IjoiMSJ9.Vta8uR1VKqD0S26xo2siQBejkwRJlfSGzFi2of9qytLWcbY3AwSXze6qBjX6i2JKA5fVe-VlLUp9Hg0nyc2GI7PcLm_eOd9ThHA3jQpdrKwHl8f1bnkh-dNayR1g_fCFBI5qhvNaug2x8YuPAgOXBPNQSH5-myTsKAW8sU6e78HJ3HZbcMBwezlEKFkrHYWWo6UFh2fYdPf4tV2oBbYNyyxb3FpvGcSqn9v5FhDe9Es.qj7NA0-GYv3h2xHtgcL8DL_y6qVN-AjaHbcSF1EoTiE&amp;dib_tag=se&amp;m=A2EE0SSLB7X91Q&amp;marketplaceID=ATVPDKIKX0DER&amp;nsdOptOutParam=true&amp;qid=1781858273&amp;s=merchant-items&amp;sr=1-10" target="_blank" rel="noopener"><div class="image"></div></a>
+      <article class="card" data-card-index="20" data-opportunity-score="38" data-display-rank-change="10" data-display-rank-velocity="3.33" data-top-percentile="58.06" data-category-rank="9007199254740991" data-subcategory-rank="9007199254740991" data-review-count="0" data-rank-change="10" data-pod-score="45">
+        <a href="https://www.amazon.com/Personalized-Embroidered-Christening-Baptismal-Keepsake/dp/B0FJRN69Y8/ref=cs_sr_dp_loc_6?dib=eyJ2IjoiMSJ9.ynKg-CYyTc0HrmLaFrbbmdS93Fh-ZDctUcqfdwRQrdVnzAOWalhWYBPD-dZTakYpUoFMtCG5lXY4PmxgFT0iHO2Ur5VuDOiOawEMef7PoyIrvNBgNyDM-krQClurqNJzgf2MI4bYBBNCMNqvCspgW1qefP8_3kgyX28fo2UvmjBJtwZ5c-ed1Ts-t6yt_l3oYSnFoevOGhC9g8gII227sEv4BJ-irk7kJ-Cp3Jk0tIA.klXTqUWGvajjAipGcLphoLaOO0fSORld7P2pyB_yuVk&amp;dib_tag=se&amp;m=A1WB2X9EGOJ0X9&amp;marketplaceID=ATVPDKIKX0DER&amp;nsdOptOutParam=true&amp;qid=1782103615&amp;s=merchant-items&amp;sr=1-7" target="_blank" rel="noopener"><div class="image"></div></a>
         <div class="body">
           <div class="title">Title unavailable - open product</div>
           <div class="meta">
-            <div class="metric score score-breakdown" tabindex="0" title="POD: 10/30
+            <div class="metric score score-breakdown" tabindex="0" title="POD: 14/30
 Momentum: 21/25
 Market: 0/20
 Competition: 0/10
-Niche: 0/15" data-tooltip="POD: 10/30
+Niche: 3/15" data-tooltip="POD: 14/30
 Momentum: 21/25
 Market: 0/20
 Competition: 0/10
-Niche: 0/15"><span>Opportunity Score:</span><strong>31</strong></div>
-            <div class="metric"><span>Seller:</span><strong>POLIFY</strong></div>
+Niche: 3/15"><span>Opportunity Score:</span><strong>38</strong></div>
+            <div class="metric"><span>Seller:</span><strong>Poppop Store</strong></div>
             
             
             
@@ -992,15 +771,44 @@ Niche: 0/15"><span>Opportunity Score:</span><strong>31</strong></div>
             <div class="metric"><span>Reviews:</span><strong></strong><small>Rating: </small></div>
             <div class="metric"><span>Source Rank:</span><strong>#36</strong></div>
             <div class="metric"><span>Source Rank Change:</span><strong>10</strong></div>
-            <div class="metric"><span>Days Seen:</span><strong>2</strong></div>
-            <div class="metric"><span>POD Score:</span><strong>35</strong></div>
-            <div class="metric"><span>Niche:</span><strong>Unknown</strong></div>
-            <div class="metric"><span>Tags:</span><strong>Unknown</strong></div>
+            <div class="metric"><span>Days Seen:</span><strong>3</strong></div>
+            <div class="metric"><span>POD Score:</span><strong>45</strong></div>
+            <div class="metric"><span>Niche:</span><strong>Custom Blanket</strong></div>
+            <div class="metric"><span>Tags:</span><strong>Custom Blanket</strong></div>
           </div>
         </div>
       </article>
-      <article class="card" data-card-index="30" data-opportunity-score="25" data-display-rank-change="-23" data-display-rank-velocity="-23.0" data-top-percentile="70.59" data-category-rank="9007199254740991" data-subcategory-rank="9007199254740991" data-review-count="0" data-rank-change="-23" data-pod-score="45">
-        <a href="https://www.amazon.com/Personalized-Sweatshirt-Embroidered-Healthcare-Professional/dp/B0FV87ZMG9/ref=cs_sr_dp_loc_2?dib=eyJ2IjoiMSJ9.30orbNCZZERuNnn3OSr2s_38erxl6CDaDao_k9655scjhx86kfSDCJPh8thJ0aMVT0Sf-BrpPDqjhNHtbFjtCTuqgCazoUBOFFZzVN7IFjIaKJswIbkzIfC9hASjsH-OWxB1pBZmJUGU4zlpkMXs9AXQ64dNRtRhfzFEdfVF3zCzeTt6D5E-MFTnXqVAingDzfxF_wbEoPsZsIeY_ez5eQUzERuK7eqO5k2_KVEAdx8.dQHyMsOy8fDb5QGeMKWdKhNXulW-NfYA5uaWIroBCA8&amp;dib_tag=se&amp;m=A2B9DZ8JGHNNVQ&amp;marketplaceID=ATVPDKIKX0DER&amp;nsdOptOutParam=true&amp;qid=1781858308&amp;s=merchant-items&amp;sr=1-14" target="_blank" rel="noopener"><div class="image"></div></a>
+      <article class="card" data-card-index="21" data-opportunity-score="29" data-display-rank-change="-33" data-display-rank-velocity="-6.6" data-top-percentile="96.08" data-category-rank="9007199254740991" data-subcategory-rank="9007199254740991" data-review-count="0" data-rank-change="-33" data-pod-score="45">
+        <a href="https://www.amazon.com/Famitrendz-Personalized-American-Anniversary-Patriotic/dp/B0GZZYT44Q/ref=is_sr_dp_4?dib=eyJ2IjoiMSJ9.9DOLCx3MCaO5EUK8udghfO9U6eMuhDug4oVt7heAD0hRt2TZr4zoIBtliNAhR6x4SN6pVPJH3S9uW73mLCx3imCF0bNowYWWZX-KhlSeSuewGpsCuR2nNs9OZZkluKLJZg6Pnt8DORbWppx4Jq5U1HMCgFc2xwKlQ7GuVQkyQdt32KKHWrUMNejxeQVhyd5CFqpBOandAUgU0qwCb3vRIse30-CAwHeq5ZAlgYcHLXg.H2g4vvFDYiWKKqBDO0jq_FEx6cbHMqbi_OigSDk8V4w&amp;dib_tag=se&amp;m=A3N5XVP1M3R7X7&amp;marketplaceID=ATVPDKIKX0DER&amp;nsdOptOutParam=true&amp;qid=1782103736&amp;s=merchant-items&amp;sr=1-15" target="_blank" rel="noopener"><div class="image"></div></a>
+        <div class="body">
+          <div class="title">Title unavailable - open product</div>
+          <div class="meta">
+            <div class="metric score score-breakdown" tabindex="0" title="POD: 14/30
+Momentum: 5/25
+Market: 0/20
+Competition: 0/10
+Niche: 10/15" data-tooltip="POD: 14/30
+Momentum: 5/25
+Market: 0/20
+Competition: 0/10
+Niche: 10/15"><span>Opportunity Score:</span><strong>29</strong></div>
+            <div class="metric"><span>Seller:</span><strong>NTBN Trading LLC</strong></div>
+            
+            
+            
+            
+            <div class="metric"><span>Reviews:</span><strong></strong><small>Rating: </small></div>
+            <div class="metric"><span>Source Rank:</span><strong>#49</strong></div>
+            <div class="metric"><span>Source Rank Change:</span><strong>-33</strong></div>
+            <div class="metric"><span>Days Seen:</span><strong>2</strong></div>
+            <div class="metric"><span>POD Score:</span><strong>45</strong></div>
+            <div class="metric"><span>Niche:</span><strong>Custom Shirt</strong></div>
+            <div class="metric"><span>Tags:</span><strong>Custom Shirt;Dad;Grandpa</strong></div>
+          </div>
+        </div>
+      </article>
+      <article class="card" data-card-index="22" data-opportunity-score="25" data-display-rank-change="-29" data-display-rank-velocity="-9.67" data-top-percentile="80.77" data-category-rank="9007199254740991" data-subcategory-rank="9007199254740991" data-review-count="0" data-rank-change="-29" data-pod-score="45">
+        <a href="https://www.amazon.com/Personalized-Grandkids-Patriotic-Fireworks-American/dp/B0D56R9CNF/ref=cs_sr_dp_loc_2?dib=eyJ2IjoiMSJ9.GAGCvnnyv2pv6VXtwUmLcd5GaZXeHBTWdROSKyIP9SbyTVdc7KnIkI2hzMv4cbEA0Z_LhF-ZXvweAbmrRaCO9xE0ZGAOZaqTTTESw9c441PqGqxugPo1_2l9VPemih_Xg8KJwk70vvtSIw5X5jJn5IkdUjS1QWG2bhkU_Zh0C5d5sXjxKegOzmk3YhKnANNWbI9OeRazPIkGCA47jVvJUZ8-35hY9BCOiL1OXaP23ZM.IMzPRqLh8BAOg_kSCaSDBl0GFeiSIgilE7P7Ii6pEmQ&amp;dib_tag=se&amp;m=A1CNBPST728DFG&amp;marketplaceID=ATVPDKIKX0DER&amp;nsdOptOutParam=true&amp;qid=1782103604&amp;s=merchant-items&amp;sr=1-12" target="_blank" rel="noopener"><div class="image"></div></a>
         <div class="body">
           <div class="title">Title unavailable - open product</div>
           <div class="meta">
@@ -1013,47 +821,453 @@ Momentum: 5/25
 Market: 0/20
 Competition: 0/10
 Niche: 6/15"><span>Opportunity Score:</span><strong>25</strong></div>
-            <div class="metric"><span>Seller:</span><strong>HUCAO</strong></div>
+            <div class="metric"><span>Seller:</span><strong>FLYTOSKY</strong></div>
             
             
             
             
             <div class="metric"><span>Reviews:</span><strong></strong><small>Rating: </small></div>
-            <div class="metric"><span>Source Rank:</span><strong>#36</strong></div>
-            <div class="metric"><span>Source Rank Change:</span><strong>-23</strong></div>
-            <div class="metric"><span>Days Seen:</span><strong>2</strong></div>
+            <div class="metric"><span>Source Rank:</span><strong>#42</strong></div>
+            <div class="metric"><span>Source Rank Change:</span><strong>-29</strong></div>
+            <div class="metric"><span>Days Seen:</span><strong>3</strong></div>
             <div class="metric"><span>POD Score:</span><strong>45</strong></div>
             <div class="metric"><span>Niche:</span><strong>Custom Shirt</strong></div>
             <div class="metric"><span>Tags:</span><strong>Custom Shirt</strong></div>
           </div>
         </div>
       </article>
-      <article class="card" data-card-index="31" data-opportunity-score="22" data-display-rank-change="-13" data-display-rank-velocity="-3.25" data-top-percentile="68.66" data-category-rank="9007199254740991" data-subcategory-rank="9007199254740991" data-review-count="0" data-rank-change="-13" data-pod-score="45">
-        <a href="https://www.amazon.com/Personalized-Embroidered-Christening-Baptismal-Keepsake/dp/B0FJRN69Y8/ref=cs_sr_dp_loc_6?dib=eyJ2IjoiMSJ9.ynKg-CYyTc0HrmLaFrbbmdS93Fh-ZDctUcqfdwRQrdVC-hRdiidPYKa2-QgV4DleI9Yh_uJ5W9MztwxPDTC9iTCbH05Pt6Kt6faYMpIROtsld-yGcAL31KNUo6Sb3f-28nP3YWC9xBClh_v6O0iH6EIENZ2ebtvxtHdGArCDPLEVIyWAQtKhncB641mAoR8R1EAf7n5OnD-iVhHZLLvTQpqxEWap_5pbR9_JEGkGwIA.UrqGY89WUM6qTmyjKObTVItsPqKKMZASY7XsQimcHa0&amp;dib_tag=se&amp;m=A1WB2X9EGOJ0X9&amp;marketplaceID=ATVPDKIKX0DER&amp;nsdOptOutParam=true&amp;qid=1781858228&amp;s=merchant-items&amp;sr=1-10" target="_blank" rel="noopener"><div class="image"></div></a>
+      <article class="card" data-card-index="23" data-opportunity-score="25" data-display-rank-change="-11" data-display-rank-velocity="-1.83" data-top-percentile="88.37" data-category-rank="9007199254740991" data-subcategory-rank="9007199254740991" data-review-count="0" data-rank-change="-11" data-pod-score="35">
+        <a href="https://www.amazon.com/LASFOUR-Legend-Husband-Grandpa-Personalized/dp/B0D35HBCXZ/ref=is_sr_dp_2?dib=eyJ2IjoiMSJ9.UAAw9BPyviykEPjvONSuB09t19CwteSYgQEg1cXheiDfdn0PxOrhfr2TnhfZH4v0OI7KfeAHV9V8DrLqz5NzFBKkKbJmRv4oR2p1NIlb-RBaWZqxDPrUMWwNb0gKutILgZzZN270yZf0OpwjiuTdAgzQsEJDnUuSTNgAIh8XSB2K2kAPNaPxzshsdxcmc-87qjbLSl_RozojRrT3dHHuBf-QVFP78pXpoHLUiTFiUWA.UtsXuSVda4XjNHGhMKpNborTIgZ28jr1yV7sUtFveFw&amp;dib_tag=se&amp;m=A1HHNBJES4IIQK&amp;marketplaceID=ATVPDKIKX0DER&amp;nsdOptOutParam=true&amp;qid=1782103782&amp;s=merchant-items&amp;sr=1-13" target="_blank" rel="noopener"><div class="image"></div></a>
         <div class="body">
           <div class="title">Title unavailable - open product</div>
           <div class="meta">
-            <div class="metric score score-breakdown" tabindex="0" title="POD: 14/30
+            <div class="metric score score-breakdown" tabindex="0" title="POD: 10/30
 Momentum: 5/25
 Market: 0/20
 Competition: 0/10
-Niche: 3/15" data-tooltip="POD: 14/30
+Niche: 10/15" data-tooltip="POD: 10/30
 Momentum: 5/25
 Market: 0/20
 Competition: 0/10
-Niche: 3/15"><span>Opportunity Score:</span><strong>22</strong></div>
-            <div class="metric"><span>Seller:</span><strong>Poppop Store</strong></div>
+Niche: 10/15"><span>Opportunity Score:</span><strong>25</strong></div>
+            <div class="metric"><span>Seller:</span><strong>LASFOUR (Warrior)</strong></div>
             
             
             
             
             <div class="metric"><span>Reviews:</span><strong></strong><small>Rating: </small></div>
-            <div class="metric"><span>Source Rank:</span><strong>#46</strong></div>
-            <div class="metric"><span>Source Rank Change:</span><strong>-13</strong></div>
+            <div class="metric"><span>Source Rank:</span><strong>#38</strong></div>
+            <div class="metric"><span>Source Rank Change:</span><strong>-11</strong></div>
             <div class="metric"><span>Days Seen:</span><strong>2</strong></div>
-            <div class="metric"><span>POD Score:</span><strong>45</strong></div>
-            <div class="metric"><span>Niche:</span><strong>Custom Blanket</strong></div>
-            <div class="metric"><span>Tags:</span><strong>Custom Blanket</strong></div>
+            <div class="metric"><span>POD Score:</span><strong>35</strong></div>
+            <div class="metric"><span>Niche:</span><strong>Dad</strong></div>
+            <div class="metric"><span>Tags:</span><strong>Dad</strong></div>
+          </div>
+        </div>
+      </article>
+      <article class="card" data-card-index="24" data-opportunity-score="15" data-display-rank-change="-10" data-display-rank-velocity="-2.5" data-top-percentile="90.74" data-category-rank="9007199254740991" data-subcategory-rank="9007199254740991" data-review-count="0" data-rank-change="-10" data-pod-score="35">
+        <a href="https://www.amazon.com/NAZENTI-Anniversary-Personalized-Embroidered-Bicentennial/dp/B0GMG6S1PG/ref=cs_sr_dp_loc_2?dib=eyJ2IjoiMSJ9.2GhYbl_BvZ_9yUnegPjDbNR9wulhqN7eeS15LYWx6kexkTzzLovSEnqGC4WyOpFnNWYk_I6bZsXFo41nqRswOmziYAGoO8uBy7-lYctRfXcJML1bsfpk8F_lWoDUrOlVVBBr1hKoq7ZLTolbUxS3wj0WuQyqx2uVf-IgaTKSGNECrdqVGdFyeqSBAwURnM6tmBVQQoWTzvAVEy_V_AJbWAjwGiMmiNavUpP-ytOTl3I.ylF6DW_ey-jWr0dVD6BOMI1aHZZIl3wijtch5W7qqL0&amp;dib_tag=se&amp;m=A1OCNDPMK0L29K&amp;marketplaceID=ATVPDKIKX0DER&amp;nsdOptOutParam=true&amp;qid=1782103504&amp;s=merchant-items&amp;sr=1-16" target="_blank" rel="noopener"><div class="image"></div></a>
+        <div class="body">
+          <div class="title">Title unavailable - open product</div>
+          <div class="meta">
+            <div class="metric score score-breakdown" tabindex="0" title="POD: 10/30
+Momentum: 5/25
+Market: 0/20
+Competition: 0/10
+Niche: 0/15" data-tooltip="POD: 10/30
+Momentum: 5/25
+Market: 0/20
+Competition: 0/10
+Niche: 0/15"><span>Opportunity Score:</span><strong>15</strong></div>
+            <div class="metric"><span>Seller:</span><strong>Dily Pod</strong></div>
+            
+            
+            
+            
+            <div class="metric"><span>Reviews:</span><strong></strong><small>Rating: </small></div>
+            <div class="metric"><span>Source Rank:</span><strong>#49</strong></div>
+            <div class="metric"><span>Source Rank Change:</span><strong>-10</strong></div>
+            <div class="metric"><span>Days Seen:</span><strong>2</strong></div>
+            <div class="metric"><span>POD Score:</span><strong>35</strong></div>
+            <div class="metric"><span>Niche:</span><strong>Unknown</strong></div>
+            <div class="metric"><span>Tags:</span><strong>Unknown</strong></div>
+          </div>
+        </div>
+      </article>
+      <article class="card" data-card-index="25" data-opportunity-score="15" data-display-rank-change="-10" data-display-rank-velocity="-2.5" data-top-percentile="92.59" data-category-rank="9007199254740991" data-subcategory-rank="9007199254740991" data-review-count="0" data-rank-change="-10" data-pod-score="35">
+        <a href="https://www.amazon.com/NAZENTI-Anniversary-Personalized-Embroidered-Bicentennial/dp/B0GMGTLYJ1/ref=cs_sr_dp_loc_3?dib=eyJ2IjoiMSJ9.2GhYbl_BvZ_9yUnegPjDbNR9wulhqN7eeS15LYWx6kexkTzzLovSEnqGC4WyOpFnNWYk_I6bZsXFo41nqRswOmziYAGoO8uBy7-lYctRfXcJML1bsfpk8F_lWoDUrOlVVBBr1hKoq7ZLTolbUxS3wj0WuQyqx2uVf-IgaTKSGNECrdqVGdFyeqSBAwURnM6tmBVQQoWTzvAVEy_V_AJbWAjwGiMmiNavUpP-ytOTl3I.ylF6DW_ey-jWr0dVD6BOMI1aHZZIl3wijtch5W7qqL0&amp;dib_tag=se&amp;m=A1OCNDPMK0L29K&amp;marketplaceID=ATVPDKIKX0DER&amp;nsdOptOutParam=true&amp;qid=1782103504&amp;s=merchant-items&amp;sr=1-16" target="_blank" rel="noopener"><div class="image"></div></a>
+        <div class="body">
+          <div class="title">Title unavailable - open product</div>
+          <div class="meta">
+            <div class="metric score score-breakdown" tabindex="0" title="POD: 10/30
+Momentum: 5/25
+Market: 0/20
+Competition: 0/10
+Niche: 0/15" data-tooltip="POD: 10/30
+Momentum: 5/25
+Market: 0/20
+Competition: 0/10
+Niche: 0/15"><span>Opportunity Score:</span><strong>15</strong></div>
+            <div class="metric"><span>Seller:</span><strong>Dily Pod</strong></div>
+            
+            
+            
+            
+            <div class="metric"><span>Reviews:</span><strong></strong><small>Rating: </small></div>
+            <div class="metric"><span>Source Rank:</span><strong>#50</strong></div>
+            <div class="metric"><span>Source Rank Change:</span><strong>-10</strong></div>
+            <div class="metric"><span>Days Seen:</span><strong>2</strong></div>
+            <div class="metric"><span>POD Score:</span><strong>35</strong></div>
+            <div class="metric"><span>Niche:</span><strong>Unknown</strong></div>
+            <div class="metric"><span>Tags:</span><strong>Unknown</strong></div>
+          </div>
+        </div>
+      </article>
+      <article class="card" data-card-index="26" data-opportunity-score="15" data-display-rank-change="-37" data-display-rank-velocity="-9.25" data-top-percentile="94.44" data-category-rank="9007199254740991" data-subcategory-rank="9007199254740991" data-review-count="0" data-rank-change="-37" data-pod-score="35">
+        <a href="https://www.amazon.com/NAZENTI-Anniversary-Personalized-Embroidered-Bicentennial/dp/B0GMG5L2GG/ref=cs_sr_dp_loc_4?dib=eyJ2IjoiMSJ9.2GhYbl_BvZ_9yUnegPjDbNR9wulhqN7eeS15LYWx6kexkTzzLovSEnqGC4WyOpFnNWYk_I6bZsXFo41nqRswOmziYAGoO8uBy7-lYctRfXcJML1bsfpk8F_lWoDUrOlVVBBr1hKoq7ZLTolbUxS3wj0WuQyqx2uVf-IgaTKSGNECrdqVGdFyeqSBAwURnM6tmBVQQoWTzvAVEy_V_AJbWAjwGiMmiNavUpP-ytOTl3I.ylF6DW_ey-jWr0dVD6BOMI1aHZZIl3wijtch5W7qqL0&amp;dib_tag=se&amp;m=A1OCNDPMK0L29K&amp;marketplaceID=ATVPDKIKX0DER&amp;nsdOptOutParam=true&amp;qid=1782103504&amp;s=merchant-items&amp;sr=1-16" target="_blank" rel="noopener"><div class="image"></div></a>
+        <div class="body">
+          <div class="title">Title unavailable - open product</div>
+          <div class="meta">
+            <div class="metric score score-breakdown" tabindex="0" title="POD: 10/30
+Momentum: 5/25
+Market: 0/20
+Competition: 0/10
+Niche: 0/15" data-tooltip="POD: 10/30
+Momentum: 5/25
+Market: 0/20
+Competition: 0/10
+Niche: 0/15"><span>Opportunity Score:</span><strong>15</strong></div>
+            <div class="metric"><span>Seller:</span><strong>Dily Pod</strong></div>
+            
+            
+            
+            
+            <div class="metric"><span>Reviews:</span><strong></strong><small>Rating: </small></div>
+            <div class="metric"><span>Source Rank:</span><strong>#51</strong></div>
+            <div class="metric"><span>Source Rank Change:</span><strong>-37</strong></div>
+            <div class="metric"><span>Days Seen:</span><strong>2</strong></div>
+            <div class="metric"><span>POD Score:</span><strong>35</strong></div>
+            <div class="metric"><span>Niche:</span><strong>Unknown</strong></div>
+            <div class="metric"><span>Tags:</span><strong>Unknown</strong></div>
+          </div>
+        </div>
+      </article>
+      <article class="card" data-card-index="27" data-opportunity-score="15" data-display-rank-change="-11" data-display-rank-velocity="-2.75" data-top-percentile="96.3" data-category-rank="9007199254740991" data-subcategory-rank="9007199254740991" data-review-count="0" data-rank-change="-11" data-pod-score="35">
+        <a href="https://www.amazon.com/NAZENTI-Anniversary-Personalized-Embroidered-Bicentennial/dp/B0GSVZ5W4K/ref=cs_sr_dp_loc_5?dib=eyJ2IjoiMSJ9.2GhYbl_BvZ_9yUnegPjDbNR9wulhqN7eeS15LYWx6kexkTzzLovSEnqGC4WyOpFnNWYk_I6bZsXFo41nqRswOmziYAGoO8uBy7-lYctRfXcJML1bsfpk8F_lWoDUrOlVVBBr1hKoq7ZLTolbUxS3wj0WuQyqx2uVf-IgaTKSGNECrdqVGdFyeqSBAwURnM6tmBVQQoWTzvAVEy_V_AJbWAjwGiMmiNavUpP-ytOTl3I.ylF6DW_ey-jWr0dVD6BOMI1aHZZIl3wijtch5W7qqL0&amp;dib_tag=se&amp;m=A1OCNDPMK0L29K&amp;marketplaceID=ATVPDKIKX0DER&amp;nsdOptOutParam=true&amp;qid=1782103504&amp;s=merchant-items&amp;sr=1-16" target="_blank" rel="noopener"><div class="image"></div></a>
+        <div class="body">
+          <div class="title">Title unavailable - open product</div>
+          <div class="meta">
+            <div class="metric score score-breakdown" tabindex="0" title="POD: 10/30
+Momentum: 5/25
+Market: 0/20
+Competition: 0/10
+Niche: 0/15" data-tooltip="POD: 10/30
+Momentum: 5/25
+Market: 0/20
+Competition: 0/10
+Niche: 0/15"><span>Opportunity Score:</span><strong>15</strong></div>
+            <div class="metric"><span>Seller:</span><strong>Dily Pod</strong></div>
+            
+            
+            
+            
+            <div class="metric"><span>Reviews:</span><strong></strong><small>Rating: </small></div>
+            <div class="metric"><span>Source Rank:</span><strong>#52</strong></div>
+            <div class="metric"><span>Source Rank Change:</span><strong>-11</strong></div>
+            <div class="metric"><span>Days Seen:</span><strong>2</strong></div>
+            <div class="metric"><span>POD Score:</span><strong>35</strong></div>
+            <div class="metric"><span>Niche:</span><strong>Unknown</strong></div>
+            <div class="metric"><span>Tags:</span><strong>Unknown</strong></div>
+          </div>
+        </div>
+      </article>
+      <article class="card" data-card-index="28" data-opportunity-score="15" data-display-rank-change="-30" data-display-rank-velocity="-10.0" data-top-percentile="94.59" data-category-rank="9007199254740991" data-subcategory-rank="9007199254740991" data-review-count="0" data-rank-change="-30" data-pod-score="35">
+        <a href="https://www.amazon.com/Personalized-Baseball-Husband-Friends-Birthday/dp/B0DF4S71NP/ref=cs_sr_dp_loc_5?dib=eyJ2IjoiMSJ9.Bbms-2bxgL-jY29SHR4Brnkk6vZa3c-XWe8c2RexIdjK67JkXL2f991DC7mh5pzoVbbyLtxHkQWqKAV7U6bQP1vh5R5bafKO-__ycyoaCbYJaxrpZWVkG5hevT8D8MGvjejs1DPX1Q0n26b-tAzrdk--Y1OJK1dsS4iCDZyrSgkcQEVxtcTdGXebJ3aKb3CKhEOetIeQKJwUuZximHLbwXH8dNgximsDcKSzw57a-Qw.VqsaooEFEcE8-IQqvz6OGWDDBhSZAPdF_JbY2Ecr8cU&amp;dib_tag=se&amp;m=AJ8P8BSNENMZA&amp;marketplaceID=ATVPDKIKX0DER&amp;nsdOptOutParam=true&amp;qid=1782103549&amp;s=merchant-items&amp;sr=1-14" target="_blank" rel="noopener"><div class="image"></div></a>
+        <div class="body">
+          <div class="title">Title unavailable - open product</div>
+          <div class="meta">
+            <div class="metric score score-breakdown" tabindex="0" title="POD: 10/30
+Momentum: 5/25
+Market: 0/20
+Competition: 0/10
+Niche: 0/15" data-tooltip="POD: 10/30
+Momentum: 5/25
+Market: 0/20
+Competition: 0/10
+Niche: 0/15"><span>Opportunity Score:</span><strong>15</strong></div>
+            <div class="metric"><span>Seller:</span><strong>july17</strong></div>
+            
+            
+            
+            
+            <div class="metric"><span>Reviews:</span><strong></strong><small>Rating: </small></div>
+            <div class="metric"><span>Source Rank:</span><strong>#35</strong></div>
+            <div class="metric"><span>Source Rank Change:</span><strong>-30</strong></div>
+            <div class="metric"><span>Days Seen:</span><strong>2</strong></div>
+            <div class="metric"><span>POD Score:</span><strong>35</strong></div>
+            <div class="metric"><span>Niche:</span><strong>Unknown</strong></div>
+            <div class="metric"><span>Tags:</span><strong>Unknown</strong></div>
+          </div>
+        </div>
+      </article>
+      <article class="card" data-card-index="29" data-opportunity-score="15" data-display-rank-change="-15" data-display-rank-velocity="-5.0" data-top-percentile="90.38" data-category-rank="9007199254740991" data-subcategory-rank="9007199254740991" data-review-count="0" data-rank-change="-15" data-pod-score="35">
+        <a href="https://www.amazon.com/Pofily-Sweatshirt-Personalized-Grandkids-Birthday/dp/B0G2C24BPW/ref=is_sr_dp_2?dib=eyJ2IjoiMSJ9.Vta8uR1VKqD0S26xo2siQBejkwRJlfSGzFi2of9qytL9q4j1fpzqruzmpi21ZwTcXgssmUoAdfkcpENgaMMAWVsdI4RuZXNgTt0hFM2iaYHM4klM1esPJfGlV-4KU2WFXqNrYBvfQckodOaA6MGdADBfJJxclTq_ZHXQJeXMMnKaahxT9xr89rF0-yG345OHkc5xSNXghZFGIUTHhbMJYpSwiw3tKBuqCSeOmgIrlz4._XNyQ1k-N784xXVqBFxsPwvOo-dFEMXVL3vucvtd__4&amp;dib_tag=se&amp;m=A2EE0SSLB7X91Q&amp;marketplaceID=ATVPDKIKX0DER&amp;nsdOptOutParam=true&amp;qid=1782103660&amp;s=merchant-items&amp;sr=1-16" target="_blank" rel="noopener"><div class="image"></div></a>
+        <div class="body">
+          <div class="title">Title unavailable - open product</div>
+          <div class="meta">
+            <div class="metric score score-breakdown" tabindex="0" title="POD: 10/30
+Momentum: 5/25
+Market: 0/20
+Competition: 0/10
+Niche: 0/15" data-tooltip="POD: 10/30
+Momentum: 5/25
+Market: 0/20
+Competition: 0/10
+Niche: 0/15"><span>Opportunity Score:</span><strong>15</strong></div>
+            <div class="metric"><span>Seller:</span><strong>POLIFY</strong></div>
+            
+            
+            
+            
+            <div class="metric"><span>Reviews:</span><strong></strong><small>Rating: </small></div>
+            <div class="metric"><span>Source Rank:</span><strong>#47</strong></div>
+            <div class="metric"><span>Source Rank Change:</span><strong>-15</strong></div>
+            <div class="metric"><span>Days Seen:</span><strong>3</strong></div>
+            <div class="metric"><span>POD Score:</span><strong>35</strong></div>
+            <div class="metric"><span>Niche:</span><strong>Unknown</strong></div>
+            <div class="metric"><span>Tags:</span><strong>Unknown</strong></div>
+          </div>
+        </div>
+      </article>
+      <article class="card" data-card-index="30" data-opportunity-score="15" data-display-rank-change="-15" data-display-rank-velocity="-5.0" data-top-percentile="92.31" data-category-rank="9007199254740991" data-subcategory-rank="9007199254740991" data-review-count="0" data-rank-change="-15" data-pod-score="35">
+        <a href="https://www.amazon.com/Pofily-Sweatshirt-Personalized-Grandkids-Birthday/dp/B0G2BZ2L1S/ref=is_sr_dp_3?dib=eyJ2IjoiMSJ9.Vta8uR1VKqD0S26xo2siQBejkwRJlfSGzFi2of9qytL9q4j1fpzqruzmpi21ZwTcXgssmUoAdfkcpENgaMMAWVsdI4RuZXNgTt0hFM2iaYHM4klM1esPJfGlV-4KU2WFXqNrYBvfQckodOaA6MGdADBfJJxclTq_ZHXQJeXMMnKaahxT9xr89rF0-yG345OHkc5xSNXghZFGIUTHhbMJYpSwiw3tKBuqCSeOmgIrlz4._XNyQ1k-N784xXVqBFxsPwvOo-dFEMXVL3vucvtd__4&amp;dib_tag=se&amp;m=A2EE0SSLB7X91Q&amp;marketplaceID=ATVPDKIKX0DER&amp;nsdOptOutParam=true&amp;qid=1782103660&amp;s=merchant-items&amp;sr=1-16" target="_blank" rel="noopener"><div class="image"></div></a>
+        <div class="body">
+          <div class="title">Title unavailable - open product</div>
+          <div class="meta">
+            <div class="metric score score-breakdown" tabindex="0" title="POD: 10/30
+Momentum: 5/25
+Market: 0/20
+Competition: 0/10
+Niche: 0/15" data-tooltip="POD: 10/30
+Momentum: 5/25
+Market: 0/20
+Competition: 0/10
+Niche: 0/15"><span>Opportunity Score:</span><strong>15</strong></div>
+            <div class="metric"><span>Seller:</span><strong>POLIFY</strong></div>
+            
+            
+            
+            
+            <div class="metric"><span>Reviews:</span><strong></strong><small>Rating: </small></div>
+            <div class="metric"><span>Source Rank:</span><strong>#48</strong></div>
+            <div class="metric"><span>Source Rank Change:</span><strong>-15</strong></div>
+            <div class="metric"><span>Days Seen:</span><strong>3</strong></div>
+            <div class="metric"><span>POD Score:</span><strong>35</strong></div>
+            <div class="metric"><span>Niche:</span><strong>Unknown</strong></div>
+            <div class="metric"><span>Tags:</span><strong>Unknown</strong></div>
+          </div>
+        </div>
+      </article>
+      <article class="card" data-card-index="31" data-opportunity-score="15" data-display-rank-change="-15" data-display-rank-velocity="-5.0" data-top-percentile="94.23" data-category-rank="9007199254740991" data-subcategory-rank="9007199254740991" data-review-count="0" data-rank-change="-15" data-pod-score="35">
+        <a href="https://www.amazon.com/Pofily-Sweatshirt-Personalized-Grandkids-Birthday/dp/B0G2C3GCWJ/ref=is_sr_dp_4?dib=eyJ2IjoiMSJ9.Vta8uR1VKqD0S26xo2siQBejkwRJlfSGzFi2of9qytL9q4j1fpzqruzmpi21ZwTcXgssmUoAdfkcpENgaMMAWVsdI4RuZXNgTt0hFM2iaYHM4klM1esPJfGlV-4KU2WFXqNrYBvfQckodOaA6MGdADBfJJxclTq_ZHXQJeXMMnKaahxT9xr89rF0-yG345OHkc5xSNXghZFGIUTHhbMJYpSwiw3tKBuqCSeOmgIrlz4._XNyQ1k-N784xXVqBFxsPwvOo-dFEMXVL3vucvtd__4&amp;dib_tag=se&amp;m=A2EE0SSLB7X91Q&amp;marketplaceID=ATVPDKIKX0DER&amp;nsdOptOutParam=true&amp;qid=1782103660&amp;s=merchant-items&amp;sr=1-16" target="_blank" rel="noopener"><div class="image"></div></a>
+        <div class="body">
+          <div class="title">Title unavailable - open product</div>
+          <div class="meta">
+            <div class="metric score score-breakdown" tabindex="0" title="POD: 10/30
+Momentum: 5/25
+Market: 0/20
+Competition: 0/10
+Niche: 0/15" data-tooltip="POD: 10/30
+Momentum: 5/25
+Market: 0/20
+Competition: 0/10
+Niche: 0/15"><span>Opportunity Score:</span><strong>15</strong></div>
+            <div class="metric"><span>Seller:</span><strong>POLIFY</strong></div>
+            
+            
+            
+            
+            <div class="metric"><span>Reviews:</span><strong></strong><small>Rating: </small></div>
+            <div class="metric"><span>Source Rank:</span><strong>#49</strong></div>
+            <div class="metric"><span>Source Rank Change:</span><strong>-15</strong></div>
+            <div class="metric"><span>Days Seen:</span><strong>3</strong></div>
+            <div class="metric"><span>POD Score:</span><strong>35</strong></div>
+            <div class="metric"><span>Niche:</span><strong>Unknown</strong></div>
+            <div class="metric"><span>Tags:</span><strong>Unknown</strong></div>
+          </div>
+        </div>
+      </article>
+      <article class="card" data-card-index="32" data-opportunity-score="15" data-display-rank-change="-15" data-display-rank-velocity="-5.0" data-top-percentile="96.15" data-category-rank="9007199254740991" data-subcategory-rank="9007199254740991" data-review-count="0" data-rank-change="-15" data-pod-score="35">
+        <a href="https://www.amazon.com/Pofily-Sweatshirt-Personalized-Grandkids-Birthday/dp/B0G2C4D232/ref=is_sr_dp_5?dib=eyJ2IjoiMSJ9.Vta8uR1VKqD0S26xo2siQBejkwRJlfSGzFi2of9qytL9q4j1fpzqruzmpi21ZwTcXgssmUoAdfkcpENgaMMAWVsdI4RuZXNgTt0hFM2iaYHM4klM1esPJfGlV-4KU2WFXqNrYBvfQckodOaA6MGdADBfJJxclTq_ZHXQJeXMMnKaahxT9xr89rF0-yG345OHkc5xSNXghZFGIUTHhbMJYpSwiw3tKBuqCSeOmgIrlz4._XNyQ1k-N784xXVqBFxsPwvOo-dFEMXVL3vucvtd__4&amp;dib_tag=se&amp;m=A2EE0SSLB7X91Q&amp;marketplaceID=ATVPDKIKX0DER&amp;nsdOptOutParam=true&amp;qid=1782103660&amp;s=merchant-items&amp;sr=1-16" target="_blank" rel="noopener"><div class="image"></div></a>
+        <div class="body">
+          <div class="title">Title unavailable - open product</div>
+          <div class="meta">
+            <div class="metric score score-breakdown" tabindex="0" title="POD: 10/30
+Momentum: 5/25
+Market: 0/20
+Competition: 0/10
+Niche: 0/15" data-tooltip="POD: 10/30
+Momentum: 5/25
+Market: 0/20
+Competition: 0/10
+Niche: 0/15"><span>Opportunity Score:</span><strong>15</strong></div>
+            <div class="metric"><span>Seller:</span><strong>POLIFY</strong></div>
+            
+            
+            
+            
+            <div class="metric"><span>Reviews:</span><strong></strong><small>Rating: </small></div>
+            <div class="metric"><span>Source Rank:</span><strong>#50</strong></div>
+            <div class="metric"><span>Source Rank Change:</span><strong>-15</strong></div>
+            <div class="metric"><span>Days Seen:</span><strong>3</strong></div>
+            <div class="metric"><span>POD Score:</span><strong>35</strong></div>
+            <div class="metric"><span>Niche:</span><strong>Unknown</strong></div>
+            <div class="metric"><span>Tags:</span><strong>Unknown</strong></div>
+          </div>
+        </div>
+      </article>
+      <article class="card" data-card-index="33" data-opportunity-score="15" data-display-rank-change="-15" data-display-rank-velocity="-5.0" data-top-percentile="98.08" data-category-rank="9007199254740991" data-subcategory-rank="9007199254740991" data-review-count="0" data-rank-change="-15" data-pod-score="35">
+        <a href="https://www.amazon.com/Pofily-Sweatshirt-Personalized-Grandkids-Birthday/dp/B0G2C125RC/ref=is_sr_dp_6?dib=eyJ2IjoiMSJ9.Vta8uR1VKqD0S26xo2siQBejkwRJlfSGzFi2of9qytL9q4j1fpzqruzmpi21ZwTcXgssmUoAdfkcpENgaMMAWVsdI4RuZXNgTt0hFM2iaYHM4klM1esPJfGlV-4KU2WFXqNrYBvfQckodOaA6MGdADBfJJxclTq_ZHXQJeXMMnKaahxT9xr89rF0-yG345OHkc5xSNXghZFGIUTHhbMJYpSwiw3tKBuqCSeOmgIrlz4._XNyQ1k-N784xXVqBFxsPwvOo-dFEMXVL3vucvtd__4&amp;dib_tag=se&amp;m=A2EE0SSLB7X91Q&amp;marketplaceID=ATVPDKIKX0DER&amp;nsdOptOutParam=true&amp;qid=1782103660&amp;s=merchant-items&amp;sr=1-16" target="_blank" rel="noopener"><div class="image"></div></a>
+        <div class="body">
+          <div class="title">Title unavailable - open product</div>
+          <div class="meta">
+            <div class="metric score score-breakdown" tabindex="0" title="POD: 10/30
+Momentum: 5/25
+Market: 0/20
+Competition: 0/10
+Niche: 0/15" data-tooltip="POD: 10/30
+Momentum: 5/25
+Market: 0/20
+Competition: 0/10
+Niche: 0/15"><span>Opportunity Score:</span><strong>15</strong></div>
+            <div class="metric"><span>Seller:</span><strong>POLIFY</strong></div>
+            
+            
+            
+            
+            <div class="metric"><span>Reviews:</span><strong></strong><small>Rating: </small></div>
+            <div class="metric"><span>Source Rank:</span><strong>#51</strong></div>
+            <div class="metric"><span>Source Rank Change:</span><strong>-15</strong></div>
+            <div class="metric"><span>Days Seen:</span><strong>3</strong></div>
+            <div class="metric"><span>POD Score:</span><strong>35</strong></div>
+            <div class="metric"><span>Niche:</span><strong>Unknown</strong></div>
+            <div class="metric"><span>Tags:</span><strong>Unknown</strong></div>
+          </div>
+        </div>
+      </article>
+      <article class="card" data-card-index="34" data-opportunity-score="15" data-display-rank-change="-11" data-display-rank-velocity="-1.83" data-top-percentile="90.7" data-category-rank="9007199254740991" data-subcategory-rank="9007199254740991" data-review-count="0" data-rank-change="-11" data-pod-score="35">
+        <a href="https://www.amazon.com/LASFOUR-Legend-Husband-Grandpa-Personalized/dp/B0D3T62BJ9/ref=is_sr_dp_3?dib=eyJ2IjoiMSJ9.UAAw9BPyviykEPjvONSuB09t19CwteSYgQEg1cXheiDfdn0PxOrhfr2TnhfZH4v0OI7KfeAHV9V8DrLqz5NzFBKkKbJmRv4oR2p1NIlb-RBaWZqxDPrUMWwNb0gKutILgZzZN270yZf0OpwjiuTdAgzQsEJDnUuSTNgAIh8XSB2K2kAPNaPxzshsdxcmc-87qjbLSl_RozojRrT3dHHuBf-QVFP78pXpoHLUiTFiUWA.UtsXuSVda4XjNHGhMKpNborTIgZ28jr1yV7sUtFveFw&amp;dib_tag=se&amp;m=A1HHNBJES4IIQK&amp;marketplaceID=ATVPDKIKX0DER&amp;nsdOptOutParam=true&amp;qid=1782103782&amp;s=merchant-items&amp;sr=1-13" target="_blank" rel="noopener"><div class="image"></div></a>
+        <div class="body">
+          <div class="title">Title unavailable - open product</div>
+          <div class="meta">
+            <div class="metric score score-breakdown" tabindex="0" title="POD: 10/30
+Momentum: 5/25
+Market: 0/20
+Competition: 0/10
+Niche: 0/15" data-tooltip="POD: 10/30
+Momentum: 5/25
+Market: 0/20
+Competition: 0/10
+Niche: 0/15"><span>Opportunity Score:</span><strong>15</strong></div>
+            <div class="metric"><span>Seller:</span><strong>LASFOUR (Warrior)</strong></div>
+            
+            
+            
+            
+            <div class="metric"><span>Reviews:</span><strong></strong><small>Rating: </small></div>
+            <div class="metric"><span>Source Rank:</span><strong>#39</strong></div>
+            <div class="metric"><span>Source Rank Change:</span><strong>-11</strong></div>
+            <div class="metric"><span>Days Seen:</span><strong>2</strong></div>
+            <div class="metric"><span>POD Score:</span><strong>35</strong></div>
+            <div class="metric"><span>Niche:</span><strong>Unknown</strong></div>
+            <div class="metric"><span>Tags:</span><strong>Unknown</strong></div>
+          </div>
+        </div>
+      </article>
+      <article class="card" data-card-index="35" data-opportunity-score="15" data-display-rank-change="-11" data-display-rank-velocity="-1.83" data-top-percentile="93.02" data-category-rank="9007199254740991" data-subcategory-rank="9007199254740991" data-review-count="0" data-rank-change="-11" data-pod-score="35">
+        <a href="https://www.amazon.com/LASFOUR-Legend-Husband-Grandpa-Personalized/dp/B0D53WCT6M/ref=is_sr_dp_4?dib=eyJ2IjoiMSJ9.UAAw9BPyviykEPjvONSuB09t19CwteSYgQEg1cXheiDfdn0PxOrhfr2TnhfZH4v0OI7KfeAHV9V8DrLqz5NzFBKkKbJmRv4oR2p1NIlb-RBaWZqxDPrUMWwNb0gKutILgZzZN270yZf0OpwjiuTdAgzQsEJDnUuSTNgAIh8XSB2K2kAPNaPxzshsdxcmc-87qjbLSl_RozojRrT3dHHuBf-QVFP78pXpoHLUiTFiUWA.UtsXuSVda4XjNHGhMKpNborTIgZ28jr1yV7sUtFveFw&amp;dib_tag=se&amp;m=A1HHNBJES4IIQK&amp;marketplaceID=ATVPDKIKX0DER&amp;nsdOptOutParam=true&amp;qid=1782103782&amp;s=merchant-items&amp;sr=1-13" target="_blank" rel="noopener"><div class="image"></div></a>
+        <div class="body">
+          <div class="title">Title unavailable - open product</div>
+          <div class="meta">
+            <div class="metric score score-breakdown" tabindex="0" title="POD: 10/30
+Momentum: 5/25
+Market: 0/20
+Competition: 0/10
+Niche: 0/15" data-tooltip="POD: 10/30
+Momentum: 5/25
+Market: 0/20
+Competition: 0/10
+Niche: 0/15"><span>Opportunity Score:</span><strong>15</strong></div>
+            <div class="metric"><span>Seller:</span><strong>LASFOUR (Warrior)</strong></div>
+            
+            
+            
+            
+            <div class="metric"><span>Reviews:</span><strong></strong><small>Rating: </small></div>
+            <div class="metric"><span>Source Rank:</span><strong>#40</strong></div>
+            <div class="metric"><span>Source Rank Change:</span><strong>-11</strong></div>
+            <div class="metric"><span>Days Seen:</span><strong>2</strong></div>
+            <div class="metric"><span>POD Score:</span><strong>35</strong></div>
+            <div class="metric"><span>Niche:</span><strong>Unknown</strong></div>
+            <div class="metric"><span>Tags:</span><strong>Unknown</strong></div>
+          </div>
+        </div>
+      </article>
+      <article class="card" data-card-index="36" data-opportunity-score="15" data-display-rank-change="-11" data-display-rank-velocity="-1.83" data-top-percentile="95.35" data-category-rank="9007199254740991" data-subcategory-rank="9007199254740991" data-review-count="0" data-rank-change="-11" data-pod-score="35">
+        <a href="https://www.amazon.com/LASFOUR-Legend-Husband-Grandpa-Personalized/dp/B0D59CTQRG/ref=is_sr_dp_5?dib=eyJ2IjoiMSJ9.UAAw9BPyviykEPjvONSuB09t19CwteSYgQEg1cXheiDfdn0PxOrhfr2TnhfZH4v0OI7KfeAHV9V8DrLqz5NzFBKkKbJmRv4oR2p1NIlb-RBaWZqxDPrUMWwNb0gKutILgZzZN270yZf0OpwjiuTdAgzQsEJDnUuSTNgAIh8XSB2K2kAPNaPxzshsdxcmc-87qjbLSl_RozojRrT3dHHuBf-QVFP78pXpoHLUiTFiUWA.UtsXuSVda4XjNHGhMKpNborTIgZ28jr1yV7sUtFveFw&amp;dib_tag=se&amp;m=A1HHNBJES4IIQK&amp;marketplaceID=ATVPDKIKX0DER&amp;nsdOptOutParam=true&amp;qid=1782103782&amp;s=merchant-items&amp;sr=1-13" target="_blank" rel="noopener"><div class="image"></div></a>
+        <div class="body">
+          <div class="title">Title unavailable - open product</div>
+          <div class="meta">
+            <div class="metric score score-breakdown" tabindex="0" title="POD: 10/30
+Momentum: 5/25
+Market: 0/20
+Competition: 0/10
+Niche: 0/15" data-tooltip="POD: 10/30
+Momentum: 5/25
+Market: 0/20
+Competition: 0/10
+Niche: 0/15"><span>Opportunity Score:</span><strong>15</strong></div>
+            <div class="metric"><span>Seller:</span><strong>LASFOUR (Warrior)</strong></div>
+            
+            
+            
+            
+            <div class="metric"><span>Reviews:</span><strong></strong><small>Rating: </small></div>
+            <div class="metric"><span>Source Rank:</span><strong>#41</strong></div>
+            <div class="metric"><span>Source Rank Change:</span><strong>-11</strong></div>
+            <div class="metric"><span>Days Seen:</span><strong>2</strong></div>
+            <div class="metric"><span>POD Score:</span><strong>35</strong></div>
+            <div class="metric"><span>Niche:</span><strong>Unknown</strong></div>
+            <div class="metric"><span>Tags:</span><strong>Unknown</strong></div>
+          </div>
+        </div>
+      </article>
+      <article class="card" data-card-index="37" data-opportunity-score="15" data-display-rank-change="-11" data-display-rank-velocity="-1.83" data-top-percentile="97.67" data-category-rank="9007199254740991" data-subcategory-rank="9007199254740991" data-review-count="0" data-rank-change="-11" data-pod-score="35">
+        <a href="https://www.amazon.com/LASFOUR-Legend-Husband-Grandpa-Personalized/dp/B0F6N8KNJR/ref=is_sr_dp_6?dib=eyJ2IjoiMSJ9.UAAw9BPyviykEPjvONSuB09t19CwteSYgQEg1cXheiDfdn0PxOrhfr2TnhfZH4v0OI7KfeAHV9V8DrLqz5NzFBKkKbJmRv4oR2p1NIlb-RBaWZqxDPrUMWwNb0gKutILgZzZN270yZf0OpwjiuTdAgzQsEJDnUuSTNgAIh8XSB2K2kAPNaPxzshsdxcmc-87qjbLSl_RozojRrT3dHHuBf-QVFP78pXpoHLUiTFiUWA.UtsXuSVda4XjNHGhMKpNborTIgZ28jr1yV7sUtFveFw&amp;dib_tag=se&amp;m=A1HHNBJES4IIQK&amp;marketplaceID=ATVPDKIKX0DER&amp;nsdOptOutParam=true&amp;qid=1782103782&amp;s=merchant-items&amp;sr=1-13" target="_blank" rel="noopener"><div class="image"></div></a>
+        <div class="body">
+          <div class="title">Title unavailable - open product</div>
+          <div class="meta">
+            <div class="metric score score-breakdown" tabindex="0" title="POD: 10/30
+Momentum: 5/25
+Market: 0/20
+Competition: 0/10
+Niche: 0/15" data-tooltip="POD: 10/30
+Momentum: 5/25
+Market: 0/20
+Competition: 0/10
+Niche: 0/15"><span>Opportunity Score:</span><strong>15</strong></div>
+            <div class="metric"><span>Seller:</span><strong>LASFOUR (Warrior)</strong></div>
+            
+            
+            
+            
+            <div class="metric"><span>Reviews:</span><strong></strong><small>Rating: </small></div>
+            <div class="metric"><span>Source Rank:</span><strong>#42</strong></div>
+            <div class="metric"><span>Source Rank Change:</span><strong>-11</strong></div>
+            <div class="metric"><span>Days Seen:</span><strong>2</strong></div>
+            <div class="metric"><span>POD Score:</span><strong>35</strong></div>
+            <div class="metric"><span>Niche:</span><strong>Unknown</strong></div>
+            <div class="metric"><span>Tags:</span><strong>Unknown</strong></div>
           </div>
         </div>
       </article>
