@@ -25,15 +25,31 @@
     .card.is-hidden { display: none; }
     .image { aspect-ratio: 1 / 1; background: #edf1f5; display: flex; align-items: center; justify-content: center; }
     .image img { width: 100%; height: 100%; object-fit: contain; display: block; }
+    .image-placeholder { color: #829ab1; font-size: 13px; }
     .body { padding: 12px; }
     .title { font-size: 13px; font-weight: 700; line-height: 1.35; min-height: 52px; }
-    .controls { margin: 0 0 16px; display: flex; gap: 8px; align-items: center; }
+    .controls { margin: 0 0 16px; display: flex; flex-wrap: wrap; gap: 10px; align-items: center; }
     .controls label { font-size: 12px; font-weight: 700; color: #52606d; }
     .controls select { border: 1px solid #cad3df; border-radius: 6px; background: #fff; color: #102a43; padding: 8px 10px; font-size: 13px; }
+    .product-controls { align-items: flex-end; background: #fff; border: 1px solid #d8dee8; border-radius: 8px; padding: 10px; }
+    .control-group { display: grid; gap: 5px; }
+    .filter-toggles { display: flex; flex-wrap: wrap; gap: 8px 12px; align-items: center; }
+    .filter-toggles label { display: inline-flex; align-items: center; gap: 5px; white-space: nowrap; }
+    .priority-section { margin: 0 0 22px; }
+    .section-heading { display: flex; align-items: baseline; justify-content: space-between; gap: 12px; margin: 0 0 10px; }
+    .section-heading span { color: #627d98; font-size: 12px; }
+    .priority-grid { grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); }
     .meta { margin-top: 10px; display: grid; gap: 8px; font-size: 12px; color: #52606d; }
     .metric span, .category-rank span { display: block; font-size: 11px; font-weight: 700; color: #627d98; text-transform: uppercase; }
     .metric strong, .category-rank strong { display: block; margin-top: 2px; font-size: 13px; color: #1f2933; font-weight: 700; }
     .metric small { display: block; margin-top: 2px; font-size: 12px; color: #52606d; }
+    .movement-metric strong { color: #0b7285; font-size: 15px; }
+    .badge-list { display: flex; flex-wrap: wrap; gap: 6px; margin: 0 0 8px; }
+    .badge { border: 1px solid #88bdbc; border-radius: 999px; background: #e6f4f1; color: #125c59; padding: 4px 8px; font-size: 11px; font-weight: 700; }
+    .score-components { display: flex; flex-wrap: wrap; gap: 6px; color: #52606d; font-size: 11px; }
+    .score-components span { border: 1px solid #d8dee8; border-radius: 6px; background: #f8fafc; padding: 4px 6px; }
+    .score-components strong { color: #102a43; }
+    .card-actions { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 12px; }
     .category-rank { border: 1px solid #cfd8e3; border-left-width: 5px; border-radius: 7px; padding: 9px 10px; background: #f7f9fb; }
     .category-rank strong { font-size: 15px; color: #102a43; }
     .category-rank--green { border-color: #2f855a; background: #edf8f1; }
@@ -115,6 +131,10 @@
     .drill-meta { margin-top: 7px; display: flex; flex-wrap: wrap; gap: 7px 12px; font-size: 12px; color: #52606d; }
     .drill-meta strong { color: #334e68; }
     .quick-actions { margin-top: 9px; display: flex; flex-wrap: wrap; gap: 7px; }
+    .drill-groups { display: grid; gap: 14px; padding: 14px; }
+    .drill-group { border: 1px solid #e1e8f0; border-radius: 8px; background: #fbfcfd; }
+    .drill-group h3 { margin: 0; padding: 10px 12px 0; font-size: 14px; color: #102a43; }
+    .drill-group .drill-panel { border-top: 0; }
     .niche-card-drilldown { margin: 4px 0 0; padding: 10px; }
     .niche-card-drilldown .drill-panel { padding: 10px 0 0; border-top: 0; }
     .niche-card-drilldown .drill-product { grid-template-columns: 42px 54px minmax(0, 1fr); }
@@ -137,12 +157,14 @@
     <div class="bar">
       <div class="brand">Amazon Market Spy</div>
       <nav>
-        <a href="top_opportunities.html">Top Opportunities</a>
-        <a href="all_opportunities.html">All Opportunities</a>
-        <a href="new_products.html" class="active">New Products</a>
-        <a href="rising_products.html">Rising Products</a>
+        <a href="priority_board.html">Priority Board</a>
+        <a href="top_winners.html">Top Winners</a>
+        <a href="new_breakouts.html">New Breakouts</a>
+        <a href="fast_movers.html">Fast Movers</a>
+        <a href="new_releases.html">New Releases</a>
         <a href="seller_intelligence.html">Seller Intelligence</a>
         <a href="niche_intelligence.html">Niche Intelligence</a>
+        <a href="all_opportunities.html">All Products</a>
         <a href="non_pod_excluded.html">Excluded Non-POD</a>
       </nav>
     </div>
@@ -150,11 +172,12 @@
   <main>
     <h1>New Products</h1>
     <section class="summary">
-      <div><strong>16</strong><span>Records</span></div>
+      <div><strong>29</strong><span>Records</span></div>
     </section>
-    <section class="controls">
-      <label for="card-sort">Sort</label>
-      <select id="card-sort" data-card-sort>
+    <section class="controls product-controls">
+      <div class="control-group">
+        <label for="card-sort">Sort</label>
+        <select id="card-sort" data-card-sort>
         <option value="">Current Order</option>
         <option value="opportunityScore">Opportunity Score</option>
         <option value="bestMovers">Best Movers</option>
@@ -165,472 +188,1089 @@
         <option value="categoryRank">Amazon BSR</option>
         <option value="reviewCount">Review Count</option>
         <option value="rankChange">Rank Change</option>
+        <option value="growthVelocity">Growth Velocity</option>
+        <option value="newBreakoutScore">New Breakout Score</option>
         <option value="podScore">POD Score</option>
-      </select>
+        </select>
+      </div>
+      <div class="control-group filter-toggles" aria-label="Product filters">
+        <label><input type="checkbox" data-card-filter="pod"> POD only</label>
+        <label><input type="checkbox" data-card-filter="new"> New only</label>
+        <label><input type="checkbox" data-card-filter="rankMover"> Rank movers only</label>
+        <label><input type="checkbox" data-card-filter="top10"> Top 10 only</label>
+        <label><input type="checkbox" data-card-filter="newRelease"> New Releases only</label>
+      </div>
+      <div class="control-group">
+        <label for="seller-filter">Seller</label>
+        <select id="seller-filter" data-product-seller-filter>
+          <option value="all">All sellers</option>
+          <option value="gopod shop">GoPod Shop</option>
+          <option value="hucao">HUCAO</option>
+          <option value="lasfour (warrior)">LASFOUR (Warrior)</option>
+          <option value="leme order">Leme Order</option>
+          <option value="love signal">Love Signal</option>
+          <option value="lovelytee">LOVELYTEE</option>
+          <option value="nicepod-llc">NicePod-LLC</option>
+          <option value="polify">POLIFY</option>
+          <option value="teetheday">TeeTheDay</option>
+        </select>
+      </div>
+      <div class="control-group">
+        <label for="product-niche-filter">Niche</label>
+        <select id="product-niche-filter" data-product-niche-filter>
+          <option value="all">All niches</option>
+          <option value="4th of july">4th of July</option>
+          <option value="custom shirt">Custom Shirt</option>
+          <option value="dad">Dad</option>
+          <option value="dog">Dog</option>
+          <option value="mom">Mom</option>
+          <option value="unknown">Unknown</option>
+        </select>
+      </div>
     </section>
     <section class="grid" data-sortable-cards>
-      <article class="card" data-card-index="0" data-opportunity-score="86" data-display-rank-change="37" data-display-rank-velocity="4.62" data-top-percentile="25.49" data-category-rank="263344" data-subcategory-rank="2788" data-review-count="9" data-rank-change="37" data-pod-score="185">
-        <a href="https://www.amazon.com/NAZENTI-Personalized-Memorial-Sympathy-Remembrance/dp/B0GTTVV2KJ/ref=sr_1_13?dib=eyJ2IjoiMSJ9.eMiNDG-J3sK_oCOmm8NaoTuEJJOH4Vxo-uNcWH-xoxYFI9QgSdRbFNKPT6y1_40lKPquLGnSPQ0-hTWh1wfBem8KRj5qsEY-fdMPXVf7OX0LFLqVUIPFZbVaDias2VQU5FYvYRH4tNz36LOGPmU9gQDY_Z5WnAvQe_6pNtXwRPreS4iWe2PCJAFOLESNmrZSA_iYfU9UIFarDxFYYb3RkqKkrU8dXfe-k2jtADZIN2E.bAISihZ_9KkXDoy6dAQzsjd8mJSP17cTnJtm3noLZGM&amp;dib_tag=se&amp;m=A1XFOKFJ6LIQB&amp;marketplaceID=ATVPDKIKX0DER&amp;nsdOptOutParam=true&amp;qid=1782176315&amp;s=merchant-items&amp;sr=1-13" target="_blank" rel="noopener"><div class="image"><img src="images/B0GTTVV2KJ.jpg" alt="NAZENTI Personalized Pet Memorial Crystal Ball Night Light Custom Photo Name Quote Your Wings were Ready Sympathy Gift LED Remembrance Keepsake for Loss of Dog Cat K9 Crystal Globe with Wooden Base"></div></a>
+      <article class="card" data-card-index="0" data-opportunity-score="72" data-display-rank-change="10" data-display-rank-velocity="1.11" data-top-percentile="6.45" data-category-rank="9007199254740991" data-subcategory-rank="9007199254740991" data-review-count="16" data-rank-change="10" data-growth-velocity="5.0" data-new-breakout-score="163" data-pod-score="95" data-pod="true" data-new="true" data-rank-mover="true" data-top10="true" data-new-release="false" data-seller-key="love signal" data-niche-key="4th of july">
+        <a href="https://www.amazon.com/DILYPOD-Personalized-Anniversary-Decorations-Patriotic/dp/B0H37165MN/ref=sr_1_2?dib=eyJ2IjoiMSJ9.HiNIyEZCjt_JgdKU9K0eGjgW72luABu1G1sGxmHQVPhOPR7Ma5GcwQ_Sone4GcL8JZo3p_YqHv2o3myKTxnme98sD_XyTqKc-g4qpFBiIv1R9W1Qm8Iv4snvf7eRjVzSHSFXHA5hd-pINx3QTgUAyeOw90HwN4AmgJ3CRdqYkl0NIrlLDeht3x0eggnnPhuNYuZNRJlNM0Y9cM4JV9oXX8ya5guBug9yhwtWjHEeKtw.UyJVCzBS8KptjEAHLmZ2xj7v_fS5xRArESIDP5ryniY&amp;dib_tag=se&amp;m=A2HPAAHAS76S1D&amp;marketplaceID=ATVPDKIKX0DER&amp;nsdOptOutParam=true&amp;qid=1782270727&amp;s=merchant-items&amp;sr=1-2" target="_blank" rel="noopener"><div class="image"><img src="https://m.media-amazon.com/images/I/81eZ1kOLDmL._AC_UY218_.jpg" alt="DILYPOD Personalized America 250th Anniversary Banner, Custom 250 Years Of Freedom Flag, USA 250th 4th of July Decorations Patriotic Gift, America 1776 2026 Banner, Custom Family Outdoor Sign 15"></div></a>
         <div class="body">
-          <div class="title">NAZENTI Personalized Pet Memorial Crystal Ball Night Light Custom Photo Name Quote Your Wings were Ready Sympathy Gift LED Remembrance Keepsake for Loss of Dog Cat K9 Crystal Globe with Wooden Base</div>
+          <div class="badge-list"><span class="badge">Top Winner</span><span class="badge">Fast Mover</span><span class="badge">New Breakout</span></div>
+          <div class="title">DILYPOD Personalized America 250th Anniversary Banner, Custom 250 Years Of Freedom Flag, USA 250th 4th of July Decorations Patriotic Gift, America 1776 2026 Banner, Custom Family Outdoor Sign 15</div>
+          <div class="meta">
+            <div class="metric score score-breakdown" tabindex="0" title="POD: 28/30
+Momentum: 24/25
+Market: 0/20
+Competition: 5/10
+Niche: 15/15" data-tooltip="POD: 28/30
+Momentum: 24/25
+Market: 0/20
+Competition: 5/10
+Niche: 15/15"><span>Opportunity Score:</span><strong>72</strong></div>
+            <div class="score-components"><span>Top Rank <strong>30</strong></span><span>Velocity <strong>18</strong></span><span>Newness <strong>20</strong></span><span>BSR <strong>0</strong></span><span>POD <strong>95</strong></span></div>
+            <div class="metric"><span>Seller:</span><strong>Love Signal</strong></div>
+            <div class="metric"><span>Source Name:</span><strong>Love Signal</strong></div>
+            <div class="metric movement-metric"><span>Source Rank:</span><strong>#12 &rarr; #2 (+10)</strong></div>
+            <div class="metric display-rank display-rank--blue"><span>Display Rank:</span><strong>#2 in Love Signal</strong><small>Top 6.5%</small></div><div class="metric display-rank display-rank--blue"><span>Previous Display Rank:</span><strong>#12</strong></div><div class="metric display-rank display-rank--blue"><span>Movement:</span><strong>Up 10 positions</strong><small>Velocity: +1.1</small></div>
+            
+            
+            
+            <div class="metric"><span>Reviews:</span><strong>16 reviews</strong><small>Rating: 4.1</small></div>
+            <div class="metric"><span>Source Rank Change:</span><strong>10</strong></div>
+            <div class="metric"><span>Days Seen:</span><strong>2</strong></div>
+            <div class="metric"><span>First Seen:</span><strong>2026-06-15</strong></div>
+            <div class="metric"><span>Growth Velocity:</span><strong>5</strong></div>
+            <div class="metric"><span>New Breakout Score:</span><strong>163</strong></div>
+            <div class="metric"><span>POD Score:</span><strong>95</strong></div>
+            <div class="metric"><span>Niche:</span><strong>4th of July</strong></div>
+            <div class="metric"><span>Tags:</span><strong>4th of July;Anniversary;Family</strong></div>
+          </div>
+          <div class="card-actions"><a class="quick-link" href="https://www.amazon.com/DILYPOD-Personalized-Anniversary-Decorations-Patriotic/dp/B0H37165MN/ref=sr_1_2?dib=eyJ2IjoiMSJ9.HiNIyEZCjt_JgdKU9K0eGjgW72luABu1G1sGxmHQVPhOPR7Ma5GcwQ_Sone4GcL8JZo3p_YqHv2o3myKTxnme98sD_XyTqKc-g4qpFBiIv1R9W1Qm8Iv4snvf7eRjVzSHSFXHA5hd-pINx3QTgUAyeOw90HwN4AmgJ3CRdqYkl0NIrlLDeht3x0eggnnPhuNYuZNRJlNM0Y9cM4JV9oXX8ya5guBug9yhwtWjHEeKtw.UyJVCzBS8KptjEAHLmZ2xj7v_fS5xRArESIDP5ryniY&amp;dib_tag=se&amp;m=A2HPAAHAS76S1D&amp;marketplaceID=ATVPDKIKX0DER&amp;nsdOptOutParam=true&amp;qid=1782270727&amp;s=merchant-items&amp;sr=1-2" target="_blank" rel="noopener">Open Amazon</a><a class="quick-link" href="https://www.amazon.com/s?i=merchant-items&amp;me=A2HPAAHAS76S1D&amp;s=exact-aware-popularity-rank&amp;ds=v1%3AeRktoH6jCXaKI7ffahXLHWDnYa1jjqBkxF%2BjTQGJvbw&amp;marketplaceID=ATVPDKIKX0DER&amp;qid=1781576953&amp;ref=sr_st_exact-aware-popularity-rank" target="_blank" rel="noopener">Open Source</a></div>
+        </div>
+      </article>
+      <article class="card" data-card-index="1" data-opportunity-score="61" data-display-rank-change="20" data-display-rank-velocity="1.67" data-top-percentile="14.58" data-category-rank="9007199254740991" data-subcategory-rank="9007199254740991" data-review-count="162" data-rank-change="20" data-growth-velocity="10.0" data-new-breakout-score="139" data-pod-score="70" data-pod="true" data-new="true" data-rank-mover="true" data-top10="true" data-new-release="false" data-seller-key="lasfour (warrior)" data-niche-key="custom shirt">
+        <a href="https://www.amazon.com/LASFOUR-Girlfriend-Collage-Valentine-Boyfriend/dp/B0CTTB5NPH/ref=sr_1_7?dib=eyJ2IjoiMSJ9.UAAw9BPyviykEPjvONSuB09t19CwteSYgQEg1cXheiAp7JKO0xoEeulaF4V5lzoDZlPaVsIvyz0_-1onobOhAc6rNofLNMTfALGqf7F5xHyZ8hEzYK8qs4SRQy7jf8MjAHVB6MUrMF6QXWofFdy_ikEmDSfC1OUvkfI8hGwN_hOHeDA-uaqohZaGFaCRqKGLj6gWMporylTxt_eao58AVNJJUP9XU1igxD5_ZjUlshk.kYPDmgbcRQPH5p-yZ4_fmq7g1OvZLEVKOodfFgqZ2NU&amp;dib_tag=se&amp;m=A1HHNBJES4IIQK&amp;marketplaceID=ATVPDKIKX0DER&amp;nsdOptOutParam=true&amp;qid=1782270764&amp;s=merchant-items&amp;sr=1-7" target="_blank" rel="noopener"><div class="image"><img src="https://m.media-amazon.com/images/I/71pUbU-my4L._AC_UY218_.jpg" alt="LASFOUR Custom Bootleg Rap Tee, I Love My Wife Shirts for Men, Vintage Graphic Shirt with Faces On Them Custom"></div></a>
+        <div class="body">
+          <div class="badge-list"><span class="badge">Top Winner</span><span class="badge">Fast Mover</span><span class="badge">New Breakout</span></div>
+          <div class="title">LASFOUR Custom Bootleg Rap Tee, I Love My Wife Shirts for Men, Vintage Graphic Shirt with Faces On Them Custom</div>
+          <div class="meta">
+            <div class="metric score score-breakdown" tabindex="0" title="POD: 21/30
+Momentum: 25/25
+Market: 0/20
+Competition: 5/10
+Niche: 10/15" data-tooltip="POD: 21/30
+Momentum: 25/25
+Market: 0/20
+Competition: 5/10
+Niche: 10/15"><span>Opportunity Score:</span><strong>61</strong></div>
+            <div class="score-components"><span>Top Rank <strong>25</strong></span><span>Velocity <strong>24</strong></span><span>Newness <strong>20</strong></span><span>BSR <strong>0</strong></span><span>POD <strong>70</strong></span></div>
+            <div class="metric"><span>Seller:</span><strong>LASFOUR (Warrior)</strong></div>
+            <div class="metric"><span>Source Name:</span><strong>LASFOUR (Warrior)</strong></div>
+            <div class="metric movement-metric"><span>Source Rank:</span><strong>#27 &rarr; #7 (+20)</strong></div>
+            <div class="metric display-rank display-rank--green"><span>Display Rank:</span><strong>#7 in LASFOUR (Warrior)</strong><small>Top 14.6%</small></div><div class="metric display-rank display-rank--green"><span>Previous Display Rank:</span><strong>#27</strong></div><div class="metric display-rank display-rank--green"><span>Movement:</span><strong>Up 20 positions</strong><small>Velocity: +1.7</small></div>
+            
+            
+            
+            <div class="metric"><span>Reviews:</span><strong>162 reviews</strong><small>Rating: 4.4</small></div>
+            <div class="metric"><span>Source Rank Change:</span><strong>20</strong></div>
+            <div class="metric"><span>Days Seen:</span><strong>2</strong></div>
+            <div class="metric"><span>First Seen:</span><strong>2026-06-12</strong></div>
+            <div class="metric"><span>Growth Velocity:</span><strong>10</strong></div>
+            <div class="metric"><span>New Breakout Score:</span><strong>139</strong></div>
+            <div class="metric"><span>POD Score:</span><strong>70</strong></div>
+            <div class="metric"><span>Niche:</span><strong>Custom Shirt</strong></div>
+            <div class="metric"><span>Tags:</span><strong>Custom Shirt;Wife</strong></div>
+          </div>
+          <div class="card-actions"><a class="quick-link" href="https://www.amazon.com/LASFOUR-Girlfriend-Collage-Valentine-Boyfriend/dp/B0CTTB5NPH/ref=sr_1_7?dib=eyJ2IjoiMSJ9.UAAw9BPyviykEPjvONSuB09t19CwteSYgQEg1cXheiAp7JKO0xoEeulaF4V5lzoDZlPaVsIvyz0_-1onobOhAc6rNofLNMTfALGqf7F5xHyZ8hEzYK8qs4SRQy7jf8MjAHVB6MUrMF6QXWofFdy_ikEmDSfC1OUvkfI8hGwN_hOHeDA-uaqohZaGFaCRqKGLj6gWMporylTxt_eao58AVNJJUP9XU1igxD5_ZjUlshk.kYPDmgbcRQPH5p-yZ4_fmq7g1OvZLEVKOodfFgqZ2NU&amp;dib_tag=se&amp;m=A1HHNBJES4IIQK&amp;marketplaceID=ATVPDKIKX0DER&amp;nsdOptOutParam=true&amp;qid=1782270764&amp;s=merchant-items&amp;sr=1-7" target="_blank" rel="noopener">Open Amazon</a><a class="quick-link" href="https://www.amazon.com/s?i=merchant-items&amp;me=A1HHNBJES4IIQK&amp;s=exact-aware-popularity-rank&amp;ds=v1%3A5GI1qv47ulI6PjEg%2BMwJSl1ECFjNO6B6JQaZbR7In%2BE&amp;marketplaceID=ATVPDKIKX0DER&amp;qid=1776046094&amp;ref=sr_st_exact-aware-popularity-rank" target="_blank" rel="noopener">Open Source</a></div>
+        </div>
+      </article>
+      <article class="card" data-card-index="2" data-opportunity-score="76" data-display-rank-change="34" data-display-rank-velocity="17.0" data-top-percentile="18.46" data-category-rank="9007199254740991" data-subcategory-rank="9007199254740991" data-review-count="1" data-rank-change="34" data-growth-velocity="17.0" data-new-breakout-score="183" data-pod-score="115" data-pod="true" data-new="true" data-rank-mover="true" data-top10="false" data-new-release="false" data-seller-key="leme order" data-niche-key="dad">
+        <a href="https://www.amazon.com/SHAANT-Personalized-Hawaiian-Grandkid-Grandfather/dp/B0GXTP3YTD/ref=sr_1_12?dib=eyJ2IjoiMSJ9.-7TBPh8XRUbgiwIEPNh9KnXPD3D9kC5KED7f-ltaNmQRkrVvl7ygwIp6yUXVWJoQwt2z5Ojd7_wA0YrIsWqbyolEm9oMZHkmFQmfhnvsuLIOqfThlyW493qqc7vtTOR6vtNz5osu9Oc5TYfox5cnL5zVeA_9d-PVZfyGG56u2PTJK1_-W8GnMUC0ZT5XNG5YA-dO-MxMErqeu5mvLCLDa2jmxfHfKyYf6WfDawQw_RQ.66RAulUddU0e1dUKQW_yqbeEcV7Um7hjFBpEN4lvebA&amp;dib_tag=se&amp;m=A1A28UE9ARYDSX&amp;marketplaceID=ATVPDKIKX0DER&amp;nsdOptOutParam=true&amp;qid=1782270609&amp;s=merchant-items&amp;sr=1-12" target="_blank" rel="noopener"><div class="image"><img src="https://m.media-amazon.com/images/I/71MpywtHHeL._AC_UY218_.jpg" alt="SHAANT Personalized Grandpa Hawaiian Shirt, Papa Shirt with Grandkid Name, Father&#x27;s Day Birthday Gift for Dad, Papa"></div></a>
+        <div class="body">
+          <div class="badge-list"><span class="badge">Fast Mover</span><span class="badge">New Breakout</span></div>
+          <div class="title">SHAANT Personalized Grandpa Hawaiian Shirt, Papa Shirt with Grandkid Name, Father&#x27;s Day Birthday Gift for Dad, Papa</div>
           <div class="meta">
             <div class="metric score score-breakdown" tabindex="0" title="POD: 30/30
 Momentum: 25/25
-Market: 11/20
-Competition: 5/10
+Market: 0/20
+Competition: 6/10
 Niche: 15/15" data-tooltip="POD: 30/30
 Momentum: 25/25
-Market: 11/20
-Competition: 5/10
-Niche: 15/15"><span>Opportunity Score:</span><strong>86</strong></div>
-            <div class="metric"><span>Seller:</span><strong>DXL Trading</strong></div>
-            
-            <div class="category-rank category-rank--gray"><span>Amazon BSR:</span><strong>#263,344 in Tools &amp; Home Improvement</strong></div>
-            <div class="category-rank category-rank--green"><span>Best Subcategory Rank:</span><strong>#2,788 in Night-Lights</strong></div>
-            
-            <div class="metric"><span>Reviews:</span><strong>9 reviews</strong><small>Rating: 4.0</small></div>
-            <div class="metric"><span>Source Rank:</span><strong>#13</strong></div>
-            <div class="metric"><span>Source Rank Change:</span><strong>37</strong></div>
-            <div class="metric"><span>Days Seen:</span><strong>2</strong></div>
-            <div class="metric"><span>POD Score:</span><strong>185</strong></div>
-            <div class="metric"><span>Niche:</span><strong>Memorial</strong></div>
-            <div class="metric"><span>Tags:</span><strong>Memorial;Pet Memorial;Cat;Dog</strong></div>
-          </div>
-        </div>
-      </article>
-      <article class="card" data-card-index="1" data-opportunity-score="80" data-display-rank-change="44" data-display-rank-velocity="5.5" data-top-percentile="28.07" data-category-rank="696389" data-subcategory-rank="13271" data-review-count="1" data-rank-change="44" data-pod-score="145">
-        <a href="https://www.amazon.com/Personalized-Anniversary-Double-Sided-Commemorative-Collectible/dp/B0GV67PBJ4/ref=sr_1_16?dib=eyJ2IjoiMSJ9.ynKg-CYyTc0HrmLaFrbbmXRBHcjqVjygBmyHhrYd-pBJHU5W5QvOk5NKEUYKxAxYrHSHxizv6S5Hvz899d91T0VPoZkcb5ya53rJITBAwLGeDi1jZfoBLHf__YUsHpnq5vtN7_zGKF4rtkms5dzYQVOngBw4Vx4dmqiWWk9O0bR4tkFYrLxYEpsz-v3Lc0EX-j-RKfgHJBvWfuLETbD4wfXR-gHo1v6d2dMB19x7PAk.usbQpUCZGhTQ2GBjeMHA-KFLEcwVbRRzAB3DDWDIggc&amp;dib_tag=se&amp;m=A1WB2X9EGOJ0X9&amp;marketplaceID=ATVPDKIKX0DER&amp;nsdOptOutParam=true&amp;qid=1782176502&amp;s=merchant-items&amp;sr=1-16" target="_blank" rel="noopener"><div class="image"><img src="images/B0GV67PBJ4.jpg" alt="Personalized USA 250th Anniversary Coin 1776–2026, Custom Photo Double-Sided High Relief Metal Commemorative, Patriotic Collectible Gift for Veterans &amp; History Lovers,idea 1"></div></a>
-        <div class="body">
-          <div class="title">Personalized USA 250th Anniversary Coin 1776–2026, Custom Photo Double-Sided High Relief Metal Commemorative, Patriotic Collectible Gift for Veterans &amp; History Lovers,idea 1</div>
-          <div class="meta">
-            <div class="metric score score-breakdown" tabindex="0" title="POD: 30/30
-Momentum: 25/25
-Market: 6/20
-Competition: 4/10
-Niche: 15/15" data-tooltip="POD: 30/30
-Momentum: 25/25
-Market: 6/20
-Competition: 4/10
-Niche: 15/15"><span>Opportunity Score:</span><strong>80</strong></div>
-            <div class="metric"><span>Seller:</span><strong>Poppop Store</strong></div>
-            
-            <div class="category-rank category-rank--gray"><span>Amazon BSR:</span><strong>#696,389 in Home &amp; Kitchen</strong></div>
-            <div class="category-rank category-rank--blue"><span>Best Subcategory Rank:</span><strong>#13,271 in Decorative Signs &amp; Plaques</strong></div>
-            
-            <div class="metric"><span>Reviews:</span><strong>1 reviews</strong><small>Rating: 1.0</small></div>
-            <div class="metric"><span>Source Rank:</span><strong>#16</strong></div>
-            <div class="metric"><span>Source Rank Change:</span><strong>44</strong></div>
-            <div class="metric"><span>Days Seen:</span><strong>2</strong></div>
-            <div class="metric"><span>POD Score:</span><strong>145</strong></div>
-            <div class="metric"><span>Niche:</span><strong>Veteran</strong></div>
-            <div class="metric"><span>Tags:</span><strong>Veteran;4th of July;Anniversary</strong></div>
-          </div>
-        </div>
-      </article>
-      <article class="card" data-card-index="2" data-opportunity-score="65" data-display-rank-change="10" data-display-rank-velocity="10.0" data-top-percentile="72.55" data-category-rank="122469" data-subcategory-rank="170" data-review-count="0" data-rank-change="10" data-pod-score="45">
-        <a href="https://www.amazon.com/Famitrendz-Personalized-American-Anniversary-Patriotic/dp/B0H1124TSG/ref=is_sr_dp_2?dib=eyJ2IjoiMSJ9.9XCYd1UTzJZf0XhlCTYPm3JK7KXQSrpLjO9Q8XRQd04uF-sfeuxwx7OMuRW-jG1NxGFcbnO0Am9ltFsP2NqkNpOKqQcPP-pne4hzOIAlM1OwGpsCuR2nNs9OZZkluKLJZg6Pnt8DORbWppx4Jq5U1AdStcBCezsSCttMyMNWiKyVICkIXhhhjxYNRZU_c9XuXqAZtYA7EhvG7MX_AQqGEL9XdZ5y2x1h-R9JVd0da-I.L3S7D9I7W2gwMNlpcKL-MRrgOWHwovFz_HizRgK_t8s&amp;dib_tag=se&amp;m=A3N5XVP1M3R7X7&amp;marketplaceID=ATVPDKIKX0DER&amp;nsdOptOutParam=true&amp;qid=1782176641&amp;s=merchant-items&amp;sr=1-12" target="_blank" rel="noopener"><div class="image"></div></a>
-        <div class="body">
-          <div class="title">Best Dad Grandpa Usa</div>
-          <div class="meta">
-            <div class="metric score score-breakdown" tabindex="0" title="POD: 14/30
-Momentum: 21/25
-Market: 15/20
-Competition: 0/10
-Niche: 15/15" data-tooltip="POD: 14/30
-Momentum: 21/25
-Market: 15/20
-Competition: 0/10
-Niche: 15/15"><span>Opportunity Score:</span><strong>65</strong></div>
-            <div class="metric"><span>Seller:</span><strong>NTBN Trading LLC</strong></div>
-            
-            <div class="category-rank category-rank--orange"><span>Amazon BSR:</span><strong>#122,469 in Clothing, Shoes &amp; Jewelry</strong></div>
-            <div class="category-rank category-rank--green"><span>Best Subcategory Rank:</span><strong>#170 in Men&#x27;s Novelty Button-Down Shirts</strong></div>
-            
-            <div class="metric"><span>Reviews:</span><strong></strong><small>Rating: </small></div>
-            <div class="metric"><span>Source Rank:</span><strong>#37</strong></div>
-            <div class="metric"><span>Source Rank Change:</span><strong>10</strong></div>
-            <div class="metric"><span>Days Seen:</span><strong>3</strong></div>
-            <div class="metric"><span>POD Score:</span><strong>45</strong></div>
-            <div class="metric"><span>Niche:</span><strong>Custom Shirt</strong></div>
-            <div class="metric"><span>Tags:</span><strong>Custom Shirt;4th of July;Dad;Grandpa</strong></div>
-          </div>
-        </div>
-      </article>
-      <article class="card" data-card-index="3" data-opportunity-score="60" data-display-rank-change="10" data-display-rank-velocity="10.0" data-top-percentile="74.51" data-category-rank="122469" data-subcategory-rank="170" data-review-count="0" data-rank-change="10" data-pod-score="45">
-        <a href="https://www.amazon.com/Famitrendz-Personalized-American-Anniversary-Patriotic/dp/B0GZZS98FY/ref=is_sr_dp_3?dib=eyJ2IjoiMSJ9.9XCYd1UTzJZf0XhlCTYPm3JK7KXQSrpLjO9Q8XRQd04uF-sfeuxwx7OMuRW-jG1NxGFcbnO0Am9ltFsP2NqkNpOKqQcPP-pne4hzOIAlM1OwGpsCuR2nNs9OZZkluKLJZg6Pnt8DORbWppx4Jq5U1AdStcBCezsSCttMyMNWiKyVICkIXhhhjxYNRZU_c9XuXqAZtYA7EhvG7MX_AQqGEL9XdZ5y2x1h-R9JVd0da-I.L3S7D9I7W2gwMNlpcKL-MRrgOWHwovFz_HizRgK_t8s&amp;dib_tag=se&amp;m=A3N5XVP1M3R7X7&amp;marketplaceID=ATVPDKIKX0DER&amp;nsdOptOutParam=true&amp;qid=1782176641&amp;s=merchant-items&amp;sr=1-12" target="_blank" rel="noopener"><div class="image"></div></a>
-        <div class="body">
-          <div class="title">Title unavailable - open product</div>
-          <div class="meta">
-            <div class="metric score score-breakdown" tabindex="0" title="POD: 14/30
-Momentum: 21/25
-Market: 15/20
-Competition: 0/10
-Niche: 10/15" data-tooltip="POD: 14/30
-Momentum: 21/25
-Market: 15/20
-Competition: 0/10
-Niche: 10/15"><span>Opportunity Score:</span><strong>60</strong></div>
-            <div class="metric"><span>Seller:</span><strong>NTBN Trading LLC</strong></div>
-            
-            <div class="category-rank category-rank--orange"><span>Amazon BSR:</span><strong>#122,469 in Clothing, Shoes &amp; Jewelry</strong></div>
-            <div class="category-rank category-rank--green"><span>Best Subcategory Rank:</span><strong>#170 in Men&#x27;s Novelty Button-Down Shirts</strong></div>
-            
-            <div class="metric"><span>Reviews:</span><strong></strong><small>Rating: </small></div>
-            <div class="metric"><span>Source Rank:</span><strong>#38</strong></div>
-            <div class="metric"><span>Source Rank Change:</span><strong>10</strong></div>
-            <div class="metric"><span>Days Seen:</span><strong>3</strong></div>
-            <div class="metric"><span>POD Score:</span><strong>45</strong></div>
-            <div class="metric"><span>Niche:</span><strong>Custom Shirt</strong></div>
-            <div class="metric"><span>Tags:</span><strong>Custom Shirt;Dad;Grandpa</strong></div>
-          </div>
-        </div>
-      </article>
-      <article class="card" data-card-index="4" data-opportunity-score="60" data-display-rank-change="10" data-display-rank-velocity="10.0" data-top-percentile="76.47" data-category-rank="122469" data-subcategory-rank="170" data-review-count="0" data-rank-change="10" data-pod-score="45">
-        <a href="https://www.amazon.com/Famitrendz-Personalized-American-Anniversary-Patriotic/dp/B0GZZYT44Q/ref=is_sr_dp_4?dib=eyJ2IjoiMSJ9.9XCYd1UTzJZf0XhlCTYPm3JK7KXQSrpLjO9Q8XRQd04uF-sfeuxwx7OMuRW-jG1NxGFcbnO0Am9ltFsP2NqkNpOKqQcPP-pne4hzOIAlM1OwGpsCuR2nNs9OZZkluKLJZg6Pnt8DORbWppx4Jq5U1AdStcBCezsSCttMyMNWiKyVICkIXhhhjxYNRZU_c9XuXqAZtYA7EhvG7MX_AQqGEL9XdZ5y2x1h-R9JVd0da-I.L3S7D9I7W2gwMNlpcKL-MRrgOWHwovFz_HizRgK_t8s&amp;dib_tag=se&amp;m=A3N5XVP1M3R7X7&amp;marketplaceID=ATVPDKIKX0DER&amp;nsdOptOutParam=true&amp;qid=1782176641&amp;s=merchant-items&amp;sr=1-12" target="_blank" rel="noopener"><div class="image"></div></a>
-        <div class="body">
-          <div class="title">Title unavailable - open product</div>
-          <div class="meta">
-            <div class="metric score score-breakdown" tabindex="0" title="POD: 14/30
-Momentum: 21/25
-Market: 15/20
-Competition: 0/10
-Niche: 10/15" data-tooltip="POD: 14/30
-Momentum: 21/25
-Market: 15/20
-Competition: 0/10
-Niche: 10/15"><span>Opportunity Score:</span><strong>60</strong></div>
-            <div class="metric"><span>Seller:</span><strong>NTBN Trading LLC</strong></div>
-            
-            <div class="category-rank category-rank--orange"><span>Amazon BSR:</span><strong>#122,469 in Clothing, Shoes &amp; Jewelry</strong></div>
-            <div class="category-rank category-rank--green"><span>Best Subcategory Rank:</span><strong>#170 in Men&#x27;s Novelty Button-Down Shirts</strong></div>
-            
-            <div class="metric"><span>Reviews:</span><strong></strong><small>Rating: </small></div>
-            <div class="metric"><span>Source Rank:</span><strong>#39</strong></div>
-            <div class="metric"><span>Source Rank Change:</span><strong>10</strong></div>
-            <div class="metric"><span>Days Seen:</span><strong>3</strong></div>
-            <div class="metric"><span>POD Score:</span><strong>45</strong></div>
-            <div class="metric"><span>Niche:</span><strong>Custom Shirt</strong></div>
-            <div class="metric"><span>Tags:</span><strong>Custom Shirt;Dad;Grandpa</strong></div>
-          </div>
-        </div>
-      </article>
-      <article class="card" data-card-index="5" data-opportunity-score="56" data-display-rank-change="28" data-display-rank-velocity="3.5" data-top-percentile="22.95" data-category-rank="285449" data-subcategory-rank="2349" data-review-count="6" data-rank-change="28" data-pod-score="25">
-        <a href="https://www.amazon.com/SHAANT-Patricks-Button-Hawaiian-Shamrock/dp/B0DY7W37YV/ref=sr_1_14?dib=eyJ2IjoiMSJ9.-7TBPh8XRUbgiwIEPNh9KnXPD3D9kC5KED7f-ltaNmSaD-wOAwoic_lamgjr_moV9tFTyL1yPLdTzsrj4uJzwE0v-HYcUrqUVWAgL8Cvm6DHrD6Sj0jQHTXdLmiZftdwLPODmPV8U1r0MkhgcXasmTAdEcvn6PBvbHGbUjxXItGYWSQsPPJ2avbOKvnRQCMNH_WNyfwyygYr67xjJ2Nl9hPLEbz1jflGvuEBmiBE7iA.A0HGDWPtjkI4RaOcNQmOTw5VzOAwDQzvSMDfV2i_PcE&amp;dib_tag=se&amp;m=A1A28UE9ARYDSX&amp;marketplaceID=ATVPDKIKX0DER&amp;nsdOptOutParam=true&amp;qid=1782176519&amp;s=merchant-items&amp;sr=1-14" target="_blank" rel="noopener"><div class="image"><img src="images/B0DY7W37YV.jpg" alt="SHAANT St Patricks Day Button Up Shirt Men, St Patricks Day Hawaiian Shirts for Men, Shamrock, Irish, Lucky Hawaiian"></div></a>
-        <div class="body">
-          <div class="title">SHAANT St Patricks Day Button Up Shirt Men, St Patricks Day Hawaiian Shirts for Men, Shamrock, Irish, Lucky Hawaiian</div>
-          <div class="meta">
-            <div class="metric score score-breakdown" tabindex="0" title="POD: 8/30
-Momentum: 25/25
-Market: 11/20
+Market: 0/20
 Competition: 6/10
-Niche: 6/15" data-tooltip="POD: 8/30
-Momentum: 25/25
-Market: 11/20
-Competition: 6/10
-Niche: 6/15"><span>Opportunity Score:</span><strong>56</strong></div>
+Niche: 15/15"><span>Opportunity Score:</span><strong>76</strong></div>
+            <div class="score-components"><span>Top Rank <strong>18</strong></span><span>Velocity <strong>30</strong></span><span>Newness <strong>20</strong></span><span>BSR <strong>0</strong></span><span>POD <strong>115</strong></span></div>
             <div class="metric"><span>Seller:</span><strong>Leme Order</strong></div>
+            <div class="metric"><span>Source Name:</span><strong>Leme Order</strong></div>
+            <div class="metric movement-metric"><span>Source Rank:</span><strong>#46 &rarr; #12 (+34)</strong></div>
+            <div class="metric display-rank display-rank--green"><span>Display Rank:</span><strong>#12 in Leme Order</strong><small>Top 18.5%</small></div><div class="metric display-rank display-rank--green"><span>Previous Display Rank:</span><strong>#46</strong></div><div class="metric display-rank display-rank--green"><span>Movement:</span><strong>Up 34 positions</strong><small>Velocity: +17</small></div>
             
-            <div class="category-rank category-rank--gray"><span>Amazon BSR:</span><strong>#285,449 in Clothing, Shoes &amp; Jewelry</strong></div>
-            <div class="category-rank category-rank--green"><span>Best Subcategory Rank:</span><strong>#2,349 in Men&#x27;s Button-Down Shirts</strong></div>
             
-            <div class="metric"><span>Reviews:</span><strong>6 reviews</strong><small>Rating: 5.0</small></div>
-            <div class="metric"><span>Source Rank:</span><strong>#14</strong></div>
-            <div class="metric"><span>Source Rank Change:</span><strong>28</strong></div>
+            
+            <div class="metric"><span>Reviews:</span><strong>1 reviews</strong><small>Rating: 5.0</small></div>
+            <div class="metric"><span>Source Rank Change:</span><strong>34</strong></div>
             <div class="metric"><span>Days Seen:</span><strong>2</strong></div>
-            <div class="metric"><span>POD Score:</span><strong>25</strong></div>
-            <div class="metric"><span>Niche:</span><strong>Irish</strong></div>
-            <div class="metric"><span>Tags:</span><strong>Irish</strong></div>
+            <div class="metric"><span>First Seen:</span><strong>2026-06-22</strong></div>
+            <div class="metric"><span>Growth Velocity:</span><strong>17</strong></div>
+            <div class="metric"><span>New Breakout Score:</span><strong>183</strong></div>
+            <div class="metric"><span>POD Score:</span><strong>115</strong></div>
+            <div class="metric"><span>Niche:</span><strong>Dad</strong></div>
+            <div class="metric"><span>Tags:</span><strong>Dad;Father&#x27;s Day;Custom Shirt;Grandpa;Birthday</strong></div>
           </div>
+          <div class="card-actions"><a class="quick-link" href="https://www.amazon.com/SHAANT-Personalized-Hawaiian-Grandkid-Grandfather/dp/B0GXTP3YTD/ref=sr_1_12?dib=eyJ2IjoiMSJ9.-7TBPh8XRUbgiwIEPNh9KnXPD3D9kC5KED7f-ltaNmQRkrVvl7ygwIp6yUXVWJoQwt2z5Ojd7_wA0YrIsWqbyolEm9oMZHkmFQmfhnvsuLIOqfThlyW493qqc7vtTOR6vtNz5osu9Oc5TYfox5cnL5zVeA_9d-PVZfyGG56u2PTJK1_-W8GnMUC0ZT5XNG5YA-dO-MxMErqeu5mvLCLDa2jmxfHfKyYf6WfDawQw_RQ.66RAulUddU0e1dUKQW_yqbeEcV7Um7hjFBpEN4lvebA&amp;dib_tag=se&amp;m=A1A28UE9ARYDSX&amp;marketplaceID=ATVPDKIKX0DER&amp;nsdOptOutParam=true&amp;qid=1782270609&amp;s=merchant-items&amp;sr=1-12" target="_blank" rel="noopener">Open Amazon</a><a class="quick-link" href="https://www.amazon.com/s?i=merchant-items&amp;me=A1A28UE9ARYDSX&amp;s=exact-aware-popularity-rank&amp;ds=v1%3AH8yYAj2nYimeS4E%2FTKwuP%2BX0EfoezCATg8Ghnsles88&amp;marketplaceID=ATVPDKIKX0DER&amp;qid=1776152265&amp;ref=sr_st_exact-aware-popularity-rank" target="_blank" rel="noopener">Open Source</a></div>
         </div>
       </article>
-      <article class="card" data-card-index="6" data-opportunity-score="52" data-display-rank-change="-10" data-display-rank-velocity="-10.0" data-top-percentile="87.1" data-category-rank="2996" data-subcategory-rank="27" data-review-count="112" data-rank-change="-10" data-pod-score="35">
-        <a href="https://www.amazon.com/GOSSBY-Mug-Daddysaurus-Daughter-Birthday/dp/B0B1PD7WVN/ref=zg_bs_g_9302388011_d_sccl_27/145-9374143-7306508?psc=1" target="_blank" rel="noopener"><div class="image"><img src="images/B0B1PD7WVN.jpg" alt="Gossby DADDYSAURUS Coffee Mug for Dad - 2026 Father&#x27;s Day Dad Gift from Daughter, Son, Kid - Gift for Husband from Wife Birth"></div></a>
+      <article class="card" data-card-index="3" data-opportunity-score="52" data-display-rank-change="-11" data-display-rank-velocity="-11.0" data-top-percentile="47.06" data-category-rank="9007199254740991" data-subcategory-rank="9007199254740991" data-review-count="24" data-rank-change="-11" data-growth-velocity="-3.67" data-new-breakout-score="133" data-pod-score="95" data-pod="true" data-new="true" data-rank-mover="true" data-top10="false" data-new-release="false" data-seller-key="teetheday" data-niche-key="dog">
+        <a href="https://www.amazon.com/NAZENTI-Personalized-Chinese-Crested-Suncatcher/dp/B0CMT6TR8Q/ref=sr_1_16?dib=eyJ2IjoiMSJ9.vOYGo5y0lB8QLxXaKuaf1Zt-ImGhhn2PeST6KFhuvhhZi_jNBa4pnZAhnunPO3gB1uYNSQoP0Ju_q7UxPAOLSnbPQQ_dsHleIfFl7lBrtSeC9QeirudRlad7l8Y-8-7gPIxakYI0JHZ_QdgIGSlButWWNHsvMRV0Bmc-UKllKe4-SlGAWfkYapk6n1wYEhCtb0YpUINSP9faJu4WI3CnRmefAoNozO3iR2fNRZhqk4s.OgaYLf7msEBclXmo735AfVfOsKcYgLlSErvr72ypyOw&amp;dib_tag=se&amp;m=A11V9IWXR1EW8C&amp;marketplaceID=ATVPDKIKX0DER&amp;nsdOptOutParam=true&amp;qid=1782270502&amp;s=merchant-items&amp;sr=1-16" target="_blank" rel="noopener"><div class="image"><img src="https://m.media-amazon.com/images/I/81r90FEOy3L._AC_UY218_.jpg" alt="NAZENTI Personalized Chinese Crested Sleep in Angel Wings Memorial Suncatcher Ornaments - Custom Dog Christmas Ornament for Pet Lover, Gifts for Dog Lover, Christmas Decoration"></div></a>
         <div class="body">
-          <div class="title">Gossby DADDYSAURUS Coffee Mug for Dad - 2026 Father&#x27;s Day Dad Gift from Daughter, Son, Kid - Gift for Husband from Wife Birth</div>
+          <div class="badge-list"><span class="badge">New Breakout</span></div>
+          <div class="title">NAZENTI Personalized Chinese Crested Sleep in Angel Wings Memorial Suncatcher Ornaments - Custom Dog Christmas Ornament for Pet Lover, Gifts for Dog Lover, Christmas Decoration</div>
+          <div class="meta">
+            <div class="metric score score-breakdown" tabindex="0" title="POD: 28/30
+Momentum: 5/25
+Market: 0/20
+Competition: 4/10
+Niche: 15/15" data-tooltip="POD: 28/30
+Momentum: 5/25
+Market: 0/20
+Competition: 4/10
+Niche: 15/15"><span>Opportunity Score:</span><strong>52</strong></div>
+            <div class="score-components"><span>Top Rank <strong>18</strong></span><span>Velocity <strong>0</strong></span><span>Newness <strong>20</strong></span><span>BSR <strong>0</strong></span><span>POD <strong>95</strong></span></div>
+            <div class="metric"><span>Seller:</span><strong>TeeTheDay</strong></div>
+            <div class="metric"><span>Source Name:</span><strong>TeeTheDay</strong></div>
+            <div class="metric movement-metric"><span>Source Rank:</span><strong>#5 &rarr; #16 (-11)</strong></div>
+            <div class="metric display-rank display-rank--red"><span>Display Rank:</span><strong>#16 in TeeTheDay</strong><small>Top 47.1%</small></div><div class="metric display-rank display-rank--red"><span>Previous Display Rank:</span><strong>#5</strong></div><div class="metric display-rank display-rank--red"><span>Movement:</span><strong>Down 11 positions</strong><small>Velocity: -11</small></div>
+            
+            
+            
+            <div class="metric"><span>Reviews:</span><strong>24 reviews</strong><small>Rating: 3.8</small></div>
+            <div class="metric"><span>Source Rank Change:</span><strong>-11</strong></div>
+            <div class="metric"><span>Days Seen:</span><strong>3</strong></div>
+            <div class="metric"><span>First Seen:</span><strong>2026-06-22</strong></div>
+            <div class="metric"><span>Growth Velocity:</span><strong>-3.67</strong></div>
+            <div class="metric"><span>New Breakout Score:</span><strong>133</strong></div>
+            <div class="metric"><span>POD Score:</span><strong>95</strong></div>
+            <div class="metric"><span>Niche:</span><strong>Dog</strong></div>
+            <div class="metric"><span>Tags:</span><strong>Dog;Christmas;Memorial</strong></div>
+          </div>
+          <div class="card-actions"><a class="quick-link" href="https://www.amazon.com/NAZENTI-Personalized-Chinese-Crested-Suncatcher/dp/B0CMT6TR8Q/ref=sr_1_16?dib=eyJ2IjoiMSJ9.vOYGo5y0lB8QLxXaKuaf1Zt-ImGhhn2PeST6KFhuvhhZi_jNBa4pnZAhnunPO3gB1uYNSQoP0Ju_q7UxPAOLSnbPQQ_dsHleIfFl7lBrtSeC9QeirudRlad7l8Y-8-7gPIxakYI0JHZ_QdgIGSlButWWNHsvMRV0Bmc-UKllKe4-SlGAWfkYapk6n1wYEhCtb0YpUINSP9faJu4WI3CnRmefAoNozO3iR2fNRZhqk4s.OgaYLf7msEBclXmo735AfVfOsKcYgLlSErvr72ypyOw&amp;dib_tag=se&amp;m=A11V9IWXR1EW8C&amp;marketplaceID=ATVPDKIKX0DER&amp;nsdOptOutParam=true&amp;qid=1782270502&amp;s=merchant-items&amp;sr=1-16" target="_blank" rel="noopener">Open Amazon</a><a class="quick-link" href="https://www.amazon.com/s?i=merchant-items&amp;me=A11V9IWXR1EW8C&amp;s=exact-aware-popularity-rank&amp;ds=v1%3AhRZcswStCq016eyfs44rutu%2FLF%2Bj6DVfKkZrxCcFTP8&amp;marketplaceID=ATVPDKIKX0DER&amp;qid=1776152097&amp;ref=sr_st_exact-aware-popularity-rank" target="_blank" rel="noopener">Open Source</a></div>
+        </div>
+      </article>
+      <article class="card" data-card-index="4" data-opportunity-score="31" data-display-rank-change="10" data-display-rank-velocity="10.0" data-top-percentile="61.54" data-category-rank="9007199254740991" data-subcategory-rank="9007199254740991" data-review-count="0" data-rank-change="10" data-growth-velocity="3.33" data-new-breakout-score="83" data-pod-score="35" data-pod="true" data-new="true" data-rank-mover="true" data-top10="false" data-new-release="false" data-seller-key="polify" data-niche-key="unknown">
+        <a href="https://www.amazon.com/Pofily-Couple-Personalized-2-Layered-Valentines/dp/B0GFYQR47M/ref=cs_sr_dp_loc_2?dib=eyJ2IjoiMSJ9.Vta8uR1VKqD0S26xo2siQBejkwRJlfSGzFi2of9qytL9q4j1fpzqruzmpi21ZwTcXgssmUoAdfkcpENgaMMAWWwnK06Yw6oyoDQoPd4MVTDx3nnXPq_unPApfhpF5nQj8WjgFNnGjcnrjBRtS3D0oIFknEvuRVZrhPWRyjP-xH5fZUPvkbTGabbFlDt0-yDwYZwN3_UDivCIW3L5frRe7Gpf-6VbE79jqfjHflYxMUY.6_qUqFIdo8vOGjhs-IFsMlUD_J0s447sMMGszijljNY&amp;dib_tag=se&amp;m=A2EE0SSLB7X91Q&amp;marketplaceID=ATVPDKIKX0DER&amp;nsdOptOutParam=true&amp;qid=1782270636&amp;s=merchant-items&amp;sr=1-10" target="_blank" rel="noopener"><div class="image"><div class="image-placeholder" aria-hidden="true">No image</div></div></a>
+        <div class="body">
+          <div class="badge-list"><span class="badge">Fast Mover</span><span class="badge">New Breakout</span></div>
+          <div class="title">Title unavailable - open product</div>
+          <div class="meta">
+            <div class="metric score score-breakdown" tabindex="0" title="POD: 10/30
+Momentum: 21/25
+Market: 0/20
+Competition: 0/10
+Niche: 0/15" data-tooltip="POD: 10/30
+Momentum: 21/25
+Market: 0/20
+Competition: 0/10
+Niche: 0/15"><span>Opportunity Score:</span><strong>31</strong></div>
+            <div class="score-components"><span>Top Rank <strong>10</strong></span><span>Velocity <strong>18</strong></span><span>Newness <strong>20</strong></span><span>BSR <strong>0</strong></span><span>POD <strong>35</strong></span></div>
+            <div class="metric"><span>Seller:</span><strong>POLIFY</strong></div>
+            <div class="metric"><span>Source Name:</span><strong>POLIFY</strong></div>
+            <div class="metric movement-metric"><span>Source Rank:</span><strong>#42 &rarr; #32 (+10)</strong></div>
+            <div class="metric display-rank display-rank--blue"><span>Display Rank:</span><strong>#32 in POLIFY</strong><small>Top 61.5%</small></div><div class="metric display-rank display-rank--blue"><span>Previous Display Rank:</span><strong>#42</strong></div><div class="metric display-rank display-rank--blue"><span>Movement:</span><strong>Up 10 positions</strong><small>Velocity: +10</small></div>
+            
+            
+            
+            <div class="metric"><span>Reviews:</span><strong></strong><small>Rating: </small></div>
+            <div class="metric"><span>Source Rank Change:</span><strong>10</strong></div>
+            <div class="metric"><span>Days Seen:</span><strong>3</strong></div>
+            <div class="metric"><span>First Seen:</span><strong>2026-06-22</strong></div>
+            <div class="metric"><span>Growth Velocity:</span><strong>3.33</strong></div>
+            <div class="metric"><span>New Breakout Score:</span><strong>83</strong></div>
+            <div class="metric"><span>POD Score:</span><strong>35</strong></div>
+            <div class="metric"><span>Niche:</span><strong>Unknown</strong></div>
+            <div class="metric"><span>Tags:</span><strong>Unknown</strong></div>
+          </div>
+          <div class="card-actions"><a class="quick-link" href="https://www.amazon.com/Pofily-Couple-Personalized-2-Layered-Valentines/dp/B0GFYQR47M/ref=cs_sr_dp_loc_2?dib=eyJ2IjoiMSJ9.Vta8uR1VKqD0S26xo2siQBejkwRJlfSGzFi2of9qytL9q4j1fpzqruzmpi21ZwTcXgssmUoAdfkcpENgaMMAWWwnK06Yw6oyoDQoPd4MVTDx3nnXPq_unPApfhpF5nQj8WjgFNnGjcnrjBRtS3D0oIFknEvuRVZrhPWRyjP-xH5fZUPvkbTGabbFlDt0-yDwYZwN3_UDivCIW3L5frRe7Gpf-6VbE79jqfjHflYxMUY.6_qUqFIdo8vOGjhs-IFsMlUD_J0s447sMMGszijljNY&amp;dib_tag=se&amp;m=A2EE0SSLB7X91Q&amp;marketplaceID=ATVPDKIKX0DER&amp;nsdOptOutParam=true&amp;qid=1782270636&amp;s=merchant-items&amp;sr=1-10" target="_blank" rel="noopener">Open Amazon</a><a class="quick-link" href="https://www.amazon.com/s?i=merchant-items&amp;me=A2EE0SSLB7X91Q&amp;s=exact-aware-popularity-rank&amp;ds=v1%3AlPGwADyBMF0FYR1NlEyNlqFr4urA7yd31RbjIaWjQc4&amp;marketplaceID=ATVPDKIKX0DER&amp;qid=1776152305&amp;ref=sr_st_exact-aware-popularity-rank" target="_blank" rel="noopener">Open Source</a></div>
+        </div>
+      </article>
+      <article class="card" data-card-index="5" data-opportunity-score="31" data-display-rank-change="10" data-display-rank-velocity="10.0" data-top-percentile="63.46" data-category-rank="9007199254740991" data-subcategory-rank="9007199254740991" data-review-count="0" data-rank-change="10" data-growth-velocity="3.33" data-new-breakout-score="83" data-pod-score="35" data-pod="true" data-new="true" data-rank-mover="true" data-top10="false" data-new-release="false" data-seller-key="polify" data-niche-key="unknown">
+        <a href="https://www.amazon.com/Pofily-Couple-Personalized-2-Layered-Valentines/dp/B0GFYT5TMX/ref=cs_sr_dp_loc_3?dib=eyJ2IjoiMSJ9.Vta8uR1VKqD0S26xo2siQBejkwRJlfSGzFi2of9qytL9q4j1fpzqruzmpi21ZwTcXgssmUoAdfkcpENgaMMAWWwnK06Yw6oyoDQoPd4MVTDx3nnXPq_unPApfhpF5nQj8WjgFNnGjcnrjBRtS3D0oIFknEvuRVZrhPWRyjP-xH5fZUPvkbTGabbFlDt0-yDwYZwN3_UDivCIW3L5frRe7Gpf-6VbE79jqfjHflYxMUY.6_qUqFIdo8vOGjhs-IFsMlUD_J0s447sMMGszijljNY&amp;dib_tag=se&amp;m=A2EE0SSLB7X91Q&amp;marketplaceID=ATVPDKIKX0DER&amp;nsdOptOutParam=true&amp;qid=1782270636&amp;s=merchant-items&amp;sr=1-10" target="_blank" rel="noopener"><div class="image"><div class="image-placeholder" aria-hidden="true">No image</div></div></a>
+        <div class="body">
+          <div class="badge-list"><span class="badge">Fast Mover</span><span class="badge">New Breakout</span></div>
+          <div class="title">Title unavailable - open product</div>
+          <div class="meta">
+            <div class="metric score score-breakdown" tabindex="0" title="POD: 10/30
+Momentum: 21/25
+Market: 0/20
+Competition: 0/10
+Niche: 0/15" data-tooltip="POD: 10/30
+Momentum: 21/25
+Market: 0/20
+Competition: 0/10
+Niche: 0/15"><span>Opportunity Score:</span><strong>31</strong></div>
+            <div class="score-components"><span>Top Rank <strong>10</strong></span><span>Velocity <strong>18</strong></span><span>Newness <strong>20</strong></span><span>BSR <strong>0</strong></span><span>POD <strong>35</strong></span></div>
+            <div class="metric"><span>Seller:</span><strong>POLIFY</strong></div>
+            <div class="metric"><span>Source Name:</span><strong>POLIFY</strong></div>
+            <div class="metric movement-metric"><span>Source Rank:</span><strong>#43 &rarr; #33 (+10)</strong></div>
+            <div class="metric display-rank display-rank--blue"><span>Display Rank:</span><strong>#33 in POLIFY</strong><small>Top 63.5%</small></div><div class="metric display-rank display-rank--blue"><span>Previous Display Rank:</span><strong>#43</strong></div><div class="metric display-rank display-rank--blue"><span>Movement:</span><strong>Up 10 positions</strong><small>Velocity: +10</small></div>
+            
+            
+            
+            <div class="metric"><span>Reviews:</span><strong></strong><small>Rating: </small></div>
+            <div class="metric"><span>Source Rank Change:</span><strong>10</strong></div>
+            <div class="metric"><span>Days Seen:</span><strong>3</strong></div>
+            <div class="metric"><span>First Seen:</span><strong>2026-06-22</strong></div>
+            <div class="metric"><span>Growth Velocity:</span><strong>3.33</strong></div>
+            <div class="metric"><span>New Breakout Score:</span><strong>83</strong></div>
+            <div class="metric"><span>POD Score:</span><strong>35</strong></div>
+            <div class="metric"><span>Niche:</span><strong>Unknown</strong></div>
+            <div class="metric"><span>Tags:</span><strong>Unknown</strong></div>
+          </div>
+          <div class="card-actions"><a class="quick-link" href="https://www.amazon.com/Pofily-Couple-Personalized-2-Layered-Valentines/dp/B0GFYT5TMX/ref=cs_sr_dp_loc_3?dib=eyJ2IjoiMSJ9.Vta8uR1VKqD0S26xo2siQBejkwRJlfSGzFi2of9qytL9q4j1fpzqruzmpi21ZwTcXgssmUoAdfkcpENgaMMAWWwnK06Yw6oyoDQoPd4MVTDx3nnXPq_unPApfhpF5nQj8WjgFNnGjcnrjBRtS3D0oIFknEvuRVZrhPWRyjP-xH5fZUPvkbTGabbFlDt0-yDwYZwN3_UDivCIW3L5frRe7Gpf-6VbE79jqfjHflYxMUY.6_qUqFIdo8vOGjhs-IFsMlUD_J0s447sMMGszijljNY&amp;dib_tag=se&amp;m=A2EE0SSLB7X91Q&amp;marketplaceID=ATVPDKIKX0DER&amp;nsdOptOutParam=true&amp;qid=1782270636&amp;s=merchant-items&amp;sr=1-10" target="_blank" rel="noopener">Open Amazon</a><a class="quick-link" href="https://www.amazon.com/s?i=merchant-items&amp;me=A2EE0SSLB7X91Q&amp;s=exact-aware-popularity-rank&amp;ds=v1%3AlPGwADyBMF0FYR1NlEyNlqFr4urA7yd31RbjIaWjQc4&amp;marketplaceID=ATVPDKIKX0DER&amp;qid=1776152305&amp;ref=sr_st_exact-aware-popularity-rank" target="_blank" rel="noopener">Open Source</a></div>
+        </div>
+      </article>
+      <article class="card" data-card-index="6" data-opportunity-score="31" data-display-rank-change="10" data-display-rank-velocity="10.0" data-top-percentile="65.38" data-category-rank="9007199254740991" data-subcategory-rank="9007199254740991" data-review-count="0" data-rank-change="10" data-growth-velocity="3.33" data-new-breakout-score="83" data-pod-score="35" data-pod="true" data-new="true" data-rank-mover="true" data-top10="false" data-new-release="false" data-seller-key="polify" data-niche-key="unknown">
+        <a href="https://www.amazon.com/Pofily-Couple-Personalized-2-Layered-Valentines/dp/B0GFYW2N7Z/ref=cs_sr_dp_loc_4?dib=eyJ2IjoiMSJ9.Vta8uR1VKqD0S26xo2siQBejkwRJlfSGzFi2of9qytL9q4j1fpzqruzmpi21ZwTcXgssmUoAdfkcpENgaMMAWWwnK06Yw6oyoDQoPd4MVTDx3nnXPq_unPApfhpF5nQj8WjgFNnGjcnrjBRtS3D0oIFknEvuRVZrhPWRyjP-xH5fZUPvkbTGabbFlDt0-yDwYZwN3_UDivCIW3L5frRe7Gpf-6VbE79jqfjHflYxMUY.6_qUqFIdo8vOGjhs-IFsMlUD_J0s447sMMGszijljNY&amp;dib_tag=se&amp;m=A2EE0SSLB7X91Q&amp;marketplaceID=ATVPDKIKX0DER&amp;nsdOptOutParam=true&amp;qid=1782270636&amp;s=merchant-items&amp;sr=1-10" target="_blank" rel="noopener"><div class="image"><div class="image-placeholder" aria-hidden="true">No image</div></div></a>
+        <div class="body">
+          <div class="badge-list"><span class="badge">Fast Mover</span><span class="badge">New Breakout</span></div>
+          <div class="title">Title unavailable - open product</div>
+          <div class="meta">
+            <div class="metric score score-breakdown" tabindex="0" title="POD: 10/30
+Momentum: 21/25
+Market: 0/20
+Competition: 0/10
+Niche: 0/15" data-tooltip="POD: 10/30
+Momentum: 21/25
+Market: 0/20
+Competition: 0/10
+Niche: 0/15"><span>Opportunity Score:</span><strong>31</strong></div>
+            <div class="score-components"><span>Top Rank <strong>10</strong></span><span>Velocity <strong>18</strong></span><span>Newness <strong>20</strong></span><span>BSR <strong>0</strong></span><span>POD <strong>35</strong></span></div>
+            <div class="metric"><span>Seller:</span><strong>POLIFY</strong></div>
+            <div class="metric"><span>Source Name:</span><strong>POLIFY</strong></div>
+            <div class="metric movement-metric"><span>Source Rank:</span><strong>#44 &rarr; #34 (+10)</strong></div>
+            <div class="metric display-rank display-rank--blue"><span>Display Rank:</span><strong>#34 in POLIFY</strong><small>Top 65.4%</small></div><div class="metric display-rank display-rank--blue"><span>Previous Display Rank:</span><strong>#44</strong></div><div class="metric display-rank display-rank--blue"><span>Movement:</span><strong>Up 10 positions</strong><small>Velocity: +10</small></div>
+            
+            
+            
+            <div class="metric"><span>Reviews:</span><strong></strong><small>Rating: </small></div>
+            <div class="metric"><span>Source Rank Change:</span><strong>10</strong></div>
+            <div class="metric"><span>Days Seen:</span><strong>3</strong></div>
+            <div class="metric"><span>First Seen:</span><strong>2026-06-22</strong></div>
+            <div class="metric"><span>Growth Velocity:</span><strong>3.33</strong></div>
+            <div class="metric"><span>New Breakout Score:</span><strong>83</strong></div>
+            <div class="metric"><span>POD Score:</span><strong>35</strong></div>
+            <div class="metric"><span>Niche:</span><strong>Unknown</strong></div>
+            <div class="metric"><span>Tags:</span><strong>Unknown</strong></div>
+          </div>
+          <div class="card-actions"><a class="quick-link" href="https://www.amazon.com/Pofily-Couple-Personalized-2-Layered-Valentines/dp/B0GFYW2N7Z/ref=cs_sr_dp_loc_4?dib=eyJ2IjoiMSJ9.Vta8uR1VKqD0S26xo2siQBejkwRJlfSGzFi2of9qytL9q4j1fpzqruzmpi21ZwTcXgssmUoAdfkcpENgaMMAWWwnK06Yw6oyoDQoPd4MVTDx3nnXPq_unPApfhpF5nQj8WjgFNnGjcnrjBRtS3D0oIFknEvuRVZrhPWRyjP-xH5fZUPvkbTGabbFlDt0-yDwYZwN3_UDivCIW3L5frRe7Gpf-6VbE79jqfjHflYxMUY.6_qUqFIdo8vOGjhs-IFsMlUD_J0s447sMMGszijljNY&amp;dib_tag=se&amp;m=A2EE0SSLB7X91Q&amp;marketplaceID=ATVPDKIKX0DER&amp;nsdOptOutParam=true&amp;qid=1782270636&amp;s=merchant-items&amp;sr=1-10" target="_blank" rel="noopener">Open Amazon</a><a class="quick-link" href="https://www.amazon.com/s?i=merchant-items&amp;me=A2EE0SSLB7X91Q&amp;s=exact-aware-popularity-rank&amp;ds=v1%3AlPGwADyBMF0FYR1NlEyNlqFr4urA7yd31RbjIaWjQc4&amp;marketplaceID=ATVPDKIKX0DER&amp;qid=1776152305&amp;ref=sr_st_exact-aware-popularity-rank" target="_blank" rel="noopener">Open Source</a></div>
+        </div>
+      </article>
+      <article class="card" data-card-index="7" data-opportunity-score="31" data-display-rank-change="10" data-display-rank-velocity="10.0" data-top-percentile="67.31" data-category-rank="9007199254740991" data-subcategory-rank="9007199254740991" data-review-count="0" data-rank-change="10" data-growth-velocity="3.33" data-new-breakout-score="83" data-pod-score="35" data-pod="true" data-new="true" data-rank-mover="true" data-top10="false" data-new-release="false" data-seller-key="polify" data-niche-key="unknown">
+        <a href="https://www.amazon.com/Pofily-Couple-Personalized-2-Layered-Valentines/dp/B0GHNP3BL1/ref=cs_sr_dp_loc_5?dib=eyJ2IjoiMSJ9.Vta8uR1VKqD0S26xo2siQBejkwRJlfSGzFi2of9qytL9q4j1fpzqruzmpi21ZwTcXgssmUoAdfkcpENgaMMAWWwnK06Yw6oyoDQoPd4MVTDx3nnXPq_unPApfhpF5nQj8WjgFNnGjcnrjBRtS3D0oIFknEvuRVZrhPWRyjP-xH5fZUPvkbTGabbFlDt0-yDwYZwN3_UDivCIW3L5frRe7Gpf-6VbE79jqfjHflYxMUY.6_qUqFIdo8vOGjhs-IFsMlUD_J0s447sMMGszijljNY&amp;dib_tag=se&amp;m=A2EE0SSLB7X91Q&amp;marketplaceID=ATVPDKIKX0DER&amp;nsdOptOutParam=true&amp;qid=1782270636&amp;s=merchant-items&amp;sr=1-10" target="_blank" rel="noopener"><div class="image"><div class="image-placeholder" aria-hidden="true">No image</div></div></a>
+        <div class="body">
+          <div class="badge-list"><span class="badge">Fast Mover</span><span class="badge">New Breakout</span></div>
+          <div class="title">Title unavailable - open product</div>
+          <div class="meta">
+            <div class="metric score score-breakdown" tabindex="0" title="POD: 10/30
+Momentum: 21/25
+Market: 0/20
+Competition: 0/10
+Niche: 0/15" data-tooltip="POD: 10/30
+Momentum: 21/25
+Market: 0/20
+Competition: 0/10
+Niche: 0/15"><span>Opportunity Score:</span><strong>31</strong></div>
+            <div class="score-components"><span>Top Rank <strong>10</strong></span><span>Velocity <strong>18</strong></span><span>Newness <strong>20</strong></span><span>BSR <strong>0</strong></span><span>POD <strong>35</strong></span></div>
+            <div class="metric"><span>Seller:</span><strong>POLIFY</strong></div>
+            <div class="metric"><span>Source Name:</span><strong>POLIFY</strong></div>
+            <div class="metric movement-metric"><span>Source Rank:</span><strong>#45 &rarr; #35 (+10)</strong></div>
+            <div class="metric display-rank display-rank--blue"><span>Display Rank:</span><strong>#35 in POLIFY</strong><small>Top 67.3%</small></div><div class="metric display-rank display-rank--blue"><span>Previous Display Rank:</span><strong>#45</strong></div><div class="metric display-rank display-rank--blue"><span>Movement:</span><strong>Up 10 positions</strong><small>Velocity: +10</small></div>
+            
+            
+            
+            <div class="metric"><span>Reviews:</span><strong></strong><small>Rating: </small></div>
+            <div class="metric"><span>Source Rank Change:</span><strong>10</strong></div>
+            <div class="metric"><span>Days Seen:</span><strong>3</strong></div>
+            <div class="metric"><span>First Seen:</span><strong>2026-06-22</strong></div>
+            <div class="metric"><span>Growth Velocity:</span><strong>3.33</strong></div>
+            <div class="metric"><span>New Breakout Score:</span><strong>83</strong></div>
+            <div class="metric"><span>POD Score:</span><strong>35</strong></div>
+            <div class="metric"><span>Niche:</span><strong>Unknown</strong></div>
+            <div class="metric"><span>Tags:</span><strong>Unknown</strong></div>
+          </div>
+          <div class="card-actions"><a class="quick-link" href="https://www.amazon.com/Pofily-Couple-Personalized-2-Layered-Valentines/dp/B0GHNP3BL1/ref=cs_sr_dp_loc_5?dib=eyJ2IjoiMSJ9.Vta8uR1VKqD0S26xo2siQBejkwRJlfSGzFi2of9qytL9q4j1fpzqruzmpi21ZwTcXgssmUoAdfkcpENgaMMAWWwnK06Yw6oyoDQoPd4MVTDx3nnXPq_unPApfhpF5nQj8WjgFNnGjcnrjBRtS3D0oIFknEvuRVZrhPWRyjP-xH5fZUPvkbTGabbFlDt0-yDwYZwN3_UDivCIW3L5frRe7Gpf-6VbE79jqfjHflYxMUY.6_qUqFIdo8vOGjhs-IFsMlUD_J0s447sMMGszijljNY&amp;dib_tag=se&amp;m=A2EE0SSLB7X91Q&amp;marketplaceID=ATVPDKIKX0DER&amp;nsdOptOutParam=true&amp;qid=1782270636&amp;s=merchant-items&amp;sr=1-10" target="_blank" rel="noopener">Open Amazon</a><a class="quick-link" href="https://www.amazon.com/s?i=merchant-items&amp;me=A2EE0SSLB7X91Q&amp;s=exact-aware-popularity-rank&amp;ds=v1%3AlPGwADyBMF0FYR1NlEyNlqFr4urA7yd31RbjIaWjQc4&amp;marketplaceID=ATVPDKIKX0DER&amp;qid=1776152305&amp;ref=sr_st_exact-aware-popularity-rank" target="_blank" rel="noopener">Open Source</a></div>
+        </div>
+      </article>
+      <article class="card" data-card-index="8" data-opportunity-score="41" data-display-rank-change="10" data-display-rank-velocity="2.0" data-top-percentile="62.07" data-category-rank="9007199254740991" data-subcategory-rank="9007199254740991" data-review-count="0" data-rank-change="10" data-growth-velocity="5.0" data-new-breakout-score="93" data-pod-score="45" data-pod="true" data-new="true" data-rank-mover="true" data-top10="false" data-new-release="false" data-seller-key="hucao" data-niche-key="custom shirt">
+        <a href="https://www.amazon.com/Personalized-GrandpaTShirt-Anniversary-American-America/dp/B0H2VQDFYN/ref=is_sr_dp_2?dib=eyJ2IjoiMSJ9.we1WEibNYJAcHkwooMmWPmojZS6Xl8DBHAtnnHDp2vgjhx86kfSDCJPh8thJ0aMVfe1jPsqNlaNCVparGriYg4ysr2UXmncMJg4fdGgmJTfhFIMjM2N5A1OjDhwths62b1yvXtIP2zd7XTJhfcY7JB87apl8uUW0kycrMHQmR81nl-NRta8fWKueoScPutLK_nzYh4OzwWBRcTLnn85uJAI88HTQbSNcYJPBoiL1wBc.1N_7y-sOjc5_o0It2uMrsKhqseLfpvc_wEctqzm8URU&amp;dib_tag=se&amp;m=A2B9DZ8JGHNNVQ&amp;marketplaceID=ATVPDKIKX0DER&amp;nsdOptOutParam=true&amp;qid=1782270664&amp;s=merchant-items&amp;sr=1-11" target="_blank" rel="noopener"><div class="image"><div class="image-placeholder" aria-hidden="true">No image</div></div></a>
+        <div class="body">
+          <div class="badge-list"><span class="badge">Fast Mover</span><span class="badge">New Breakout</span></div>
+          <div class="title">Title unavailable - open product</div>
+          <div class="meta">
+            <div class="metric score score-breakdown" tabindex="0" title="POD: 14/30
+Momentum: 21/25
+Market: 0/20
+Competition: 0/10
+Niche: 6/15" data-tooltip="POD: 14/30
+Momentum: 21/25
+Market: 0/20
+Competition: 0/10
+Niche: 6/15"><span>Opportunity Score:</span><strong>41</strong></div>
+            <div class="score-components"><span>Top Rank <strong>10</strong></span><span>Velocity <strong>18</strong></span><span>Newness <strong>20</strong></span><span>BSR <strong>0</strong></span><span>POD <strong>45</strong></span></div>
+            <div class="metric"><span>Seller:</span><strong>HUCAO</strong></div>
+            <div class="metric"><span>Source Name:</span><strong>HUCAO</strong></div>
+            <div class="metric movement-metric"><span>Source Rank:</span><strong>#46 &rarr; #36 (+10)</strong></div>
+            <div class="metric display-rank display-rank--blue"><span>Display Rank:</span><strong>#36 in HUCAO</strong><small>Top 62.1%</small></div><div class="metric display-rank display-rank--blue"><span>Previous Display Rank:</span><strong>#46</strong></div><div class="metric display-rank display-rank--blue"><span>Movement:</span><strong>Up 10 positions</strong><small>Velocity: +2</small></div>
+            
+            
+            
+            <div class="metric"><span>Reviews:</span><strong></strong><small>Rating: </small></div>
+            <div class="metric"><span>Source Rank Change:</span><strong>10</strong></div>
+            <div class="metric"><span>Days Seen:</span><strong>2</strong></div>
+            <div class="metric"><span>First Seen:</span><strong>2026-06-19</strong></div>
+            <div class="metric"><span>Growth Velocity:</span><strong>5</strong></div>
+            <div class="metric"><span>New Breakout Score:</span><strong>93</strong></div>
+            <div class="metric"><span>POD Score:</span><strong>45</strong></div>
+            <div class="metric"><span>Niche:</span><strong>Custom Shirt</strong></div>
+            <div class="metric"><span>Tags:</span><strong>Custom Shirt</strong></div>
+          </div>
+          <div class="card-actions"><a class="quick-link" href="https://www.amazon.com/Personalized-GrandpaTShirt-Anniversary-American-America/dp/B0H2VQDFYN/ref=is_sr_dp_2?dib=eyJ2IjoiMSJ9.we1WEibNYJAcHkwooMmWPmojZS6Xl8DBHAtnnHDp2vgjhx86kfSDCJPh8thJ0aMVfe1jPsqNlaNCVparGriYg4ysr2UXmncMJg4fdGgmJTfhFIMjM2N5A1OjDhwths62b1yvXtIP2zd7XTJhfcY7JB87apl8uUW0kycrMHQmR81nl-NRta8fWKueoScPutLK_nzYh4OzwWBRcTLnn85uJAI88HTQbSNcYJPBoiL1wBc.1N_7y-sOjc5_o0It2uMrsKhqseLfpvc_wEctqzm8URU&amp;dib_tag=se&amp;m=A2B9DZ8JGHNNVQ&amp;marketplaceID=ATVPDKIKX0DER&amp;nsdOptOutParam=true&amp;qid=1782270664&amp;s=merchant-items&amp;sr=1-11" target="_blank" rel="noopener">Open Amazon</a><a class="quick-link" href="https://www.amazon.com/s?i=merchant-items&amp;me=A2B9DZ8JGHNNVQ&amp;s=exact-aware-popularity-rank&amp;ds=v1%3Acs6EzKhYrdF%2B8VZiUuMNEkPCtv%2FuQrc1X1av%2FLriRo8&amp;marketplaceID=ATVPDKIKX0DER&amp;qid=1777949535&amp;ref=sr_st_exact-aware-popularity-rank" target="_blank" rel="noopener">Open Source</a></div>
+        </div>
+      </article>
+      <article class="card" data-card-index="9" data-opportunity-score="31" data-display-rank-change="10" data-display-rank-velocity="10.0" data-top-percentile="69.23" data-category-rank="9007199254740991" data-subcategory-rank="9007199254740991" data-review-count="0" data-rank-change="10" data-growth-velocity="3.33" data-new-breakout-score="83" data-pod-score="35" data-pod="true" data-new="true" data-rank-mover="true" data-top10="false" data-new-release="false" data-seller-key="polify" data-niche-key="unknown">
+        <a href="https://www.amazon.com/Pofily-Couple-Personalized-2-Layered-Valentines/dp/B0FVSN2NFX/ref=cs_sr_dp_loc_6?dib=eyJ2IjoiMSJ9.Vta8uR1VKqD0S26xo2siQBejkwRJlfSGzFi2of9qytL9q4j1fpzqruzmpi21ZwTcXgssmUoAdfkcpENgaMMAWWwnK06Yw6oyoDQoPd4MVTDx3nnXPq_unPApfhpF5nQj8WjgFNnGjcnrjBRtS3D0oIFknEvuRVZrhPWRyjP-xH5fZUPvkbTGabbFlDt0-yDwYZwN3_UDivCIW3L5frRe7Gpf-6VbE79jqfjHflYxMUY.6_qUqFIdo8vOGjhs-IFsMlUD_J0s447sMMGszijljNY&amp;dib_tag=se&amp;m=A2EE0SSLB7X91Q&amp;marketplaceID=ATVPDKIKX0DER&amp;nsdOptOutParam=true&amp;qid=1782270636&amp;s=merchant-items&amp;sr=1-10" target="_blank" rel="noopener"><div class="image"><div class="image-placeholder" aria-hidden="true">No image</div></div></a>
+        <div class="body">
+          <div class="badge-list"><span class="badge">Fast Mover</span><span class="badge">New Breakout</span></div>
+          <div class="title">Title unavailable - open product</div>
+          <div class="meta">
+            <div class="metric score score-breakdown" tabindex="0" title="POD: 10/30
+Momentum: 21/25
+Market: 0/20
+Competition: 0/10
+Niche: 0/15" data-tooltip="POD: 10/30
+Momentum: 21/25
+Market: 0/20
+Competition: 0/10
+Niche: 0/15"><span>Opportunity Score:</span><strong>31</strong></div>
+            <div class="score-components"><span>Top Rank <strong>10</strong></span><span>Velocity <strong>18</strong></span><span>Newness <strong>20</strong></span><span>BSR <strong>0</strong></span><span>POD <strong>35</strong></span></div>
+            <div class="metric"><span>Seller:</span><strong>POLIFY</strong></div>
+            <div class="metric"><span>Source Name:</span><strong>POLIFY</strong></div>
+            <div class="metric movement-metric"><span>Source Rank:</span><strong>#46 &rarr; #36 (+10)</strong></div>
+            <div class="metric display-rank display-rank--blue"><span>Display Rank:</span><strong>#36 in POLIFY</strong><small>Top 69.2%</small></div><div class="metric display-rank display-rank--blue"><span>Previous Display Rank:</span><strong>#46</strong></div><div class="metric display-rank display-rank--blue"><span>Movement:</span><strong>Up 10 positions</strong><small>Velocity: +10</small></div>
+            
+            
+            
+            <div class="metric"><span>Reviews:</span><strong></strong><small>Rating: </small></div>
+            <div class="metric"><span>Source Rank Change:</span><strong>10</strong></div>
+            <div class="metric"><span>Days Seen:</span><strong>3</strong></div>
+            <div class="metric"><span>First Seen:</span><strong>2026-06-22</strong></div>
+            <div class="metric"><span>Growth Velocity:</span><strong>3.33</strong></div>
+            <div class="metric"><span>New Breakout Score:</span><strong>83</strong></div>
+            <div class="metric"><span>POD Score:</span><strong>35</strong></div>
+            <div class="metric"><span>Niche:</span><strong>Unknown</strong></div>
+            <div class="metric"><span>Tags:</span><strong>Unknown</strong></div>
+          </div>
+          <div class="card-actions"><a class="quick-link" href="https://www.amazon.com/Pofily-Couple-Personalized-2-Layered-Valentines/dp/B0FVSN2NFX/ref=cs_sr_dp_loc_6?dib=eyJ2IjoiMSJ9.Vta8uR1VKqD0S26xo2siQBejkwRJlfSGzFi2of9qytL9q4j1fpzqruzmpi21ZwTcXgssmUoAdfkcpENgaMMAWWwnK06Yw6oyoDQoPd4MVTDx3nnXPq_unPApfhpF5nQj8WjgFNnGjcnrjBRtS3D0oIFknEvuRVZrhPWRyjP-xH5fZUPvkbTGabbFlDt0-yDwYZwN3_UDivCIW3L5frRe7Gpf-6VbE79jqfjHflYxMUY.6_qUqFIdo8vOGjhs-IFsMlUD_J0s447sMMGszijljNY&amp;dib_tag=se&amp;m=A2EE0SSLB7X91Q&amp;marketplaceID=ATVPDKIKX0DER&amp;nsdOptOutParam=true&amp;qid=1782270636&amp;s=merchant-items&amp;sr=1-10" target="_blank" rel="noopener">Open Amazon</a><a class="quick-link" href="https://www.amazon.com/s?i=merchant-items&amp;me=A2EE0SSLB7X91Q&amp;s=exact-aware-popularity-rank&amp;ds=v1%3AlPGwADyBMF0FYR1NlEyNlqFr4urA7yd31RbjIaWjQc4&amp;marketplaceID=ATVPDKIKX0DER&amp;qid=1776152305&amp;ref=sr_st_exact-aware-popularity-rank" target="_blank" rel="noopener">Open Source</a></div>
+        </div>
+      </article>
+      <article class="card" data-card-index="10" data-opportunity-score="41" data-display-rank-change="10" data-display-rank-velocity="2.0" data-top-percentile="63.79" data-category-rank="9007199254740991" data-subcategory-rank="9007199254740991" data-review-count="0" data-rank-change="10" data-growth-velocity="5.0" data-new-breakout-score="93" data-pod-score="45" data-pod="true" data-new="true" data-rank-mover="true" data-top10="false" data-new-release="false" data-seller-key="hucao" data-niche-key="custom shirt">
+        <a href="https://www.amazon.com/Personalized-GrandpaTShirt-Anniversary-American-America/dp/B0H2VM8443/ref=is_sr_dp_3?dib=eyJ2IjoiMSJ9.we1WEibNYJAcHkwooMmWPmojZS6Xl8DBHAtnnHDp2vgjhx86kfSDCJPh8thJ0aMVfe1jPsqNlaNCVparGriYg4ysr2UXmncMJg4fdGgmJTfhFIMjM2N5A1OjDhwths62b1yvXtIP2zd7XTJhfcY7JB87apl8uUW0kycrMHQmR81nl-NRta8fWKueoScPutLK_nzYh4OzwWBRcTLnn85uJAI88HTQbSNcYJPBoiL1wBc.1N_7y-sOjc5_o0It2uMrsKhqseLfpvc_wEctqzm8URU&amp;dib_tag=se&amp;m=A2B9DZ8JGHNNVQ&amp;marketplaceID=ATVPDKIKX0DER&amp;nsdOptOutParam=true&amp;qid=1782270664&amp;s=merchant-items&amp;sr=1-11" target="_blank" rel="noopener"><div class="image"><div class="image-placeholder" aria-hidden="true">No image</div></div></a>
+        <div class="body">
+          <div class="badge-list"><span class="badge">Fast Mover</span><span class="badge">New Breakout</span></div>
+          <div class="title">Title unavailable - open product</div>
+          <div class="meta">
+            <div class="metric score score-breakdown" tabindex="0" title="POD: 14/30
+Momentum: 21/25
+Market: 0/20
+Competition: 0/10
+Niche: 6/15" data-tooltip="POD: 14/30
+Momentum: 21/25
+Market: 0/20
+Competition: 0/10
+Niche: 6/15"><span>Opportunity Score:</span><strong>41</strong></div>
+            <div class="score-components"><span>Top Rank <strong>10</strong></span><span>Velocity <strong>18</strong></span><span>Newness <strong>20</strong></span><span>BSR <strong>0</strong></span><span>POD <strong>45</strong></span></div>
+            <div class="metric"><span>Seller:</span><strong>HUCAO</strong></div>
+            <div class="metric"><span>Source Name:</span><strong>HUCAO</strong></div>
+            <div class="metric movement-metric"><span>Source Rank:</span><strong>#47 &rarr; #37 (+10)</strong></div>
+            <div class="metric display-rank display-rank--blue"><span>Display Rank:</span><strong>#37 in HUCAO</strong><small>Top 63.8%</small></div><div class="metric display-rank display-rank--blue"><span>Previous Display Rank:</span><strong>#47</strong></div><div class="metric display-rank display-rank--blue"><span>Movement:</span><strong>Up 10 positions</strong><small>Velocity: +2</small></div>
+            
+            
+            
+            <div class="metric"><span>Reviews:</span><strong></strong><small>Rating: </small></div>
+            <div class="metric"><span>Source Rank Change:</span><strong>10</strong></div>
+            <div class="metric"><span>Days Seen:</span><strong>2</strong></div>
+            <div class="metric"><span>First Seen:</span><strong>2026-06-19</strong></div>
+            <div class="metric"><span>Growth Velocity:</span><strong>5</strong></div>
+            <div class="metric"><span>New Breakout Score:</span><strong>93</strong></div>
+            <div class="metric"><span>POD Score:</span><strong>45</strong></div>
+            <div class="metric"><span>Niche:</span><strong>Custom Shirt</strong></div>
+            <div class="metric"><span>Tags:</span><strong>Custom Shirt</strong></div>
+          </div>
+          <div class="card-actions"><a class="quick-link" href="https://www.amazon.com/Personalized-GrandpaTShirt-Anniversary-American-America/dp/B0H2VM8443/ref=is_sr_dp_3?dib=eyJ2IjoiMSJ9.we1WEibNYJAcHkwooMmWPmojZS6Xl8DBHAtnnHDp2vgjhx86kfSDCJPh8thJ0aMVfe1jPsqNlaNCVparGriYg4ysr2UXmncMJg4fdGgmJTfhFIMjM2N5A1OjDhwths62b1yvXtIP2zd7XTJhfcY7JB87apl8uUW0kycrMHQmR81nl-NRta8fWKueoScPutLK_nzYh4OzwWBRcTLnn85uJAI88HTQbSNcYJPBoiL1wBc.1N_7y-sOjc5_o0It2uMrsKhqseLfpvc_wEctqzm8URU&amp;dib_tag=se&amp;m=A2B9DZ8JGHNNVQ&amp;marketplaceID=ATVPDKIKX0DER&amp;nsdOptOutParam=true&amp;qid=1782270664&amp;s=merchant-items&amp;sr=1-11" target="_blank" rel="noopener">Open Amazon</a><a class="quick-link" href="https://www.amazon.com/s?i=merchant-items&amp;me=A2B9DZ8JGHNNVQ&amp;s=exact-aware-popularity-rank&amp;ds=v1%3Acs6EzKhYrdF%2B8VZiUuMNEkPCtv%2FuQrc1X1av%2FLriRo8&amp;marketplaceID=ATVPDKIKX0DER&amp;qid=1777949535&amp;ref=sr_st_exact-aware-popularity-rank" target="_blank" rel="noopener">Open Source</a></div>
+        </div>
+      </article>
+      <article class="card" data-card-index="11" data-opportunity-score="41" data-display-rank-change="10" data-display-rank-velocity="2.0" data-top-percentile="65.52" data-category-rank="9007199254740991" data-subcategory-rank="9007199254740991" data-review-count="0" data-rank-change="10" data-growth-velocity="5.0" data-new-breakout-score="93" data-pod-score="45" data-pod="true" data-new="true" data-rank-mover="true" data-top10="false" data-new-release="false" data-seller-key="hucao" data-niche-key="custom shirt">
+        <a href="https://www.amazon.com/Personalized-GrandpaTShirt-Anniversary-American-America/dp/B0H2VJHDWM/ref=is_sr_dp_4?dib=eyJ2IjoiMSJ9.we1WEibNYJAcHkwooMmWPmojZS6Xl8DBHAtnnHDp2vgjhx86kfSDCJPh8thJ0aMVfe1jPsqNlaNCVparGriYg4ysr2UXmncMJg4fdGgmJTfhFIMjM2N5A1OjDhwths62b1yvXtIP2zd7XTJhfcY7JB87apl8uUW0kycrMHQmR81nl-NRta8fWKueoScPutLK_nzYh4OzwWBRcTLnn85uJAI88HTQbSNcYJPBoiL1wBc.1N_7y-sOjc5_o0It2uMrsKhqseLfpvc_wEctqzm8URU&amp;dib_tag=se&amp;m=A2B9DZ8JGHNNVQ&amp;marketplaceID=ATVPDKIKX0DER&amp;nsdOptOutParam=true&amp;qid=1782270664&amp;s=merchant-items&amp;sr=1-11" target="_blank" rel="noopener"><div class="image"><div class="image-placeholder" aria-hidden="true">No image</div></div></a>
+        <div class="body">
+          <div class="badge-list"><span class="badge">Fast Mover</span><span class="badge">New Breakout</span></div>
+          <div class="title">Title unavailable - open product</div>
+          <div class="meta">
+            <div class="metric score score-breakdown" tabindex="0" title="POD: 14/30
+Momentum: 21/25
+Market: 0/20
+Competition: 0/10
+Niche: 6/15" data-tooltip="POD: 14/30
+Momentum: 21/25
+Market: 0/20
+Competition: 0/10
+Niche: 6/15"><span>Opportunity Score:</span><strong>41</strong></div>
+            <div class="score-components"><span>Top Rank <strong>10</strong></span><span>Velocity <strong>18</strong></span><span>Newness <strong>20</strong></span><span>BSR <strong>0</strong></span><span>POD <strong>45</strong></span></div>
+            <div class="metric"><span>Seller:</span><strong>HUCAO</strong></div>
+            <div class="metric"><span>Source Name:</span><strong>HUCAO</strong></div>
+            <div class="metric movement-metric"><span>Source Rank:</span><strong>#48 &rarr; #38 (+10)</strong></div>
+            <div class="metric display-rank display-rank--blue"><span>Display Rank:</span><strong>#38 in HUCAO</strong><small>Top 65.5%</small></div><div class="metric display-rank display-rank--blue"><span>Previous Display Rank:</span><strong>#48</strong></div><div class="metric display-rank display-rank--blue"><span>Movement:</span><strong>Up 10 positions</strong><small>Velocity: +2</small></div>
+            
+            
+            
+            <div class="metric"><span>Reviews:</span><strong></strong><small>Rating: </small></div>
+            <div class="metric"><span>Source Rank Change:</span><strong>10</strong></div>
+            <div class="metric"><span>Days Seen:</span><strong>2</strong></div>
+            <div class="metric"><span>First Seen:</span><strong>2026-06-19</strong></div>
+            <div class="metric"><span>Growth Velocity:</span><strong>5</strong></div>
+            <div class="metric"><span>New Breakout Score:</span><strong>93</strong></div>
+            <div class="metric"><span>POD Score:</span><strong>45</strong></div>
+            <div class="metric"><span>Niche:</span><strong>Custom Shirt</strong></div>
+            <div class="metric"><span>Tags:</span><strong>Custom Shirt</strong></div>
+          </div>
+          <div class="card-actions"><a class="quick-link" href="https://www.amazon.com/Personalized-GrandpaTShirt-Anniversary-American-America/dp/B0H2VJHDWM/ref=is_sr_dp_4?dib=eyJ2IjoiMSJ9.we1WEibNYJAcHkwooMmWPmojZS6Xl8DBHAtnnHDp2vgjhx86kfSDCJPh8thJ0aMVfe1jPsqNlaNCVparGriYg4ysr2UXmncMJg4fdGgmJTfhFIMjM2N5A1OjDhwths62b1yvXtIP2zd7XTJhfcY7JB87apl8uUW0kycrMHQmR81nl-NRta8fWKueoScPutLK_nzYh4OzwWBRcTLnn85uJAI88HTQbSNcYJPBoiL1wBc.1N_7y-sOjc5_o0It2uMrsKhqseLfpvc_wEctqzm8URU&amp;dib_tag=se&amp;m=A2B9DZ8JGHNNVQ&amp;marketplaceID=ATVPDKIKX0DER&amp;nsdOptOutParam=true&amp;qid=1782270664&amp;s=merchant-items&amp;sr=1-11" target="_blank" rel="noopener">Open Amazon</a><a class="quick-link" href="https://www.amazon.com/s?i=merchant-items&amp;me=A2B9DZ8JGHNNVQ&amp;s=exact-aware-popularity-rank&amp;ds=v1%3Acs6EzKhYrdF%2B8VZiUuMNEkPCtv%2FuQrc1X1av%2FLriRo8&amp;marketplaceID=ATVPDKIKX0DER&amp;qid=1777949535&amp;ref=sr_st_exact-aware-popularity-rank" target="_blank" rel="noopener">Open Source</a></div>
+        </div>
+      </article>
+      <article class="card" data-card-index="12" data-opportunity-score="25" data-display-rank-change="-23" data-display-rank-velocity="-4.6" data-top-percentile="67.24" data-category-rank="9007199254740991" data-subcategory-rank="9007199254740991" data-review-count="0" data-rank-change="-23" data-growth-velocity="-11.5" data-new-breakout-score="75" data-pod-score="45" data-pod="true" data-new="true" data-rank-mover="true" data-top10="false" data-new-release="false" data-seller-key="hucao" data-niche-key="custom shirt">
+        <a href="https://www.amazon.com/Personalized-GrandpaTShirt-Anniversary-American-America/dp/B0H2VPQBHJ/ref=is_sr_dp_5?dib=eyJ2IjoiMSJ9.we1WEibNYJAcHkwooMmWPmojZS6Xl8DBHAtnnHDp2vgjhx86kfSDCJPh8thJ0aMVfe1jPsqNlaNCVparGriYg4ysr2UXmncMJg4fdGgmJTfhFIMjM2N5A1OjDhwths62b1yvXtIP2zd7XTJhfcY7JB87apl8uUW0kycrMHQmR81nl-NRta8fWKueoScPutLK_nzYh4OzwWBRcTLnn85uJAI88HTQbSNcYJPBoiL1wBc.1N_7y-sOjc5_o0It2uMrsKhqseLfpvc_wEctqzm8URU&amp;dib_tag=se&amp;m=A2B9DZ8JGHNNVQ&amp;marketplaceID=ATVPDKIKX0DER&amp;nsdOptOutParam=true&amp;qid=1782270664&amp;s=merchant-items&amp;sr=1-11" target="_blank" rel="noopener"><div class="image"><div class="image-placeholder" aria-hidden="true">No image</div></div></a>
+        <div class="body">
+          
+          <div class="title">Title unavailable - open product</div>
+          <div class="meta">
+            <div class="metric score score-breakdown" tabindex="0" title="POD: 14/30
+Momentum: 5/25
+Market: 0/20
+Competition: 0/10
+Niche: 6/15" data-tooltip="POD: 14/30
+Momentum: 5/25
+Market: 0/20
+Competition: 0/10
+Niche: 6/15"><span>Opportunity Score:</span><strong>25</strong></div>
+            <div class="score-components"><span>Top Rank <strong>10</strong></span><span>Velocity <strong>0</strong></span><span>Newness <strong>20</strong></span><span>BSR <strong>0</strong></span><span>POD <strong>45</strong></span></div>
+            <div class="metric"><span>Seller:</span><strong>HUCAO</strong></div>
+            <div class="metric"><span>Source Name:</span><strong>HUCAO</strong></div>
+            <div class="metric movement-metric"><span>Source Rank:</span><strong>#16 &rarr; #39 (-23)</strong></div>
+            <div class="metric display-rank display-rank--red"><span>Display Rank:</span><strong>#39 in HUCAO</strong><small>Top 67.2%</small></div><div class="metric display-rank display-rank--red"><span>Previous Display Rank:</span><strong>#16</strong></div><div class="metric display-rank display-rank--red"><span>Movement:</span><strong>Down 23 positions</strong><small>Velocity: -4.6</small></div>
+            
+            
+            
+            <div class="metric"><span>Reviews:</span><strong></strong><small>Rating: </small></div>
+            <div class="metric"><span>Source Rank Change:</span><strong>-23</strong></div>
+            <div class="metric"><span>Days Seen:</span><strong>2</strong></div>
+            <div class="metric"><span>First Seen:</span><strong>2026-06-19</strong></div>
+            <div class="metric"><span>Growth Velocity:</span><strong>-11.5</strong></div>
+            <div class="metric"><span>New Breakout Score:</span><strong>75</strong></div>
+            <div class="metric"><span>POD Score:</span><strong>45</strong></div>
+            <div class="metric"><span>Niche:</span><strong>Custom Shirt</strong></div>
+            <div class="metric"><span>Tags:</span><strong>Custom Shirt</strong></div>
+          </div>
+          <div class="card-actions"><a class="quick-link" href="https://www.amazon.com/Personalized-GrandpaTShirt-Anniversary-American-America/dp/B0H2VPQBHJ/ref=is_sr_dp_5?dib=eyJ2IjoiMSJ9.we1WEibNYJAcHkwooMmWPmojZS6Xl8DBHAtnnHDp2vgjhx86kfSDCJPh8thJ0aMVfe1jPsqNlaNCVparGriYg4ysr2UXmncMJg4fdGgmJTfhFIMjM2N5A1OjDhwths62b1yvXtIP2zd7XTJhfcY7JB87apl8uUW0kycrMHQmR81nl-NRta8fWKueoScPutLK_nzYh4OzwWBRcTLnn85uJAI88HTQbSNcYJPBoiL1wBc.1N_7y-sOjc5_o0It2uMrsKhqseLfpvc_wEctqzm8URU&amp;dib_tag=se&amp;m=A2B9DZ8JGHNNVQ&amp;marketplaceID=ATVPDKIKX0DER&amp;nsdOptOutParam=true&amp;qid=1782270664&amp;s=merchant-items&amp;sr=1-11" target="_blank" rel="noopener">Open Amazon</a><a class="quick-link" href="https://www.amazon.com/s?i=merchant-items&amp;me=A2B9DZ8JGHNNVQ&amp;s=exact-aware-popularity-rank&amp;ds=v1%3Acs6EzKhYrdF%2B8VZiUuMNEkPCtv%2FuQrc1X1av%2FLriRo8&amp;marketplaceID=ATVPDKIKX0DER&amp;qid=1777949535&amp;ref=sr_st_exact-aware-popularity-rank" target="_blank" rel="noopener">Open Source</a></div>
+        </div>
+      </article>
+      <article class="card" data-card-index="13" data-opportunity-score="55" data-display-rank-change="10" data-display-rank-velocity="10.0" data-top-percentile="73.68" data-category-rank="9007199254740991" data-subcategory-rank="9007199254740991" data-review-count="0" data-rank-change="10" data-growth-velocity="3.33" data-new-breakout-score="128" data-pod-score="80" data-pod="true" data-new="true" data-rank-mover="true" data-top10="false" data-new-release="false" data-seller-key="lovelytee" data-niche-key="custom shirt">
+        <a href="https://www.amazon.com/NAZENTI-Personalized-Embroidered-Sweatshirt-Sweatshirts/dp/B0FR575RF2/ref=is_sr_dp_2?dib=eyJ2IjoiMSJ9.HrKtN47eDLSBadC-i3EQfmsa0NseVCgRiKtfJc18EH1cS9DX2mLwYx8m94WkBRpOARTTvOlW0RvLiVLNNeZiqm2msLN2w0f4XYF4OxTnfwm9HYA_kTn9rW--d22gaL1GK4tXEZl9bD0tNsQXuUuruHuKQDTy9BgvqKZq9wBfnQUOYCmuPttdl088QLgcolE2QCRo6lLl9q5Fb9bLJb2xXN2rBcOg1Jw_nDqu2WHhs7c.K9TScRvv2TbJcpYqSkFWLn3GYdJevFibyMJuqLvuhFY&amp;dib_tag=se&amp;m=A2WJ2LRSFW5CYV&amp;marketplaceID=ATVPDKIKX0DER&amp;nsdOptOutParam=true&amp;qid=1782270367&amp;s=merchant-items&amp;sr=1-12" target="_blank" rel="noopener"><div class="image"><img src="https://m.media-amazon.com/images/I/81cMiWCroqL._AC_SX522_.jpg" alt="Custom Embroidered Grandma Floral Shirt with Names on Sleeve, Personalized Grandma Gift, Floral Grandma Crewneck Sweatshirt"></div></a>
+        <div class="body">
+          <div class="badge-list"><span class="badge">Fast Mover</span><span class="badge">New Breakout</span></div>
+          <div class="title">Custom Embroidered Grandma Floral Shirt with Names on Sleeve, Personalized Grandma Gift, Floral Grandma Crewneck Sweatshirt</div>
+          <div class="meta">
+            <div class="metric score score-breakdown" tabindex="0" title="POD: 24/30
+Momentum: 21/25
+Market: 0/20
+Competition: 0/10
+Niche: 10/15" data-tooltip="POD: 24/30
+Momentum: 21/25
+Market: 0/20
+Competition: 0/10
+Niche: 10/15"><span>Opportunity Score:</span><strong>55</strong></div>
+            <div class="score-components"><span>Top Rank <strong>10</strong></span><span>Velocity <strong>18</strong></span><span>Newness <strong>20</strong></span><span>BSR <strong>0</strong></span><span>POD <strong>80</strong></span></div>
+            <div class="metric"><span>Seller:</span><strong>LOVELYTEE</strong></div>
+            <div class="metric"><span>Source Name:</span><strong>LOVELYTEE</strong></div>
+            <div class="metric movement-metric"><span>Source Rank:</span><strong>#52 &rarr; #42 (+10)</strong></div>
+            <div class="metric display-rank display-rank--blue"><span>Display Rank:</span><strong>#42 in LOVELYTEE</strong><small>Top 73.7%</small></div><div class="metric display-rank display-rank--blue"><span>Previous Display Rank:</span><strong>#52</strong></div><div class="metric display-rank display-rank--blue"><span>Movement:</span><strong>Up 10 positions</strong><small>Velocity: +10</small></div>
+            
+            
+            
+            <div class="metric"><span>Reviews:</span><strong></strong><small>Rating: </small></div>
+            <div class="metric"><span>Source Rank Change:</span><strong>10</strong></div>
+            <div class="metric"><span>Days Seen:</span><strong>3</strong></div>
+            <div class="metric"><span>First Seen:</span><strong>2026-06-22</strong></div>
+            <div class="metric"><span>Growth Velocity:</span><strong>3.33</strong></div>
+            <div class="metric"><span>New Breakout Score:</span><strong>128</strong></div>
+            <div class="metric"><span>POD Score:</span><strong>80</strong></div>
+            <div class="metric"><span>Niche:</span><strong>Custom Shirt</strong></div>
+            <div class="metric"><span>Tags:</span><strong>Custom Shirt;Grandma</strong></div>
+          </div>
+          <div class="card-actions"><a class="quick-link" href="https://www.amazon.com/NAZENTI-Personalized-Embroidered-Sweatshirt-Sweatshirts/dp/B0FR575RF2/ref=is_sr_dp_2?dib=eyJ2IjoiMSJ9.HrKtN47eDLSBadC-i3EQfmsa0NseVCgRiKtfJc18EH1cS9DX2mLwYx8m94WkBRpOARTTvOlW0RvLiVLNNeZiqm2msLN2w0f4XYF4OxTnfwm9HYA_kTn9rW--d22gaL1GK4tXEZl9bD0tNsQXuUuruHuKQDTy9BgvqKZq9wBfnQUOYCmuPttdl088QLgcolE2QCRo6lLl9q5Fb9bLJb2xXN2rBcOg1Jw_nDqu2WHhs7c.K9TScRvv2TbJcpYqSkFWLn3GYdJevFibyMJuqLvuhFY&amp;dib_tag=se&amp;m=A2WJ2LRSFW5CYV&amp;marketplaceID=ATVPDKIKX0DER&amp;nsdOptOutParam=true&amp;qid=1782270367&amp;s=merchant-items&amp;sr=1-12" target="_blank" rel="noopener">Open Amazon</a><a class="quick-link" href="https://www.amazon.com/s?i=merchant-items&amp;me=A2WJ2LRSFW5CYV&amp;s=exact-aware-popularity-rank&amp;ds=v1%3All0hmCvpiQpaLEPjgIB%2Bx7R1rSc7fmTN9ObKovzMeWs&amp;marketplaceID=ATVPDKIKX0DER&amp;qid=1776149757&amp;ref=sr_st_exact-aware-popularity-rank" target="_blank" rel="noopener">Open Source</a></div>
+        </div>
+      </article>
+      <article class="card" data-card-index="14" data-opportunity-score="55" data-display-rank-change="10" data-display-rank-velocity="10.0" data-top-percentile="75.44" data-category-rank="9007199254740991" data-subcategory-rank="9007199254740991" data-review-count="0" data-rank-change="10" data-growth-velocity="3.33" data-new-breakout-score="128" data-pod-score="80" data-pod="true" data-new="true" data-rank-mover="true" data-top10="false" data-new-release="false" data-seller-key="lovelytee" data-niche-key="custom shirt">
+        <a href="https://www.amazon.com/NAZENTI-Personalized-Embroidered-Sweatshirt-Sweatshirts/dp/B0FR5GKC2H/ref=is_sr_dp_3?dib=eyJ2IjoiMSJ9.HrKtN47eDLSBadC-i3EQfmsa0NseVCgRiKtfJc18EH1cS9DX2mLwYx8m94WkBRpOARTTvOlW0RvLiVLNNeZiqm2msLN2w0f4XYF4OxTnfwm9HYA_kTn9rW--d22gaL1GK4tXEZl9bD0tNsQXuUuruHuKQDTy9BgvqKZq9wBfnQUOYCmuPttdl088QLgcolE2QCRo6lLl9q5Fb9bLJb2xXN2rBcOg1Jw_nDqu2WHhs7c.K9TScRvv2TbJcpYqSkFWLn3GYdJevFibyMJuqLvuhFY&amp;dib_tag=se&amp;m=A2WJ2LRSFW5CYV&amp;marketplaceID=ATVPDKIKX0DER&amp;nsdOptOutParam=true&amp;qid=1782270367&amp;s=merchant-items&amp;sr=1-12" target="_blank" rel="noopener"><div class="image"><img src="https://m.media-amazon.com/images/I/815u-WsGLSL._AC_SX522_.jpg" alt="Custom Embroidered Grandma Floral Shirt with Names on Sleeve, Personalized Grandma Gift, Floral Grandma Crewneck Sweatshirt"></div></a>
+        <div class="body">
+          <div class="badge-list"><span class="badge">Fast Mover</span><span class="badge">New Breakout</span></div>
+          <div class="title">Custom Embroidered Grandma Floral Shirt with Names on Sleeve, Personalized Grandma Gift, Floral Grandma Crewneck Sweatshirt</div>
+          <div class="meta">
+            <div class="metric score score-breakdown" tabindex="0" title="POD: 24/30
+Momentum: 21/25
+Market: 0/20
+Competition: 0/10
+Niche: 10/15" data-tooltip="POD: 24/30
+Momentum: 21/25
+Market: 0/20
+Competition: 0/10
+Niche: 10/15"><span>Opportunity Score:</span><strong>55</strong></div>
+            <div class="score-components"><span>Top Rank <strong>10</strong></span><span>Velocity <strong>18</strong></span><span>Newness <strong>20</strong></span><span>BSR <strong>0</strong></span><span>POD <strong>80</strong></span></div>
+            <div class="metric"><span>Seller:</span><strong>LOVELYTEE</strong></div>
+            <div class="metric"><span>Source Name:</span><strong>LOVELYTEE</strong></div>
+            <div class="metric movement-metric"><span>Source Rank:</span><strong>#53 &rarr; #43 (+10)</strong></div>
+            <div class="metric display-rank display-rank--blue"><span>Display Rank:</span><strong>#43 in LOVELYTEE</strong><small>Top 75.4%</small></div><div class="metric display-rank display-rank--blue"><span>Previous Display Rank:</span><strong>#53</strong></div><div class="metric display-rank display-rank--blue"><span>Movement:</span><strong>Up 10 positions</strong><small>Velocity: +10</small></div>
+            
+            
+            
+            <div class="metric"><span>Reviews:</span><strong></strong><small>Rating: </small></div>
+            <div class="metric"><span>Source Rank Change:</span><strong>10</strong></div>
+            <div class="metric"><span>Days Seen:</span><strong>3</strong></div>
+            <div class="metric"><span>First Seen:</span><strong>2026-06-22</strong></div>
+            <div class="metric"><span>Growth Velocity:</span><strong>3.33</strong></div>
+            <div class="metric"><span>New Breakout Score:</span><strong>128</strong></div>
+            <div class="metric"><span>POD Score:</span><strong>80</strong></div>
+            <div class="metric"><span>Niche:</span><strong>Custom Shirt</strong></div>
+            <div class="metric"><span>Tags:</span><strong>Custom Shirt;Grandma</strong></div>
+          </div>
+          <div class="card-actions"><a class="quick-link" href="https://www.amazon.com/NAZENTI-Personalized-Embroidered-Sweatshirt-Sweatshirts/dp/B0FR5GKC2H/ref=is_sr_dp_3?dib=eyJ2IjoiMSJ9.HrKtN47eDLSBadC-i3EQfmsa0NseVCgRiKtfJc18EH1cS9DX2mLwYx8m94WkBRpOARTTvOlW0RvLiVLNNeZiqm2msLN2w0f4XYF4OxTnfwm9HYA_kTn9rW--d22gaL1GK4tXEZl9bD0tNsQXuUuruHuKQDTy9BgvqKZq9wBfnQUOYCmuPttdl088QLgcolE2QCRo6lLl9q5Fb9bLJb2xXN2rBcOg1Jw_nDqu2WHhs7c.K9TScRvv2TbJcpYqSkFWLn3GYdJevFibyMJuqLvuhFY&amp;dib_tag=se&amp;m=A2WJ2LRSFW5CYV&amp;marketplaceID=ATVPDKIKX0DER&amp;nsdOptOutParam=true&amp;qid=1782270367&amp;s=merchant-items&amp;sr=1-12" target="_blank" rel="noopener">Open Amazon</a><a class="quick-link" href="https://www.amazon.com/s?i=merchant-items&amp;me=A2WJ2LRSFW5CYV&amp;s=exact-aware-popularity-rank&amp;ds=v1%3All0hmCvpiQpaLEPjgIB%2Bx7R1rSc7fmTN9ObKovzMeWs&amp;marketplaceID=ATVPDKIKX0DER&amp;qid=1776149757&amp;ref=sr_st_exact-aware-popularity-rank" target="_blank" rel="noopener">Open Source</a></div>
+        </div>
+      </article>
+      <article class="card" data-card-index="15" data-opportunity-score="25" data-display-rank-change="-11" data-display-rank-velocity="-11.0" data-top-percentile="89.58" data-category-rank="9007199254740991" data-subcategory-rank="9007199254740991" data-review-count="0" data-rank-change="-11" data-growth-velocity="-3.67" data-new-breakout-score="75" data-pod-score="45" data-pod="true" data-new="true" data-rank-mover="true" data-top10="false" data-new-release="false" data-seller-key="lasfour (warrior)" data-niche-key="custom shirt">
+        <a href="https://www.amazon.com/LASFOUR-Custom-American-Skull-Jersey/dp/B0FXWGY6JY/ref=is_sr_dp_2?dib=eyJ2IjoiMSJ9.UAAw9BPyviykEPjvONSuB09t19CwteSYgQEg1cXheiAp7JKO0xoEeulaF4V5lzoDZlPaVsIvyz0_-1onobOhAc6rNofLNMTfALGqf7F5xHyZ8hEzYK8qs4SRQy7jf8MjAHVB6MUrMF6QXWofFdy_ikEmDSfC1OUvkfI8hGwN_hOHeDA-uaqohZaGFaCRqKGLj6gWMporylTxt_eao58AVNJJUP9XU1igxD5_ZjUlshk.kYPDmgbcRQPH5p-yZ4_fmq7g1OvZLEVKOodfFgqZ2NU&amp;dib_tag=se&amp;m=A1HHNBJES4IIQK&amp;marketplaceID=ATVPDKIKX0DER&amp;nsdOptOutParam=true&amp;qid=1782270764&amp;s=merchant-items&amp;sr=1-16" target="_blank" rel="noopener"><div class="image"><div class="image-placeholder" aria-hidden="true">No image</div></div></a>
+        <div class="body">
+          
+          <div class="title">Title unavailable - open product</div>
+          <div class="meta">
+            <div class="metric score score-breakdown" tabindex="0" title="POD: 14/30
+Momentum: 5/25
+Market: 0/20
+Competition: 0/10
+Niche: 6/15" data-tooltip="POD: 14/30
+Momentum: 5/25
+Market: 0/20
+Competition: 0/10
+Niche: 6/15"><span>Opportunity Score:</span><strong>25</strong></div>
+            <div class="score-components"><span>Top Rank <strong>10</strong></span><span>Velocity <strong>0</strong></span><span>Newness <strong>20</strong></span><span>BSR <strong>0</strong></span><span>POD <strong>45</strong></span></div>
+            <div class="metric"><span>Seller:</span><strong>LASFOUR (Warrior)</strong></div>
+            <div class="metric"><span>Source Name:</span><strong>LASFOUR (Warrior)</strong></div>
+            <div class="metric movement-metric"><span>Source Rank:</span><strong>#32 &rarr; #43 (-11)</strong></div>
+            <div class="metric display-rank display-rank--red"><span>Display Rank:</span><strong>#43 in LASFOUR (Warrior)</strong><small>Top 89.6%</small></div><div class="metric display-rank display-rank--red"><span>Previous Display Rank:</span><strong>#32</strong></div><div class="metric display-rank display-rank--red"><span>Movement:</span><strong>Down 11 positions</strong><small>Velocity: -11</small></div>
+            
+            
+            
+            <div class="metric"><span>Reviews:</span><strong></strong><small>Rating: </small></div>
+            <div class="metric"><span>Source Rank Change:</span><strong>-11</strong></div>
+            <div class="metric"><span>Days Seen:</span><strong>3</strong></div>
+            <div class="metric"><span>First Seen:</span><strong>2026-06-19</strong></div>
+            <div class="metric"><span>Growth Velocity:</span><strong>-3.67</strong></div>
+            <div class="metric"><span>New Breakout Score:</span><strong>75</strong></div>
+            <div class="metric"><span>POD Score:</span><strong>45</strong></div>
+            <div class="metric"><span>Niche:</span><strong>Custom Shirt</strong></div>
+            <div class="metric"><span>Tags:</span><strong>Custom Shirt</strong></div>
+          </div>
+          <div class="card-actions"><a class="quick-link" href="https://www.amazon.com/LASFOUR-Custom-American-Skull-Jersey/dp/B0FXWGY6JY/ref=is_sr_dp_2?dib=eyJ2IjoiMSJ9.UAAw9BPyviykEPjvONSuB09t19CwteSYgQEg1cXheiAp7JKO0xoEeulaF4V5lzoDZlPaVsIvyz0_-1onobOhAc6rNofLNMTfALGqf7F5xHyZ8hEzYK8qs4SRQy7jf8MjAHVB6MUrMF6QXWofFdy_ikEmDSfC1OUvkfI8hGwN_hOHeDA-uaqohZaGFaCRqKGLj6gWMporylTxt_eao58AVNJJUP9XU1igxD5_ZjUlshk.kYPDmgbcRQPH5p-yZ4_fmq7g1OvZLEVKOodfFgqZ2NU&amp;dib_tag=se&amp;m=A1HHNBJES4IIQK&amp;marketplaceID=ATVPDKIKX0DER&amp;nsdOptOutParam=true&amp;qid=1782270764&amp;s=merchant-items&amp;sr=1-16" target="_blank" rel="noopener">Open Amazon</a><a class="quick-link" href="https://www.amazon.com/s?i=merchant-items&amp;me=A1HHNBJES4IIQK&amp;s=exact-aware-popularity-rank&amp;ds=v1%3A5GI1qv47ulI6PjEg%2BMwJSl1ECFjNO6B6JQaZbR7In%2BE&amp;marketplaceID=ATVPDKIKX0DER&amp;qid=1776046094&amp;ref=sr_st_exact-aware-popularity-rank" target="_blank" rel="noopener">Open Source</a></div>
+        </div>
+      </article>
+      <article class="card" data-card-index="16" data-opportunity-score="55" data-display-rank-change="10" data-display-rank-velocity="10.0" data-top-percentile="77.19" data-category-rank="9007199254740991" data-subcategory-rank="9007199254740991" data-review-count="0" data-rank-change="10" data-growth-velocity="3.33" data-new-breakout-score="128" data-pod-score="80" data-pod="true" data-new="true" data-rank-mover="true" data-top10="false" data-new-release="false" data-seller-key="lovelytee" data-niche-key="custom shirt">
+        <a href="https://www.amazon.com/NAZENTI-Personalized-Embroidered-Sweatshirt-Sweatshirts/dp/B0FR5DGD8J/ref=is_sr_dp_4?dib=eyJ2IjoiMSJ9.HrKtN47eDLSBadC-i3EQfmsa0NseVCgRiKtfJc18EH1cS9DX2mLwYx8m94WkBRpOARTTvOlW0RvLiVLNNeZiqm2msLN2w0f4XYF4OxTnfwm9HYA_kTn9rW--d22gaL1GK4tXEZl9bD0tNsQXuUuruHuKQDTy9BgvqKZq9wBfnQUOYCmuPttdl088QLgcolE2QCRo6lLl9q5Fb9bLJb2xXN2rBcOg1Jw_nDqu2WHhs7c.K9TScRvv2TbJcpYqSkFWLn3GYdJevFibyMJuqLvuhFY&amp;dib_tag=se&amp;m=A2WJ2LRSFW5CYV&amp;marketplaceID=ATVPDKIKX0DER&amp;nsdOptOutParam=true&amp;qid=1782270367&amp;s=merchant-items&amp;sr=1-12" target="_blank" rel="noopener"><div class="image"><img src="https://m.media-amazon.com/images/I/91Y3QJDuoXL._AC_SX522_.jpg" alt="Custom Embroidered Grandma Floral Shirt with Names on Sleeve, Personalized Grandma Gift, Floral Grandma Crewneck Sweatshirt"></div></a>
+        <div class="body">
+          <div class="badge-list"><span class="badge">Fast Mover</span><span class="badge">New Breakout</span></div>
+          <div class="title">Custom Embroidered Grandma Floral Shirt with Names on Sleeve, Personalized Grandma Gift, Floral Grandma Crewneck Sweatshirt</div>
+          <div class="meta">
+            <div class="metric score score-breakdown" tabindex="0" title="POD: 24/30
+Momentum: 21/25
+Market: 0/20
+Competition: 0/10
+Niche: 10/15" data-tooltip="POD: 24/30
+Momentum: 21/25
+Market: 0/20
+Competition: 0/10
+Niche: 10/15"><span>Opportunity Score:</span><strong>55</strong></div>
+            <div class="score-components"><span>Top Rank <strong>10</strong></span><span>Velocity <strong>18</strong></span><span>Newness <strong>20</strong></span><span>BSR <strong>0</strong></span><span>POD <strong>80</strong></span></div>
+            <div class="metric"><span>Seller:</span><strong>LOVELYTEE</strong></div>
+            <div class="metric"><span>Source Name:</span><strong>LOVELYTEE</strong></div>
+            <div class="metric movement-metric"><span>Source Rank:</span><strong>#54 &rarr; #44 (+10)</strong></div>
+            <div class="metric display-rank display-rank--blue"><span>Display Rank:</span><strong>#44 in LOVELYTEE</strong><small>Top 77.2%</small></div><div class="metric display-rank display-rank--blue"><span>Previous Display Rank:</span><strong>#54</strong></div><div class="metric display-rank display-rank--blue"><span>Movement:</span><strong>Up 10 positions</strong><small>Velocity: +10</small></div>
+            
+            
+            
+            <div class="metric"><span>Reviews:</span><strong></strong><small>Rating: </small></div>
+            <div class="metric"><span>Source Rank Change:</span><strong>10</strong></div>
+            <div class="metric"><span>Days Seen:</span><strong>3</strong></div>
+            <div class="metric"><span>First Seen:</span><strong>2026-06-22</strong></div>
+            <div class="metric"><span>Growth Velocity:</span><strong>3.33</strong></div>
+            <div class="metric"><span>New Breakout Score:</span><strong>128</strong></div>
+            <div class="metric"><span>POD Score:</span><strong>80</strong></div>
+            <div class="metric"><span>Niche:</span><strong>Custom Shirt</strong></div>
+            <div class="metric"><span>Tags:</span><strong>Custom Shirt;Grandma</strong></div>
+          </div>
+          <div class="card-actions"><a class="quick-link" href="https://www.amazon.com/NAZENTI-Personalized-Embroidered-Sweatshirt-Sweatshirts/dp/B0FR5DGD8J/ref=is_sr_dp_4?dib=eyJ2IjoiMSJ9.HrKtN47eDLSBadC-i3EQfmsa0NseVCgRiKtfJc18EH1cS9DX2mLwYx8m94WkBRpOARTTvOlW0RvLiVLNNeZiqm2msLN2w0f4XYF4OxTnfwm9HYA_kTn9rW--d22gaL1GK4tXEZl9bD0tNsQXuUuruHuKQDTy9BgvqKZq9wBfnQUOYCmuPttdl088QLgcolE2QCRo6lLl9q5Fb9bLJb2xXN2rBcOg1Jw_nDqu2WHhs7c.K9TScRvv2TbJcpYqSkFWLn3GYdJevFibyMJuqLvuhFY&amp;dib_tag=se&amp;m=A2WJ2LRSFW5CYV&amp;marketplaceID=ATVPDKIKX0DER&amp;nsdOptOutParam=true&amp;qid=1782270367&amp;s=merchant-items&amp;sr=1-12" target="_blank" rel="noopener">Open Amazon</a><a class="quick-link" href="https://www.amazon.com/s?i=merchant-items&amp;me=A2WJ2LRSFW5CYV&amp;s=exact-aware-popularity-rank&amp;ds=v1%3All0hmCvpiQpaLEPjgIB%2Bx7R1rSc7fmTN9ObKovzMeWs&amp;marketplaceID=ATVPDKIKX0DER&amp;qid=1776149757&amp;ref=sr_st_exact-aware-popularity-rank" target="_blank" rel="noopener">Open Source</a></div>
+        </div>
+      </article>
+      <article class="card" data-card-index="17" data-opportunity-score="25" data-display-rank-change="-11" data-display-rank-velocity="-11.0" data-top-percentile="91.67" data-category-rank="9007199254740991" data-subcategory-rank="9007199254740991" data-review-count="0" data-rank-change="-11" data-growth-velocity="-3.67" data-new-breakout-score="75" data-pod-score="45" data-pod="true" data-new="true" data-rank-mover="true" data-top10="false" data-new-release="false" data-seller-key="lasfour (warrior)" data-niche-key="custom shirt">
+        <a href="https://www.amazon.com/LASFOUR-Custom-American-Skull-Jersey/dp/B0FXWDD2MV/ref=is_sr_dp_3?dib=eyJ2IjoiMSJ9.UAAw9BPyviykEPjvONSuB09t19CwteSYgQEg1cXheiAp7JKO0xoEeulaF4V5lzoDZlPaVsIvyz0_-1onobOhAc6rNofLNMTfALGqf7F5xHyZ8hEzYK8qs4SRQy7jf8MjAHVB6MUrMF6QXWofFdy_ikEmDSfC1OUvkfI8hGwN_hOHeDA-uaqohZaGFaCRqKGLj6gWMporylTxt_eao58AVNJJUP9XU1igxD5_ZjUlshk.kYPDmgbcRQPH5p-yZ4_fmq7g1OvZLEVKOodfFgqZ2NU&amp;dib_tag=se&amp;m=A1HHNBJES4IIQK&amp;marketplaceID=ATVPDKIKX0DER&amp;nsdOptOutParam=true&amp;qid=1782270764&amp;s=merchant-items&amp;sr=1-16" target="_blank" rel="noopener"><div class="image"><div class="image-placeholder" aria-hidden="true">No image</div></div></a>
+        <div class="body">
+          
+          <div class="title">Title unavailable - open product</div>
+          <div class="meta">
+            <div class="metric score score-breakdown" tabindex="0" title="POD: 14/30
+Momentum: 5/25
+Market: 0/20
+Competition: 0/10
+Niche: 6/15" data-tooltip="POD: 14/30
+Momentum: 5/25
+Market: 0/20
+Competition: 0/10
+Niche: 6/15"><span>Opportunity Score:</span><strong>25</strong></div>
+            <div class="score-components"><span>Top Rank <strong>10</strong></span><span>Velocity <strong>0</strong></span><span>Newness <strong>20</strong></span><span>BSR <strong>0</strong></span><span>POD <strong>45</strong></span></div>
+            <div class="metric"><span>Seller:</span><strong>LASFOUR (Warrior)</strong></div>
+            <div class="metric"><span>Source Name:</span><strong>LASFOUR (Warrior)</strong></div>
+            <div class="metric movement-metric"><span>Source Rank:</span><strong>#33 &rarr; #44 (-11)</strong></div>
+            <div class="metric display-rank display-rank--red"><span>Display Rank:</span><strong>#44 in LASFOUR (Warrior)</strong><small>Top 91.7%</small></div><div class="metric display-rank display-rank--red"><span>Previous Display Rank:</span><strong>#33</strong></div><div class="metric display-rank display-rank--red"><span>Movement:</span><strong>Down 11 positions</strong><small>Velocity: -11</small></div>
+            
+            
+            
+            <div class="metric"><span>Reviews:</span><strong></strong><small>Rating: </small></div>
+            <div class="metric"><span>Source Rank Change:</span><strong>-11</strong></div>
+            <div class="metric"><span>Days Seen:</span><strong>3</strong></div>
+            <div class="metric"><span>First Seen:</span><strong>2026-06-19</strong></div>
+            <div class="metric"><span>Growth Velocity:</span><strong>-3.67</strong></div>
+            <div class="metric"><span>New Breakout Score:</span><strong>75</strong></div>
+            <div class="metric"><span>POD Score:</span><strong>45</strong></div>
+            <div class="metric"><span>Niche:</span><strong>Custom Shirt</strong></div>
+            <div class="metric"><span>Tags:</span><strong>Custom Shirt</strong></div>
+          </div>
+          <div class="card-actions"><a class="quick-link" href="https://www.amazon.com/LASFOUR-Custom-American-Skull-Jersey/dp/B0FXWDD2MV/ref=is_sr_dp_3?dib=eyJ2IjoiMSJ9.UAAw9BPyviykEPjvONSuB09t19CwteSYgQEg1cXheiAp7JKO0xoEeulaF4V5lzoDZlPaVsIvyz0_-1onobOhAc6rNofLNMTfALGqf7F5xHyZ8hEzYK8qs4SRQy7jf8MjAHVB6MUrMF6QXWofFdy_ikEmDSfC1OUvkfI8hGwN_hOHeDA-uaqohZaGFaCRqKGLj6gWMporylTxt_eao58AVNJJUP9XU1igxD5_ZjUlshk.kYPDmgbcRQPH5p-yZ4_fmq7g1OvZLEVKOodfFgqZ2NU&amp;dib_tag=se&amp;m=A1HHNBJES4IIQK&amp;marketplaceID=ATVPDKIKX0DER&amp;nsdOptOutParam=true&amp;qid=1782270764&amp;s=merchant-items&amp;sr=1-16" target="_blank" rel="noopener">Open Amazon</a><a class="quick-link" href="https://www.amazon.com/s?i=merchant-items&amp;me=A1HHNBJES4IIQK&amp;s=exact-aware-popularity-rank&amp;ds=v1%3A5GI1qv47ulI6PjEg%2BMwJSl1ECFjNO6B6JQaZbR7In%2BE&amp;marketplaceID=ATVPDKIKX0DER&amp;qid=1776046094&amp;ref=sr_st_exact-aware-popularity-rank" target="_blank" rel="noopener">Open Source</a></div>
+        </div>
+      </article>
+      <article class="card" data-card-index="18" data-opportunity-score="55" data-display-rank-change="10" data-display-rank-velocity="10.0" data-top-percentile="78.95" data-category-rank="9007199254740991" data-subcategory-rank="9007199254740991" data-review-count="0" data-rank-change="10" data-growth-velocity="3.33" data-new-breakout-score="128" data-pod-score="80" data-pod="true" data-new="true" data-rank-mover="true" data-top10="false" data-new-release="false" data-seller-key="lovelytee" data-niche-key="custom shirt">
+        <a href="https://www.amazon.com/NAZENTI-Personalized-Embroidered-Sweatshirt-Sweatshirts/dp/B0FR57BVSV/ref=is_sr_dp_5?dib=eyJ2IjoiMSJ9.HrKtN47eDLSBadC-i3EQfmsa0NseVCgRiKtfJc18EH1cS9DX2mLwYx8m94WkBRpOARTTvOlW0RvLiVLNNeZiqm2msLN2w0f4XYF4OxTnfwm9HYA_kTn9rW--d22gaL1GK4tXEZl9bD0tNsQXuUuruHuKQDTy9BgvqKZq9wBfnQUOYCmuPttdl088QLgcolE2QCRo6lLl9q5Fb9bLJb2xXN2rBcOg1Jw_nDqu2WHhs7c.K9TScRvv2TbJcpYqSkFWLn3GYdJevFibyMJuqLvuhFY&amp;dib_tag=se&amp;m=A2WJ2LRSFW5CYV&amp;marketplaceID=ATVPDKIKX0DER&amp;nsdOptOutParam=true&amp;qid=1782270367&amp;s=merchant-items&amp;sr=1-12" target="_blank" rel="noopener"><div class="image"><img src="https://m.media-amazon.com/images/I/81k+xJD22EL._AC_SX522_.jpg" alt="Custom Embroidered Grandma Floral Shirt with Names on Sleeve, Personalized Grandma Gift, Floral Grandma Crewneck Sweatshirt"></div></a>
+        <div class="body">
+          <div class="badge-list"><span class="badge">Fast Mover</span><span class="badge">New Breakout</span></div>
+          <div class="title">Custom Embroidered Grandma Floral Shirt with Names on Sleeve, Personalized Grandma Gift, Floral Grandma Crewneck Sweatshirt</div>
+          <div class="meta">
+            <div class="metric score score-breakdown" tabindex="0" title="POD: 24/30
+Momentum: 21/25
+Market: 0/20
+Competition: 0/10
+Niche: 10/15" data-tooltip="POD: 24/30
+Momentum: 21/25
+Market: 0/20
+Competition: 0/10
+Niche: 10/15"><span>Opportunity Score:</span><strong>55</strong></div>
+            <div class="score-components"><span>Top Rank <strong>10</strong></span><span>Velocity <strong>18</strong></span><span>Newness <strong>20</strong></span><span>BSR <strong>0</strong></span><span>POD <strong>80</strong></span></div>
+            <div class="metric"><span>Seller:</span><strong>LOVELYTEE</strong></div>
+            <div class="metric"><span>Source Name:</span><strong>LOVELYTEE</strong></div>
+            <div class="metric movement-metric"><span>Source Rank:</span><strong>#55 &rarr; #45 (+10)</strong></div>
+            <div class="metric display-rank display-rank--blue"><span>Display Rank:</span><strong>#45 in LOVELYTEE</strong><small>Top 79%</small></div><div class="metric display-rank display-rank--blue"><span>Previous Display Rank:</span><strong>#55</strong></div><div class="metric display-rank display-rank--blue"><span>Movement:</span><strong>Up 10 positions</strong><small>Velocity: +10</small></div>
+            
+            
+            
+            <div class="metric"><span>Reviews:</span><strong></strong><small>Rating: </small></div>
+            <div class="metric"><span>Source Rank Change:</span><strong>10</strong></div>
+            <div class="metric"><span>Days Seen:</span><strong>3</strong></div>
+            <div class="metric"><span>First Seen:</span><strong>2026-06-22</strong></div>
+            <div class="metric"><span>Growth Velocity:</span><strong>3.33</strong></div>
+            <div class="metric"><span>New Breakout Score:</span><strong>128</strong></div>
+            <div class="metric"><span>POD Score:</span><strong>80</strong></div>
+            <div class="metric"><span>Niche:</span><strong>Custom Shirt</strong></div>
+            <div class="metric"><span>Tags:</span><strong>Custom Shirt;Grandma</strong></div>
+          </div>
+          <div class="card-actions"><a class="quick-link" href="https://www.amazon.com/NAZENTI-Personalized-Embroidered-Sweatshirt-Sweatshirts/dp/B0FR57BVSV/ref=is_sr_dp_5?dib=eyJ2IjoiMSJ9.HrKtN47eDLSBadC-i3EQfmsa0NseVCgRiKtfJc18EH1cS9DX2mLwYx8m94WkBRpOARTTvOlW0RvLiVLNNeZiqm2msLN2w0f4XYF4OxTnfwm9HYA_kTn9rW--d22gaL1GK4tXEZl9bD0tNsQXuUuruHuKQDTy9BgvqKZq9wBfnQUOYCmuPttdl088QLgcolE2QCRo6lLl9q5Fb9bLJb2xXN2rBcOg1Jw_nDqu2WHhs7c.K9TScRvv2TbJcpYqSkFWLn3GYdJevFibyMJuqLvuhFY&amp;dib_tag=se&amp;m=A2WJ2LRSFW5CYV&amp;marketplaceID=ATVPDKIKX0DER&amp;nsdOptOutParam=true&amp;qid=1782270367&amp;s=merchant-items&amp;sr=1-12" target="_blank" rel="noopener">Open Amazon</a><a class="quick-link" href="https://www.amazon.com/s?i=merchant-items&amp;me=A2WJ2LRSFW5CYV&amp;s=exact-aware-popularity-rank&amp;ds=v1%3All0hmCvpiQpaLEPjgIB%2Bx7R1rSc7fmTN9ObKovzMeWs&amp;marketplaceID=ATVPDKIKX0DER&amp;qid=1776149757&amp;ref=sr_st_exact-aware-popularity-rank" target="_blank" rel="noopener">Open Source</a></div>
+        </div>
+      </article>
+      <article class="card" data-card-index="19" data-opportunity-score="25" data-display-rank-change="-11" data-display-rank-velocity="-11.0" data-top-percentile="93.75" data-category-rank="9007199254740991" data-subcategory-rank="9007199254740991" data-review-count="0" data-rank-change="-11" data-growth-velocity="-3.67" data-new-breakout-score="75" data-pod-score="45" data-pod="true" data-new="true" data-rank-mover="true" data-top10="false" data-new-release="false" data-seller-key="lasfour (warrior)" data-niche-key="custom shirt">
+        <a href="https://www.amazon.com/LASFOUR-Custom-American-Skull-Jersey/dp/B0FXWGVQBT/ref=is_sr_dp_4?dib=eyJ2IjoiMSJ9.UAAw9BPyviykEPjvONSuB09t19CwteSYgQEg1cXheiAp7JKO0xoEeulaF4V5lzoDZlPaVsIvyz0_-1onobOhAc6rNofLNMTfALGqf7F5xHyZ8hEzYK8qs4SRQy7jf8MjAHVB6MUrMF6QXWofFdy_ikEmDSfC1OUvkfI8hGwN_hOHeDA-uaqohZaGFaCRqKGLj6gWMporylTxt_eao58AVNJJUP9XU1igxD5_ZjUlshk.kYPDmgbcRQPH5p-yZ4_fmq7g1OvZLEVKOodfFgqZ2NU&amp;dib_tag=se&amp;m=A1HHNBJES4IIQK&amp;marketplaceID=ATVPDKIKX0DER&amp;nsdOptOutParam=true&amp;qid=1782270764&amp;s=merchant-items&amp;sr=1-16" target="_blank" rel="noopener"><div class="image"><div class="image-placeholder" aria-hidden="true">No image</div></div></a>
+        <div class="body">
+          
+          <div class="title">Title unavailable - open product</div>
+          <div class="meta">
+            <div class="metric score score-breakdown" tabindex="0" title="POD: 14/30
+Momentum: 5/25
+Market: 0/20
+Competition: 0/10
+Niche: 6/15" data-tooltip="POD: 14/30
+Momentum: 5/25
+Market: 0/20
+Competition: 0/10
+Niche: 6/15"><span>Opportunity Score:</span><strong>25</strong></div>
+            <div class="score-components"><span>Top Rank <strong>10</strong></span><span>Velocity <strong>0</strong></span><span>Newness <strong>20</strong></span><span>BSR <strong>0</strong></span><span>POD <strong>45</strong></span></div>
+            <div class="metric"><span>Seller:</span><strong>LASFOUR (Warrior)</strong></div>
+            <div class="metric"><span>Source Name:</span><strong>LASFOUR (Warrior)</strong></div>
+            <div class="metric movement-metric"><span>Source Rank:</span><strong>#34 &rarr; #45 (-11)</strong></div>
+            <div class="metric display-rank display-rank--red"><span>Display Rank:</span><strong>#45 in LASFOUR (Warrior)</strong><small>Top 93.8%</small></div><div class="metric display-rank display-rank--red"><span>Previous Display Rank:</span><strong>#34</strong></div><div class="metric display-rank display-rank--red"><span>Movement:</span><strong>Down 11 positions</strong><small>Velocity: -11</small></div>
+            
+            
+            
+            <div class="metric"><span>Reviews:</span><strong></strong><small>Rating: </small></div>
+            <div class="metric"><span>Source Rank Change:</span><strong>-11</strong></div>
+            <div class="metric"><span>Days Seen:</span><strong>3</strong></div>
+            <div class="metric"><span>First Seen:</span><strong>2026-06-19</strong></div>
+            <div class="metric"><span>Growth Velocity:</span><strong>-3.67</strong></div>
+            <div class="metric"><span>New Breakout Score:</span><strong>75</strong></div>
+            <div class="metric"><span>POD Score:</span><strong>45</strong></div>
+            <div class="metric"><span>Niche:</span><strong>Custom Shirt</strong></div>
+            <div class="metric"><span>Tags:</span><strong>Custom Shirt</strong></div>
+          </div>
+          <div class="card-actions"><a class="quick-link" href="https://www.amazon.com/LASFOUR-Custom-American-Skull-Jersey/dp/B0FXWGVQBT/ref=is_sr_dp_4?dib=eyJ2IjoiMSJ9.UAAw9BPyviykEPjvONSuB09t19CwteSYgQEg1cXheiAp7JKO0xoEeulaF4V5lzoDZlPaVsIvyz0_-1onobOhAc6rNofLNMTfALGqf7F5xHyZ8hEzYK8qs4SRQy7jf8MjAHVB6MUrMF6QXWofFdy_ikEmDSfC1OUvkfI8hGwN_hOHeDA-uaqohZaGFaCRqKGLj6gWMporylTxt_eao58AVNJJUP9XU1igxD5_ZjUlshk.kYPDmgbcRQPH5p-yZ4_fmq7g1OvZLEVKOodfFgqZ2NU&amp;dib_tag=se&amp;m=A1HHNBJES4IIQK&amp;marketplaceID=ATVPDKIKX0DER&amp;nsdOptOutParam=true&amp;qid=1782270764&amp;s=merchant-items&amp;sr=1-16" target="_blank" rel="noopener">Open Amazon</a><a class="quick-link" href="https://www.amazon.com/s?i=merchant-items&amp;me=A1HHNBJES4IIQK&amp;s=exact-aware-popularity-rank&amp;ds=v1%3A5GI1qv47ulI6PjEg%2BMwJSl1ECFjNO6B6JQaZbR7In%2BE&amp;marketplaceID=ATVPDKIKX0DER&amp;qid=1776046094&amp;ref=sr_st_exact-aware-popularity-rank" target="_blank" rel="noopener">Open Source</a></div>
+        </div>
+      </article>
+      <article class="card" data-card-index="20" data-opportunity-score="55" data-display-rank-change="10" data-display-rank-velocity="10.0" data-top-percentile="80.7" data-category-rank="9007199254740991" data-subcategory-rank="9007199254740991" data-review-count="0" data-rank-change="10" data-growth-velocity="3.33" data-new-breakout-score="128" data-pod-score="80" data-pod="true" data-new="true" data-rank-mover="true" data-top10="false" data-new-release="false" data-seller-key="lovelytee" data-niche-key="custom shirt">
+        <a href="https://www.amazon.com/NAZENTI-Personalized-Embroidered-Sweatshirt-Sweatshirts/dp/B0FR5F35BK/ref=is_sr_dp_6?dib=eyJ2IjoiMSJ9.HrKtN47eDLSBadC-i3EQfmsa0NseVCgRiKtfJc18EH1cS9DX2mLwYx8m94WkBRpOARTTvOlW0RvLiVLNNeZiqm2msLN2w0f4XYF4OxTnfwm9HYA_kTn9rW--d22gaL1GK4tXEZl9bD0tNsQXuUuruHuKQDTy9BgvqKZq9wBfnQUOYCmuPttdl088QLgcolE2QCRo6lLl9q5Fb9bLJb2xXN2rBcOg1Jw_nDqu2WHhs7c.K9TScRvv2TbJcpYqSkFWLn3GYdJevFibyMJuqLvuhFY&amp;dib_tag=se&amp;m=A2WJ2LRSFW5CYV&amp;marketplaceID=ATVPDKIKX0DER&amp;nsdOptOutParam=true&amp;qid=1782270367&amp;s=merchant-items&amp;sr=1-12" target="_blank" rel="noopener"><div class="image"><img src="https://m.media-amazon.com/images/I/81Bi2GBbQ4L._AC_SX522_.jpg" alt="Custom Embroidered Grandma Floral Shirt with Names on Sleeve, Personalized Grandma Gift, Floral Grandma Crewneck Sweatshirt"></div></a>
+        <div class="body">
+          <div class="badge-list"><span class="badge">Fast Mover</span><span class="badge">New Breakout</span></div>
+          <div class="title">Custom Embroidered Grandma Floral Shirt with Names on Sleeve, Personalized Grandma Gift, Floral Grandma Crewneck Sweatshirt</div>
+          <div class="meta">
+            <div class="metric score score-breakdown" tabindex="0" title="POD: 24/30
+Momentum: 21/25
+Market: 0/20
+Competition: 0/10
+Niche: 10/15" data-tooltip="POD: 24/30
+Momentum: 21/25
+Market: 0/20
+Competition: 0/10
+Niche: 10/15"><span>Opportunity Score:</span><strong>55</strong></div>
+            <div class="score-components"><span>Top Rank <strong>10</strong></span><span>Velocity <strong>18</strong></span><span>Newness <strong>20</strong></span><span>BSR <strong>0</strong></span><span>POD <strong>80</strong></span></div>
+            <div class="metric"><span>Seller:</span><strong>LOVELYTEE</strong></div>
+            <div class="metric"><span>Source Name:</span><strong>LOVELYTEE</strong></div>
+            <div class="metric movement-metric"><span>Source Rank:</span><strong>#56 &rarr; #46 (+10)</strong></div>
+            <div class="metric display-rank display-rank--blue"><span>Display Rank:</span><strong>#46 in LOVELYTEE</strong><small>Top 80.7%</small></div><div class="metric display-rank display-rank--blue"><span>Previous Display Rank:</span><strong>#56</strong></div><div class="metric display-rank display-rank--blue"><span>Movement:</span><strong>Up 10 positions</strong><small>Velocity: +10</small></div>
+            
+            
+            
+            <div class="metric"><span>Reviews:</span><strong></strong><small>Rating: </small></div>
+            <div class="metric"><span>Source Rank Change:</span><strong>10</strong></div>
+            <div class="metric"><span>Days Seen:</span><strong>3</strong></div>
+            <div class="metric"><span>First Seen:</span><strong>2026-06-22</strong></div>
+            <div class="metric"><span>Growth Velocity:</span><strong>3.33</strong></div>
+            <div class="metric"><span>New Breakout Score:</span><strong>128</strong></div>
+            <div class="metric"><span>POD Score:</span><strong>80</strong></div>
+            <div class="metric"><span>Niche:</span><strong>Custom Shirt</strong></div>
+            <div class="metric"><span>Tags:</span><strong>Custom Shirt;Grandma</strong></div>
+          </div>
+          <div class="card-actions"><a class="quick-link" href="https://www.amazon.com/NAZENTI-Personalized-Embroidered-Sweatshirt-Sweatshirts/dp/B0FR5F35BK/ref=is_sr_dp_6?dib=eyJ2IjoiMSJ9.HrKtN47eDLSBadC-i3EQfmsa0NseVCgRiKtfJc18EH1cS9DX2mLwYx8m94WkBRpOARTTvOlW0RvLiVLNNeZiqm2msLN2w0f4XYF4OxTnfwm9HYA_kTn9rW--d22gaL1GK4tXEZl9bD0tNsQXuUuruHuKQDTy9BgvqKZq9wBfnQUOYCmuPttdl088QLgcolE2QCRo6lLl9q5Fb9bLJb2xXN2rBcOg1Jw_nDqu2WHhs7c.K9TScRvv2TbJcpYqSkFWLn3GYdJevFibyMJuqLvuhFY&amp;dib_tag=se&amp;m=A2WJ2LRSFW5CYV&amp;marketplaceID=ATVPDKIKX0DER&amp;nsdOptOutParam=true&amp;qid=1782270367&amp;s=merchant-items&amp;sr=1-12" target="_blank" rel="noopener">Open Amazon</a><a class="quick-link" href="https://www.amazon.com/s?i=merchant-items&amp;me=A2WJ2LRSFW5CYV&amp;s=exact-aware-popularity-rank&amp;ds=v1%3All0hmCvpiQpaLEPjgIB%2Bx7R1rSc7fmTN9ObKovzMeWs&amp;marketplaceID=ATVPDKIKX0DER&amp;qid=1776149757&amp;ref=sr_st_exact-aware-popularity-rank" target="_blank" rel="noopener">Open Source</a></div>
+        </div>
+      </article>
+      <article class="card" data-card-index="21" data-opportunity-score="25" data-display-rank-change="-11" data-display-rank-velocity="-11.0" data-top-percentile="95.83" data-category-rank="9007199254740991" data-subcategory-rank="9007199254740991" data-review-count="0" data-rank-change="-11" data-growth-velocity="-3.67" data-new-breakout-score="75" data-pod-score="45" data-pod="true" data-new="true" data-rank-mover="true" data-top10="false" data-new-release="false" data-seller-key="lasfour (warrior)" data-niche-key="custom shirt">
+        <a href="https://www.amazon.com/LASFOUR-Custom-American-Skull-Jersey/dp/B0FXWCJKQX/ref=is_sr_dp_5?dib=eyJ2IjoiMSJ9.UAAw9BPyviykEPjvONSuB09t19CwteSYgQEg1cXheiAp7JKO0xoEeulaF4V5lzoDZlPaVsIvyz0_-1onobOhAc6rNofLNMTfALGqf7F5xHyZ8hEzYK8qs4SRQy7jf8MjAHVB6MUrMF6QXWofFdy_ikEmDSfC1OUvkfI8hGwN_hOHeDA-uaqohZaGFaCRqKGLj6gWMporylTxt_eao58AVNJJUP9XU1igxD5_ZjUlshk.kYPDmgbcRQPH5p-yZ4_fmq7g1OvZLEVKOodfFgqZ2NU&amp;dib_tag=se&amp;m=A1HHNBJES4IIQK&amp;marketplaceID=ATVPDKIKX0DER&amp;nsdOptOutParam=true&amp;qid=1782270764&amp;s=merchant-items&amp;sr=1-16" target="_blank" rel="noopener"><div class="image"><div class="image-placeholder" aria-hidden="true">No image</div></div></a>
+        <div class="body">
+          
+          <div class="title">Title unavailable - open product</div>
+          <div class="meta">
+            <div class="metric score score-breakdown" tabindex="0" title="POD: 14/30
+Momentum: 5/25
+Market: 0/20
+Competition: 0/10
+Niche: 6/15" data-tooltip="POD: 14/30
+Momentum: 5/25
+Market: 0/20
+Competition: 0/10
+Niche: 6/15"><span>Opportunity Score:</span><strong>25</strong></div>
+            <div class="score-components"><span>Top Rank <strong>10</strong></span><span>Velocity <strong>0</strong></span><span>Newness <strong>20</strong></span><span>BSR <strong>0</strong></span><span>POD <strong>45</strong></span></div>
+            <div class="metric"><span>Seller:</span><strong>LASFOUR (Warrior)</strong></div>
+            <div class="metric"><span>Source Name:</span><strong>LASFOUR (Warrior)</strong></div>
+            <div class="metric movement-metric"><span>Source Rank:</span><strong>#35 &rarr; #46 (-11)</strong></div>
+            <div class="metric display-rank display-rank--red"><span>Display Rank:</span><strong>#46 in LASFOUR (Warrior)</strong><small>Top 95.8%</small></div><div class="metric display-rank display-rank--red"><span>Previous Display Rank:</span><strong>#35</strong></div><div class="metric display-rank display-rank--red"><span>Movement:</span><strong>Down 11 positions</strong><small>Velocity: -11</small></div>
+            
+            
+            
+            <div class="metric"><span>Reviews:</span><strong></strong><small>Rating: </small></div>
+            <div class="metric"><span>Source Rank Change:</span><strong>-11</strong></div>
+            <div class="metric"><span>Days Seen:</span><strong>3</strong></div>
+            <div class="metric"><span>First Seen:</span><strong>2026-06-19</strong></div>
+            <div class="metric"><span>Growth Velocity:</span><strong>-3.67</strong></div>
+            <div class="metric"><span>New Breakout Score:</span><strong>75</strong></div>
+            <div class="metric"><span>POD Score:</span><strong>45</strong></div>
+            <div class="metric"><span>Niche:</span><strong>Custom Shirt</strong></div>
+            <div class="metric"><span>Tags:</span><strong>Custom Shirt</strong></div>
+          </div>
+          <div class="card-actions"><a class="quick-link" href="https://www.amazon.com/LASFOUR-Custom-American-Skull-Jersey/dp/B0FXWCJKQX/ref=is_sr_dp_5?dib=eyJ2IjoiMSJ9.UAAw9BPyviykEPjvONSuB09t19CwteSYgQEg1cXheiAp7JKO0xoEeulaF4V5lzoDZlPaVsIvyz0_-1onobOhAc6rNofLNMTfALGqf7F5xHyZ8hEzYK8qs4SRQy7jf8MjAHVB6MUrMF6QXWofFdy_ikEmDSfC1OUvkfI8hGwN_hOHeDA-uaqohZaGFaCRqKGLj6gWMporylTxt_eao58AVNJJUP9XU1igxD5_ZjUlshk.kYPDmgbcRQPH5p-yZ4_fmq7g1OvZLEVKOodfFgqZ2NU&amp;dib_tag=se&amp;m=A1HHNBJES4IIQK&amp;marketplaceID=ATVPDKIKX0DER&amp;nsdOptOutParam=true&amp;qid=1782270764&amp;s=merchant-items&amp;sr=1-16" target="_blank" rel="noopener">Open Amazon</a><a class="quick-link" href="https://www.amazon.com/s?i=merchant-items&amp;me=A1HHNBJES4IIQK&amp;s=exact-aware-popularity-rank&amp;ds=v1%3A5GI1qv47ulI6PjEg%2BMwJSl1ECFjNO6B6JQaZbR7In%2BE&amp;marketplaceID=ATVPDKIKX0DER&amp;qid=1776046094&amp;ref=sr_st_exact-aware-popularity-rank" target="_blank" rel="noopener">Open Source</a></div>
+        </div>
+      </article>
+      <article class="card" data-card-index="22" data-opportunity-score="25" data-display-rank-change="-11" data-display-rank-velocity="-11.0" data-top-percentile="97.92" data-category-rank="9007199254740991" data-subcategory-rank="9007199254740991" data-review-count="0" data-rank-change="-11" data-growth-velocity="-3.67" data-new-breakout-score="75" data-pod-score="45" data-pod="true" data-new="true" data-rank-mover="true" data-top10="false" data-new-release="false" data-seller-key="lasfour (warrior)" data-niche-key="custom shirt">
+        <a href="https://www.amazon.com/LASFOUR-Custom-American-Skull-Jersey/dp/B0FXWFBYVQ/ref=is_sr_dp_6?dib=eyJ2IjoiMSJ9.UAAw9BPyviykEPjvONSuB09t19CwteSYgQEg1cXheiAp7JKO0xoEeulaF4V5lzoDZlPaVsIvyz0_-1onobOhAc6rNofLNMTfALGqf7F5xHyZ8hEzYK8qs4SRQy7jf8MjAHVB6MUrMF6QXWofFdy_ikEmDSfC1OUvkfI8hGwN_hOHeDA-uaqohZaGFaCRqKGLj6gWMporylTxt_eao58AVNJJUP9XU1igxD5_ZjUlshk.kYPDmgbcRQPH5p-yZ4_fmq7g1OvZLEVKOodfFgqZ2NU&amp;dib_tag=se&amp;m=A1HHNBJES4IIQK&amp;marketplaceID=ATVPDKIKX0DER&amp;nsdOptOutParam=true&amp;qid=1782270764&amp;s=merchant-items&amp;sr=1-16" target="_blank" rel="noopener"><div class="image"><div class="image-placeholder" aria-hidden="true">No image</div></div></a>
+        <div class="body">
+          
+          <div class="title">Title unavailable - open product</div>
+          <div class="meta">
+            <div class="metric score score-breakdown" tabindex="0" title="POD: 14/30
+Momentum: 5/25
+Market: 0/20
+Competition: 0/10
+Niche: 6/15" data-tooltip="POD: 14/30
+Momentum: 5/25
+Market: 0/20
+Competition: 0/10
+Niche: 6/15"><span>Opportunity Score:</span><strong>25</strong></div>
+            <div class="score-components"><span>Top Rank <strong>10</strong></span><span>Velocity <strong>0</strong></span><span>Newness <strong>20</strong></span><span>BSR <strong>0</strong></span><span>POD <strong>45</strong></span></div>
+            <div class="metric"><span>Seller:</span><strong>LASFOUR (Warrior)</strong></div>
+            <div class="metric"><span>Source Name:</span><strong>LASFOUR (Warrior)</strong></div>
+            <div class="metric movement-metric"><span>Source Rank:</span><strong>#36 &rarr; #47 (-11)</strong></div>
+            <div class="metric display-rank display-rank--red"><span>Display Rank:</span><strong>#47 in LASFOUR (Warrior)</strong><small>Top 97.9%</small></div><div class="metric display-rank display-rank--red"><span>Previous Display Rank:</span><strong>#36</strong></div><div class="metric display-rank display-rank--red"><span>Movement:</span><strong>Down 11 positions</strong><small>Velocity: -11</small></div>
+            
+            
+            
+            <div class="metric"><span>Reviews:</span><strong></strong><small>Rating: </small></div>
+            <div class="metric"><span>Source Rank Change:</span><strong>-11</strong></div>
+            <div class="metric"><span>Days Seen:</span><strong>3</strong></div>
+            <div class="metric"><span>First Seen:</span><strong>2026-06-19</strong></div>
+            <div class="metric"><span>Growth Velocity:</span><strong>-3.67</strong></div>
+            <div class="metric"><span>New Breakout Score:</span><strong>75</strong></div>
+            <div class="metric"><span>POD Score:</span><strong>45</strong></div>
+            <div class="metric"><span>Niche:</span><strong>Custom Shirt</strong></div>
+            <div class="metric"><span>Tags:</span><strong>Custom Shirt</strong></div>
+          </div>
+          <div class="card-actions"><a class="quick-link" href="https://www.amazon.com/LASFOUR-Custom-American-Skull-Jersey/dp/B0FXWFBYVQ/ref=is_sr_dp_6?dib=eyJ2IjoiMSJ9.UAAw9BPyviykEPjvONSuB09t19CwteSYgQEg1cXheiAp7JKO0xoEeulaF4V5lzoDZlPaVsIvyz0_-1onobOhAc6rNofLNMTfALGqf7F5xHyZ8hEzYK8qs4SRQy7jf8MjAHVB6MUrMF6QXWofFdy_ikEmDSfC1OUvkfI8hGwN_hOHeDA-uaqohZaGFaCRqKGLj6gWMporylTxt_eao58AVNJJUP9XU1igxD5_ZjUlshk.kYPDmgbcRQPH5p-yZ4_fmq7g1OvZLEVKOodfFgqZ2NU&amp;dib_tag=se&amp;m=A1HHNBJES4IIQK&amp;marketplaceID=ATVPDKIKX0DER&amp;nsdOptOutParam=true&amp;qid=1782270764&amp;s=merchant-items&amp;sr=1-16" target="_blank" rel="noopener">Open Amazon</a><a class="quick-link" href="https://www.amazon.com/s?i=merchant-items&amp;me=A1HHNBJES4IIQK&amp;s=exact-aware-popularity-rank&amp;ds=v1%3A5GI1qv47ulI6PjEg%2BMwJSl1ECFjNO6B6JQaZbR7In%2BE&amp;marketplaceID=ATVPDKIKX0DER&amp;qid=1776046094&amp;ref=sr_st_exact-aware-popularity-rank" target="_blank" rel="noopener">Open Source</a></div>
+        </div>
+      </article>
+      <article class="card" data-card-index="23" data-opportunity-score="25" data-display-rank-change="-12" data-display-rank-velocity="-2.4" data-top-percentile="97.96" data-category-rank="9007199254740991" data-subcategory-rank="9007199254740991" data-review-count="0" data-rank-change="-12" data-growth-velocity="-4.0" data-new-breakout-score="75" data-pod-score="45" data-pod="true" data-new="true" data-rank-mover="true" data-top10="false" data-new-release="false" data-seller-key="gopod shop" data-niche-key="custom shirt">
+        <a href="https://www.amazon.com/Personalized-Grandma-Shirt-Shirts-Women/dp/B0H5512P2N/ref=cs_sr_dp_loc_6?dib=eyJ2IjoiMSJ9.5ctkCUfTBtn6Sl0cMQTFwhMbmvUfAhfjuRDdkWvDR4U-fwUNoQGIP5vnYe63N5uaqkxTRSMtzOTfIddnZR414tfES1VqpuQgNtQsTItQRo3OMR3zrXsv528Nj683TO9wYad0n_Ffv4GlGHIm186RS5v_bswpLpyqTc5Ly9YfV_ri8QxiDvawaAGpWCOm_QPzcCNdkJZOtRX1xHpieb3IvcyKpsFQGVxzE3GA0cDk-qs.4hkwOywwdKkIWIrBhHSBTkPWp6tuHoKYNKB2ehCZ_F0&amp;dib_tag=se&amp;m=A28R89VR0HHNA3&amp;marketplaceID=ATVPDKIKX0DER&amp;nsdOptOutParam=true&amp;qid=1782270791&amp;s=merchant-items&amp;sr=1-15" target="_blank" rel="noopener"><div class="image"><div class="image-placeholder" aria-hidden="true">No image</div></div></a>
+        <div class="body">
+          
+          <div class="title">Title unavailable - open product</div>
+          <div class="meta">
+            <div class="metric score score-breakdown" tabindex="0" title="POD: 14/30
+Momentum: 5/25
+Market: 0/20
+Competition: 0/10
+Niche: 6/15" data-tooltip="POD: 14/30
+Momentum: 5/25
+Market: 0/20
+Competition: 0/10
+Niche: 6/15"><span>Opportunity Score:</span><strong>25</strong></div>
+            <div class="score-components"><span>Top Rank <strong>10</strong></span><span>Velocity <strong>0</strong></span><span>Newness <strong>20</strong></span><span>BSR <strong>0</strong></span><span>POD <strong>45</strong></span></div>
+            <div class="metric"><span>Seller:</span><strong>GoPod Shop</strong></div>
+            <div class="metric"><span>Source Name:</span><strong>GoPod Shop</strong></div>
+            <div class="metric movement-metric"><span>Source Rank:</span><strong>#36 &rarr; #48 (-12)</strong></div>
+            <div class="metric display-rank display-rank--red"><span>Display Rank:</span><strong>#48 in GoPod Shop</strong><small>Top 98%</small></div><div class="metric display-rank display-rank--red"><span>Previous Display Rank:</span><strong>#36</strong></div><div class="metric display-rank display-rank--red"><span>Movement:</span><strong>Down 12 positions</strong><small>Velocity: -2.4</small></div>
+            
+            
+            
+            <div class="metric"><span>Reviews:</span><strong></strong><small>Rating: </small></div>
+            <div class="metric"><span>Source Rank Change:</span><strong>-12</strong></div>
+            <div class="metric"><span>Days Seen:</span><strong>3</strong></div>
+            <div class="metric"><span>First Seen:</span><strong>2026-06-18</strong></div>
+            <div class="metric"><span>Growth Velocity:</span><strong>-4</strong></div>
+            <div class="metric"><span>New Breakout Score:</span><strong>75</strong></div>
+            <div class="metric"><span>POD Score:</span><strong>45</strong></div>
+            <div class="metric"><span>Niche:</span><strong>Custom Shirt</strong></div>
+            <div class="metric"><span>Tags:</span><strong>Custom Shirt</strong></div>
+          </div>
+          <div class="card-actions"><a class="quick-link" href="https://www.amazon.com/Personalized-Grandma-Shirt-Shirts-Women/dp/B0H5512P2N/ref=cs_sr_dp_loc_6?dib=eyJ2IjoiMSJ9.5ctkCUfTBtn6Sl0cMQTFwhMbmvUfAhfjuRDdkWvDR4U-fwUNoQGIP5vnYe63N5uaqkxTRSMtzOTfIddnZR414tfES1VqpuQgNtQsTItQRo3OMR3zrXsv528Nj683TO9wYad0n_Ffv4GlGHIm186RS5v_bswpLpyqTc5Ly9YfV_ri8QxiDvawaAGpWCOm_QPzcCNdkJZOtRX1xHpieb3IvcyKpsFQGVxzE3GA0cDk-qs.4hkwOywwdKkIWIrBhHSBTkPWp6tuHoKYNKB2ehCZ_F0&amp;dib_tag=se&amp;m=A28R89VR0HHNA3&amp;marketplaceID=ATVPDKIKX0DER&amp;nsdOptOutParam=true&amp;qid=1782270791&amp;s=merchant-items&amp;sr=1-15" target="_blank" rel="noopener">Open Amazon</a><a class="quick-link" href="https://www.amazon.com/s?i=merchant-items&amp;me=A28R89VR0HHNA3&amp;s=exact-aware-popularity-rank&amp;ds=v1%3AXlAxT7yXBaWckTueeBw9oCKaHz%2FRq2dEWLtSd1ZC5ks&amp;marketplaceID=ATVPDKIKX0DER&amp;qid=1776149674&amp;ref=sr_st_exact-aware-popularity-rank" target="_blank" rel="noopener">Open Source</a></div>
+        </div>
+      </article>
+      <article class="card" data-card-index="24" data-opportunity-score="15" data-display-rank-change="-20" data-display-rank-velocity="-20.0" data-top-percentile="91.38" data-category-rank="9007199254740991" data-subcategory-rank="9007199254740991" data-review-count="0" data-rank-change="-20" data-growth-velocity="-10.0" data-new-breakout-score="55" data-pod-score="35" data-pod="true" data-new="true" data-rank-mover="true" data-top10="false" data-new-release="false" data-seller-key="hucao" data-niche-key="unknown">
+        <a href="https://www.amazon.com/UrbanNEST-Personalized-Pharmacy-Technician-Sweatshirt/dp/B0FL25QN53/ref=cs_sr_dp_loc_2?dib=eyJ2IjoiMSJ9.we1WEibNYJAcHkwooMmWPmojZS6Xl8DBHAtnnHDp2vgjhx86kfSDCJPh8thJ0aMVfe1jPsqNlaNCVparGriYg4ysr2UXmncMJg4fdGgmJTfhFIMjM2N5A1OjDhwths62b1yvXtIP2zd7XTJhfcY7JB87apl8uUW0kycrMHQmR81nl-NRta8fWKueoScPutLK_nzYh4OzwWBRcTLnn85uJAI88HTQbSNcYJPBoiL1wBc.1N_7y-sOjc5_o0It2uMrsKhqseLfpvc_wEctqzm8URU&amp;dib_tag=se&amp;m=A2B9DZ8JGHNNVQ&amp;marketplaceID=ATVPDKIKX0DER&amp;nsdOptOutParam=true&amp;qid=1782270664&amp;s=merchant-items&amp;sr=1-16" target="_blank" rel="noopener"><div class="image"><div class="image-placeholder" aria-hidden="true">No image</div></div></a>
+        <div class="body">
+          
+          <div class="title">Title unavailable - open product</div>
           <div class="meta">
             <div class="metric score score-breakdown" tabindex="0" title="POD: 10/30
 Momentum: 5/25
-Market: 18/20
-Competition: 4/10
-Niche: 15/15" data-tooltip="POD: 10/30
+Market: 0/20
+Competition: 0/10
+Niche: 0/15" data-tooltip="POD: 10/30
 Momentum: 5/25
-Market: 18/20
-Competition: 4/10
-Niche: 15/15"><span>Opportunity Score:</span><strong>52</strong></div>
-            <div class="metric"><span>Seller:</span><strong>Novelty Coffee Mugs Best Sellers</strong></div>
+Market: 0/20
+Competition: 0/10
+Niche: 0/15"><span>Opportunity Score:</span><strong>15</strong></div>
+            <div class="score-components"><span>Top Rank <strong>0</strong></span><span>Velocity <strong>0</strong></span><span>Newness <strong>20</strong></span><span>BSR <strong>0</strong></span><span>POD <strong>35</strong></span></div>
+            <div class="metric"><span>Seller:</span><strong>HUCAO</strong></div>
+            <div class="metric"><span>Source Name:</span><strong>HUCAO</strong></div>
+            <div class="metric movement-metric"><span>Source Rank:</span><strong>#33 &rarr; #53 (-20)</strong></div>
+            <div class="metric display-rank display-rank--red"><span>Display Rank:</span><strong>#53 in HUCAO</strong><small>Top 91.4%</small></div><div class="metric display-rank display-rank--red"><span>Previous Display Rank:</span><strong>#33</strong></div><div class="metric display-rank display-rank--red"><span>Movement:</span><strong>Down 20 positions</strong><small>Velocity: -20</small></div>
             
-            <div class="category-rank category-rank--green"><span>Amazon BSR:</span><strong>#2,996 in Kitchen &amp; Dining</strong></div>
-            <div class="category-rank category-rank--green"><span>Best Subcategory Rank:</span><strong>#27 in Novelty Coffee Mugs</strong></div>
             
-            <div class="metric"><span>Reviews:</span><strong>112 reviews</strong><small>Rating: 4.0</small></div>
-            <div class="metric"><span>Source Rank:</span><strong>#27</strong></div>
-            <div class="metric"><span>Source Rank Change:</span><strong>-10</strong></div>
+            
+            <div class="metric"><span>Reviews:</span><strong></strong><small>Rating: </small></div>
+            <div class="metric"><span>Source Rank Change:</span><strong>-20</strong></div>
             <div class="metric"><span>Days Seen:</span><strong>2</strong></div>
+            <div class="metric"><span>First Seen:</span><strong>2026-06-23</strong></div>
+            <div class="metric"><span>Growth Velocity:</span><strong>-10</strong></div>
+            <div class="metric"><span>New Breakout Score:</span><strong>55</strong></div>
             <div class="metric"><span>POD Score:</span><strong>35</strong></div>
-            <div class="metric"><span>Niche:</span><strong>Father&#x27;s Day</strong></div>
-            <div class="metric"><span>Tags:</span><strong>Father&#x27;s Day;Dad;Coffee;Quote Mug;Daughter;Husband;Kids;Son;Wife</strong></div>
+            <div class="metric"><span>Niche:</span><strong>Unknown</strong></div>
+            <div class="metric"><span>Tags:</span><strong>Unknown</strong></div>
           </div>
+          <div class="card-actions"><a class="quick-link" href="https://www.amazon.com/UrbanNEST-Personalized-Pharmacy-Technician-Sweatshirt/dp/B0FL25QN53/ref=cs_sr_dp_loc_2?dib=eyJ2IjoiMSJ9.we1WEibNYJAcHkwooMmWPmojZS6Xl8DBHAtnnHDp2vgjhx86kfSDCJPh8thJ0aMVfe1jPsqNlaNCVparGriYg4ysr2UXmncMJg4fdGgmJTfhFIMjM2N5A1OjDhwths62b1yvXtIP2zd7XTJhfcY7JB87apl8uUW0kycrMHQmR81nl-NRta8fWKueoScPutLK_nzYh4OzwWBRcTLnn85uJAI88HTQbSNcYJPBoiL1wBc.1N_7y-sOjc5_o0It2uMrsKhqseLfpvc_wEctqzm8URU&amp;dib_tag=se&amp;m=A2B9DZ8JGHNNVQ&amp;marketplaceID=ATVPDKIKX0DER&amp;nsdOptOutParam=true&amp;qid=1782270664&amp;s=merchant-items&amp;sr=1-16" target="_blank" rel="noopener">Open Amazon</a><a class="quick-link" href="https://www.amazon.com/s?i=merchant-items&amp;me=A2B9DZ8JGHNNVQ&amp;s=exact-aware-popularity-rank&amp;ds=v1%3Acs6EzKhYrdF%2B8VZiUuMNEkPCtv%2FuQrc1X1av%2FLriRo8&amp;marketplaceID=ATVPDKIKX0DER&amp;qid=1777949535&amp;ref=sr_st_exact-aware-popularity-rank" target="_blank" rel="noopener">Open Source</a></div>
         </div>
       </article>
-      <article class="card" data-card-index="7" data-opportunity-score="37" data-display-rank-change="-12" data-display-rank-velocity="-12.0" data-top-percentile="79.63" data-category-rank="614220" data-subcategory-rank="215" data-review-count="0" data-rank-change="-12" data-pod-score="45">
-        <a href="https://www.amazon.com/UrbanNEST-Personalized-Embroidered-Sweatshirt-Sweatshirts/dp/B0G2GQ7Z8D/ref=is_sr_dp_2?dib=eyJ2IjoiMSJ9.we1WEibNYJAcHkwooMmWPmojZS6Xl8DBHAtnnHDp2vgjhx86kfSDCJPh8thJ0aMVrAarjJY-GzE5VZvITsRboJGIrDdFrICKtVfaSlRg_EiuWzLtnzy66KuZuEVvpEBfFhSsmMwZI6BaSXGPOk_U4glfiuFDK7jOriMXHWxNeQ3qvLaN5ezOLzZURL1YIy_YNT_Na6cjQRMqxsqAVxGffuA-k0w2Aeu3yRXQCrXV-gI.-DGvSC8ppRHT17I6g3Jcza8I3w2hkZaypXvM0HA9Ugc&amp;dib_tag=se&amp;m=A2B9DZ8JGHNNVQ&amp;marketplaceID=ATVPDKIKX0DER&amp;nsdOptOutParam=true&amp;qid=1782176589&amp;s=merchant-items&amp;sr=1-13" target="_blank" rel="noopener"><div class="image"></div></a>
+      <article class="card" data-card-index="25" data-opportunity-score="15" data-display-rank-change="-20" data-display-rank-velocity="-20.0" data-top-percentile="93.1" data-category-rank="9007199254740991" data-subcategory-rank="9007199254740991" data-review-count="0" data-rank-change="-20" data-growth-velocity="-10.0" data-new-breakout-score="55" data-pod-score="35" data-pod="true" data-new="true" data-rank-mover="true" data-top10="false" data-new-release="false" data-seller-key="hucao" data-niche-key="unknown">
+        <a href="https://www.amazon.com/UrbanNEST-Personalized-Pharmacy-Technician-Sweatshirt/dp/B0FL24B29J/ref=cs_sr_dp_loc_3?dib=eyJ2IjoiMSJ9.we1WEibNYJAcHkwooMmWPmojZS6Xl8DBHAtnnHDp2vgjhx86kfSDCJPh8thJ0aMVfe1jPsqNlaNCVparGriYg4ysr2UXmncMJg4fdGgmJTfhFIMjM2N5A1OjDhwths62b1yvXtIP2zd7XTJhfcY7JB87apl8uUW0kycrMHQmR81nl-NRta8fWKueoScPutLK_nzYh4OzwWBRcTLnn85uJAI88HTQbSNcYJPBoiL1wBc.1N_7y-sOjc5_o0It2uMrsKhqseLfpvc_wEctqzm8URU&amp;dib_tag=se&amp;m=A2B9DZ8JGHNNVQ&amp;marketplaceID=ATVPDKIKX0DER&amp;nsdOptOutParam=true&amp;qid=1782270664&amp;s=merchant-items&amp;sr=1-16" target="_blank" rel="noopener"><div class="image"><div class="image-placeholder" aria-hidden="true">No image</div></div></a>
         <div class="body">
+          
           <div class="title">Title unavailable - open product</div>
           <div class="meta">
-            <div class="metric score score-breakdown" tabindex="0" title="POD: 14/30
+            <div class="metric score score-breakdown" tabindex="0" title="POD: 10/30
 Momentum: 5/25
-Market: 12/20
+Market: 0/20
 Competition: 0/10
-Niche: 6/15" data-tooltip="POD: 14/30
+Niche: 0/15" data-tooltip="POD: 10/30
 Momentum: 5/25
-Market: 12/20
+Market: 0/20
 Competition: 0/10
-Niche: 6/15"><span>Opportunity Score:</span><strong>37</strong></div>
+Niche: 0/15"><span>Opportunity Score:</span><strong>15</strong></div>
+            <div class="score-components"><span>Top Rank <strong>0</strong></span><span>Velocity <strong>0</strong></span><span>Newness <strong>20</strong></span><span>BSR <strong>0</strong></span><span>POD <strong>35</strong></span></div>
             <div class="metric"><span>Seller:</span><strong>HUCAO</strong></div>
+            <div class="metric"><span>Source Name:</span><strong>HUCAO</strong></div>
+            <div class="metric movement-metric"><span>Source Rank:</span><strong>#34 &rarr; #54 (-20)</strong></div>
+            <div class="metric display-rank display-rank--red"><span>Display Rank:</span><strong>#54 in HUCAO</strong><small>Top 93.1%</small></div><div class="metric display-rank display-rank--red"><span>Previous Display Rank:</span><strong>#34</strong></div><div class="metric display-rank display-rank--red"><span>Movement:</span><strong>Down 20 positions</strong><small>Velocity: -20</small></div>
             
-            <div class="category-rank category-rank--gray"><span>Amazon BSR:</span><strong>#614,220 in Clothing, Shoes &amp; Jewelry</strong></div>
-            <div class="category-rank category-rank--green"><span>Best Subcategory Rank:</span><strong>#215 in Women&#x27;s Novelty Sweatshirts</strong></div>
+            
             
             <div class="metric"><span>Reviews:</span><strong></strong><small>Rating: </small></div>
-            <div class="metric"><span>Source Rank:</span><strong>#43</strong></div>
-            <div class="metric"><span>Source Rank Change:</span><strong>-12</strong></div>
-            <div class="metric"><span>Days Seen:</span><strong>3</strong></div>
-            <div class="metric"><span>POD Score:</span><strong>45</strong></div>
-            <div class="metric"><span>Niche:</span><strong>Custom Shirt</strong></div>
-            <div class="metric"><span>Tags:</span><strong>Custom Shirt</strong></div>
+            <div class="metric"><span>Source Rank Change:</span><strong>-20</strong></div>
+            <div class="metric"><span>Days Seen:</span><strong>2</strong></div>
+            <div class="metric"><span>First Seen:</span><strong>2026-06-23</strong></div>
+            <div class="metric"><span>Growth Velocity:</span><strong>-10</strong></div>
+            <div class="metric"><span>New Breakout Score:</span><strong>55</strong></div>
+            <div class="metric"><span>POD Score:</span><strong>35</strong></div>
+            <div class="metric"><span>Niche:</span><strong>Unknown</strong></div>
+            <div class="metric"><span>Tags:</span><strong>Unknown</strong></div>
           </div>
+          <div class="card-actions"><a class="quick-link" href="https://www.amazon.com/UrbanNEST-Personalized-Pharmacy-Technician-Sweatshirt/dp/B0FL24B29J/ref=cs_sr_dp_loc_3?dib=eyJ2IjoiMSJ9.we1WEibNYJAcHkwooMmWPmojZS6Xl8DBHAtnnHDp2vgjhx86kfSDCJPh8thJ0aMVfe1jPsqNlaNCVparGriYg4ysr2UXmncMJg4fdGgmJTfhFIMjM2N5A1OjDhwths62b1yvXtIP2zd7XTJhfcY7JB87apl8uUW0kycrMHQmR81nl-NRta8fWKueoScPutLK_nzYh4OzwWBRcTLnn85uJAI88HTQbSNcYJPBoiL1wBc.1N_7y-sOjc5_o0It2uMrsKhqseLfpvc_wEctqzm8URU&amp;dib_tag=se&amp;m=A2B9DZ8JGHNNVQ&amp;marketplaceID=ATVPDKIKX0DER&amp;nsdOptOutParam=true&amp;qid=1782270664&amp;s=merchant-items&amp;sr=1-16" target="_blank" rel="noopener">Open Amazon</a><a class="quick-link" href="https://www.amazon.com/s?i=merchant-items&amp;me=A2B9DZ8JGHNNVQ&amp;s=exact-aware-popularity-rank&amp;ds=v1%3Acs6EzKhYrdF%2B8VZiUuMNEkPCtv%2FuQrc1X1av%2FLriRo8&amp;marketplaceID=ATVPDKIKX0DER&amp;qid=1777949535&amp;ref=sr_st_exact-aware-popularity-rank" target="_blank" rel="noopener">Open Source</a></div>
         </div>
       </article>
-      <article class="card" data-card-index="8" data-opportunity-score="37" data-display-rank-change="-12" data-display-rank-velocity="-12.0" data-top-percentile="81.48" data-category-rank="614220" data-subcategory-rank="215" data-review-count="0" data-rank-change="-12" data-pod-score="45">
-        <a href="https://www.amazon.com/UrbanNEST-Personalized-Embroidered-Sweatshirt-Sweatshirts/dp/B0G2GP15LZ/ref=is_sr_dp_3?dib=eyJ2IjoiMSJ9.we1WEibNYJAcHkwooMmWPmojZS6Xl8DBHAtnnHDp2vgjhx86kfSDCJPh8thJ0aMVrAarjJY-GzE5VZvITsRboJGIrDdFrICKtVfaSlRg_EiuWzLtnzy66KuZuEVvpEBfFhSsmMwZI6BaSXGPOk_U4glfiuFDK7jOriMXHWxNeQ3qvLaN5ezOLzZURL1YIy_YNT_Na6cjQRMqxsqAVxGffuA-k0w2Aeu3yRXQCrXV-gI.-DGvSC8ppRHT17I6g3Jcza8I3w2hkZaypXvM0HA9Ugc&amp;dib_tag=se&amp;m=A2B9DZ8JGHNNVQ&amp;marketplaceID=ATVPDKIKX0DER&amp;nsdOptOutParam=true&amp;qid=1782176589&amp;s=merchant-items&amp;sr=1-13" target="_blank" rel="noopener"><div class="image"></div></a>
+      <article class="card" data-card-index="26" data-opportunity-score="15" data-display-rank-change="-20" data-display-rank-velocity="-20.0" data-top-percentile="94.83" data-category-rank="9007199254740991" data-subcategory-rank="9007199254740991" data-review-count="0" data-rank-change="-20" data-growth-velocity="-10.0" data-new-breakout-score="55" data-pod-score="35" data-pod="true" data-new="true" data-rank-mover="true" data-top10="false" data-new-release="false" data-seller-key="hucao" data-niche-key="unknown">
+        <a href="https://www.amazon.com/UrbanNEST-Personalized-Pharmacy-Technician-Sweatshirt/dp/B0FL25QWV8/ref=cs_sr_dp_loc_4?dib=eyJ2IjoiMSJ9.we1WEibNYJAcHkwooMmWPmojZS6Xl8DBHAtnnHDp2vgjhx86kfSDCJPh8thJ0aMVfe1jPsqNlaNCVparGriYg4ysr2UXmncMJg4fdGgmJTfhFIMjM2N5A1OjDhwths62b1yvXtIP2zd7XTJhfcY7JB87apl8uUW0kycrMHQmR81nl-NRta8fWKueoScPutLK_nzYh4OzwWBRcTLnn85uJAI88HTQbSNcYJPBoiL1wBc.1N_7y-sOjc5_o0It2uMrsKhqseLfpvc_wEctqzm8URU&amp;dib_tag=se&amp;m=A2B9DZ8JGHNNVQ&amp;marketplaceID=ATVPDKIKX0DER&amp;nsdOptOutParam=true&amp;qid=1782270664&amp;s=merchant-items&amp;sr=1-16" target="_blank" rel="noopener"><div class="image"><div class="image-placeholder" aria-hidden="true">No image</div></div></a>
         <div class="body">
+          
           <div class="title">Title unavailable - open product</div>
           <div class="meta">
-            <div class="metric score score-breakdown" tabindex="0" title="POD: 14/30
+            <div class="metric score score-breakdown" tabindex="0" title="POD: 10/30
 Momentum: 5/25
-Market: 12/20
+Market: 0/20
 Competition: 0/10
-Niche: 6/15" data-tooltip="POD: 14/30
+Niche: 0/15" data-tooltip="POD: 10/30
 Momentum: 5/25
-Market: 12/20
+Market: 0/20
 Competition: 0/10
-Niche: 6/15"><span>Opportunity Score:</span><strong>37</strong></div>
+Niche: 0/15"><span>Opportunity Score:</span><strong>15</strong></div>
+            <div class="score-components"><span>Top Rank <strong>0</strong></span><span>Velocity <strong>0</strong></span><span>Newness <strong>20</strong></span><span>BSR <strong>0</strong></span><span>POD <strong>35</strong></span></div>
             <div class="metric"><span>Seller:</span><strong>HUCAO</strong></div>
+            <div class="metric"><span>Source Name:</span><strong>HUCAO</strong></div>
+            <div class="metric movement-metric"><span>Source Rank:</span><strong>#35 &rarr; #55 (-20)</strong></div>
+            <div class="metric display-rank display-rank--red"><span>Display Rank:</span><strong>#55 in HUCAO</strong><small>Top 94.8%</small></div><div class="metric display-rank display-rank--red"><span>Previous Display Rank:</span><strong>#35</strong></div><div class="metric display-rank display-rank--red"><span>Movement:</span><strong>Down 20 positions</strong><small>Velocity: -20</small></div>
             
-            <div class="category-rank category-rank--gray"><span>Amazon BSR:</span><strong>#614,220 in Clothing, Shoes &amp; Jewelry</strong></div>
-            <div class="category-rank category-rank--green"><span>Best Subcategory Rank:</span><strong>#215 in Women&#x27;s Novelty Sweatshirts</strong></div>
+            
             
             <div class="metric"><span>Reviews:</span><strong></strong><small>Rating: </small></div>
-            <div class="metric"><span>Source Rank:</span><strong>#44</strong></div>
-            <div class="metric"><span>Source Rank Change:</span><strong>-12</strong></div>
-            <div class="metric"><span>Days Seen:</span><strong>3</strong></div>
-            <div class="metric"><span>POD Score:</span><strong>45</strong></div>
-            <div class="metric"><span>Niche:</span><strong>Custom Shirt</strong></div>
-            <div class="metric"><span>Tags:</span><strong>Custom Shirt</strong></div>
+            <div class="metric"><span>Source Rank Change:</span><strong>-20</strong></div>
+            <div class="metric"><span>Days Seen:</span><strong>2</strong></div>
+            <div class="metric"><span>First Seen:</span><strong>2026-06-23</strong></div>
+            <div class="metric"><span>Growth Velocity:</span><strong>-10</strong></div>
+            <div class="metric"><span>New Breakout Score:</span><strong>55</strong></div>
+            <div class="metric"><span>POD Score:</span><strong>35</strong></div>
+            <div class="metric"><span>Niche:</span><strong>Unknown</strong></div>
+            <div class="metric"><span>Tags:</span><strong>Unknown</strong></div>
           </div>
+          <div class="card-actions"><a class="quick-link" href="https://www.amazon.com/UrbanNEST-Personalized-Pharmacy-Technician-Sweatshirt/dp/B0FL25QWV8/ref=cs_sr_dp_loc_4?dib=eyJ2IjoiMSJ9.we1WEibNYJAcHkwooMmWPmojZS6Xl8DBHAtnnHDp2vgjhx86kfSDCJPh8thJ0aMVfe1jPsqNlaNCVparGriYg4ysr2UXmncMJg4fdGgmJTfhFIMjM2N5A1OjDhwths62b1yvXtIP2zd7XTJhfcY7JB87apl8uUW0kycrMHQmR81nl-NRta8fWKueoScPutLK_nzYh4OzwWBRcTLnn85uJAI88HTQbSNcYJPBoiL1wBc.1N_7y-sOjc5_o0It2uMrsKhqseLfpvc_wEctqzm8URU&amp;dib_tag=se&amp;m=A2B9DZ8JGHNNVQ&amp;marketplaceID=ATVPDKIKX0DER&amp;nsdOptOutParam=true&amp;qid=1782270664&amp;s=merchant-items&amp;sr=1-16" target="_blank" rel="noopener">Open Amazon</a><a class="quick-link" href="https://www.amazon.com/s?i=merchant-items&amp;me=A2B9DZ8JGHNNVQ&amp;s=exact-aware-popularity-rank&amp;ds=v1%3Acs6EzKhYrdF%2B8VZiUuMNEkPCtv%2FuQrc1X1av%2FLriRo8&amp;marketplaceID=ATVPDKIKX0DER&amp;qid=1777949535&amp;ref=sr_st_exact-aware-popularity-rank" target="_blank" rel="noopener">Open Source</a></div>
         </div>
       </article>
-      <article class="card" data-card-index="9" data-opportunity-score="37" data-display-rank-change="-12" data-display-rank-velocity="-12.0" data-top-percentile="85.19" data-category-rank="614220" data-subcategory-rank="215" data-review-count="0" data-rank-change="-12" data-pod-score="45">
-        <a href="https://www.amazon.com/UrbanNEST-Personalized-Embroidered-Sweatshirt-Sweatshirts/dp/B0G2GP4L1X/ref=is_sr_dp_5?dib=eyJ2IjoiMSJ9.we1WEibNYJAcHkwooMmWPmojZS6Xl8DBHAtnnHDp2vgjhx86kfSDCJPh8thJ0aMVrAarjJY-GzE5VZvITsRboJGIrDdFrICKtVfaSlRg_EiuWzLtnzy66KuZuEVvpEBfFhSsmMwZI6BaSXGPOk_U4glfiuFDK7jOriMXHWxNeQ3qvLaN5ezOLzZURL1YIy_YNT_Na6cjQRMqxsqAVxGffuA-k0w2Aeu3yRXQCrXV-gI.-DGvSC8ppRHT17I6g3Jcza8I3w2hkZaypXvM0HA9Ugc&amp;dib_tag=se&amp;m=A2B9DZ8JGHNNVQ&amp;marketplaceID=ATVPDKIKX0DER&amp;nsdOptOutParam=true&amp;qid=1782176589&amp;s=merchant-items&amp;sr=1-13" target="_blank" rel="noopener"><div class="image"></div></a>
+      <article class="card" data-card-index="27" data-opportunity-score="15" data-display-rank-change="-20" data-display-rank-velocity="-20.0" data-top-percentile="96.55" data-category-rank="9007199254740991" data-subcategory-rank="9007199254740991" data-review-count="0" data-rank-change="-20" data-growth-velocity="-10.0" data-new-breakout-score="55" data-pod-score="35" data-pod="true" data-new="true" data-rank-mover="true" data-top10="false" data-new-release="false" data-seller-key="hucao" data-niche-key="unknown">
+        <a href="https://www.amazon.com/UrbanNEST-Personalized-Pharmacy-Technician-Sweatshirt/dp/B0FL23TTQ7/ref=cs_sr_dp_loc_5?dib=eyJ2IjoiMSJ9.we1WEibNYJAcHkwooMmWPmojZS6Xl8DBHAtnnHDp2vgjhx86kfSDCJPh8thJ0aMVfe1jPsqNlaNCVparGriYg4ysr2UXmncMJg4fdGgmJTfhFIMjM2N5A1OjDhwths62b1yvXtIP2zd7XTJhfcY7JB87apl8uUW0kycrMHQmR81nl-NRta8fWKueoScPutLK_nzYh4OzwWBRcTLnn85uJAI88HTQbSNcYJPBoiL1wBc.1N_7y-sOjc5_o0It2uMrsKhqseLfpvc_wEctqzm8URU&amp;dib_tag=se&amp;m=A2B9DZ8JGHNNVQ&amp;marketplaceID=ATVPDKIKX0DER&amp;nsdOptOutParam=true&amp;qid=1782270664&amp;s=merchant-items&amp;sr=1-16" target="_blank" rel="noopener"><div class="image"><div class="image-placeholder" aria-hidden="true">No image</div></div></a>
         <div class="body">
+          
           <div class="title">Title unavailable - open product</div>
           <div class="meta">
-            <div class="metric score score-breakdown" tabindex="0" title="POD: 14/30
+            <div class="metric score score-breakdown" tabindex="0" title="POD: 10/30
 Momentum: 5/25
-Market: 12/20
+Market: 0/20
 Competition: 0/10
-Niche: 6/15" data-tooltip="POD: 14/30
+Niche: 0/15" data-tooltip="POD: 10/30
 Momentum: 5/25
-Market: 12/20
+Market: 0/20
 Competition: 0/10
-Niche: 6/15"><span>Opportunity Score:</span><strong>37</strong></div>
+Niche: 0/15"><span>Opportunity Score:</span><strong>15</strong></div>
+            <div class="score-components"><span>Top Rank <strong>0</strong></span><span>Velocity <strong>0</strong></span><span>Newness <strong>20</strong></span><span>BSR <strong>0</strong></span><span>POD <strong>35</strong></span></div>
             <div class="metric"><span>Seller:</span><strong>HUCAO</strong></div>
+            <div class="metric"><span>Source Name:</span><strong>HUCAO</strong></div>
+            <div class="metric movement-metric"><span>Source Rank:</span><strong>#36 &rarr; #56 (-20)</strong></div>
+            <div class="metric display-rank display-rank--red"><span>Display Rank:</span><strong>#56 in HUCAO</strong><small>Top 96.5%</small></div><div class="metric display-rank display-rank--red"><span>Previous Display Rank:</span><strong>#36</strong></div><div class="metric display-rank display-rank--red"><span>Movement:</span><strong>Down 20 positions</strong><small>Velocity: -20</small></div>
             
-            <div class="category-rank category-rank--gray"><span>Amazon BSR:</span><strong>#614,220 in Clothing, Shoes &amp; Jewelry</strong></div>
-            <div class="category-rank category-rank--green"><span>Best Subcategory Rank:</span><strong>#215 in Women&#x27;s Novelty Sweatshirts</strong></div>
             
-            <div class="metric"><span>Reviews:</span><strong></strong><small>Rating: </small></div>
-            <div class="metric"><span>Source Rank:</span><strong>#46</strong></div>
-            <div class="metric"><span>Source Rank Change:</span><strong>-12</strong></div>
-            <div class="metric"><span>Days Seen:</span><strong>3</strong></div>
-            <div class="metric"><span>POD Score:</span><strong>45</strong></div>
-            <div class="metric"><span>Niche:</span><strong>Custom Shirt</strong></div>
-            <div class="metric"><span>Tags:</span><strong>Custom Shirt</strong></div>
-          </div>
-        </div>
-      </article>
-      <article class="card" data-card-index="10" data-opportunity-score="33" data-display-rank-change="-12" data-display-rank-velocity="-12.0" data-top-percentile="83.33" data-category-rank="614220" data-subcategory-rank="5568" data-review-count="0" data-rank-change="-12" data-pod-score="45">
-        <a href="https://www.amazon.com/UrbanNEST-Personalized-Embroidered-Sweatshirt-Sweatshirts/dp/B0G2GPLHST/ref=is_sr_dp_4?dib=eyJ2IjoiMSJ9.we1WEibNYJAcHkwooMmWPmojZS6Xl8DBHAtnnHDp2vgjhx86kfSDCJPh8thJ0aMVrAarjJY-GzE5VZvITsRboJGIrDdFrICKtVfaSlRg_EiuWzLtnzy66KuZuEVvpEBfFhSsmMwZI6BaSXGPOk_U4glfiuFDK7jOriMXHWxNeQ3qvLaN5ezOLzZURL1YIy_YNT_Na6cjQRMqxsqAVxGffuA-k0w2Aeu3yRXQCrXV-gI.-DGvSC8ppRHT17I6g3Jcza8I3w2hkZaypXvM0HA9Ugc&amp;dib_tag=se&amp;m=A2B9DZ8JGHNNVQ&amp;marketplaceID=ATVPDKIKX0DER&amp;nsdOptOutParam=true&amp;qid=1782176589&amp;s=merchant-items&amp;sr=1-13" target="_blank" rel="noopener"><div class="image"></div></a>
-        <div class="body">
-          <div class="title">Title unavailable - open product</div>
-          <div class="meta">
-            <div class="metric score score-breakdown" tabindex="0" title="POD: 14/30
-Momentum: 5/25
-Market: 8/20
-Competition: 0/10
-Niche: 6/15" data-tooltip="POD: 14/30
-Momentum: 5/25
-Market: 8/20
-Competition: 0/10
-Niche: 6/15"><span>Opportunity Score:</span><strong>33</strong></div>
-            <div class="metric"><span>Seller:</span><strong>HUCAO</strong></div>
-            
-            <div class="category-rank category-rank--gray"><span>Amazon BSR:</span><strong>#614,220 in Clothing, Shoes &amp; Jewelry</strong></div>
-            <div class="category-rank category-rank--green"><span>Best Subcategory Rank:</span><strong>#5,568 in Women&#x27;s Fashion Sweatshirts</strong></div>
             
             <div class="metric"><span>Reviews:</span><strong></strong><small>Rating: </small></div>
-            <div class="metric"><span>Source Rank:</span><strong>#45</strong></div>
-            <div class="metric"><span>Source Rank Change:</span><strong>-12</strong></div>
-            <div class="metric"><span>Days Seen:</span><strong>3</strong></div>
-            <div class="metric"><span>POD Score:</span><strong>45</strong></div>
-            <div class="metric"><span>Niche:</span><strong>Custom Shirt</strong></div>
-            <div class="metric"><span>Tags:</span><strong>Custom Shirt</strong></div>
-          </div>
-        </div>
-      </article>
-      <article class="card" data-card-index="11" data-opportunity-score="33" data-display-rank-change="-10" data-display-rank-velocity="-10.0" data-top-percentile="81.13" data-category-rank="1041985" data-subcategory-rank="5844" data-review-count="0" data-rank-change="-10" data-pod-score="45">
-        <a href="https://www.amazon.com/LASFOUR-Personalized-Shirts-American-Patriotic/dp/B09WYBCWV6/ref=is_sr_dp_2?dib=eyJ2IjoiMSJ9.MTtRBzokLI6d3mg67I3EQzUUB6bJ8B6SukyRm7xI_gMrO4lqQlVXS4vdpPqdwykOneH4Z1Ukz6UEkWeN6yolnsuMb4FQ7u0Pay9q2tpqRSIVOrvpeUX1ytwlMC56tnnqAHVB6MUrMF6QXWofFdy_ilbDiG4AJw8c-KWYcHfOY-cAFwtAfDZd2JJycVZRisRMusgTfwwO9NEVFG1_VKEkD_D2sp6oYQQZONqkEJidfNY.WF68QYHyMm86SmuERo7ZPItq0KX5Ye61vbDgZ4ok-CQ&amp;dib_tag=se&amp;m=A1HHNBJES4IIQK&amp;marketplaceID=ATVPDKIKX0DER&amp;nsdOptOutParam=true&amp;qid=1782176678&amp;s=merchant-items&amp;sr=1-15" target="_blank" rel="noopener"><div class="image"></div></a>
-        <div class="body">
-          <div class="title">Title unavailable - open product</div>
-          <div class="meta">
-            <div class="metric score score-breakdown" tabindex="0" title="POD: 14/30
-Momentum: 5/25
-Market: 8/20
-Competition: 0/10
-Niche: 6/15" data-tooltip="POD: 14/30
-Momentum: 5/25
-Market: 8/20
-Competition: 0/10
-Niche: 6/15"><span>Opportunity Score:</span><strong>33</strong></div>
-            <div class="metric"><span>Seller:</span><strong>LASFOUR (Warrior)</strong></div>
-            
-            <div class="category-rank category-rank--gray"><span>Amazon BSR:</span><strong>#1,041,985 in Clothing, Shoes &amp; Jewelry</strong></div>
-            <div class="category-rank category-rank--green"><span>Best Subcategory Rank:</span><strong>#5,844 in Men&#x27;s Golf Shirts</strong></div>
-            
-            <div class="metric"><span>Reviews:</span><strong></strong><small>Rating: </small></div>
-            <div class="metric"><span>Source Rank:</span><strong>#43</strong></div>
-            <div class="metric"><span>Source Rank Change:</span><strong>-10</strong></div>
+            <div class="metric"><span>Source Rank Change:</span><strong>-20</strong></div>
             <div class="metric"><span>Days Seen:</span><strong>2</strong></div>
-            <div class="metric"><span>POD Score:</span><strong>45</strong></div>
-            <div class="metric"><span>Niche:</span><strong>Custom Shirt</strong></div>
-            <div class="metric"><span>Tags:</span><strong>Custom Shirt</strong></div>
+            <div class="metric"><span>First Seen:</span><strong>2026-06-23</strong></div>
+            <div class="metric"><span>Growth Velocity:</span><strong>-10</strong></div>
+            <div class="metric"><span>New Breakout Score:</span><strong>55</strong></div>
+            <div class="metric"><span>POD Score:</span><strong>35</strong></div>
+            <div class="metric"><span>Niche:</span><strong>Unknown</strong></div>
+            <div class="metric"><span>Tags:</span><strong>Unknown</strong></div>
           </div>
+          <div class="card-actions"><a class="quick-link" href="https://www.amazon.com/UrbanNEST-Personalized-Pharmacy-Technician-Sweatshirt/dp/B0FL23TTQ7/ref=cs_sr_dp_loc_5?dib=eyJ2IjoiMSJ9.we1WEibNYJAcHkwooMmWPmojZS6Xl8DBHAtnnHDp2vgjhx86kfSDCJPh8thJ0aMVfe1jPsqNlaNCVparGriYg4ysr2UXmncMJg4fdGgmJTfhFIMjM2N5A1OjDhwths62b1yvXtIP2zd7XTJhfcY7JB87apl8uUW0kycrMHQmR81nl-NRta8fWKueoScPutLK_nzYh4OzwWBRcTLnn85uJAI88HTQbSNcYJPBoiL1wBc.1N_7y-sOjc5_o0It2uMrsKhqseLfpvc_wEctqzm8URU&amp;dib_tag=se&amp;m=A2B9DZ8JGHNNVQ&amp;marketplaceID=ATVPDKIKX0DER&amp;nsdOptOutParam=true&amp;qid=1782270664&amp;s=merchant-items&amp;sr=1-16" target="_blank" rel="noopener">Open Amazon</a><a class="quick-link" href="https://www.amazon.com/s?i=merchant-items&amp;me=A2B9DZ8JGHNNVQ&amp;s=exact-aware-popularity-rank&amp;ds=v1%3Acs6EzKhYrdF%2B8VZiUuMNEkPCtv%2FuQrc1X1av%2FLriRo8&amp;marketplaceID=ATVPDKIKX0DER&amp;qid=1777949535&amp;ref=sr_st_exact-aware-popularity-rank" target="_blank" rel="noopener">Open Source</a></div>
         </div>
       </article>
-      <article class="card" data-card-index="12" data-opportunity-score="33" data-display-rank-change="-10" data-display-rank-velocity="-10.0" data-top-percentile="83.02" data-category-rank="1041985" data-subcategory-rank="5844" data-review-count="0" data-rank-change="-10" data-pod-score="45">
-        <a href="https://www.amazon.com/LASFOUR-Personalized-Shirts-American-Patriotic/dp/B09WY9QNVJ/ref=is_sr_dp_3?dib=eyJ2IjoiMSJ9.MTtRBzokLI6d3mg67I3EQzUUB6bJ8B6SukyRm7xI_gMrO4lqQlVXS4vdpPqdwykOneH4Z1Ukz6UEkWeN6yolnsuMb4FQ7u0Pay9q2tpqRSIVOrvpeUX1ytwlMC56tnnqAHVB6MUrMF6QXWofFdy_ilbDiG4AJw8c-KWYcHfOY-cAFwtAfDZd2JJycVZRisRMusgTfwwO9NEVFG1_VKEkD_D2sp6oYQQZONqkEJidfNY.WF68QYHyMm86SmuERo7ZPItq0KX5Ye61vbDgZ4ok-CQ&amp;dib_tag=se&amp;m=A1HHNBJES4IIQK&amp;marketplaceID=ATVPDKIKX0DER&amp;nsdOptOutParam=true&amp;qid=1782176678&amp;s=merchant-items&amp;sr=1-15" target="_blank" rel="noopener"><div class="image"></div></a>
+      <article class="card" data-card-index="28" data-opportunity-score="52" data-display-rank-change="-15" data-display-rank-velocity="-15.0" data-top-percentile="74.03" data-category-rank="838230" data-subcategory-rank="540" data-review-count="0" data-rank-change="-15" data-growth-velocity="-7.5" data-new-breakout-score="90" data-pod-score="70" data-pod="true" data-new="true" data-rank-mover="true" data-top10="false" data-new-release="false" data-seller-key="nicepod-llc" data-niche-key="mom">
+        <a href="https://www.amazon.com/NAZENTI-Football-Mom-Sweatshirt-Mama/dp/B0CHF8SKSG/ref=is_sr_dp_2?dib=eyJ2IjoiMSJ9.A2TtIexcAPhhf9lPGSPRf2YQZ57WOF8c-8BYHu5FxhPSB3Z88xh0LCoUYZTVObcWjy9pwtPlUWEQcKwlmA8rYG3a6Mqxc4rnnaZxtvWzTfa-pQ8Dmtx_ZNE42CPJbHniMrCCX1Kzr_uyPkSLHeBejtcDrC27Es8wUnm5feFovS4vjHw8Hc9gzz_0sv7Oz9YgXSvKzfcLyijFEJVXLMSceJO60O9j71nUUIRlvqCin0Q.eLC4Vkdn9ujy8IF4rwZCuMrHwR8xsBMbT0SpLcvCjBo&amp;dib_tag=se&amp;m=AJ6Y7DJI4UPZF&amp;marketplaceID=ATVPDKIKX0DER&amp;nsdOptOutParam=true&amp;qid=1782270385&amp;s=merchant-items&amp;sr=1-11" target="_blank" rel="noopener"><div class="image"><img src="https://m.media-amazon.com/images/I/71Mby4lhZaL._AC_SX522_.jpg" alt="Custom Football Mama Mom Embroidered Sweatshirt Kids Names Sleeve; Personalized New Mom Mother&#x27;s Day Birthday Gifts"></div></a>
         <div class="body">
-          <div class="title">Title unavailable - open product</div>
+          
+          <div class="title">Custom Football Mama Mom Embroidered Sweatshirt Kids Names Sleeve; Personalized New Mom Mother&#x27;s Day Birthday Gifts</div>
           <div class="meta">
-            <div class="metric score score-breakdown" tabindex="0" title="POD: 14/30
+            <div class="metric score score-breakdown" tabindex="0" title="POD: 21/30
 Momentum: 5/25
-Market: 8/20
+Market: 11/20
 Competition: 0/10
-Niche: 6/15" data-tooltip="POD: 14/30
+Niche: 15/15" data-tooltip="POD: 21/30
 Momentum: 5/25
-Market: 8/20
+Market: 11/20
 Competition: 0/10
-Niche: 6/15"><span>Opportunity Score:</span><strong>33</strong></div>
-            <div class="metric"><span>Seller:</span><strong>LASFOUR (Warrior)</strong></div>
-            
-            <div class="category-rank category-rank--gray"><span>Amazon BSR:</span><strong>#1,041,985 in Clothing, Shoes &amp; Jewelry</strong></div>
-            <div class="category-rank category-rank--green"><span>Best Subcategory Rank:</span><strong>#5,844 in Men&#x27;s Golf Shirts</strong></div>
+Niche: 15/15"><span>Opportunity Score:</span><strong>52</strong></div>
+            <div class="score-components"><span>Top Rank <strong>0</strong></span><span>Velocity <strong>0</strong></span><span>Newness <strong>20</strong></span><span>BSR <strong>12</strong></span><span>POD <strong>70</strong></span></div>
+            <div class="metric"><span>Seller:</span><strong>NicePod-LLC</strong></div>
+            <div class="metric"><span>Source Name:</span><strong>NicePod-LLC</strong></div>
+            <div class="metric movement-metric"><span>Source Rank:</span><strong>#42 &rarr; #57 (-15)</strong></div>
+            <div class="metric display-rank display-rank--red"><span>Display Rank:</span><strong>#57 in NicePod-LLC</strong><small>Top 74%</small></div><div class="metric display-rank display-rank--red"><span>Previous Display Rank:</span><strong>#42</strong></div><div class="metric display-rank display-rank--red"><span>Movement:</span><strong>Down 15 positions</strong><small>Velocity: -15</small></div>
+            <div class="category-rank category-rank--gray"><span>Amazon BSR:</span><strong>#838,230 in Clothing, Shoes &amp; Jewelry</strong></div>
+            <div class="category-rank category-rank--green"><span>Best Subcategory Rank:</span><strong>#540 in Women&#x27;s Sweatshirts</strong></div>
             
             <div class="metric"><span>Reviews:</span><strong></strong><small>Rating: </small></div>
-            <div class="metric"><span>Source Rank:</span><strong>#44</strong></div>
-            <div class="metric"><span>Source Rank Change:</span><strong>-10</strong></div>
+            <div class="metric"><span>Source Rank Change:</span><strong>-15</strong></div>
             <div class="metric"><span>Days Seen:</span><strong>2</strong></div>
-            <div class="metric"><span>POD Score:</span><strong>45</strong></div>
-            <div class="metric"><span>Niche:</span><strong>Custom Shirt</strong></div>
-            <div class="metric"><span>Tags:</span><strong>Custom Shirt</strong></div>
+            <div class="metric"><span>First Seen:</span><strong>2026-06-23</strong></div>
+            <div class="metric"><span>Growth Velocity:</span><strong>-7.5</strong></div>
+            <div class="metric"><span>New Breakout Score:</span><strong>90</strong></div>
+            <div class="metric"><span>POD Score:</span><strong>70</strong></div>
+            <div class="metric"><span>Niche:</span><strong>Mom</strong></div>
+            <div class="metric"><span>Tags:</span><strong>Mom;Mother&#x27;s Day;Football;Birthday;Kids</strong></div>
           </div>
-        </div>
-      </article>
-      <article class="card" data-card-index="13" data-opportunity-score="33" data-display-rank-change="-10" data-display-rank-velocity="-10.0" data-top-percentile="84.91" data-category-rank="1041985" data-subcategory-rank="5844" data-review-count="0" data-rank-change="-10" data-pod-score="45">
-        <a href="https://www.amazon.com/LASFOUR-Personalized-Shirts-American-Patriotic/dp/B09WYDQKW6/ref=is_sr_dp_4?dib=eyJ2IjoiMSJ9.MTtRBzokLI6d3mg67I3EQzUUB6bJ8B6SukyRm7xI_gMrO4lqQlVXS4vdpPqdwykOneH4Z1Ukz6UEkWeN6yolnsuMb4FQ7u0Pay9q2tpqRSIVOrvpeUX1ytwlMC56tnnqAHVB6MUrMF6QXWofFdy_ilbDiG4AJw8c-KWYcHfOY-cAFwtAfDZd2JJycVZRisRMusgTfwwO9NEVFG1_VKEkD_D2sp6oYQQZONqkEJidfNY.WF68QYHyMm86SmuERo7ZPItq0KX5Ye61vbDgZ4ok-CQ&amp;dib_tag=se&amp;m=A1HHNBJES4IIQK&amp;marketplaceID=ATVPDKIKX0DER&amp;nsdOptOutParam=true&amp;qid=1782176678&amp;s=merchant-items&amp;sr=1-15" target="_blank" rel="noopener"><div class="image"></div></a>
-        <div class="body">
-          <div class="title">Title unavailable - open product</div>
-          <div class="meta">
-            <div class="metric score score-breakdown" tabindex="0" title="POD: 14/30
-Momentum: 5/25
-Market: 8/20
-Competition: 0/10
-Niche: 6/15" data-tooltip="POD: 14/30
-Momentum: 5/25
-Market: 8/20
-Competition: 0/10
-Niche: 6/15"><span>Opportunity Score:</span><strong>33</strong></div>
-            <div class="metric"><span>Seller:</span><strong>LASFOUR (Warrior)</strong></div>
-            
-            <div class="category-rank category-rank--gray"><span>Amazon BSR:</span><strong>#1,041,985 in Clothing, Shoes &amp; Jewelry</strong></div>
-            <div class="category-rank category-rank--green"><span>Best Subcategory Rank:</span><strong>#5,844 in Men&#x27;s Golf Shirts</strong></div>
-            
-            <div class="metric"><span>Reviews:</span><strong></strong><small>Rating: </small></div>
-            <div class="metric"><span>Source Rank:</span><strong>#45</strong></div>
-            <div class="metric"><span>Source Rank Change:</span><strong>-10</strong></div>
-            <div class="metric"><span>Days Seen:</span><strong>2</strong></div>
-            <div class="metric"><span>POD Score:</span><strong>45</strong></div>
-            <div class="metric"><span>Niche:</span><strong>Custom Shirt</strong></div>
-            <div class="metric"><span>Tags:</span><strong>Custom Shirt</strong></div>
-          </div>
-        </div>
-      </article>
-      <article class="card" data-card-index="14" data-opportunity-score="33" data-display-rank-change="-10" data-display-rank-velocity="-10.0" data-top-percentile="86.79" data-category-rank="1041985" data-subcategory-rank="5844" data-review-count="0" data-rank-change="-10" data-pod-score="45">
-        <a href="https://www.amazon.com/LASFOUR-Personalized-Shirts-American-Patriotic/dp/B09WYDGST6/ref=is_sr_dp_5?dib=eyJ2IjoiMSJ9.MTtRBzokLI6d3mg67I3EQzUUB6bJ8B6SukyRm7xI_gMrO4lqQlVXS4vdpPqdwykOneH4Z1Ukz6UEkWeN6yolnsuMb4FQ7u0Pay9q2tpqRSIVOrvpeUX1ytwlMC56tnnqAHVB6MUrMF6QXWofFdy_ilbDiG4AJw8c-KWYcHfOY-cAFwtAfDZd2JJycVZRisRMusgTfwwO9NEVFG1_VKEkD_D2sp6oYQQZONqkEJidfNY.WF68QYHyMm86SmuERo7ZPItq0KX5Ye61vbDgZ4ok-CQ&amp;dib_tag=se&amp;m=A1HHNBJES4IIQK&amp;marketplaceID=ATVPDKIKX0DER&amp;nsdOptOutParam=true&amp;qid=1782176678&amp;s=merchant-items&amp;sr=1-15" target="_blank" rel="noopener"><div class="image"></div></a>
-        <div class="body">
-          <div class="title">Title unavailable - open product</div>
-          <div class="meta">
-            <div class="metric score score-breakdown" tabindex="0" title="POD: 14/30
-Momentum: 5/25
-Market: 8/20
-Competition: 0/10
-Niche: 6/15" data-tooltip="POD: 14/30
-Momentum: 5/25
-Market: 8/20
-Competition: 0/10
-Niche: 6/15"><span>Opportunity Score:</span><strong>33</strong></div>
-            <div class="metric"><span>Seller:</span><strong>LASFOUR (Warrior)</strong></div>
-            
-            <div class="category-rank category-rank--gray"><span>Amazon BSR:</span><strong>#1,041,985 in Clothing, Shoes &amp; Jewelry</strong></div>
-            <div class="category-rank category-rank--green"><span>Best Subcategory Rank:</span><strong>#5,844 in Men&#x27;s Golf Shirts</strong></div>
-            
-            <div class="metric"><span>Reviews:</span><strong></strong><small>Rating: </small></div>
-            <div class="metric"><span>Source Rank:</span><strong>#46</strong></div>
-            <div class="metric"><span>Source Rank Change:</span><strong>-10</strong></div>
-            <div class="metric"><span>Days Seen:</span><strong>2</strong></div>
-            <div class="metric"><span>POD Score:</span><strong>45</strong></div>
-            <div class="metric"><span>Niche:</span><strong>Custom Shirt</strong></div>
-            <div class="metric"><span>Tags:</span><strong>Custom Shirt</strong></div>
-          </div>
-        </div>
-      </article>
-      <article class="card" data-card-index="15" data-opportunity-score="33" data-display-rank-change="-10" data-display-rank-velocity="-10.0" data-top-percentile="88.68" data-category-rank="1006285" data-subcategory-rank="5704" data-review-count="0" data-rank-change="-10" data-pod-score="45">
-        <a href="https://www.amazon.com/LASFOUR-Personalized-Shirts-American-Patriotic/dp/B09WYCXTTR/ref=is_sr_dp_6?dib=eyJ2IjoiMSJ9.MTtRBzokLI6d3mg67I3EQzUUB6bJ8B6SukyRm7xI_gMrO4lqQlVXS4vdpPqdwykOneH4Z1Ukz6UEkWeN6yolnsuMb4FQ7u0Pay9q2tpqRSIVOrvpeUX1ytwlMC56tnnqAHVB6MUrMF6QXWofFdy_ilbDiG4AJw8c-KWYcHfOY-cAFwtAfDZd2JJycVZRisRMusgTfwwO9NEVFG1_VKEkD_D2sp6oYQQZONqkEJidfNY.WF68QYHyMm86SmuERo7ZPItq0KX5Ye61vbDgZ4ok-CQ&amp;dib_tag=se&amp;m=A1HHNBJES4IIQK&amp;marketplaceID=ATVPDKIKX0DER&amp;nsdOptOutParam=true&amp;qid=1782176678&amp;s=merchant-items&amp;sr=1-15" target="_blank" rel="noopener"><div class="image"></div></a>
-        <div class="body">
-          <div class="title">Title unavailable - open product</div>
-          <div class="meta">
-            <div class="metric score score-breakdown" tabindex="0" title="POD: 14/30
-Momentum: 5/25
-Market: 8/20
-Competition: 0/10
-Niche: 6/15" data-tooltip="POD: 14/30
-Momentum: 5/25
-Market: 8/20
-Competition: 0/10
-Niche: 6/15"><span>Opportunity Score:</span><strong>33</strong></div>
-            <div class="metric"><span>Seller:</span><strong>LASFOUR (Warrior)</strong></div>
-            
-            <div class="category-rank category-rank--gray"><span>Amazon BSR:</span><strong>#1,006,285 in Clothing, Shoes &amp; Jewelry</strong></div>
-            <div class="category-rank category-rank--green"><span>Best Subcategory Rank:</span><strong>#5,704 in Men&#x27;s Golf Shirts</strong></div>
-            
-            <div class="metric"><span>Reviews:</span><strong></strong><small>Rating: </small></div>
-            <div class="metric"><span>Source Rank:</span><strong>#47</strong></div>
-            <div class="metric"><span>Source Rank Change:</span><strong>-10</strong></div>
-            <div class="metric"><span>Days Seen:</span><strong>2</strong></div>
-            <div class="metric"><span>POD Score:</span><strong>45</strong></div>
-            <div class="metric"><span>Niche:</span><strong>Custom Shirt</strong></div>
-            <div class="metric"><span>Tags:</span><strong>Custom Shirt</strong></div>
-          </div>
+          <div class="card-actions"><a class="quick-link" href="https://www.amazon.com/NAZENTI-Football-Mom-Sweatshirt-Mama/dp/B0CHF8SKSG/ref=is_sr_dp_2?dib=eyJ2IjoiMSJ9.A2TtIexcAPhhf9lPGSPRf2YQZ57WOF8c-8BYHu5FxhPSB3Z88xh0LCoUYZTVObcWjy9pwtPlUWEQcKwlmA8rYG3a6Mqxc4rnnaZxtvWzTfa-pQ8Dmtx_ZNE42CPJbHniMrCCX1Kzr_uyPkSLHeBejtcDrC27Es8wUnm5feFovS4vjHw8Hc9gzz_0sv7Oz9YgXSvKzfcLyijFEJVXLMSceJO60O9j71nUUIRlvqCin0Q.eLC4Vkdn9ujy8IF4rwZCuMrHwR8xsBMbT0SpLcvCjBo&amp;dib_tag=se&amp;m=AJ6Y7DJI4UPZF&amp;marketplaceID=ATVPDKIKX0DER&amp;nsdOptOutParam=true&amp;qid=1782270385&amp;s=merchant-items&amp;sr=1-11" target="_blank" rel="noopener">Open Amazon</a><a class="quick-link" href="https://www.amazon.com/s?i=merchant-items&amp;me=AJ6Y7DJI4UPZF&amp;s=exact-aware-popularity-rank&amp;ds=v1%3AHQrhoINAF3IvgVymBmM0%2F8zYLFJ7pM%2FuujWka1kX6Fc&amp;marketplaceID=ATVPDKIKX0DER&amp;qid=1776151892&amp;ref=sr_st_exact-aware-popularity-rank" target="_blank" rel="noopener">Open Source</a></div>
         </div>
       </article>
     </section>
@@ -640,6 +1280,9 @@ Niche: 6/15"><span>Opportunity Score:</span><strong>33</strong></div>
     const sortControl = document.querySelector("[data-card-sort]");
     const sortableContainers = Array.from(document.querySelectorAll("[data-sortable-cards]"));
     const button = document.querySelector(".load-more");
+    const filterInputs = Array.from(document.querySelectorAll("[data-card-filter]"));
+    const sellerFilter = document.querySelector("[data-product-seller-filter]");
+    const nicheFilter = document.querySelector("[data-product-niche-filter]");
     let visible = 60;
     const directions = {
       opportunityScore: "desc",
@@ -651,13 +1294,33 @@ Niche: 6/15"><span>Opportunity Score:</span><strong>33</strong></div>
       categoryRank: "asc",
       reviewCount: "desc",
       rankChange: "desc",
+      growthVelocity: "desc",
+      newBreakoutScore: "desc",
       podScore: "desc",
     };
-    const visibleCards = () => Array.from(document.querySelectorAll(".grid[data-sortable-cards] > [data-card-index]"));
+    const allCards = () => Array.from(document.querySelectorAll("[data-sortable-cards] > [data-card-index]"));
+    const cardMatchesFilters = (card) => {
+      const checked = filterInputs.filter((input) => input.checked);
+      const togglesMatch = checked.every((input) => {
+        const key = input.dataset.cardFilter;
+        return card.dataset[key] === "true";
+      });
+      const sellerMatches = !sellerFilter || sellerFilter.value === "all" || card.dataset.sellerKey === sellerFilter.value;
+      const nicheMatches = !nicheFilter || nicheFilter.value === "all" || card.dataset.nicheKey === nicheFilter.value;
+      return togglesMatch && sellerMatches && nicheMatches;
+    };
     const updateCards = () => {
-      const cards = visibleCards();
-      cards.forEach((card, index) => card.classList.toggle("is-hidden", index >= visible));
-      if (button && visible >= cards.length) {
+      let matchedTotal = 0;
+      const limit = button ? visible : Number.POSITIVE_INFINITY;
+      allCards().forEach((card) => {
+        const matched = cardMatchesFilters(card);
+        const shouldShow = matched && matchedTotal < limit;
+        if (matched) {
+          matchedTotal += 1;
+        }
+        card.classList.toggle("is-hidden", !shouldShow);
+      });
+      if (button && visible >= matchedTotal) {
         button.style.display = "none";
       } else if (button) {
         button.style.display = "block";
@@ -700,6 +1363,20 @@ Niche: 6/15"><span>Opportunity Score:</span><strong>33</strong></div>
         updateCards();
       });
     }
+    filterInputs.forEach((input) => {
+      input.addEventListener("change", () => {
+        visible = 60;
+        updateCards();
+      });
+    });
+    [sellerFilter, nicheFilter].forEach((filter) => {
+      if (filter) {
+        filter.addEventListener("change", () => {
+          visible = 60;
+          updateCards();
+        });
+      }
+    });
     if (button) {
       button.addEventListener("click", () => {
         visible += Number(button.dataset.cardStep || 40);

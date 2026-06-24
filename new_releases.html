@@ -1,0 +1,333 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>New Releases</title>
+  <style>
+    :root { color-scheme: light; }
+    body { margin: 0; font-family: Arial, sans-serif; background: #f5f7fa; color: #1f2933; }
+    header { background: #ffffff; border-bottom: 1px solid #d8dee8; position: sticky; top: 0; z-index: 2; }
+    .bar { max-width: 1280px; margin: 0 auto; padding: 14px 22px; display: flex; flex-wrap: wrap; gap: 14px; align-items: center; }
+    .brand { font-size: 18px; font-weight: 700; margin-right: 8px; }
+    nav { display: flex; flex-wrap: wrap; gap: 8px; }
+    nav a { border: 1px solid #cad3df; border-radius: 6px; color: #334e68; padding: 7px 10px; text-decoration: none; font-size: 13px; background: #fff; }
+    nav a.active { background: #102a43; border-color: #102a43; color: #fff; }
+    main { max-width: 1280px; margin: 0 auto; padding: 22px; }
+    h1 { font-size: 24px; margin: 0 0 16px; }
+    h2 { font-size: 17px; margin: 0 0 12px; }
+    .summary { display: flex; flex-wrap: wrap; gap: 10px; margin: 0 0 16px; }
+    .summary div { background: #ffffff; border: 1px solid #d8dee8; border-radius: 8px; padding: 10px 12px; min-width: 120px; }
+    .summary strong { display: block; font-size: 20px; color: #102a43; }
+    .summary span { display: block; margin-top: 2px; font-size: 12px; color: #627d98; }
+    .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(210px, 1fr)); gap: 14px; }
+    .card { background: #fff; border: 1px solid #d9dee7; border-radius: 8px; overflow: hidden; }
+    .card.is-hidden { display: none; }
+    .image { aspect-ratio: 1 / 1; background: #edf1f5; display: flex; align-items: center; justify-content: center; }
+    .image img { width: 100%; height: 100%; object-fit: contain; display: block; }
+    .image-placeholder { color: #829ab1; font-size: 13px; }
+    .body { padding: 12px; }
+    .title { font-size: 13px; font-weight: 700; line-height: 1.35; min-height: 52px; }
+    .controls { margin: 0 0 16px; display: flex; flex-wrap: wrap; gap: 10px; align-items: center; }
+    .controls label { font-size: 12px; font-weight: 700; color: #52606d; }
+    .controls select { border: 1px solid #cad3df; border-radius: 6px; background: #fff; color: #102a43; padding: 8px 10px; font-size: 13px; }
+    .product-controls { align-items: flex-end; background: #fff; border: 1px solid #d8dee8; border-radius: 8px; padding: 10px; }
+    .control-group { display: grid; gap: 5px; }
+    .filter-toggles { display: flex; flex-wrap: wrap; gap: 8px 12px; align-items: center; }
+    .filter-toggles label { display: inline-flex; align-items: center; gap: 5px; white-space: nowrap; }
+    .priority-section { margin: 0 0 22px; }
+    .section-heading { display: flex; align-items: baseline; justify-content: space-between; gap: 12px; margin: 0 0 10px; }
+    .section-heading span { color: #627d98; font-size: 12px; }
+    .priority-grid { grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); }
+    .meta { margin-top: 10px; display: grid; gap: 8px; font-size: 12px; color: #52606d; }
+    .metric span, .category-rank span { display: block; font-size: 11px; font-weight: 700; color: #627d98; text-transform: uppercase; }
+    .metric strong, .category-rank strong { display: block; margin-top: 2px; font-size: 13px; color: #1f2933; font-weight: 700; }
+    .metric small { display: block; margin-top: 2px; font-size: 12px; color: #52606d; }
+    .movement-metric strong { color: #0b7285; font-size: 15px; }
+    .badge-list { display: flex; flex-wrap: wrap; gap: 6px; margin: 0 0 8px; }
+    .badge { border: 1px solid #88bdbc; border-radius: 999px; background: #e6f4f1; color: #125c59; padding: 4px 8px; font-size: 11px; font-weight: 700; }
+    .score-components { display: flex; flex-wrap: wrap; gap: 6px; color: #52606d; font-size: 11px; }
+    .score-components span { border: 1px solid #d8dee8; border-radius: 6px; background: #f8fafc; padding: 4px 6px; }
+    .score-components strong { color: #102a43; }
+    .card-actions { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 12px; }
+    .category-rank { border: 1px solid #cfd8e3; border-left-width: 5px; border-radius: 7px; padding: 9px 10px; background: #f7f9fb; }
+    .category-rank strong { font-size: 15px; color: #102a43; }
+    .category-rank--green { border-color: #2f855a; background: #edf8f1; }
+    .category-rank--green strong { color: #276749; }
+    .category-rank--blue { border-color: #2b6cb0; background: #edf5ff; }
+    .category-rank--blue strong { color: #2c5282; }
+    .category-rank--orange { border-color: #c05621; background: #fff4e6; }
+    .category-rank--orange strong { color: #9c4221; }
+    .category-rank--gray { border-color: #9aa5b1; background: #f2f4f7; }
+    .category-rank--gray strong { color: #52606d; }
+    .rank-audit-warning { border-color: #b7791f; background: #fffaf0; }
+    .rank-audit-warning strong { color: #975a16; }
+    .display-rank { border: 1px solid #cfd8e3; border-left-width: 5px; border-radius: 7px; padding: 9px 10px; background: #f7f9fb; }
+    .display-rank strong { font-size: 15px; color: #102a43; }
+    .display-rank--green { border-color: #2f855a; background: #edf8f1; }
+    .display-rank--green strong { color: #276749; }
+    .display-rank--blue { border-color: #2b6cb0; background: #edf5ff; }
+    .display-rank--blue strong { color: #2c5282; }
+    .display-rank--light-green { border-color: #38a169; background: #f0fff4; }
+    .display-rank--light-green strong { color: #2f855a; }
+    .display-rank--gray { border-color: #9aa5b1; background: #f2f4f7; }
+    .display-rank--gray strong { color: #52606d; }
+    .display-rank--red { border-color: #c53030; background: #fff5f5; }
+    .display-rank--red strong { color: #9b2c2c; }
+    .score { font-size: 15px; font-weight: 700; color: #102a43; }
+    .score-breakdown { position: relative; }
+    .score-breakdown::after { content: attr(data-tooltip); display: none; position: absolute; left: 0; top: calc(100% + 6px); width: max-content; max-width: 260px; white-space: pre-line; background: #102a43; color: #fff; border-radius: 6px; padding: 8px 10px; font-size: 12px; line-height: 1.4; z-index: 3; box-shadow: 0 8px 20px rgba(16, 42, 67, 0.18); }
+    .score-breakdown:hover::after, .score-breakdown:focus::after { display: block; }
+    .table-wrap { overflow: auto; background: #fff; border: 1px solid #d8dee8; border-radius: 8px; }
+    table { border-collapse: collapse; min-width: 100%; font-size: 13px; }
+    th, td { border-bottom: 1px solid #edf1f5; padding: 9px 10px; text-align: left; vertical-align: top; }
+    th { background: #f0f4f8; position: sticky; top: 58px; z-index: 1; }
+    th button { all: unset; cursor: pointer; font-weight: 700; color: #102a43; }
+    td a, .card a { color: inherit; }
+    details { background: #fff; border: 1px solid #d8dee8; border-radius: 8px; margin: 0 0 14px; padding: 12px; }
+    summary { cursor: pointer; font-weight: 700; }
+    .source-grid { margin-top: 12px; display: grid; grid-template-columns: repeat(auto-fill, minmax(210px, 1fr)); gap: 10px; }
+    .niche-table { margin: 0 0 16px; }
+    .niche-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap: 14px; margin: 0 0 18px; }
+    .niche-card { background: #fff; border: 1px solid #d9dee7; border-radius: 8px; overflow: hidden; }
+    .niche-card.is-hidden, .niche-detail.is-hidden { display: none; }
+    .niche-card img { width: 100%; aspect-ratio: 1 / 1; object-fit: contain; display: block; background: #edf1f5; }
+    .niche-card-body { padding: 12px; display: grid; gap: 8px; }
+    .niche-card h3 { font-size: 16px; margin: 0; }
+    .niche-score { font-size: 24px; font-weight: 700; color: #102a43; }
+    .niche-stats { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px; font-size: 12px; color: #52606d; }
+    .niche-stats strong { display: block; color: #1f2933; font-size: 14px; }
+    .niche-product-title { font-size: 13px; line-height: 1.35; font-weight: 700; }
+    .niche-details { display: grid; gap: 12px; }
+    .niche-products { margin-top: 12px; display: grid; gap: 8px; }
+    .niche-product { display: grid; grid-template-columns: 72px minmax(0, 1fr); gap: 10px; border-top: 1px solid #edf1f5; padding-top: 8px; }
+    .niche-product img { width: 72px; height: 72px; object-fit: contain; background: #edf1f5; }
+    .niche-product-title a { color: #102a43; }
+    .niche-product-meta { margin-top: 5px; display: flex; flex-wrap: wrap; gap: 8px; font-size: 12px; color: #52606d; }
+    .is-hidden { display: none !important; }
+    .drill-table tr[data-drill-row] { cursor: pointer; }
+    .drill-parent-row.is-expanded td { background: #f8fafc; }
+    .drill-row > td { background: #ffffff; padding: 0; }
+    .drill-control-header, .drill-control-cell { width: 92px; white-space: nowrap; }
+    .drill-toggle { width: 28px; height: 28px; border: 1px solid #9fb3c8; border-radius: 6px; background: #fff; color: #102a43; cursor: pointer; font-weight: 700; line-height: 1; }
+    .drill-product-count { margin-left: 8px; color: #52606d; font-size: 12px; }
+    .drill-panel { padding: 14px; border-top: 1px solid #d8dee8; }
+    .drill-toolbar { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 10px; margin: 0 0 12px; }
+    .drill-filters { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; }
+    .drill-filters label { display: inline-flex; gap: 6px; align-items: center; font-size: 12px; color: #334e68; }
+    .drill-actions { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; }
+    .drill-actions button, .quick-actions button, .quick-link { border: 1px solid #9fb3c8; border-radius: 6px; background: #fff; color: #102a43; padding: 7px 9px; font-size: 12px; line-height: 1.2; cursor: pointer; text-decoration: none; }
+    .drill-actions button:hover, .quick-actions button:hover, .quick-link:hover { border-color: #486581; }
+    .drill-status { font-size: 12px; color: #52606d; }
+    .drill-products { display: grid; gap: 8px; }
+    .drill-product { display: grid; grid-template-columns: 58px 72px minmax(0, 1fr); gap: 10px; align-items: start; border: 1px solid #e1e8f0; border-radius: 8px; background: #fff; padding: 9px; }
+    .drill-rank { font-size: 13px; font-weight: 700; color: #102a43; }
+    .drill-thumb { width: 72px; height: 72px; display: flex; align-items: center; justify-content: center; background: #edf1f5; border-radius: 6px; overflow: hidden; color: #829ab1; font-size: 11px; text-align: center; }
+    .drill-thumb img { width: 100%; height: 100%; object-fit: contain; display: block; }
+    .drill-thumb--empty { border: 1px dashed #bcccdc; }
+    .drill-main { min-width: 0; }
+    .drill-title { font-size: 13px; font-weight: 700; line-height: 1.35; color: #102a43; }
+    .drill-title a { color: #102a43; }
+    .drill-meta { margin-top: 7px; display: flex; flex-wrap: wrap; gap: 7px 12px; font-size: 12px; color: #52606d; }
+    .drill-meta strong { color: #334e68; }
+    .quick-actions { margin-top: 9px; display: flex; flex-wrap: wrap; gap: 7px; }
+    .drill-groups { display: grid; gap: 14px; padding: 14px; }
+    .drill-group { border: 1px solid #e1e8f0; border-radius: 8px; background: #fbfcfd; }
+    .drill-group h3 { margin: 0; padding: 10px 12px 0; font-size: 14px; color: #102a43; }
+    .drill-group .drill-panel { border-top: 0; }
+    .niche-card-drilldown { margin: 4px 0 0; padding: 10px; }
+    .niche-card-drilldown .drill-panel { padding: 10px 0 0; border-top: 0; }
+    .niche-card-drilldown .drill-product { grid-template-columns: 42px 54px minmax(0, 1fr); }
+    .niche-card-drilldown .drill-thumb { width: 54px; height: 54px; }
+    .empty { background: #fff; border: 1px solid #d8dee8; border-radius: 8px; padding: 18px; color: #52606d; }
+    .load-more { margin: 18px auto 0; display: block; border: 1px solid #102a43; border-radius: 6px; background: #102a43; color: #fff; padding: 10px 16px; cursor: pointer; font-weight: 700; }
+    @media (max-width: 720px) {
+      main { padding: 14px; }
+      th, td { padding: 8px; }
+      .drill-panel { padding: 10px; }
+      .drill-product { grid-template-columns: 44px 58px minmax(0, 1fr); }
+      .drill-thumb { width: 58px; height: 58px; }
+      .drill-toolbar, .drill-actions { align-items: stretch; }
+      .drill-actions button, .quick-actions button, .quick-link { flex: 1 1 auto; text-align: center; }
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="bar">
+      <div class="brand">Amazon Market Spy</div>
+      <nav>
+        <a href="priority_board.html">Priority Board</a>
+        <a href="top_winners.html">Top Winners</a>
+        <a href="new_breakouts.html">New Breakouts</a>
+        <a href="fast_movers.html">Fast Movers</a>
+        <a href="new_releases.html" class="active">New Releases</a>
+        <a href="seller_intelligence.html">Seller Intelligence</a>
+        <a href="niche_intelligence.html">Niche Intelligence</a>
+        <a href="all_opportunities.html">All Products</a>
+        <a href="non_pod_excluded.html">Excluded Non-POD</a>
+      </nav>
+    </div>
+  </header>
+  <main>
+    <h1>New Releases</h1>
+    <section class="summary">
+      <div><strong>0</strong><span>New release source products</span></div>
+    </section>
+    <section class="controls product-controls">
+      <div class="control-group">
+        <label for="card-sort">Sort</label>
+        <select id="card-sort" data-card-sort>
+        <option value="">Current Order</option>
+        <option value="opportunityScore">Opportunity Score</option>
+        <option value="bestMovers">Best Movers</option>
+        <option value="largestRankImprovement">Largest Rank Improvement</option>
+        <option value="highestVelocity">Highest Velocity</option>
+        <option value="topPercentile">Top Percentile</option>
+        <option value="subcategoryRank">Best Subcategory BSR</option>
+        <option value="categoryRank">Amazon BSR</option>
+        <option value="reviewCount">Review Count</option>
+        <option value="rankChange">Rank Change</option>
+        <option value="growthVelocity">Growth Velocity</option>
+        <option value="newBreakoutScore">New Breakout Score</option>
+        <option value="podScore">POD Score</option>
+        </select>
+      </div>
+      <div class="control-group filter-toggles" aria-label="Product filters">
+        <label><input type="checkbox" data-card-filter="pod"> POD only</label>
+        <label><input type="checkbox" data-card-filter="new"> New only</label>
+        <label><input type="checkbox" data-card-filter="rankMover"> Rank movers only</label>
+        <label><input type="checkbox" data-card-filter="top10"> Top 10 only</label>
+        <label><input type="checkbox" data-card-filter="newRelease"> New Releases only</label>
+      </div>
+      <div class="control-group">
+        <label for="seller-filter">Seller</label>
+        <select id="seller-filter" data-product-seller-filter>
+          <option value="all">All sellers</option>
+
+        </select>
+      </div>
+      <div class="control-group">
+        <label for="product-niche-filter">Niche</label>
+        <select id="product-niche-filter" data-product-niche-filter>
+          <option value="all">All niches</option>
+
+        </select>
+      </div>
+    </section>
+    <section class="grid" data-sortable-cards>
+      <div class="empty">No records found.</div>
+    </section>
+
+  </main>
+  <script>
+    const sortControl = document.querySelector("[data-card-sort]");
+    const sortableContainers = Array.from(document.querySelectorAll("[data-sortable-cards]"));
+    const button = document.querySelector(".load-more");
+    const filterInputs = Array.from(document.querySelectorAll("[data-card-filter]"));
+    const sellerFilter = document.querySelector("[data-product-seller-filter]");
+    const nicheFilter = document.querySelector("[data-product-niche-filter]");
+    let visible = 60;
+    const directions = {
+      opportunityScore: "desc",
+      bestMovers: "desc",
+      largestRankImprovement: "desc",
+      highestVelocity: "desc",
+      topPercentile: "asc",
+      subcategoryRank: "asc",
+      categoryRank: "asc",
+      reviewCount: "desc",
+      rankChange: "desc",
+      growthVelocity: "desc",
+      newBreakoutScore: "desc",
+      podScore: "desc",
+    };
+    const allCards = () => Array.from(document.querySelectorAll("[data-sortable-cards] > [data-card-index]"));
+    const cardMatchesFilters = (card) => {
+      const checked = filterInputs.filter((input) => input.checked);
+      const togglesMatch = checked.every((input) => {
+        const key = input.dataset.cardFilter;
+        return card.dataset[key] === "true";
+      });
+      const sellerMatches = !sellerFilter || sellerFilter.value === "all" || card.dataset.sellerKey === sellerFilter.value;
+      const nicheMatches = !nicheFilter || nicheFilter.value === "all" || card.dataset.nicheKey === nicheFilter.value;
+      return togglesMatch && sellerMatches && nicheMatches;
+    };
+    const updateCards = () => {
+      let matchedTotal = 0;
+      const limit = button ? visible : Number.POSITIVE_INFINITY;
+      allCards().forEach((card) => {
+        const matched = cardMatchesFilters(card);
+        const shouldShow = matched && matchedTotal < limit;
+        if (matched) {
+          matchedTotal += 1;
+        }
+        card.classList.toggle("is-hidden", !shouldShow);
+      });
+      if (button && visible >= matchedTotal) {
+        button.style.display = "none";
+      } else if (button) {
+        button.style.display = "block";
+      }
+    };
+    const numericValue = (card, key) => {
+      const value = Number(card.dataset[key] || "0");
+      return Number.isFinite(value) ? value : 0;
+    };
+    const percentileValue = (card) => {
+      const value = Number(card.dataset.topPercentile || "999999");
+      return Number.isFinite(value) ? value : 999999;
+    };
+    const sortContainer = (container, key) => {
+      const direction = directions[key] || "desc";
+      const items = Array.from(container.querySelectorAll(":scope > [data-card-index]"));
+      items.sort((left, right) => {
+        if (!key) {
+          return numericValue(left, "cardIndex") - numericValue(right, "cardIndex");
+        }
+        if (key === "topPercentile") {
+          const diff = percentileValue(left) - percentileValue(right);
+          if (diff !== 0) {
+            return direction === "asc" ? diff : -diff;
+          }
+          return numericValue(left, "cardIndex") - numericValue(right, "cardIndex");
+        }
+        const diff = numericValue(left, key) - numericValue(right, key);
+        if (diff !== 0) {
+          return direction === "asc" ? diff : -diff;
+        }
+        return numericValue(left, "cardIndex") - numericValue(right, "cardIndex");
+      });
+      items.forEach((item) => container.appendChild(item));
+    };
+    if (sortControl) {
+      sortControl.addEventListener("change", () => {
+        sortableContainers.forEach((container) => sortContainer(container, sortControl.value));
+        visible = 60;
+        updateCards();
+      });
+    }
+    filterInputs.forEach((input) => {
+      input.addEventListener("change", () => {
+        visible = 60;
+        updateCards();
+      });
+    });
+    [sellerFilter, nicheFilter].forEach((filter) => {
+      if (filter) {
+        filter.addEventListener("change", () => {
+          visible = 60;
+          updateCards();
+        });
+      }
+    });
+    if (button) {
+      button.addEventListener("click", () => {
+        visible += Number(button.dataset.cardStep || 40);
+        updateCards();
+      });
+    }
+    updateCards();
+  </script>
+</body>
+</html>
