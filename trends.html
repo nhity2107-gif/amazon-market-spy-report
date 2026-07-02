@@ -1,0 +1,291 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Trends</title>
+  <style>
+    :root { color-scheme: light; }
+    body { margin: 0; font-family: Arial, sans-serif; background: #f5f7fa; color: #1f2933; }
+    header { background: #ffffff; border-bottom: 1px solid #d8dee8; position: sticky; top: 0; z-index: 2; }
+    .bar { max-width: 1280px; margin: 0 auto; padding: 14px 22px; display: flex; flex-wrap: wrap; gap: 14px; align-items: center; }
+    .brand { font-size: 18px; font-weight: 700; margin-right: 8px; }
+    nav { display: flex; flex-wrap: wrap; gap: 8px; }
+    nav a { border: 1px solid #cad3df; border-radius: 6px; color: #334e68; padding: 7px 10px; text-decoration: none; font-size: 13px; background: #fff; }
+    nav a.active { background: #102a43; border-color: #102a43; color: #fff; }
+    main { max-width: 1280px; margin: 0 auto; padding: 22px; }
+    h1 { font-size: 24px; margin: 0 0 16px; }
+    h2 { font-size: 17px; margin: 0 0 12px; }
+    .summary { display: flex; flex-wrap: wrap; gap: 10px; margin: 0 0 16px; }
+    .summary div { background: #ffffff; border: 1px solid #d8dee8; border-radius: 8px; padding: 10px 12px; min-width: 120px; }
+    .summary strong { display: block; font-size: 20px; color: #102a43; }
+    .summary span { display: block; margin-top: 2px; font-size: 12px; color: #627d98; }
+    .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(210px, 1fr)); gap: 14px; }
+    .card { background: #fff; border: 1px solid #d9dee7; border-radius: 8px; overflow: hidden; }
+    .card.is-hidden { display: none; }
+    .image { aspect-ratio: 4 / 3; background: #edf1f5; display: flex; align-items: center; justify-content: center; }
+    .image img { width: 100%; height: 100%; object-fit: contain; display: block; }
+    .image-placeholder { color: #829ab1; font-size: 13px; }
+    .body { padding: 12px; }
+    .title { font-size: 13px; font-weight: 700; line-height: 1.35; min-height: 36px; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+    .controls { margin: 0 0 16px; display: flex; flex-wrap: wrap; gap: 10px; align-items: center; }
+    .controls label { font-size: 12px; font-weight: 700; color: #52606d; }
+    .controls select, .controls input { border: 1px solid #cad3df; border-radius: 6px; background: #fff; color: #102a43; padding: 8px 10px; font-size: 13px; }
+    .product-controls { align-items: flex-end; background: #fff; border: 1px solid #d8dee8; border-radius: 8px; padding: 10px; }
+    .control-group { display: grid; gap: 5px; }
+    .search-control input { min-width: 220px; }
+    .bsr-range span { display: flex; gap: 6px; }
+    .bsr-range input { width: 96px; }
+    .filter-toggles { display: flex; flex-wrap: wrap; gap: 8px 12px; align-items: center; }
+    .filter-toggles label { display: inline-flex; align-items: center; gap: 5px; white-space: nowrap; }
+    .priority-section { margin: 0 0 22px; }
+    .section-heading { display: flex; align-items: baseline; justify-content: space-between; gap: 12px; margin: 0 0 10px; }
+    .section-heading span { color: #627d98; font-size: 12px; }
+    .priority-grid { grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); }
+    .meta { margin-top: 10px; display: grid; gap: 8px; font-size: 12px; color: #52606d; }
+    .metric span, .category-rank span { display: block; font-size: 11px; font-weight: 700; color: #627d98; text-transform: uppercase; }
+    .metric strong, .category-rank strong { display: block; margin-top: 2px; font-size: 13px; color: #1f2933; font-weight: 700; }
+    .metric small { display: block; margin-top: 2px; font-size: 12px; color: #52606d; }
+    .compact-meta { gap: 7px; }
+    .movement-metric strong { color: #0b7285; font-size: 15px; }
+    .badge-list { display: flex; flex-wrap: wrap; gap: 6px; margin: 0 0 8px; }
+    .badge { border: 1px solid #88bdbc; border-radius: 999px; background: #e6f4f1; color: #125c59; padding: 4px 8px; font-size: 11px; font-weight: 700; }
+    .score-components { display: flex; flex-wrap: wrap; gap: 6px; color: #52606d; font-size: 11px; }
+    .score-components span { border: 1px solid #d8dee8; border-radius: 6px; background: #f8fafc; padding: 4px 6px; }
+    .score-components strong { color: #102a43; }
+    .card-actions { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 12px; }
+    .category-rank { border: 1px solid #cfd8e3; border-left-width: 5px; border-radius: 7px; padding: 9px 10px; background: #f7f9fb; }
+    .category-rank strong { font-size: 15px; color: #102a43; }
+    .category-rank--green { border-color: #2f855a; background: #edf8f1; }
+    .category-rank--green strong { color: #276749; }
+    .category-rank--blue { border-color: #2b6cb0; background: #edf5ff; }
+    .category-rank--blue strong { color: #2c5282; }
+    .category-rank--orange { border-color: #c05621; background: #fff4e6; }
+    .category-rank--orange strong { color: #9c4221; }
+    .category-rank--gray { border-color: #9aa5b1; background: #f2f4f7; }
+    .category-rank--gray strong { color: #52606d; }
+    .rank-audit-warning { border-color: #b7791f; background: #fffaf0; }
+    .rank-audit-warning strong { color: #975a16; }
+    .display-rank { border: 1px solid #cfd8e3; border-left-width: 5px; border-radius: 7px; padding: 9px 10px; background: #f7f9fb; }
+    .display-rank strong { font-size: 15px; color: #102a43; }
+    .display-rank--green { border-color: #2f855a; background: #edf8f1; }
+    .display-rank--green strong { color: #276749; }
+    .display-rank--blue { border-color: #2b6cb0; background: #edf5ff; }
+    .display-rank--blue strong { color: #2c5282; }
+    .display-rank--light-green { border-color: #38a169; background: #f0fff4; }
+    .display-rank--light-green strong { color: #2f855a; }
+    .display-rank--gray { border-color: #9aa5b1; background: #f2f4f7; }
+    .display-rank--gray strong { color: #52606d; }
+    .display-rank--red { border-color: #c53030; background: #fff5f5; }
+    .display-rank--red strong { color: #9b2c2c; }
+    .score { font-size: 15px; font-weight: 700; color: #102a43; }
+    .score-breakdown { position: relative; }
+    .score-breakdown::after { content: attr(data-tooltip); display: none; position: absolute; left: 0; top: calc(100% + 6px); width: max-content; max-width: 260px; white-space: pre-line; background: #102a43; color: #fff; border-radius: 6px; padding: 8px 10px; font-size: 12px; line-height: 1.4; z-index: 3; box-shadow: 0 8px 20px rgba(16, 42, 67, 0.18); }
+    .score-breakdown:hover::after, .score-breakdown:focus::after { display: block; }
+    .table-wrap { overflow: auto; background: #fff; border: 1px solid #d8dee8; border-radius: 8px; }
+    table { border-collapse: collapse; min-width: 100%; font-size: 13px; }
+    th, td { border-bottom: 1px solid #edf1f5; padding: 9px 10px; text-align: left; vertical-align: top; }
+    th { background: #f0f4f8; position: sticky; top: 58px; z-index: 1; }
+    th button { all: unset; cursor: pointer; font-weight: 700; color: #102a43; }
+    td a, .card a { color: inherit; }
+    details { background: #fff; border: 1px solid #d8dee8; border-radius: 8px; margin: 0 0 14px; padding: 12px; }
+    summary { cursor: pointer; font-weight: 700; }
+    .source-grid { margin-top: 12px; display: grid; grid-template-columns: repeat(auto-fill, minmax(210px, 1fr)); gap: 10px; }
+    .niche-table { margin: 0 0 16px; }
+    .niche-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap: 14px; margin: 0 0 18px; }
+    .niche-card { background: #fff; border: 1px solid #d9dee7; border-radius: 8px; overflow: hidden; }
+    .niche-card.is-hidden, .niche-detail.is-hidden { display: none; }
+    .niche-card img { width: 100%; aspect-ratio: 1 / 1; object-fit: contain; display: block; background: #edf1f5; }
+    .niche-card-body { padding: 12px; display: grid; gap: 8px; }
+    .niche-card h3 { font-size: 16px; margin: 0; }
+    .niche-score { font-size: 24px; font-weight: 700; color: #102a43; }
+    .niche-stats { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px; font-size: 12px; color: #52606d; }
+    .niche-stats strong { display: block; color: #1f2933; font-size: 14px; }
+    .niche-product-title { font-size: 13px; line-height: 1.35; font-weight: 700; }
+    .niche-details { display: grid; gap: 12px; }
+    .niche-products { margin-top: 12px; display: grid; gap: 8px; }
+    .niche-product { display: grid; grid-template-columns: 72px minmax(0, 1fr); gap: 10px; border-top: 1px solid #edf1f5; padding-top: 8px; }
+    .niche-product img { width: 72px; height: 72px; object-fit: contain; background: #edf1f5; }
+    .niche-product-title a { color: #102a43; }
+    .niche-product-meta { margin-top: 5px; display: flex; flex-wrap: wrap; gap: 8px; font-size: 12px; color: #52606d; }
+    .is-hidden { display: none !important; }
+    .drill-table tr[data-drill-row] { cursor: pointer; }
+    .drill-parent-row.is-expanded td { background: #f8fafc; }
+    .drill-row > td { background: #ffffff; padding: 0; }
+    .drill-control-header, .drill-control-cell { width: 92px; white-space: nowrap; }
+    .drill-toggle { width: 28px; height: 28px; border: 1px solid #9fb3c8; border-radius: 6px; background: #fff; color: #102a43; cursor: pointer; font-weight: 700; line-height: 1; }
+    .drill-product-count { margin-left: 8px; color: #52606d; font-size: 12px; }
+    .drill-panel { padding: 14px; border-top: 1px solid #d8dee8; }
+    .drill-toolbar { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 10px; margin: 0 0 12px; }
+    .drill-filters { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; }
+    .drill-filters label { display: inline-flex; gap: 6px; align-items: center; font-size: 12px; color: #334e68; }
+    .drill-actions { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; }
+    .drill-actions button, .quick-actions button, .quick-link { border: 1px solid #9fb3c8; border-radius: 6px; background: #fff; color: #102a43; padding: 7px 9px; font-size: 12px; line-height: 1.2; cursor: pointer; text-decoration: none; }
+    .drill-actions button:hover, .quick-actions button:hover, .quick-link:hover { border-color: #486581; }
+    .drill-status { font-size: 12px; color: #52606d; }
+    .drill-products { display: grid; gap: 8px; }
+    .drill-product { display: grid; grid-template-columns: 58px 72px minmax(0, 1fr); gap: 10px; align-items: start; border: 1px solid #e1e8f0; border-radius: 8px; background: #fff; padding: 9px; }
+    .drill-rank { font-size: 13px; font-weight: 700; color: #102a43; }
+    .drill-thumb { width: 72px; height: 72px; display: flex; align-items: center; justify-content: center; background: #edf1f5; border-radius: 6px; overflow: hidden; color: #829ab1; font-size: 11px; text-align: center; }
+    .drill-thumb img { width: 100%; height: 100%; object-fit: contain; display: block; }
+    .drill-thumb--empty { border: 1px dashed #bcccdc; }
+    .drill-main { min-width: 0; }
+    .drill-title { font-size: 13px; font-weight: 700; line-height: 1.35; color: #102a43; }
+    .drill-title a { color: #102a43; }
+    .drill-meta { margin-top: 7px; display: flex; flex-wrap: wrap; gap: 7px 12px; font-size: 12px; color: #52606d; }
+    .drill-meta strong { color: #334e68; }
+    .quick-actions { margin-top: 9px; display: flex; flex-wrap: wrap; gap: 7px; }
+    .drill-groups { display: grid; gap: 14px; padding: 14px; }
+    .drill-group { border: 1px solid #e1e8f0; border-radius: 8px; background: #fbfcfd; }
+    .drill-group h3 { margin: 0; padding: 10px 12px 0; font-size: 14px; color: #102a43; }
+    .drill-group .drill-panel { border-top: 0; }
+    .drill-overview { padding-bottom: 10px; }
+    .drill-overview-grid { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 8px; padding: 10px 12px 0; }
+    .drill-overview-grid div { border: 1px solid #e1e8f0; border-radius: 6px; background: #fff; padding: 8px; }
+    .drill-overview-grid strong { display: block; color: #102a43; font-size: 16px; }
+    .drill-overview-grid span, .drill-overview p { color: #52606d; font-size: 12px; }
+    .drill-overview p { margin: 8px 12px 0; }
+    .niche-card-drilldown { margin: 4px 0 0; padding: 10px; }
+    .niche-card-drilldown .drill-panel { padding: 10px 0 0; border-top: 0; }
+    .niche-card-drilldown .drill-product { grid-template-columns: 42px 54px minmax(0, 1fr); }
+    .niche-card-drilldown .drill-thumb { width: 54px; height: 54px; }
+    .empty { background: #fff; border: 1px solid #d8dee8; border-radius: 8px; padding: 18px; color: #52606d; }
+    .load-more { margin: 18px auto 0; display: block; border: 1px solid #102a43; border-radius: 6px; background: #102a43; color: #fff; padding: 10px 16px; cursor: pointer; font-weight: 700; }
+    .detail-modal { width: min(860px, calc(100vw - 32px)); border: 1px solid #bcccdc; border-radius: 8px; padding: 0; color: #1f2933; }
+    .detail-modal::backdrop { background: rgba(16, 42, 67, 0.35); }
+    .detail-modal-header { display: flex; justify-content: space-between; gap: 12px; align-items: start; padding: 14px 16px; border-bottom: 1px solid #e1e8f0; }
+    .detail-modal-header h2 { margin: 0; font-size: 16px; line-height: 1.35; }
+    .detail-modal-header button { border: 1px solid #9fb3c8; border-radius: 6px; background: #fff; color: #102a43; padding: 7px 9px; cursor: pointer; }
+    .detail-modal-body { padding: 14px 16px 16px; }
+    .detail-title { font-weight: 700; color: #102a43; margin-bottom: 10px; }
+    .detail-meta { grid-template-columns: repeat(auto-fit, minmax(210px, 1fr)); }
+    .detail-meta .metric { border: 1px solid #e1e8f0; border-radius: 7px; padding: 8px; background: #fbfcfd; overflow-wrap: anywhere; }
+    .trend-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 14px; }
+    .trend-panel { background: #fff; border: 1px solid #d8dee8; border-radius: 8px; padding: 12px; }
+    .trend-panel h2 { margin-bottom: 10px; }
+    .trend-panel ol { list-style: none; padding: 0; margin: 0; display: grid; gap: 7px; }
+    .trend-panel li { display: flex; justify-content: space-between; gap: 12px; border-bottom: 1px solid #edf1f5; padding-bottom: 7px; font-size: 13px; }
+    .trend-panel li:last-child { border-bottom: 0; padding-bottom: 0; }
+    .trend-panel span { color: #334e68; }
+    .trend-panel strong { color: #102a43; }
+    .database-controls button { align-self: end; }
+    .database-table tr.is-hidden { display: none; }
+    @media (max-width: 720px) {
+      main { padding: 14px; }
+      th, td { padding: 8px; }
+      .drill-panel { padding: 10px; }
+      .drill-product { grid-template-columns: 44px 58px minmax(0, 1fr); }
+      .drill-thumb { width: 58px; height: 58px; }
+      .drill-toolbar, .drill-actions { align-items: stretch; }
+      .drill-actions button, .quick-actions button, .quick-link { flex: 1 1 auto; text-align: center; }
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="bar">
+      <div class="brand">Amazon Market Spy</div>
+      <nav>
+        <a href="index.html">Today</a>
+        <a href="products.html">Products</a>
+        <a href="seller_intelligence.html">Sellers</a>
+        <a href="niche_intelligence.html">Niches</a>
+        <a href="trends.html" class="active">Trends</a>
+        <a href="database.html">Database</a>
+        <a href="non_pod_excluded.html">Excluded Non-POD</a>
+      </nav>
+    </div>
+  </header>
+  <main>
+    <h1>Trends</h1>
+    <section class="summary">
+      <div><strong>5255</strong><span>Products</span></div>
+      <div><strong>86</strong><span>Trending niches</span></div>
+      <div><strong>74</strong><span>Trending sellers</span></div>
+      <div><strong>6</strong><span>Badge types</span></div>
+    </section>
+    <section class="trend-grid">
+      <article class="trend-panel">
+        <h2>Trending Niches</h2>
+        <ol>
+<li><span>Custom Shirt</span><strong>100</strong></li>
+<li><span>Dog</span><strong>100</strong></li>
+<li><span>Family</span><strong>100</strong></li>
+<li><span>Birthday</span><strong>100</strong></li>
+<li><span>Baseball</span><strong>100</strong></li>
+<li><span>Graduation</span><strong>100</strong></li>
+<li><span>Soccer</span><strong>100</strong></li>
+<li><span>Valentine&#x27;s Day</span><strong>100</strong></li>
+<li><span>Couple</span><strong>100</strong></li>
+<li><span>Husband</span><strong>100</strong></li>
+<li><span>Wife</span><strong>100</strong></li>
+<li><span>Unknown</span><strong>100</strong></li>
+        </ol>
+      </article>
+      <article class="trend-panel">
+        <h2>Trending Sellers</h2>
+        <ol>
+<li><span>AGift2U</span><strong>3,163</strong></li>
+<li><span>BEAUTIFS</span><strong>7,225</strong></li>
+<li><span>bozota</span><strong>5,664</strong></li>
+<li><span>DATY SHOP</span><strong>4,241</strong></li>
+<li><span>DDK Trading</span><strong>4,025</strong></li>
+<li><span>Decorative Hanging Ornaments Best Sellers</span><strong>2,556</strong></li>
+<li><span>Decorative Hanging Ornaments New Releases</span><strong>2,057</strong></li>
+<li><span>Decorative Signs &amp; Plaques Best Sellers</span><strong>2,707</strong></li>
+<li><span>Decorative Signs &amp; Plaques New Releases</span><strong>2,739</strong></li>
+<li><span>Dily Pod</span><strong>5,779</strong></li>
+<li><span>DXL Trading</span><strong>5,165</strong></li>
+<li><span>Famiheart</span><strong>4,674</strong></li>
+        </ol>
+      </article>
+      <article class="trend-panel">
+        <h2>Trending Product Types</h2>
+        <ol>
+<li><span>Custom Shirt</span><strong>1,294</strong></li>
+<li><span>4th of July</span><strong>584</strong></li>
+<li><span>Unknown</span><strong>469</strong></li>
+<li><span>Dad</span><strong>410</strong></li>
+<li><span>Father&#x27;s Day</span><strong>302</strong></li>
+<li><span>Baseball</span><strong>237</strong></li>
+<li><span>Soccer</span><strong>197</strong></li>
+<li><span>Coffee</span><strong>144</strong></li>
+<li><span>Mom</span><strong>124</strong></li>
+<li><span>Custom Doormat</span><strong>113</strong></li>
+<li><span>Mother&#x27;s Day</span><strong>88</strong></li>
+<li><span>Anniversary</span><strong>87</strong></li>
+        </ol>
+      </article>
+      <article class="trend-panel">
+        <h2>Trending Keywords / Tags</h2>
+        <ol>
+<li><span>Custom Shirt</span><strong>1,960</strong></li>
+<li><span>Dad</span><strong>934</strong></li>
+<li><span>4th of July</span><strong>744</strong></li>
+<li><span>Father&#x27;s Day</span><strong>624</strong></li>
+<li><span>Kids</span><strong>573</strong></li>
+<li><span>Anniversary</span><strong>562</strong></li>
+<li><span>Birthday</span><strong>511</strong></li>
+<li><span>Unknown</span><strong>469</strong></li>
+<li><span>Grandpa</span><strong>459</strong></li>
+<li><span>Mom</span><strong>414</strong></li>
+<li><span>Christmas</span><strong>376</strong></li>
+<li><span>Soccer</span><strong>331</strong></li>
+        </ol>
+      </article>
+      <article class="trend-panel">
+        <h2>Badge Counts</h2>
+        <ol>
+<li><span>POD</span><strong>5,255</strong></li>
+<li><span>New Release</span><strong>873</strong></li>
+<li><span>Top 10</span><strong>481</strong></li>
+<li><span>Top Winner</span><strong>481</strong></li>
+<li><span>Fast Mover</span><strong>159</strong></li>
+<li><span>New Breakout</span><strong>105</strong></li>
+        </ol>
+      </article>
+    </section>
+  </main>
+
+</body>
+</html>
