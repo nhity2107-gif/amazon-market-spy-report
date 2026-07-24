@@ -1,0 +1,19 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "amazon-market-spy"
+version = "0.1.0"
+description = "CLI for tracking Amazon competitor search and seller listings from source URLs."
+readme = "README.md"
+requires-python = ">=3.10"
+authors = [{ name = "amazon-market-spy" }]
+license = "MIT"
+dependencies = ["playwright>=1.44"]
+
+[project.scripts]
+amazon-market-spy = "amazon_market_spy.cli:main"
+
+[tool.setuptools.packages.find]
+include = ["amazon_market_spy*"]
