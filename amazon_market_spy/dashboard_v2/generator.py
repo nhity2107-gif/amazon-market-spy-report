@@ -8,7 +8,6 @@ from .pages import (
     clean_product_explorer_detail_assets,
     render_data_error_page,
     render_competitor,
-    render_idea_explorer,
     render_market_explorer,
     render_morning_brief,
     render_product_explorer,
@@ -19,7 +18,6 @@ from .services import DashboardDataError, DashboardService
 
 V2_PAGE_ROUTES = [
     ("Home", "index.html", render_morning_brief),
-    ("Idea Explorer", "idea_explorer.html", render_idea_explorer),
     ("Product Explorer", "product_explorer.html", render_product_explorer),
     ("Competitor Explorer", "competitor.html", render_competitor),
     ("Market Explorer", "market_explorer.html", render_market_explorer),
@@ -68,7 +66,6 @@ def generate_dashboard_v2(output_dir: Path, data: dict[str, Any] | None = None) 
 def _active_key_for_filename(filename: str) -> str:
     return {
         "index.html": "morning_brief",
-        "idea_explorer.html": "idea_explorer",
         "product_explorer.html": "product_explorer",
         "competitor.html": "competitor",
         "market_explorer.html": "market_explorer",

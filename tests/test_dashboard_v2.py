@@ -31,7 +31,7 @@ class DashboardV2Tests(unittest.TestCase):
         with self.assertRaises(ValueError):
             validate_mock_data_contract({"morning_brief": {}, "ideas": []})
 
-    def test_v2_generation_succeeds_and_writes_all_five_pages(self) -> None:
+    def test_v2_generation_succeeds_and_writes_primary_pages(self) -> None:
         with tempfile.TemporaryDirectory() as temp_dir:
             output_dir = Path(temp_dir) / "v2"
             result = generate_dashboard_v2(output_dir)
@@ -50,9 +50,9 @@ class DashboardV2Tests(unittest.TestCase):
             generate_dashboard_v2(output_dir, data=MOCK_PRESENTATION_DATA)
             html = (output_dir / "product_explorer.html").read_text(encoding="utf-8")
 
-        for label in ["Home", "Idea Explorer", "Product Explorer", "Competitor Explorer", "Market Explorer"]:
+        for label in ["Home", "Product Explorer", "Competitor Explorer", "Market Explorer"]:
             self.assertIn(label, html)
-        for filename in ["index.html", "idea_explorer.html", "product_explorer.html", "competitor.html", "market_explorer.html"]:
+        for filename in ["index.html", "product_explorer.html", "competitor.html", "market_explorer.html"]:
             self.assertIn(filename, html)
         self.assertIn('href="product_explorer.html" aria-current="page"', html)
         self.assertNotIn("Product Detail", html)
@@ -67,7 +67,6 @@ class DashboardV2Tests(unittest.TestCase):
 
             active_links = {
                 "index.html": 'href="index.html" aria-current="page"',
-                "idea_explorer.html": 'href="idea_explorer.html" aria-current="page"',
                 "product_explorer.html": 'href="product_explorer.html" aria-current="page"',
                 "competitor.html": 'href="competitor.html" aria-current="page"',
                 "market_explorer.html": 'href="market_explorer.html" aria-current="page"',
@@ -318,6 +317,240 @@ class DashboardV2Tests(unittest.TestCase):
         for action in ["amazon", "seller", "source", "copy-asin", "copy-url"]:
             self.assertIn(f'data-preview-action="{action}"', html)
 
+    def test_visual_product_previews_exist_without_replacing_v2_workflow(self) -> None:
+        with tempfile.TemporaryDirectory() as temp_dir:
+            output_dir = Path(temp_dir) / "v2"
+            generate_dashboard_v2(output_dir, data=MOCK_PRESENTATION_DATA)
+            home_html = (output_dir / "index.html").read_text(encoding="utf-8")
+            product_html = (output_dir / "product_explorer.html").read_text(encoding="utf-8")
+            competitor_html = (output_dir / "competitor.html").read_text(encoding="utf-8")
+
+        self.assertIn("data-home-preview-panel", home_html)
+        self.assertIn("data-home-preview-item", home_html)
+        self.assertIn("activity-thumbnail", home_html)
+        self.assertIn("setPinnedItem", home_html)
+        self.assertIn("product-title-thumbnail", product_html)
+        self.assertIn('image.matches?.(".thumbnail, .product-title-thumbnail")', product_html)
+        self.assertIn("data-filter-panel", product_html)
+        self.assertIn("Evidence Inspector", product_html)
+        self.assertIn("seller-thumbnail-strip", competitor_html)
+        self.assertIn("representative_products", competitor_html)
+        self.assertIn("seller_focus", competitor_html)
+        self.assertIn("seller_focus_tags", competitor_html)
+        self.assertIn("seller-focus-tags", competitor_html)
+        self.assertIn("Open in Product Explorer &rarr;", competitor_html)
+        self.assertIn("seller-preview-stat", competitor_html)
+        self.assertIn("seller-open-link", competitor_html)
+        self.assertIn('title="Open in Product Explorer">&rarr;</a>', competitor_html)
+        self.assertIn("<strong>${escapeHtml(value)}</strong><span>${escapeHtml(label)}</span>", competitor_html)
+        self.assertIn("Fast Movers", competitor_html)
+        self.assertIn("slice(0, 3)", competitor_html)
+        self.assertIn("Display Order Preview", competitor_html)
+        self.assertIn("slice(0, 10)", competitor_html)
+        self.assertNotIn("View Seller Products", competitor_html)
+        self.assertIn('addEventListener("pointerover"', competitor_html)
+        self.assertIn("pinnedKey", competitor_html)
+        self.assertIn("data-seller-table", competitor_html)
+        for removed_panel_detail in [
+            "Median Price",
+            "Median Reviews",
+            "Median Rank",
+            "Top Categories",
+            "Top Product Types",
+            "Strong Sub-BSR Products",
+        ]:
+            self.assertNotIn(removed_panel_detail, competitor_html)
+
+    def test_seller_focus_filters_generic_terms_for_compact_preview(self) -> None:
+        products = [
+            {
+                "theme": "seller",
+                "idea": "Patriotic Gift",
+                "category_name": "Amazon Product",
+                "product_type": "Metal Sign",
+                "style": "Outdoor Decor",
+            },
+            {
+                "theme": "Custom",
+                "idea": "Lake House Gift",
+                "category_name": "Products",
+                "product_type": "Personalized Gifts",
+                "style": "Camping",
+            },
+            {
+                "theme": "Patriotic",
+                "idea": "Custom Gift",
+                "category_name": "Amazon",
+                "product_type": "Personalized Mug",
+                "style": "Fishing",
+            },
+        ]
+
+        self.assertEqual(v2_pages._seller_focus_tags(products), ["Patriotic", "Lake House", "Metal Sign"])
+        self.assertEqual(v2_pages._clean_focus_value("Custom Shirt"), "Custom Shirt")
+        self.assertEqual(v2_pages._clean_focus_value("Personalized Gifts"), "")
+
+    def test_seller_preview_sorts_by_display_order_rank_ascending(self) -> None:
+        products = [
+            _seller_preview_product(1, source_rank=3),
+            _seller_preview_product(2, source_rank=1),
+            _seller_preview_product(3, source_rank=2),
+        ]
+
+        cards = v2_pages._seller_product_cards(products, "title", reverse=False, limit=10)
+
+        self.assertEqual([card["asin"] for card in cards], ["B0SELL0002", "B0SELL0003", "B0SELL0001"])
+
+    def test_seller_preview_numeric_string_ranks_sort_correctly(self) -> None:
+        products = [
+            _seller_preview_product(1, source_rank="10"),
+            _seller_preview_product(2, source_rank="2"),
+            _seller_preview_product(3, source_rank="1"),
+        ]
+
+        cards = v2_pages._seller_product_cards(products, "title", reverse=False, limit=10)
+
+        self.assertEqual([card["asin"] for card in cards], ["B0SELL0003", "B0SELL0002", "B0SELL0001"])
+
+    def test_seller_preview_missing_ranks_appear_after_ranked_products(self) -> None:
+        products = [
+            _seller_preview_product(1, source_rank=""),
+            _seller_preview_product(2, source_rank=2),
+            _seller_preview_product(3, source_rank="invalid"),
+            _seller_preview_product(4, source_rank=1),
+        ]
+
+        cards = v2_pages._seller_product_cards(products, "title", reverse=False, limit=10)
+
+        self.assertEqual([card["asin"] for card in cards], ["B0SELL0004", "B0SELL0002", "B0SELL0001", "B0SELL0003"])
+
+    def test_seller_preview_rank_ties_use_stable_product_identity(self) -> None:
+        products = [
+            _seller_preview_product(3, asin="B0TIE0003", source_rank=1),
+            _seller_preview_product(1, asin="B0TIE0001", source_rank=1),
+            _seller_preview_product(2, asin="B0TIE0002", source_rank=1),
+        ]
+
+        cards = v2_pages._seller_product_cards(products, "title", reverse=False, limit=10)
+
+        self.assertEqual([card["asin"] for card in cards], ["B0TIE0001", "B0TIE0002", "B0TIE0003"])
+
+    def test_seller_preview_selects_ten_same_type_products_from_full_catalog(self) -> None:
+        products = [
+            _seller_preview_product(index, product_type="Metal Sign", source_rank=index)
+            for index in range(1, 11)
+        ]
+
+        cards = v2_pages._seller_product_cards(products, "title", reverse=False, limit=10)
+
+        self.assertEqual(len(cards), 10)
+        self.assertEqual(len({card["asin"] for card in cards}), 10)
+        self.assertEqual([card["asin"] for card in cards], [f"B0SELL{index:04d}" for index in range(1, 11)])
+        self.assertTrue(all(card["meta"].startswith("Metal Sign") for card in cards))
+
+    def test_seller_preview_limits_to_ten_after_rank_sorting(self) -> None:
+        products = [_seller_preview_product(index, source_rank=index) for index in range(1, 13)]
+
+        cards = v2_pages._seller_product_cards(products, "title", reverse=False, limit=10)
+
+        self.assertEqual(len(cards), 10)
+        self.assertEqual([card["asin"] for card in cards], [f"B0SELL{index:04d}" for index in range(1, 11)])
+
+    def test_seller_preview_uses_thumbnail_fallback_fields(self) -> None:
+        products = [
+            _seller_preview_product(1, image_url="", thumbnail_url="https://example.com/thumb.jpg"),
+            _seller_preview_product(2, image_url="", main_image="https://example.com/main.jpg"),
+            _seller_preview_product(3, image_url="", image="https://example.com/image.jpg"),
+            _seller_preview_product(4, image_url="", images=[{"src": "https://example.com/nested.jpg"}]),
+        ]
+
+        cards = v2_pages._seller_product_cards(products, "title", reverse=False, limit=10)
+        by_asin = {card["asin"]: card for card in cards}
+
+        self.assertEqual(by_asin["B0SELL0001"]["image"], "https://example.com/thumb.jpg")
+        self.assertEqual(by_asin["B0SELL0001"]["image_field"], "thumbnail_url")
+        self.assertEqual(by_asin["B0SELL0002"]["image"], "https://example.com/main.jpg")
+        self.assertEqual(by_asin["B0SELL0002"]["image_field"], "main_image")
+        self.assertEqual(by_asin["B0SELL0003"]["image"], "https://example.com/image.jpg")
+        self.assertEqual(by_asin["B0SELL0003"]["image_field"], "image")
+        self.assertEqual(by_asin["B0SELL0004"]["image"], "https://example.com/nested.jpg")
+        self.assertEqual(by_asin["B0SELL0004"]["image_field"], "images.src")
+
+    def test_seller_preview_deduplicates_exact_products_not_product_type(self) -> None:
+        products = [
+            _seller_preview_product(1, asin="B0DUP0001", product_type="Custom Shirt", image_url="https://example.com/a.jpg", source_rank=1),
+            _seller_preview_product(2, asin="B0DUP0001", product_type="Custom Shirt", image_url="https://example.com/b.jpg", source_rank=2),
+            _seller_preview_product(3, asin="", product_type="Custom Shirt", product_url="https://www.amazon.com/example/dp/B0URL0001?ref=one", source_rank=3),
+            _seller_preview_product(4, asin="", product_type="Custom Shirt", product_url="https://www.amazon.com/example/dp/B0URL0001?ref=two", source_rank=4),
+            _seller_preview_product(5, asin="B0UNIQUE5", product_type="Custom Shirt", source_rank=5),
+        ]
+
+        cards = v2_pages._seller_product_cards(products, "title", reverse=False, limit=10)
+
+        self.assertEqual(len(cards), 3)
+        self.assertEqual(sum(1 for card in cards if card["asin"] == "B0DUP0001"), 1)
+        self.assertGreaterEqual(sum(1 for card in cards if card["meta"].startswith("Custom Shirt")), 3)
+
+    def test_seller_preview_takes_first_ten_valid_products_after_image_filter_and_dedupe(self) -> None:
+        products = [
+            _seller_preview_product(index, source_rank=index, image_url="")
+            for index in range(1, 4)
+        ]
+        products.extend(
+            _seller_preview_product(10 + index, asin="B0DUPLATE", source_rank=10 + index, image_url=f"https://example.com/dup-{index}.jpg")
+            for index in range(4)
+        )
+        products.extend(_seller_preview_product(20 + index, source_rank=20 + index) for index in range(10))
+
+        cards = v2_pages._seller_product_cards(products, "title", reverse=False, limit=10)
+        asins = {card["asin"] for card in cards}
+
+        self.assertEqual(len(cards), 10)
+        self.assertIn("B0DUPLATE", asins)
+        self.assertIn("B0SELL0028", asins)
+        self.assertNotIn("B0SELL0029", asins)
+        self.assertTrue(all(card["image"] for card in cards))
+
+    def test_seller_preview_fewer_than_ten_valid_products_renders_all_available(self) -> None:
+        products = [
+            _seller_preview_product(1, seller="Small Seller", source_rank=2),
+            _seller_preview_product(2, seller="Small Seller", source_rank=1),
+        ]
+        data = {**MOCK_PRESENTATION_DATA, "products": products}
+
+        html = v2_pages.render_competitor(data)
+        payload = _seller_payload(html)
+        seller = next(row for row in payload if row["seller"] == "Small Seller")
+
+        self.assertEqual(len(seller["representative_products"]), 2)
+        self.assertEqual([card["asin"] for card in seller["representative_products"]], ["B0SELL0002", "B0SELL0001"])
+        self.assertNotIn("placeholderCount", html)
+
+    def test_dxl_trading_current_dataset_matches_first_ten_display_order_products(self) -> None:
+        if not (Path("output") / "latest_products.csv").exists():
+            self.skipTest("Current output/latest_products.csv is not available.")
+        data = DashboardService(Path("output")).load()
+        products = [product for product in data["products"] if product.get("seller") == "DXL Trading"]
+        if not products:
+            self.skipTest("DXL Trading is not available in the current output dataset.")
+
+        valid_images = [v2_pages._seller_thumbnail_src(product) for product in products]
+        valid_images = [item for item in valid_images if item[0]]
+        if len(valid_images) < 10:
+            self.skipTest("DXL Trading has fewer than ten products with valid images in the current output dataset.")
+        expected_products = v2_pages._seller_representative_products(products, limit=10)
+        expected_asins = [str(product.get("asin", "") or "") for product, _, _ in expected_products]
+        cards = v2_pages._seller_product_cards(products, "title", reverse=False, limit=10)
+
+        self.assertEqual(len(products), 159)
+        self.assertGreaterEqual(len(valid_images), 10)
+        self.assertEqual(len(cards), 10)
+        self.assertEqual([card["asin"] for card in cards], expected_asins)
+        self.assertEqual(
+            [v2_pages._seller_display_order_rank(product) for product, _, _ in expected_products],
+            sorted(v2_pages._seller_display_order_rank(product) for product, _, _ in expected_products),
+        )
+
     def test_product_explorer_evidence_filters_and_legacy_signals_exist(self) -> None:
         with tempfile.TemporaryDirectory() as temp_dir:
             root = Path(temp_dir)
@@ -542,21 +775,12 @@ class DashboardV2Tests(unittest.TestCase):
             self.assertIn(selector, html)
         self.assertIn('data-preview-action="amazon"', html)
 
-    def test_idea_competitor_and_market_default_tables_are_minimal(self) -> None:
+    def test_competitor_and_market_default_tables_are_minimal(self) -> None:
         with tempfile.TemporaryDirectory() as temp_dir:
             output_dir = Path(temp_dir) / "v2"
             generate_dashboard_v2(output_dir, data=MOCK_PRESENTATION_DATA)
-            idea_html = (output_dir / "idea_explorer.html").read_text(encoding="utf-8")
             competitor_html = (output_dir / "competitor.html").read_text(encoding="utf-8")
             market_html = (output_dir / "market_explorer.html").read_text(encoding="utf-8")
-
-        idea_head = _first_thead(idea_html, "data-idea-dimension-table")
-        for label in ["Idea", "Products", "Momentum", "Validation", "Opportunity"]:
-            self.assertIn(label, idea_head)
-        for hidden_label in ["Active Sellers", "Movers", "New Pushes", "Representative Product"]:
-            self.assertNotIn(hidden_label, idea_head)
-        self.assertIn("ideaRowDetail(row)", idea_html)
-        self.assertIn('metric("Active Sellers"', idea_html)
 
         competitor_head = _first_thead(competitor_html, "data-seller-table")
         for label in ["Seller", "Activity", "New Pushes", "Fast Movers", "Open"]:
@@ -564,7 +788,8 @@ class DashboardV2Tests(unittest.TestCase):
         for hidden_label in ["Active Products", "Leaders", "Latest Activity"]:
             self.assertNotIn(hidden_label, competitor_head)
         self.assertIn("Seller Summary", competitor_html)
-        self.assertIn("Median Reviews", competitor_html)
+        self.assertIn("Open in Product Explorer &rarr;", competitor_html)
+        self.assertNotIn("Median Reviews", competitor_html)
 
         market_head = _first_thead(market_html, "data-market-table")
         for label in ["Market", "Momentum", "Validation", "Competition", "Open"]:
@@ -572,7 +797,28 @@ class DashboardV2Tests(unittest.TestCase):
         for hidden_label in ["Products", "Breakouts"]:
             self.assertNotIn(hidden_label, market_head)
         self.assertIn("marketDetail(row)", market_html)
+        self.assertIn('class="panel detail-panel market-preview-panel"', market_html)
+        self.assertIn("data-market-detail", market_html)
+        self.assertIn("marketProductGrid", market_html)
+        self.assertIn("market-product-grid", market_html)
+        self.assertIn("Representative Products", market_html)
+        self.assertIn("Leading Sellers", market_html)
+        self.assertIn("Market Health", market_html)
+        self.assertIn("Open Product Explorer &rarr;", market_html)
+        self.assertIn('addEventListener("pointerover"', market_html)
         self.assertIn('metric("Breakouts"', market_html)
+        for removed_detail_metric in [
+            "Median Price",
+            "Median Rating",
+            "Median Sub-BSR",
+            "Coverage",
+            "Seller Leaders",
+            "Very Strong Sub-BSR",
+            "Seller Movers",
+            "New Release Rising",
+            "Category Breakouts",
+        ]:
+            self.assertNotIn(f'metric("{removed_detail_metric}"', market_html)
 
     def test_product_explorer_evidence_statistics_and_sort_controls_exist(self) -> None:
         with tempfile.TemporaryDirectory() as temp_dir:
@@ -749,6 +995,47 @@ class DashboardV2Tests(unittest.TestCase):
 
         self.assertEqual(groups[0]["label"], "Breakout")
         self.assertEqual(groups[0]["breakout_total"], 2)
+
+    def test_market_preview_uses_display_order_products_and_leading_sellers(self) -> None:
+        ranks = [12, 2, 1, 4, 3, 6, 5, 8, 7, 10, 9, 11]
+        sellers = ["Alpha"] * 5 + ["Beta"] * 4 + ["Gamma"] * 2 + ["Delta"]
+        products = [
+            _seller_preview_product(
+                index,
+                asin=f"B0MARK{index:04d}",
+                seller=sellers[index - 1],
+                idea="Lake House",
+                product_type="Metal Sign",
+                theme="Camping",
+                occasion="Father's Day",
+                recipient="Dad",
+                source_rank=rank,
+            )
+            for index, rank in enumerate(ranks, start=1)
+        ]
+
+        groups = v2_pages._market_groups(products, "category")
+        row = next(group for group in groups if group["label"] == "Lake House")
+
+        self.assertEqual(row["market_tags"], ["Metal Sign", "Camping", "Father's Day"])
+        self.assertEqual(row["leading_sellers"], ["Alpha", "Beta", "Gamma", "Delta"])
+        self.assertEqual(len(row["representative_products"]), 10)
+        self.assertEqual(
+            [card["asin"] for card in row["representative_products"]],
+            [
+                "B0MARK0003",
+                "B0MARK0002",
+                "B0MARK0005",
+                "B0MARK0004",
+                "B0MARK0007",
+                "B0MARK0006",
+                "B0MARK0009",
+                "B0MARK0008",
+                "B0MARK0011",
+                "B0MARK0010",
+            ],
+        )
+        self.assertTrue(all(card["url"].startswith("product_explorer.html?q=Lake%20House&focus=") for card in row["representative_products"]))
 
     def test_dashboard_v2_finalization_does_not_introduce_new_scores(self) -> None:
         with tempfile.TemporaryDirectory() as temp_dir:
@@ -986,14 +1273,14 @@ class DashboardV2ServiceTests(unittest.TestCase):
             self.assertIn("Dashboard data unavailable", html)
             self.assertIn("analytics CSV artifacts", html)
 
-    def test_all_five_v2_pages_generate_from_real_fixture(self) -> None:
+    def test_v2_primary_pages_generate_from_real_fixture(self) -> None:
         with tempfile.TemporaryDirectory() as temp_dir:
             root = Path(temp_dir)
             _write_service_fixture(root)
             output_dir = root / "v2"
             result = generate_dashboard_v2(output_dir)
 
-            self.assertEqual(len(result["pages"]), 5)
+            self.assertEqual(len(result["pages"]), 4)
             for _, filename, _ in V2_PAGE_ROUTES:
                 self.assertTrue((output_dir / filename).exists(), filename)
 
@@ -1410,6 +1697,31 @@ def _product_payload(product_explorer_path: Path) -> list[dict[str, object]]:
     if not isinstance(payload, list):
         raise AssertionError("Product Explorer payload must be a list.")
     return payload
+
+
+def _seller_payload(html: str) -> list[dict[str, object]]:
+    start_marker = '<script type="application/json" id="seller-explorer-data">'
+    end_marker = "</script>"
+    start = html.index(start_marker) + len(start_marker)
+    end = html.index(end_marker, start)
+    payload = json.loads(html[start:end])
+    if not isinstance(payload, list):
+        raise AssertionError("Seller Explorer payload must be a list.")
+    return payload
+
+
+def _seller_preview_product(index: int, **overrides: object) -> dict[str, object]:
+    product = {
+        "asin": f"B0SELL{index:04d}",
+        "title": f"Seller Preview Product {index}",
+        "seller": "Preview Seller",
+        "product_type": "Custom Shirt",
+        "product_url": f"https://www.amazon.com/example/dp/B0SELL{index:04d}?ref=test",
+        "image_url": f"https://example.com/product-{index}.jpg",
+        "source_rank": index,
+    }
+    product.update(overrides)
+    return product
 
 
 def _first_thead(html: str, table_marker: str) -> str:

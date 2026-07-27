@@ -17,6 +17,7 @@ from .category_rank import (
     merge_category_rank_fields,
 )
 from .dashboard_v2 import generate_dashboard_v2
+from .dashboard_v3 import generate_dashboard_v3
 from .evidence_calibration import calibrate_evidence
 from .evidence_review_analysis import analyze_evidence_reviews
 from .evidence import EVIDENCE_FIELDS, PRODUCT_EVIDENCE_FIELDS
@@ -435,6 +436,17 @@ def build_parser() -> argparse.ArgumentParser:
     )
     dashboard_v2.set_defaults(func=run_generate_dashboard_v2)
 
+    dashboard_v3 = subparsers.add_parser(
+        "generate-dashboard-v3",
+        help="Generate the Dashboard V3 foundation shell.",
+    )
+    dashboard_v3.add_argument(
+        "--output",
+        default="output/v3",
+        help="Output directory for Dashboard V3 pages. Default: output/v3",
+    )
+    dashboard_v3.set_defaults(func=run_generate_dashboard_v3)
+
     calibrate = subparsers.add_parser(
         "calibrate-evidence",
         help="Generate source-specific evidence calibration CSVs and an offline HTML report.",
@@ -661,6 +673,21 @@ def run_generate_dashboard_v2(args: argparse.Namespace) -> int:
     print("Dashboard V2 pages generated:")
     for page in result["pages"]:
         print(f"- {page['label']}: {page['path']}")
+    return 0
+
+
+def run_generate_dashboard_v3(args: argparse.Namespace) -> int:
+    result = generate_dashboard_v3(Path(args.output))
+    print(f"Dashboard V3 output directory: {result['output_dir']}")
+    print(f"Dashboard V3 main page: {result['main_page']}")
+    print("Dashboard V3 pages generated:")
+    for page in result["pages"]:
+        print(f"- {page['label']}: {page['path']}")
+    aliases = result.get("aliases", [])
+    if aliases:
+        print("Dashboard V3 compatibility aliases generated:")
+        for alias in aliases:
+            print(f"- {alias['filename']} -> {alias['target']}: {alias['path']}")
     return 0
 
 

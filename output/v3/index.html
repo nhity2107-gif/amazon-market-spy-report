@@ -1,0 +1,2513 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Dashboard Home - Amazon Market Spy V2</title>
+
+  <style>
+  :root {
+    --color-winner: #16803c;
+    --color-winner-soft: #e8f6ee;
+    --color-rising: #b25a00;
+    --color-rising-soft: #fff3e3;
+    --color-stable: #1f5fbf;
+    --color-stable-soft: #eaf1ff;
+    --color-alert: #c9342f;
+    --color-alert-soft: #fdecec;
+    --color-idea: #6d3acb;
+    --color-idea-soft: #f2edff;
+    --color-neutral-0: #ffffff;
+    --color-neutral-25: #fbfcfd;
+    --color-neutral-50: #f5f7fa;
+    --color-neutral-100: #e4e8ee;
+    --color-neutral-200: #cbd3df;
+    --color-neutral-400: #738194;
+    --color-neutral-600: #3f4b5b;
+    --color-neutral-800: #182230;
+    --color-focus: #245bd6;
+    --space-4: 4px;
+    --space-8: 8px;
+    --space-12: 12px;
+    --space-16: 16px;
+    --space-24: 24px;
+    --space-32: 32px;
+    --space-48: 48px;
+    --radius-card: 12px;
+    --radius-control: 9px;
+    --radius-pill: 999px;
+    --type-page-title: 28px;
+    --type-section-title: 20px;
+    --type-card-title: 16px;
+    --type-body: 14px;
+    --type-caption: 12px;
+    --shadow-card: 0 1px 1px rgba(24, 34, 48, 0.04);
+    --shell-width: 1440px;
+  }
+  * { box-sizing: border-box; }
+  [hidden] { display: none !important; }
+  html { color-scheme: light; }
+  body {
+    margin: 0;
+    background: var(--color-neutral-50);
+    color: var(--color-neutral-800);
+    font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    font-size: var(--type-body);
+    line-height: 1.45;
+  }
+  a { color: inherit; }
+  a:focus-visible, button:focus-visible, input:focus-visible, select:focus-visible {
+    outline: 3px solid rgba(36, 91, 214, 0.35);
+    outline-offset: 2px;
+  }
+  .app-shell {
+    min-height: 100vh;
+  }
+  .top-shell {
+    background: var(--color-neutral-0);
+    border-bottom: 1px solid var(--color-neutral-100);
+    padding: var(--space-8) var(--space-16);
+    position: sticky;
+    top: 0;
+    z-index: 20;
+    display: grid;
+    grid-template-columns: auto minmax(0, 1fr) auto;
+    gap: var(--space-16);
+    align-items: center;
+  }
+  .brand {
+    display: flex;
+    align-items: center;
+    gap: var(--space-8);
+    font-weight: 750;
+    white-space: nowrap;
+  }
+  .brand-mark {
+    width: 28px;
+    height: 28px;
+    border-radius: 8px;
+    display: grid;
+    place-items: center;
+    background: var(--color-idea-soft);
+    color: var(--color-idea);
+    border: 1px solid #ded4fb;
+    font-size: 13px;
+  }
+  .primary-nav {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: var(--space-4);
+    min-width: 0;
+  }
+  .nav-link {
+    display: flex;
+    align-items: center;
+    gap: var(--space-8);
+    min-height: 34px;
+    padding: 0 var(--space-12);
+    border-radius: var(--radius-control);
+    color: var(--color-neutral-600);
+    text-decoration: none;
+    font-weight: 650;
+    font-size: 13px;
+  }
+  .nav-link svg { width: 16px; height: 16px; color: currentColor; }
+  .nav-link[aria-current="page"] {
+    background: var(--color-neutral-800);
+    color: var(--color-neutral-0);
+  }
+  .dataset-strip {
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    gap: var(--space-8);
+    color: var(--color-neutral-400);
+    font-size: var(--type-caption);
+    white-space: nowrap;
+  }
+  .dataset-pill {
+    min-height: 24px;
+    display: inline-flex;
+    align-items: center;
+    border: 1px solid var(--color-neutral-100);
+    border-radius: var(--radius-pill);
+    background: var(--color-neutral-25);
+    color: var(--color-neutral-600);
+    padding: 0 8px;
+    font-weight: 800;
+  }
+  .utility-link {
+    color: var(--color-neutral-600);
+    text-decoration: none;
+    font-weight: 750;
+  }
+  .utility-link:hover {
+    color: var(--color-neutral-800);
+    text-decoration: underline;
+  }
+  .main {
+    min-width: 0;
+    padding: var(--space-16);
+  }
+  .page {
+    max-width: var(--shell-width);
+    margin: 0 auto;
+  }
+  .page-header {
+    display: flex;
+    justify-content: space-between;
+    gap: var(--space-16);
+    align-items: flex-start;
+    margin-bottom: var(--space-16);
+  }
+  h1 {
+    font-size: var(--type-page-title);
+    margin: 0 0 var(--space-4);
+    line-height: 1.15;
+    letter-spacing: 0;
+  }
+  .page-subtitle, .muted {
+    margin: 0;
+    color: var(--color-neutral-400);
+  }
+  .section-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: end;
+    gap: var(--space-16);
+    margin: var(--space-16) 0 var(--space-8);
+  }
+  .section-header h2 {
+    font-size: var(--type-section-title);
+    margin: 0;
+    line-height: 1.2;
+    letter-spacing: 0;
+  }
+  .kpi-grid {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: var(--space-8);
+  }
+  .market-pulse-grid, .data-status-grid {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: var(--space-8);
+  }
+  .data-status-grid {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+  .minimal-queue-grid {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .kpi-card, .compact-card, .panel, .quick-preview {
+    background: var(--color-neutral-0);
+    border: 1px solid var(--color-neutral-100);
+    border-radius: var(--radius-card);
+    box-shadow: var(--shadow-card);
+  }
+  .kpi-card {
+    padding: var(--space-12);
+    border-left: 4px solid var(--tone-color, var(--color-neutral-200));
+  }
+  .kpi-label {
+    font-size: var(--type-caption);
+    color: var(--color-neutral-400);
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: .04em;
+  }
+  .kpi-value {
+    display: block;
+    margin-top: var(--space-4);
+    font-size: 24px;
+    line-height: 1;
+    font-weight: 800;
+  }
+  .kpi-caption {
+    display: block;
+    margin-top: var(--space-4);
+    color: var(--color-neutral-400);
+    font-size: var(--type-caption);
+  }
+  .content-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: var(--space-8);
+  }
+  .compact-card {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto;
+    gap: var(--space-8);
+    align-items: center;
+    padding: 10px var(--space-12);
+  }
+  .compact-card h3 {
+    margin: 0 0 2px;
+    font-size: var(--type-card-title);
+    line-height: 1.25;
+    letter-spacing: 0;
+  }
+  .compact-card p { margin: 0; color: var(--color-neutral-400); font-size: var(--type-caption); }
+  .status-badge, .filter-chip {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    border-radius: var(--radius-pill);
+    font-size: var(--type-caption);
+    font-weight: 750;
+    line-height: 1;
+    white-space: nowrap;
+  }
+  .status-badge {
+    min-height: 24px;
+    padding: 0 8px;
+    color: var(--tone-color, var(--color-neutral-600));
+    background: var(--tone-soft, var(--color-neutral-50));
+    border: 1px solid color-mix(in srgb, var(--tone-color, var(--color-neutral-200)) 28%, transparent);
+  }
+  .filter-chip {
+    min-height: 28px;
+    padding: 0 9px;
+    border: 1px solid var(--color-neutral-100);
+    background: var(--color-neutral-0);
+    color: var(--color-neutral-600);
+  }
+  .toolbar, .filters-row {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: var(--space-8);
+  }
+  .toolbar {
+    justify-content: space-between;
+    margin-bottom: var(--space-8);
+  }
+  .control-group {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: var(--space-8);
+  }
+  .btn {
+    border: 1px solid transparent;
+    border-radius: var(--radius-control);
+    min-height: 32px;
+    padding: 0 10px;
+    font: inherit;
+    font-weight: 750;
+    font-size: 13px;
+    cursor: pointer;
+    background: var(--color-neutral-0);
+    color: var(--color-neutral-800);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    text-decoration: none;
+  }
+  .btn-primary { background: var(--color-neutral-800); color: var(--color-neutral-0); }
+  .btn-secondary { border-color: var(--color-neutral-200); }
+  .btn-ghost { background: transparent; color: var(--color-neutral-600); }
+  .btn:disabled {
+    cursor: not-allowed;
+    opacity: .48;
+  }
+  .btn:hover:not(:disabled) {
+    border-color: var(--color-neutral-400);
+  }
+  .btn-dropdown::after { content: "v"; color: var(--color-neutral-400); font-size: 11px; transform: translateY(-1px); }
+  .search-input, .select-input {
+    min-height: 34px;
+    border: 1px solid var(--color-neutral-200);
+    border-radius: var(--radius-control);
+    background: var(--color-neutral-0);
+    color: var(--color-neutral-800);
+    padding: 0 var(--space-12);
+    font: inherit;
+  }
+  .search-input { min-width: 320px; }
+  #idea-search.search-input { width: 460px; }
+  #product-search.search-input { width: 360px; }
+  .panel { padding: var(--space-12); }
+  .table-shell {
+    overflow: auto;
+    border: 1px solid var(--color-neutral-100);
+    border-radius: var(--radius-card);
+    background: var(--color-neutral-0);
+  }
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: var(--type-body);
+  }
+  .product-table {
+    table-layout: fixed;
+  }
+  .product-table th {
+    letter-spacing: 0;
+  }
+  th, td {
+    padding: 7px 10px;
+    border-bottom: 1px solid var(--color-neutral-100);
+    text-align: left;
+    vertical-align: middle;
+  }
+  th {
+    color: var(--color-neutral-400);
+    background: var(--color-neutral-25);
+    font-size: var(--type-caption);
+    text-transform: uppercase;
+    letter-spacing: .04em;
+    height: 34px;
+  }
+  .table-shell thead th {
+    position: sticky;
+    top: 0;
+    z-index: 2;
+  }
+  tbody tr { height: 44px; }
+  tbody tr:hover { background: #f8faff; }
+  tbody tr.is-focused {
+    background: #f3f7ff;
+    box-shadow: inset 3px 0 0 var(--color-focus);
+  }
+  tr:last-child td { border-bottom: 0; }
+  .product-row { height: 50px; cursor: pointer; }
+  .product-row:hover, .product-row.is-hovered { background: #f8faff; }
+  .product-row.is-focused {
+    background: #f3f7ff;
+    box-shadow: inset 3px 0 0 var(--color-focus);
+  }
+  .product-row.is-checked {
+    background: var(--color-neutral-25);
+  }
+  .product-row.is-focused.is-checked {
+    background: #eef4ff;
+  }
+  .product-row:focus-visible {
+    outline: 3px solid rgba(36, 91, 214, 0.32);
+    outline-offset: -3px;
+  }
+  .product-table th, .product-table td {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    padding-left: 6px;
+    padding-right: 6px;
+  }
+  .product-table td {
+    height: 50px;
+  }
+  .product-table th:nth-child(1), .product-table td:nth-child(1) { width: 4%; }
+  .product-table th:nth-child(2), .product-table td:nth-child(2) { width: 7%; }
+  .product-table th:nth-child(3), .product-table td:nth-child(3) { width: 34%; }
+  .product-table th:nth-child(4), .product-table td:nth-child(4) { width: 28%; }
+  .product-table th:nth-child(5), .product-table td:nth-child(5) { width: 12%; }
+  .product-table th:nth-child(6), .product-table td:nth-child(6) { width: 14%; }
+  .product-table th:nth-child(7), .product-table td:nth-child(7) { width: 14%; }
+  .product-table th:nth-child(8), .product-table td:nth-child(8) { width: 12%; }
+  .product-table th:nth-child(9), .product-table td:nth-child(9) { width: 14%; }
+  .product-table th:nth-child(10), .product-table td:nth-child(10) { width: 12%; }
+  .product-table th:nth-child(11), .product-table td:nth-child(11) { width: 9%; }
+  .product-table th:nth-child(12), .product-table td:nth-child(12) { width: 9%; }
+  .product-table th:nth-child(13), .product-table td:nth-child(13) { width: 9%; }
+  .product-table th:nth-child(14), .product-table td:nth-child(14) { width: 9%; }
+  .product-table th:nth-child(15), .product-table td:nth-child(15) { width: 12%; }
+  .product-table th:nth-child(16), .product-table td:nth-child(16) { width: 8%; }
+  .product-table th:nth-child(1), .product-table td:nth-child(1),
+  .product-table th:nth-child(2), .product-table td:nth-child(2) {
+    text-overflow: clip;
+  }
+  .product-table input[type="checkbox"] {
+    width: 16px;
+    height: 16px;
+    margin: 0;
+    accent-color: var(--color-focus);
+  }
+  .numeric-cell {
+    text-align: right;
+    font-variant-numeric: tabular-nums;
+  }
+  .missing-value {
+    color: var(--color-neutral-400);
+  }
+  .row-actions {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+  }
+  .row-action {
+    min-width: 26px;
+    min-height: 26px;
+    border: 1px solid var(--color-neutral-100);
+    border-radius: 7px;
+    background: var(--color-neutral-0);
+    color: var(--color-neutral-600);
+    font: inherit;
+    font-size: 11px;
+    font-weight: 800;
+    cursor: pointer;
+  }
+  .row-action:disabled {
+    opacity: .45;
+    cursor: not-allowed;
+  }
+  .sort-button {
+    width: 100%;
+    border: 0;
+    padding: 0;
+    background: transparent;
+    color: inherit;
+    font: inherit;
+    font-size: inherit;
+    font-weight: 800;
+    text-transform: inherit;
+    letter-spacing: inherit;
+    display: inline-flex;
+    align-items: center;
+    justify-content: flex-start;
+    gap: 4px;
+    cursor: pointer;
+  }
+  .sort-button.is-active {
+    color: var(--color-neutral-800);
+  }
+  .sort-button [data-sort-indicator] {
+    min-width: 22px;
+    color: var(--color-focus);
+    font-size: 10px;
+    text-transform: uppercase;
+  }
+  .link-button {
+    border: 0;
+    background: transparent;
+    color: inherit;
+    font: inherit;
+    padding: 0;
+    cursor: pointer;
+    text-align: left;
+  }
+  .link-button:hover {
+    color: var(--color-focus);
+    text-decoration: underline;
+  }
+  .product-table .status-badge {
+    min-height: 22px;
+    padding: 0 6px;
+  }
+  .thumbnail {
+    width: 40px;
+    height: 40px;
+    border-radius: 8px;
+    object-fit: cover;
+    border: 1px solid var(--color-neutral-100);
+  }
+  .product-title-thumbnail {
+    width: 42px;
+    height: 42px;
+    border-radius: 8px;
+    object-fit: cover;
+    border: 1px solid var(--color-neutral-100);
+    background: var(--color-neutral-50);
+  }
+  .product-title-cell {
+    display: grid;
+    gap: 2px;
+    min-width: 0;
+  }
+  .product-title-cell.has-thumbnail {
+    grid-template-columns: 42px minmax(0, 1fr);
+    align-items: center;
+    gap: var(--space-8);
+  }
+  .product-title-copy {
+    display: grid;
+    gap: 2px;
+    min-width: 0;
+  }
+  .product-title-cell strong, .product-title-cell .caption {
+    display: block;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+  .caption {
+    color: var(--color-neutral-400);
+    font-size: var(--type-caption);
+  }
+  .product-workspace {
+    display: grid;
+    grid-template-columns: minmax(210px, 19%) minmax(0, 1fr) minmax(280px, 24%);
+    gap: var(--space-8);
+    align-items: start;
+  }
+  .filter-panel {
+    display: grid;
+    gap: var(--space-12);
+  }
+  .filter-panel h2, .quick-preview h2, .panel-title {
+    margin: 0 0 var(--space-8);
+    font-size: var(--type-card-title);
+    line-height: 1.25;
+    letter-spacing: 0;
+  }
+  .filter-list {
+    display: grid;
+    gap: var(--space-8);
+  }
+  .filter-list button {
+    justify-content: space-between;
+    width: 100%;
+    text-align: left;
+  }
+  .saved-view-list, .filter-row-list, .preset-list {
+    display: grid;
+    gap: 2px;
+  }
+  .saved-view, .filter-row, .preset-button {
+    width: 100%;
+    min-height: 34px;
+    border: 0;
+    border-radius: 8px;
+    background: transparent;
+    color: var(--color-neutral-600);
+    display: grid;
+    grid-template-columns: 18px minmax(0, 1fr);
+    align-items: center;
+    gap: var(--space-8);
+    padding: 0 8px;
+    font: inherit;
+    font-size: 13px;
+    font-weight: 650;
+    text-align: left;
+    cursor: pointer;
+  }
+  .preset-button {
+    grid-template-columns: minmax(0, 1fr) auto;
+  }
+  .saved-view:hover, .filter-row:hover, .preset-button:hover {
+    background: var(--color-neutral-50);
+    color: var(--color-neutral-800);
+  }
+  .saved-view.is-active, .preset-button.is-active {
+    background: var(--color-neutral-800);
+    color: var(--color-neutral-0);
+  }
+  .saved-view[disabled], .filter-row[disabled] {
+    cursor: not-allowed;
+    color: var(--color-neutral-400);
+    opacity: .62;
+  }
+  .filter-row.is-active {
+    background: var(--tone-soft, var(--color-neutral-50));
+    color: var(--tone-color, var(--color-neutral-800));
+  }
+  .filter-row {
+    grid-template-columns: minmax(0, 1fr) auto;
+    min-height: 32px;
+  }
+  .filter-row strong {
+    min-width: 26px;
+    text-align: right;
+    color: var(--tone-color, var(--color-neutral-400));
+  }
+  .evidence-filter-groups {
+    display: grid;
+    gap: var(--space-8);
+  }
+  .evidence-filter-group {
+    display: grid;
+    gap: 2px;
+    margin: 0;
+    padding: 0 0 var(--space-8);
+    border: 0;
+    border-bottom: 1px solid var(--color-neutral-100);
+  }
+  .evidence-filter-group:last-child { border-bottom: 0; padding-bottom: 0; }
+  .evidence-filter-group legend {
+    margin-bottom: 4px;
+    padding: 0;
+    color: var(--color-neutral-400);
+    font-size: 11px;
+    font-weight: 800;
+    text-transform: uppercase;
+  }
+  .evidence-filter-option {
+    min-height: 30px;
+    display: grid;
+    grid-template-columns: 16px minmax(0, 1fr) auto;
+    align-items: center;
+    gap: 6px;
+    padding: 0 6px;
+    border-radius: 8px;
+    color: var(--color-neutral-600);
+    font-size: 12px;
+    font-weight: 650;
+    cursor: pointer;
+  }
+  .evidence-filter-option:hover {
+    background: var(--tone-soft, var(--color-neutral-50));
+    color: var(--tone-color, var(--color-neutral-800));
+  }
+  .evidence-filter-option input {
+    width: 14px;
+    height: 14px;
+    margin: 0;
+    accent-color: var(--tone-color, var(--color-focus));
+  }
+  .evidence-filter-option span {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+  .evidence-filter-option strong {
+    color: var(--tone-color, var(--color-neutral-400));
+    font-size: 11px;
+  }
+  .small-icon {
+    width: 15px;
+    height: 15px;
+    color: currentColor;
+  }
+  .toolbar-actions {
+    display: flex;
+    align-items: center;
+    gap: var(--space-8);
+    flex-wrap: wrap;
+  }
+  .toolbar-divider {
+    width: 1px;
+    height: 24px;
+    background: var(--color-neutral-100);
+  }
+  .select-input {
+    min-height: 32px;
+    border: 1px solid var(--color-neutral-200);
+    border-radius: var(--radius-control);
+    background: var(--color-neutral-0);
+    color: var(--color-neutral-700, var(--color-neutral-800));
+    padding: 0 8px;
+    font: inherit;
+    font-size: 12px;
+  }
+  .sort-select { min-width: 146px; }
+  .sort-direction-select { min-width: 76px; }
+  .column-menu-wrap {
+    position: relative;
+  }
+  .column-menu {
+    position: absolute;
+    right: 0;
+    top: calc(100% + 4px);
+    z-index: 8;
+    min-width: 180px;
+    display: grid;
+    gap: 2px;
+    padding: var(--space-8);
+    border: 1px solid var(--color-neutral-100);
+    border-radius: var(--radius-control);
+    background: var(--color-neutral-0);
+    box-shadow: 0 8px 24px rgba(24, 34, 48, 0.12);
+  }
+  .column-menu label {
+    display: grid;
+    grid-template-columns: 16px minmax(0, 1fr);
+    align-items: center;
+    gap: 6px;
+    min-height: 28px;
+    color: var(--color-neutral-600);
+    font-size: 12px;
+    font-weight: 700;
+  }
+  .advanced-filter-controls {
+    display: grid;
+    gap: var(--space-8);
+  }
+  .filter-control {
+    display: grid;
+    gap: 4px;
+    color: var(--color-neutral-600);
+    font-size: var(--type-caption);
+    font-weight: 700;
+  }
+  .filter-select {
+    width: 100%;
+    min-height: 78px;
+    border: 1px solid var(--color-neutral-200);
+    border-radius: var(--radius-control);
+    background: var(--color-neutral-0);
+    color: var(--color-neutral-800);
+    padding: 5px;
+    font: inherit;
+    font-size: 12px;
+  }
+  .filter-select option {
+    padding: 3px 4px;
+  }
+  .compact-filter-select {
+    min-height: 66px;
+  }
+  .more-filters-panel, .data-details-panel, .compact-result-details, .full-evidence-panel, .row-detail, .market-detail {
+    min-width: 0;
+  }
+  .more-filters-panel > summary, .data-details-panel > summary, .compact-result-details > summary, .full-evidence-panel > summary, .row-detail > summary, .market-detail > summary {
+    cursor: pointer;
+    color: var(--color-neutral-600);
+    font-size: var(--type-caption);
+    font-weight: 800;
+  }
+  .more-filters-panel > summary, .compact-result-details > summary, .full-evidence-panel > summary {
+    min-height: 30px;
+    display: flex;
+    align-items: center;
+  }
+  .more-filters-panel[open], .compact-result-details[open], .full-evidence-panel[open] {
+    border-top: 1px solid var(--color-neutral-100);
+    padding-top: var(--space-8);
+  }
+  .data-details-panel > summary {
+    min-height: 34px;
+    list-style-position: inside;
+  }
+  .data-details-panel[open] > summary {
+    margin-bottom: var(--space-8);
+  }
+  .row-detail, .market-detail {
+    margin-top: 4px;
+  }
+  .row-detail .metric-grid, .market-detail .metric-grid {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    margin: var(--space-8) 0;
+  }
+  .row-open-link {
+    font-weight: 800;
+  }
+  .compact-summary-value {
+    display: inline-flex;
+    min-height: 24px;
+    align-items: center;
+    padding: 0 8px;
+    border: 1px solid var(--color-neutral-100);
+    border-radius: var(--radius-pill);
+    background: var(--color-neutral-25);
+    color: var(--color-neutral-800);
+    font-weight: 800;
+  }
+  .range-filter {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 6px;
+    margin: 0;
+    padding: 8px;
+    border: 1px solid var(--color-neutral-100);
+    border-radius: var(--radius-control);
+  }
+  .range-filter legend {
+    padding: 0 4px;
+    color: var(--color-neutral-600);
+    font-size: var(--type-caption);
+    font-weight: 750;
+  }
+  .range-filter label {
+    display: grid;
+    gap: 3px;
+    color: var(--color-neutral-400);
+    font-size: 11px;
+    font-weight: 700;
+  }
+  .range-input {
+    min-width: 0;
+    width: 100%;
+    min-height: 30px;
+    border: 1px solid var(--color-neutral-200);
+    border-radius: 8px;
+    padding: 0 6px;
+    font: inherit;
+    font-size: 12px;
+  }
+  .product-results-meta {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--space-8);
+    margin: var(--space-4) 0 var(--space-8);
+  }
+  .result-count {
+    margin: 0;
+    color: var(--color-neutral-600);
+    font-size: var(--type-caption);
+    font-weight: 700;
+  }
+  .result-cap {
+    margin: 0;
+    color: var(--color-rising);
+    font-weight: 700;
+  }
+  .guidance-line, .filter-text-summary {
+    margin: 0 0 var(--space-8);
+    color: var(--color-neutral-600);
+    font-size: var(--type-caption);
+    font-weight: 700;
+  }
+  .filter-text-summary {
+    color: var(--color-neutral-400);
+  }
+  .result-stats {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    margin: 0 0 var(--space-8);
+  }
+  .result-stats span {
+    min-height: 26px;
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    padding: 0 8px;
+    border: 1px solid var(--color-neutral-100);
+    border-radius: var(--radius-pill);
+    background: var(--color-neutral-25);
+    color: var(--color-neutral-400);
+    font-size: var(--type-caption);
+    font-weight: 700;
+  }
+  .result-stats strong {
+    color: var(--color-neutral-800);
+  }
+  .active-filter-summary {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: var(--space-8);
+    margin: var(--space-8) 0;
+    padding: var(--space-8);
+    border: 1px solid var(--color-neutral-100);
+    border-radius: var(--radius-control);
+    background: var(--color-neutral-25);
+  }
+  .filter-chip-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+  }
+  .active-filter-chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    min-height: 26px;
+    border: 1px solid var(--color-neutral-200);
+    border-radius: var(--radius-pill);
+    background: var(--color-neutral-0);
+    color: var(--color-neutral-600);
+    padding: 0 8px;
+    font: inherit;
+    font-size: var(--type-caption);
+    font-weight: 750;
+    cursor: pointer;
+  }
+  .active-filter-chip:hover {
+    color: var(--color-neutral-800);
+    border-color: var(--color-neutral-400);
+  }
+  .product-filter-empty {
+    margin-top: var(--space-8);
+  }
+  .evidence-cell {
+    min-width: 0;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    overflow: hidden;
+  }
+  .evidence-badge, .evidence-more {
+    min-height: 20px;
+    display: inline-flex;
+    align-items: center;
+    flex: 0 0 auto;
+    border-radius: var(--radius-pill);
+    border: 1px solid var(--tone-color, var(--color-neutral-200));
+    background: var(--tone-soft, var(--color-neutral-50));
+    color: var(--tone-color, var(--color-neutral-600));
+    padding: 0 6px;
+    font-size: 11px;
+    font-weight: 800;
+    line-height: 1;
+  }
+  .evidence-badge {
+    max-width: 100px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+  .evidence-more {
+    --tone-color: var(--color-neutral-400);
+    --tone-soft: var(--color-neutral-50);
+  }
+  .why-cell {
+    min-width: 0;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+  .why-cell > span:last-child {
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+  .selection-toolbar {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: var(--space-8);
+    margin: var(--space-8) 0;
+    padding: var(--space-8);
+    border: 1px solid var(--color-neutral-100);
+    border-radius: var(--radius-control);
+    background: var(--color-neutral-25);
+  }
+  .selection-toolbar > strong {
+    font-size: 13px;
+    margin-right: auto;
+  }
+  .pagination-bar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: var(--space-8);
+    margin-top: var(--space-8);
+  }
+  .page-size-select {
+    min-width: 72px;
+    min-height: 32px;
+    padding: 0 8px;
+  }
+  .quick-preview {
+    padding: var(--space-12);
+    position: sticky;
+    top: 68px;
+    box-shadow: none;
+    border-radius: 10px;
+    max-height: calc(100vh - 84px);
+    overflow: auto;
+  }
+  .preview-image {
+    width: 100%;
+    aspect-ratio: 1 / 1;
+    border: 1px solid var(--color-neutral-100);
+    border-radius: 10px;
+    object-fit: cover;
+    background: var(--color-neutral-50);
+  }
+  .preview-title {
+    margin: var(--space-12) 0 var(--space-8);
+    font-size: 16px;
+    line-height: 1.25;
+  }
+  .preview-meta {
+    display: grid;
+    gap: 1px;
+    margin-top: var(--space-8);
+  }
+  .preview-meta-row {
+    display: grid;
+    grid-template-columns: 92px minmax(0, 1fr);
+    gap: var(--space-8);
+    align-items: center;
+    min-height: 28px;
+    border-bottom: 1px solid var(--color-neutral-100);
+    font-size: 13px;
+  }
+  .preview-meta-row > span:first-child {
+    color: var(--color-neutral-400);
+    font-size: var(--type-caption);
+  }
+  .preview-meta-row strong {
+    min-width: 0;
+    text-align: right;
+    overflow-wrap: anywhere;
+  }
+  .preview-meta-row .status-badge {
+    justify-self: end;
+  }
+  .preview-divider {
+    height: 1px;
+    background: var(--color-neutral-100);
+    margin: var(--space-12) 0;
+  }
+  .inspector-heading {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: var(--space-8);
+    margin-top: var(--space-8);
+  }
+  .inspector-heading h2 { margin: 0; }
+  .inspector-close {
+    min-width: 28px;
+    min-height: 28px;
+    padding: 0;
+  }
+  .inspector-section {
+    display: grid;
+    gap: var(--space-8);
+    padding: var(--space-10, 10px) 0;
+    border-bottom: 1px solid var(--color-neutral-100);
+  }
+  .inspector-section h3 {
+    margin: 0;
+    color: var(--color-neutral-600);
+    font-size: 13px;
+    line-height: 1.25;
+  }
+  .inspector-body {
+    display: grid;
+    gap: var(--space-8);
+  }
+  .inspector-status-list {
+    display: grid;
+    gap: 4px;
+  }
+  .evidence-status {
+    min-height: 26px;
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto;
+    align-items: center;
+    gap: var(--space-8);
+    padding: 0 8px;
+    border: 1px solid var(--color-neutral-100);
+    border-radius: 8px;
+    background: var(--color-neutral-25);
+    color: var(--color-neutral-500, var(--color-neutral-600));
+    font-size: 12px;
+  }
+  .evidence-status span {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+  .evidence-status strong {
+    font-size: 11px;
+    font-weight: 800;
+  }
+  .evidence-status.is-true {
+    border-color: var(--color-winner);
+    background: var(--color-winner-soft);
+    color: var(--color-winner);
+  }
+  .evidence-status.is-false {
+    color: var(--color-neutral-400);
+  }
+  .evidence-status.is-no-data {
+    border-style: dashed;
+    color: var(--color-neutral-400);
+  }
+  .inspector-metrics {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 4px;
+  }
+  .inspector-metric {
+    min-width: 0;
+    display: grid;
+    gap: 2px;
+    padding: 6px;
+    border: 1px solid var(--color-neutral-100);
+    border-radius: 8px;
+    background: var(--color-neutral-25);
+  }
+  .inspector-metric span {
+    color: var(--color-neutral-400);
+    font-size: 11px;
+    font-weight: 700;
+  }
+  .inspector-metric strong {
+    min-width: 0;
+    overflow-wrap: anywhere;
+    font-size: 12px;
+  }
+  .source-detail-list {
+    display: grid;
+    gap: 4px;
+  }
+  .source-detail-row {
+    display: grid;
+    gap: 2px;
+    padding: 7px 8px;
+    border: 1px solid var(--color-neutral-100);
+    border-radius: 8px;
+    background: var(--color-neutral-0);
+    color: var(--color-neutral-500, var(--color-neutral-600));
+    font-size: 11px;
+  }
+  .source-detail-row strong {
+    color: var(--color-neutral-800);
+    font-size: 12px;
+  }
+  .source-detail-row span {
+    overflow-wrap: anywhere;
+  }
+  .seller-thumbnail-strip {
+    display: grid;
+    grid-template-columns: repeat(5, minmax(0, 1fr));
+    column-gap: 2px;
+    row-gap: 18px;
+    align-items: start;
+    justify-content: start;
+    margin: 2px 0 20px;
+  }
+  [data-seller-detail] {
+    min-height: min(720px, calc(100vh - 120px));
+    display: grid;
+    grid-template-rows: auto auto auto auto minmax(0, 1fr);
+    row-gap: 14px;
+  }
+  .seller-preview-header h2 {
+    margin: 0;
+    font-size: 18px;
+    line-height: 1.2;
+  }
+  .seller-focus-section {
+    display: grid;
+    gap: 5px;
+    margin-bottom: 0;
+  }
+  .seller-focus-section > span, .seller-preview-section h3 {
+    margin: 0;
+    color: var(--color-neutral-400);
+    font-size: 11px;
+    font-weight: 800;
+    letter-spacing: .04em;
+    text-transform: uppercase;
+  }
+  .seller-focus-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 5px;
+  }
+  .seller-focus-tags strong {
+    min-height: 24px;
+    display: inline-flex;
+    align-items: center;
+    border: 1px solid var(--color-neutral-100);
+    border-radius: var(--radius-pill);
+    padding: 0 8px;
+    background: var(--color-neutral-25);
+    color: var(--color-neutral-600);
+    font-size: 12px;
+    line-height: 1;
+  }
+  .seller-preview-section {
+    display: grid;
+    gap: 4px;
+  }
+  .seller-thumbnail-card {
+    display: block;
+    position: relative;
+    width: 100%;
+    min-width: 0;
+    aspect-ratio: 1 / 1;
+    align-self: start;
+    color: inherit;
+    text-decoration: none;
+  }
+  .seller-thumbnail-card img {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    border-radius: 6px;
+    object-fit: contain;
+    border: 0;
+    background: var(--color-neutral-50);
+  }
+  .seller-thumbnail-card:hover img {
+    opacity: .88;
+  }
+  .seller-thumbnail-placeholder {
+    display: block;
+    width: 100%;
+    aspect-ratio: 1 / 1;
+    align-self: start;
+    border-radius: 6px;
+    background: var(--color-neutral-50);
+  }
+  .seller-preview-stats {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 10px;
+    margin: 6px 0 0;
+  }
+  .seller-preview-stat {
+    min-width: 0;
+    display: grid;
+    gap: 2px;
+    padding: 0;
+  }
+  .seller-preview-stat strong {
+    display: block;
+    margin: 0;
+    color: var(--color-neutral-800);
+    font-size: 17px;
+    font-weight: 800;
+    line-height: 1.1;
+  }
+  .seller-preview-stat span {
+    display: block;
+    color: var(--color-neutral-400);
+    font-size: 11px;
+    font-weight: 700;
+  }
+  .seller-preview-cta {
+    width: 100%;
+    margin-top: auto;
+    align-self: end;
+  }
+  .seller-open-link {
+    display: inline-flex;
+    width: 28px;
+    min-height: 28px;
+    align-items: center;
+    justify-content: center;
+    border-radius: 7px;
+    font-size: 16px;
+    line-height: 1;
+    text-decoration: none;
+  }
+  .seller-open-link:hover {
+    background: var(--color-neutral-50);
+    text-decoration: none;
+  }
+  .inspector-no-data {
+    min-height: 34px;
+    display: grid;
+    place-items: center;
+    border: 1px dashed var(--color-neutral-200);
+    border-radius: 8px;
+    color: var(--color-neutral-400);
+    background: var(--color-neutral-25);
+    font-size: 12px;
+    font-weight: 700;
+  }
+  .evidence-reason-list {
+    display: grid;
+    gap: 4px;
+    margin: 0;
+    padding-left: 18px;
+    color: var(--color-neutral-600);
+    font-size: 12px;
+  }
+  .metric-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: var(--space-8);
+    margin: var(--space-12) 0;
+  }
+  .metric {
+    border: 1px solid var(--color-neutral-100);
+    border-radius: var(--radius-control);
+    padding: var(--space-8);
+    background: var(--color-neutral-25);
+  }
+  .metric span { display: block; color: var(--color-neutral-400); font-size: var(--type-caption); }
+  .metric strong { display: block; margin-top: 2px; }
+  .preview-actions {
+    display: flex;
+    gap: var(--space-8);
+    margin-top: var(--space-8);
+    flex-wrap: wrap;
+  }
+  .preview-actions .btn-primary {
+    flex: 1 1 100%;
+  }
+  .preview-actions .btn-secondary, .preview-actions .btn-ghost {
+    flex: 1 1 0;
+  }
+  .full-evidence-panel {
+    margin-top: var(--space-8);
+  }
+  .full-evidence-panel .inspector-section:last-of-type {
+    border-bottom: 0;
+  }
+  .secondary-preview-actions {
+    border-top: 1px solid var(--color-neutral-100);
+    padding-top: var(--space-8);
+  }
+  .idea-card-list, .mover-list {
+    display: grid;
+    gap: var(--space-8);
+  }
+  .idea-summary-card, .mover-row {
+    background: var(--color-neutral-0);
+    border: 1px solid var(--color-neutral-100);
+    border-radius: 10px;
+    padding: 10px var(--space-12);
+  }
+  .idea-summary-card {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto;
+    gap: var(--space-12);
+    align-items: center;
+  }
+  .idea-summary-card h3, .mover-row h3 {
+    margin: 0 0 2px;
+    font-size: 15px;
+    line-height: 1.25;
+  }
+  .idea-summary-card p, .mover-row p {
+    margin: 0;
+    color: var(--color-neutral-400);
+    font-size: var(--type-caption);
+  }
+  .idea-summary-metrics {
+    display: flex;
+    gap: 6px;
+    flex-wrap: wrap;
+    justify-content: flex-end;
+  }
+  .mover-row {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto auto;
+    gap: var(--space-12);
+    align-items: center;
+  }
+  .mover-row > strong {
+    color: var(--color-neutral-800);
+    font-size: 13px;
+  }
+  .empty-state {
+    display: grid;
+    place-items: center;
+    min-height: 140px;
+    border: 1px dashed var(--color-neutral-200);
+    border-radius: var(--radius-card);
+    color: var(--color-neutral-400);
+    background: var(--color-neutral-25);
+    text-align: center;
+    padding: var(--space-16);
+  }
+  .skeleton {
+    height: 12px;
+    border-radius: var(--radius-pill);
+    background: linear-gradient(90deg, var(--color-neutral-100), var(--color-neutral-50), var(--color-neutral-100));
+    background-size: 220% 100%;
+    animation: skeleton-shimmer 1.8s ease-in-out infinite;
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .skeleton {
+      animation: none;
+    }
+  }
+  .dashboard-grid {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: var(--space-8);
+  }
+  .home-activity-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: var(--space-8);
+  }
+  .research-queue-grid {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: var(--space-8);
+  }
+  .research-queue-grid.minimal-queue-grid {
+    grid-template-columns: minmax(0, 1fr) minmax(260px, 320px);
+  }
+  .research-queue-card .section-header {
+    margin-top: 0;
+  }
+  .evidence-card-grid {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: var(--space-8);
+  }
+  .evidence-overview-card {
+    display: grid;
+    gap: var(--space-8);
+    padding: var(--space-12);
+    text-decoration: none;
+    color: inherit;
+  }
+  .evidence-overview-card:hover {
+    border-color: var(--tone-color, var(--color-neutral-200));
+  }
+  .evidence-overview-card h3 {
+    margin: 0;
+    font-size: var(--type-card-title);
+    line-height: 1.2;
+  }
+  .evidence-overview-card .card-metrics {
+    display: flex;
+    gap: var(--space-8);
+    flex-wrap: wrap;
+    color: var(--color-neutral-400);
+    font-size: var(--type-caption);
+    font-weight: 700;
+  }
+  .activity-list {
+    display: grid;
+    gap: 4px;
+  }
+  .activity-item {
+    min-height: 42px;
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto;
+    gap: var(--space-8);
+    align-items: center;
+    padding: 7px 8px;
+    border: 1px solid var(--color-neutral-100);
+    border-radius: 8px;
+    color: inherit;
+    text-decoration: none;
+  }
+  .activity-item:hover {
+    background: var(--color-neutral-25);
+  }
+  .research-queue-item {
+    grid-template-columns: 48px minmax(0, 1fr) auto;
+  }
+  .research-queue-item.is-pinned {
+    border-color: var(--color-focus);
+    background: #f3f7ff;
+  }
+  .activity-thumbnail {
+    width: 44px;
+    height: 44px;
+    border-radius: 8px;
+    object-fit: cover;
+    border: 1px solid var(--color-neutral-100);
+    background: var(--color-neutral-50);
+  }
+  .activity-copy {
+    min-width: 0;
+  }
+  .activity-item strong, .activity-item span {
+    display: block;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+  .home-preview-panel {
+    padding: var(--space-12);
+    position: sticky;
+    top: 68px;
+    align-self: start;
+  }
+  .home-preview-panel.is-pinned {
+    border-color: var(--color-focus);
+  }
+  .home-preview-image {
+    width: 100%;
+    aspect-ratio: 4 / 3;
+    border: 1px solid var(--color-neutral-100);
+    border-radius: 10px;
+    object-fit: cover;
+    background: var(--color-neutral-50);
+    transition: opacity 120ms ease;
+  }
+  .compact-health-panel summary {
+    cursor: pointer;
+    color: var(--color-neutral-800);
+    font-weight: 800;
+  }
+  .compact-health-panel .data-quality-list {
+    margin-top: var(--space-8);
+  }
+  .data-quality-list {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: var(--space-8);
+  }
+  .quality-item {
+    border: 1px solid var(--color-neutral-100);
+    border-radius: var(--radius-control);
+    padding: var(--space-8);
+    background: var(--color-neutral-25);
+  }
+  .quality-item span {
+    display: block;
+    color: var(--color-neutral-400);
+    font-size: var(--type-caption);
+  }
+  .quality-item strong {
+    display: block;
+    margin-top: 2px;
+  }
+  .explorer-layout {
+    display: grid;
+    grid-template-columns: minmax(0, 1.25fr) minmax(320px, .75fr);
+    gap: var(--space-12);
+    align-items: start;
+  }
+  .detail-panel {
+    position: sticky;
+    top: 68px;
+  }
+  .secondary-toolbar {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: var(--space-8);
+    margin-bottom: var(--space-8);
+  }
+  .seller-table {
+    min-width: 720px;
+  }
+  [data-market-table] {
+    min-width: 820px;
+  }
+  .market-caption {
+    display: block;
+    margin-top: 2px;
+  }
+  .market-detail {
+    margin-top: var(--space-4);
+  }
+  .market-detail summary {
+    cursor: pointer;
+    color: var(--color-neutral-400);
+    font-size: 11px;
+    font-weight: 800;
+  }
+  [data-market-detail] {
+    min-height: min(680px, calc(100vh - 120px));
+    display: grid;
+    grid-template-rows: auto auto auto auto auto minmax(0, 1fr);
+    row-gap: 14px;
+  }
+  .market-preview-header h2 {
+    margin: 0;
+    font-size: 18px;
+    line-height: 1.2;
+  }
+  .market-preview-header .caption {
+    display: block;
+    margin-top: 4px;
+  }
+  .market-tags-section {
+    display: grid;
+    gap: 5px;
+  }
+  .market-tags-section > span, .market-preview-section h3 {
+    margin: 0;
+    color: var(--color-neutral-400);
+    font-size: 11px;
+    font-weight: 800;
+    letter-spacing: .04em;
+    text-transform: uppercase;
+  }
+  .market-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 5px;
+  }
+  .market-tags strong {
+    min-height: 24px;
+    display: inline-flex;
+    align-items: center;
+    border: 1px solid var(--color-neutral-100);
+    border-radius: var(--radius-pill);
+    padding: 0 8px;
+    background: var(--color-neutral-25);
+    color: var(--color-neutral-600);
+    font-size: 12px;
+    line-height: 1;
+  }
+  .market-preview-section {
+    display: grid;
+    gap: 6px;
+  }
+  .market-product-grid {
+    display: grid;
+    grid-template-columns: repeat(5, minmax(0, 1fr));
+    column-gap: 3px;
+    row-gap: 14px;
+    align-items: start;
+    margin-top: 2px;
+  }
+  .market-product-card {
+    display: block;
+    position: relative;
+    width: 100%;
+    min-width: 0;
+    aspect-ratio: 1 / 1;
+    color: inherit;
+    text-decoration: none;
+  }
+  .market-product-card img {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    border: 0;
+    border-radius: 6px;
+    object-fit: contain;
+    background: var(--color-neutral-50);
+  }
+  .market-product-card:hover img {
+    opacity: .88;
+  }
+  .market-leading-sellers {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+  }
+  .market-leading-sellers span {
+    min-height: 24px;
+    display: inline-flex;
+    align-items: center;
+    border-radius: var(--radius-pill);
+    padding: 0 8px;
+    background: var(--color-neutral-50);
+    color: var(--color-neutral-600);
+    font-size: 12px;
+    font-weight: 700;
+  }
+  .market-preview-stats {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 10px;
+  }
+  .market-preview-stat {
+    min-width: 0;
+    display: grid;
+    gap: 2px;
+  }
+  .market-preview-stat strong {
+    display: block;
+    margin: 0;
+    color: var(--color-neutral-800);
+    font-size: 17px;
+    font-weight: 800;
+    line-height: 1.1;
+  }
+  .market-preview-stat span {
+    display: block;
+    color: var(--color-neutral-400);
+    font-size: 11px;
+    font-weight: 700;
+  }
+  .market-preview-cta {
+    width: 100%;
+    margin-top: auto;
+    align-self: end;
+  }
+  @keyframes skeleton-shimmer {
+    0% { background-position: 120% 0; }
+    100% { background-position: -120% 0; }
+  }
+  .bar-list {
+    display: grid;
+    gap: var(--space-8);
+  }
+  .bar-row {
+    display: grid;
+    grid-template-columns: 130px minmax(0, 1fr) 44px;
+    gap: var(--space-8);
+    align-items: center;
+  }
+  .bar-track {
+    height: 10px;
+    border-radius: var(--radius-pill);
+    background: var(--color-neutral-100);
+    overflow: hidden;
+  }
+  .bar-fill {
+    width: var(--bar-value);
+    height: 100%;
+    border-radius: inherit;
+    background: var(--tone-color, var(--color-stable));
+  }
+  .segment-tabs {
+    display: flex;
+    gap: var(--space-8);
+    flex-wrap: wrap;
+    margin-bottom: var(--space-12);
+  }
+  .two-column {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: var(--space-12);
+  }
+  .tone-winner { --tone-color: var(--color-winner); --tone-soft: var(--color-winner-soft); }
+  .tone-rising { --tone-color: var(--color-rising); --tone-soft: var(--color-rising-soft); }
+  .tone-stable { --tone-color: var(--color-stable); --tone-soft: var(--color-stable-soft); }
+  .tone-alert { --tone-color: var(--color-alert); --tone-soft: var(--color-alert-soft); }
+  .tone-idea { --tone-color: var(--color-idea); --tone-soft: var(--color-idea-soft); }
+  .tone-neutral { --tone-color: var(--color-neutral-400); --tone-soft: var(--color-neutral-50); }
+  @media (max-width: 1100px) {
+    .top-shell {
+      position: static;
+      grid-template-columns: 1fr;
+      align-items: stretch;
+    }
+    .primary-nav { justify-content: flex-start; overflow-x: auto; }
+    .dataset-strip { justify-content: flex-start; overflow-x: auto; }
+    .nav-link { justify-content: center; padding: 0 var(--space-8); }
+    .product-workspace { grid-template-columns: 1fr; }
+    .quick-preview { position: static; }
+    .dashboard-grid, .evidence-card-grid, .home-activity-grid, .research-queue-grid, .explorer-layout { grid-template-columns: 1fr 1fr; }
+    .research-queue-grid.minimal-queue-grid { grid-template-columns: 1fr; }
+    .home-preview-panel { position: static; }
+  }
+  @media (max-width: 760px) {
+    .main { padding: var(--space-16); }
+    .kpi-grid, .content-grid, .two-column, .dashboard-grid, .evidence-card-grid, .home-activity-grid, .research-queue-grid, .explorer-layout, .data-quality-list { grid-template-columns: 1fr; }
+    .page-header, .toolbar { display: grid; }
+    .primary-nav { justify-content: flex-start; }
+    .search-input, #idea-search.search-input, #product-search.search-input { min-width: 0; width: 100%; }
+    .mover-row, .idea-summary-card { grid-template-columns: 1fr; }
+  }
+  </style>
+
+</head>
+<body>
+  <div class="app-shell">
+    <header class="top-shell">
+      <div class="brand">
+        <span class="brand-mark" aria-hidden="true">V2</span>
+        <span>Amazon Market Spy</span>
+      </div>
+      <nav class="primary-nav" aria-label="Dashboard V2 primary">
+      <a class="nav-link" href="index.html" aria-current="page">
+        <svg aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4 12H2M22 12h-2M5 5l1.4 1.4M17.6 17.6L19 19M19 5l-1.4 1.4M6.4 17.6L5 19"/></svg>
+        <span>Home</span>
+      </a>
+      <a class="nav-link" href="product_explorer.html">
+        <svg aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>
+        <span>Product Explorer</span>
+      </a>
+      <a class="nav-link" href="competitor.html">
+        <svg aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 10h16l-1.5-6h-13L4 10Z"/><path d="M6 10v10h12V10"/><path d="M9 20v-6h6v6"/></svg>
+        <span>Competitor Explorer</span>
+      </a>
+      <a class="nav-link" href="market_explorer.html">
+        <svg aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19V5"/><path d="M4 19h16"/><path d="M8 16v-5"/><path d="M12 16V8"/><path d="M16 16v-9"/></svg>
+        <span>Market Explorer</span>
+      </a>
+      </nav>
+      <div class="dataset-strip" aria-label="Dataset status">
+        <span class="dataset-pill">Ready</span>
+        <span class="dataset-generated">Generated 2026-07-27 12:54:42</span>
+        <a class="utility-link" href="#dataset-information">Dataset Information</a>
+        <a class="utility-link" href="../evidence_human_review_analysis.html">Human Review: 0 / 587 completed</a>
+      </div>
+    </header>
+    <main class="main">
+      <div class="page">
+
+    <header class="page-header">
+      <div>
+        <h1>Dashboard Home</h1>
+        <p class="page-subtitle">Daily evidence, coverage, and dataset health for Product Team research</p>
+      </div>
+      <div class="control-group"><button class="btn btn-secondary" type="button">Analytics Frozen</button></div>
+    </header>
+    <div class="section-header">
+      <div>
+        <h2>Research Today</h2>
+        <p class="muted">What should Product Team investigate first?</p>
+      </div>
+      
+    </div>
+    <div class="research-queue-grid minimal-queue-grid" data-home-research-queue>
+      <section class="panel research-queue-card minimal-research-card" data-research-queue-group="research_today">
+    <div class="section-header">
+      <div>
+        <h2>Research Today</h2>
+        <p class="muted">Breakouts, movers, and new pushes</p>
+      </div>
+      <div class="control-group"><a class="utility-link" href="product_explorer.html?preset=research_today">Open Product Explorer</a></div>
+    </div>
+        <div class="activity-list">          <a class="activity-item research-queue-item" href="product_explorer.html?preset=research_today&focus=B0H1CF9KVF" data-home-preview-item data-queue-asin="B0H1CF9KVF" data-preview-title="BEQHAUSE Dirt Trapper Door Mats 20&quot; x 32&quot;, Non-Slip Washable, Beige | Doormat Indoor Entrance Low-Profile, Dirt Resistant and" data-preview-seller="Outdoor DoormatsNew Releases" data-preview-type="Unknown" data-preview-reason="New Release breakout with 19 reviews" data-preview-metric="19 reviews" data-preview-image="https://images-na.ssl-images-amazon.com/images/I/91ENqmWM7mL._AC_UL600_SR600,400_.jpg" data-preview-href="product_explorer.html?preset=research_today&amp;focus=B0H1CF9KVF">
+            <img class="activity-thumbnail" src="https://images-na.ssl-images-amazon.com/images/I/91ENqmWM7mL._AC_UL600_SR600,400_.jpg" alt="BEQHAUSE Dirt Trapper Door Mats 20&quot; x 32&quot;, Non-Slip Washable, Beige | Doormat Indoor Entrance Low-Profile, Dirt Resistant and thumbnail">
+            <span class="activity-copy"><strong>BEQHAUSE Dirt Trapper Door Mats 20&quot; x 32&quot;, Non-Slip Washable, Beige | Doormat Indoor Entrance Low-Profile, Dirt Resistant and</strong><span class="caption">Outdoor DoormatsNew Releases - New Release breakout with 19 reviews</span></span>
+            <span class="status-badge tone-winner">19 reviews</span>
+          </a>
+          <a class="activity-item research-queue-item" href="product_explorer.html?preset=research_today&focus=B0H34KVGDT" data-home-preview-item data-queue-asin="B0H34KVGDT" data-preview-title="Obama are You Coming Home Soon The Babysitter is Weird T-Shirt" data-preview-seller="Men&#x27;s Novelty T-Shirts New Releases" data-preview-type="Unknown" data-preview-reason="New Release breakout" data-preview-metric="Best Seller #76" data-preview-image="https://images-na.ssl-images-amazon.com/images/I/61ogaMYW7AL._AC_UL600_SR600,400_.jpg" data-preview-href="product_explorer.html?preset=research_today&amp;focus=B0H34KVGDT">
+            <img class="activity-thumbnail" src="https://images-na.ssl-images-amazon.com/images/I/61ogaMYW7AL._AC_UL600_SR600,400_.jpg" alt="Obama are You Coming Home Soon The Babysitter is Weird T-Shirt thumbnail">
+            <span class="activity-copy"><strong>Obama are You Coming Home Soon The Babysitter is Weird T-Shirt</strong><span class="caption">Men&#x27;s Novelty T-Shirts New Releases - New Release breakout</span></span>
+            <span class="status-badge tone-winner">Best Seller #76</span>
+          </a>
+          <a class="activity-item research-queue-item" href="product_explorer.html?preset=research_today&focus=B0H1GKCVKF" data-home-preview-item data-queue-asin="B0H1GKCVKF" data-preview-title="HANZSPROUT Ghana Jersey Men Women, Ghana Soccer Jersey, Ghanaian Pride Flag Shirt Fan Apparel Supporter Tournament Gift" data-preview-seller="Women&#x27;s Soccer Jerseys New Releases" data-preview-type="Custom Shirt" data-preview-reason="New Release breakout with 2 reviews" data-preview-metric="Best Seller #67" data-preview-image="https://images-na.ssl-images-amazon.com/images/I/612yWZl2v2L._AC_UL600_SR600,400_.jpg" data-preview-href="product_explorer.html?preset=research_today&amp;focus=B0H1GKCVKF">
+            <img class="activity-thumbnail" src="https://images-na.ssl-images-amazon.com/images/I/612yWZl2v2L._AC_UL600_SR600,400_.jpg" alt="HANZSPROUT Ghana Jersey Men Women, Ghana Soccer Jersey, Ghanaian Pride Flag Shirt Fan Apparel Supporter Tournament Gift thumbnail">
+            <span class="activity-copy"><strong>HANZSPROUT Ghana Jersey Men Women, Ghana Soccer Jersey, Ghanaian Pride Flag Shirt Fan Apparel Supporter Tournament Gift</strong><span class="caption">Women&#x27;s Soccer Jerseys New Releases - New Release breakout with 2 reviews</span></span>
+            <span class="status-badge tone-winner">Best Seller #67</span>
+          </a>
+          <a class="activity-item research-queue-item" href="product_explorer.html?preset=research_today&focus=B0H2TY6Q2Q" data-home-preview-item data-queue-asin="B0H2TY6Q2Q" data-preview-title="No Soliciting Sign for Front Door, 10x5 Inch Aluminum Hanging Sign | UV Printed Aluminum No Solicitors Sign with Chain, Weath" data-preview-seller="Decorative Signs &amp; Plaques New Releases" data-preview-type="Unknown" data-preview-reason="New Release breakout with 162 reviews" data-preview-metric="162 reviews" data-preview-image="https://images-na.ssl-images-amazon.com/images/I/61DbIG0YlDL._AC_UL600_SR600,400_.jpg" data-preview-href="product_explorer.html?preset=research_today&amp;focus=B0H2TY6Q2Q">
+            <img class="activity-thumbnail" src="https://images-na.ssl-images-amazon.com/images/I/61DbIG0YlDL._AC_UL600_SR600,400_.jpg" alt="No Soliciting Sign for Front Door, 10x5 Inch Aluminum Hanging Sign | UV Printed Aluminum No Solicitors Sign with Chain, Weath thumbnail">
+            <span class="activity-copy"><strong>No Soliciting Sign for Front Door, 10x5 Inch Aluminum Hanging Sign | UV Printed Aluminum No Solicitors Sign with Chain, Weath</strong><span class="caption">Decorative Signs &amp; Plaques New Releases - New Release breakout with 162 reviews</span></span>
+            <span class="status-badge tone-winner">162 reviews</span>
+          </a>
+          <a class="activity-item research-queue-item" href="product_explorer.html?preset=research_today&focus=B0H5BZ3WX9" data-home-preview-item data-queue-asin="B0H5BZ3WX9" data-preview-title="US 250th Anniversary Patriotic Baseball Jersey, Eagle American Flag Print Button Down Shirt, Unisex for 4th of July" data-preview-seller="Men&#x27;s Baseball Jerseys New Releases" data-preview-type="Custom Shirt" data-preview-reason="New Release breakout" data-preview-metric="Stable - 3 days" data-preview-image="https://images-na.ssl-images-amazon.com/images/I/71XTgC4GQ2L._AC_UL600_SR600,400_.jpg" data-preview-href="product_explorer.html?preset=research_today&amp;focus=B0H5BZ3WX9">
+            <img class="activity-thumbnail" src="https://images-na.ssl-images-amazon.com/images/I/71XTgC4GQ2L._AC_UL600_SR600,400_.jpg" alt="US 250th Anniversary Patriotic Baseball Jersey, Eagle American Flag Print Button Down Shirt, Unisex for 4th of July thumbnail">
+            <span class="activity-copy"><strong>US 250th Anniversary Patriotic Baseball Jersey, Eagle American Flag Print Button Down Shirt, Unisex for 4th of July</strong><span class="caption">Men&#x27;s Baseball Jerseys New Releases - New Release breakout</span></span>
+            <span class="status-badge tone-winner">Stable - 3 days</span>
+          </a>
+          <a class="activity-item research-queue-item" href="product_explorer.html?preset=research_today&focus=B0H2LHV5XD" data-home-preview-item data-queue-asin="B0H2LHV5XD" data-preview-title="Custom Nigeria Soccer Jersey Personalized Nigerian Shirt Naija Football Flag Pride Fan Gift Match Day Outfit Men Women" data-preview-seller="Men&#x27;s Soccer Jerseys New Releases" data-preview-type="Custom Shirt" data-preview-reason="New Release breakout with 1 reviews" data-preview-metric="Best Seller #43" data-preview-image="https://images-na.ssl-images-amazon.com/images/I/61SCEeuiXPL._AC_UL600_SR600,400_.jpg" data-preview-href="product_explorer.html?preset=research_today&amp;focus=B0H2LHV5XD">
+            <img class="activity-thumbnail" src="https://images-na.ssl-images-amazon.com/images/I/61SCEeuiXPL._AC_UL600_SR600,400_.jpg" alt="Custom Nigeria Soccer Jersey Personalized Nigerian Shirt Naija Football Flag Pride Fan Gift Match Day Outfit Men Women thumbnail">
+            <span class="activity-copy"><strong>Custom Nigeria Soccer Jersey Personalized Nigerian Shirt Naija Football Flag Pride Fan Gift Match Day Outfit Men Women</strong><span class="caption">Men&#x27;s Soccer Jerseys New Releases - New Release breakout with 1 reviews</span></span>
+            <span class="status-badge tone-winner">Best Seller #43</span>
+          </a>
+          <a class="activity-item research-queue-item" href="product_explorer.html?preset=research_today&focus=B0H6S8254M" data-home-preview-item data-queue-asin="B0H6S8254M" data-preview-title="NAZENTI Personalized First Day and Last Day of School Sign, Custom Back to School Sign for Boy and Girl, First Days of Kinder" data-preview-seller="Giant Big Hands" data-preview-type="Engraved Gift" data-preview-reason="New Release breakout" data-preview-metric="Seller #2" data-preview-image="https://images-na.ssl-images-amazon.com/images/I/71ypGjptNVL._AC_UL600_SR600,400_.jpg" data-preview-href="product_explorer.html?preset=research_today&amp;focus=B0H6S8254M">
+            <img class="activity-thumbnail" src="https://images-na.ssl-images-amazon.com/images/I/71ypGjptNVL._AC_UL600_SR600,400_.jpg" alt="NAZENTI Personalized First Day and Last Day of School Sign, Custom Back to School Sign for Boy and Girl, First Days of Kinder thumbnail">
+            <span class="activity-copy"><strong>NAZENTI Personalized First Day and Last Day of School Sign, Custom Back to School Sign for Boy and Girl, First Days of Kinder</strong><span class="caption">Giant Big Hands - New Release breakout</span></span>
+            <span class="status-badge tone-winner">Seller #2</span>
+          </a>
+          <a class="activity-item research-queue-item" href="product_explorer.html?preset=research_today&focus=B0DQP5D9JF" data-home-preview-item data-queue-asin="B0DQP5D9JF" data-preview-title="Danica Studio Teppi 14 oz Imprint Mug" data-preview-seller="Mugs Best Sellers" data-preview-type="Quote Mug" data-preview-reason="Category breakout" data-preview-metric="Best Seller #23" data-preview-image="https://images-na.ssl-images-amazon.com/images/I/617Kiv+JkVL._AC_UL600_SR600,400_.jpg" data-preview-href="product_explorer.html?preset=research_today&amp;focus=B0DQP5D9JF">
+            <img class="activity-thumbnail" src="https://images-na.ssl-images-amazon.com/images/I/617Kiv+JkVL._AC_UL600_SR600,400_.jpg" alt="Danica Studio Teppi 14 oz Imprint Mug thumbnail">
+            <span class="activity-copy"><strong>Danica Studio Teppi 14 oz Imprint Mug</strong><span class="caption">Mugs Best Sellers - Category breakout</span></span>
+            <span class="status-badge tone-rising">Best Seller #23</span>
+          </a></div>
+      </section>
+      <aside class="panel home-preview-panel" aria-label="Research Today product preview" data-home-preview-panel>
+        <img class="home-preview-image" data-home-preview-image src="https://images-na.ssl-images-amazon.com/images/I/91ENqmWM7mL._AC_UL600_SR600,400_.jpg" alt="BEQHAUSE Dirt Trapper Door Mats 20&quot; x 32&quot;, Non-Slip Washable, Beige | Doormat Indoor Entrance Low-Profile, Dirt Resistant and product preview">
+        <div class="inspector-heading">
+          <h2>Product Preview</h2>
+          <span class="caption" data-home-preview-state>Hover preview</span>
+        </div>
+        <h3 class="preview-title" data-home-preview-title>BEQHAUSE Dirt Trapper Door Mats 20&quot; x 32&quot;, Non-Slip Washable, Beige | Doormat Indoor Entrance Low-Profile, Dirt Resistant and</h3>
+        <div class="preview-meta">
+          <div class="preview-meta-row"><span>Seller</span><strong data-home-preview-seller>Outdoor DoormatsNew Releases</strong></div>
+          <div class="preview-meta-row"><span>Type</span><strong data-home-preview-type>Unknown</strong></div>
+          <div class="preview-meta-row"><span>Reason</span><strong data-home-preview-reason>New Release breakout with 19 reviews</strong></div>
+          <div class="preview-meta-row"><span>Signal</span><strong data-home-preview-metric>19 reviews</strong></div>
+        </div>
+        <div class="preview-actions">
+          <a class="btn btn-primary" data-home-preview-link href="product_explorer.html?preset=research_today&amp;focus=B0H1CF9KVF">Open Product Explorer</a>
+        </div>
+      </aside>
+    </div>
+    <div class="section-header">
+      <div>
+        <h2>Market Pulse</h2>
+        <p class="muted">Compact movement and validation snapshot</p>
+      </div>
+      
+    </div>
+    <section class="market-pulse-grid" aria-label="Market pulse">
+      <article class="kpi-card tone-rising">
+        <span class="kpi-label">Momentum</span>
+        <strong class="kpi-value">635</strong>
+        <span class="kpi-caption">Seller movers + New Release rising</span>
+      </article>
+      <article class="kpi-card tone-winner">
+        <span class="kpi-label">Validation</span>
+        <strong class="kpi-value">1,375</strong>
+        <span class="kpi-caption">Winners + Strong Sub-BSR</span>
+      </article>
+      <article class="kpi-card tone-idea">
+        <span class="kpi-label">Breakouts</span>
+        <strong class="kpi-value">59</strong>
+        <span class="kpi-caption">Category + New Release breakouts</span>
+      </article>
+      <article class="kpi-card tone-stable">
+        <span class="kpi-label">New Pushes</span>
+        <strong class="kpi-value">197</strong>
+        <span class="kpi-caption">Fresh seller pushes</span>
+      </article>
+    </section>
+    <div class="section-header">
+      <div>
+        <h2>Data Status</h2>
+        <p class="muted">Compact generation and coverage status</p>
+      </div>
+      
+    </div>
+    <section class="data-status-grid" aria-label="Data status">
+      <article class="kpi-card tone-stable">
+        <span class="kpi-label">Products</span>
+        <strong class="kpi-value">5,783</strong>
+        <span class="kpi-caption">Visible in V2</span>
+      </article>
+      <article class="kpi-card tone-idea">
+        <span class="kpi-label">Observations</span>
+        <strong class="kpi-value">8,344</strong>
+        <span class="kpi-caption">Source-aware rows</span>
+      </article>
+      <article class="kpi-card tone-neutral">
+        <span class="kpi-label">Generated</span>
+        <strong class="kpi-value">2026-07-27 12:54:42</strong>
+        <span class="kpi-caption">Latest V2 build</span>
+      </article>
+    </section>
+    <details class="panel data-details-panel" data-home-data-details>
+      <summary>Data Details</summary>
+    <div class="section-header">
+      <div>
+        <h2>Evidence Overview</h2>
+        <p class="muted">Click a card to open Product Explorer with the matching explicit evidence filter</p>
+      </div>
+      
+    </div>
+      <section class="evidence-card-grid" aria-label="Evidence overview">
+      <a class="kpi-card evidence-overview-card tone-winner" href="product_explorer.html?seller_evidence=seller_leader">
+        <h3>Seller Leader</h3>
+        <strong class="kpi-value">251</strong>
+        <div class="card-metrics">
+          <span>4,161 eligible</span>
+          <span>6.0% rate</span>
+        </div>
+      </a>
+      <a class="kpi-card evidence-overview-card tone-rising" href="product_explorer.html?seller_evidence=seller_mover">
+        <h3>Seller Mover</h3>
+        <strong class="kpi-value">477</strong>
+        <div class="card-metrics">
+          <span>4,161 eligible</span>
+          <span>11.5% rate</span>
+        </div>
+      </a>
+      <a class="kpi-card evidence-overview-card tone-idea" href="product_explorer.html?seller_evidence=seller_new_push">
+        <h3>Seller New Push</h3>
+        <strong class="kpi-value">197</strong>
+        <div class="card-metrics">
+          <span>4,161 eligible</span>
+          <span>4.7% rate</span>
+        </div>
+      </a>
+      <a class="kpi-card evidence-overview-card tone-winner" href="product_explorer.html?best_seller_evidence=category_winner">
+        <h3>Category Winner</h3>
+        <strong class="kpi-value">150</strong>
+        <div class="card-metrics">
+          <span>857 eligible</span>
+          <span>17.5% rate</span>
+        </div>
+      </a>
+      <a class="kpi-card evidence-overview-card tone-rising" href="product_explorer.html?best_seller_evidence=category_breakout">
+        <h3>Category Breakout</h3>
+        <strong class="kpi-value">46</strong>
+        <div class="card-metrics">
+          <span>857 eligible</span>
+          <span>5.4% rate</span>
+        </div>
+      </a>
+      <a class="kpi-card evidence-overview-card tone-stable" href="product_explorer.html?best_seller_evidence=category_stable">
+        <h3>Category Stable</h3>
+        <strong class="kpi-value">16</strong>
+        <div class="card-metrics">
+          <span>857 eligible</span>
+          <span>1.9% rate</span>
+        </div>
+      </a>
+      <a class="kpi-card evidence-overview-card tone-rising" href="product_explorer.html?new_release_evidence=new_release_rising">
+        <h3>New Release Rising</h3>
+        <strong class="kpi-value">161</strong>
+        <div class="card-metrics">
+          <span>874 eligible</span>
+          <span>18.4% rate</span>
+        </div>
+      </a>
+      <a class="kpi-card evidence-overview-card tone-winner" href="product_explorer.html?new_release_evidence=new_release_breakout">
+        <h3>New Release Breakout</h3>
+        <strong class="kpi-value">14</strong>
+        <div class="card-metrics">
+          <span>874 eligible</span>
+          <span>1.6% rate</span>
+        </div>
+      </a>
+      <a class="kpi-card evidence-overview-card tone-idea" href="product_explorer.html?new_release_evidence=new_release_watch">
+        <h3>New Release Candidate</h3>
+        <strong class="kpi-value">712</strong>
+        <div class="card-metrics">
+          <span>874 eligible</span>
+          <span>81.5% rate</span>
+        </div>
+      </a>
+      <a class="kpi-card evidence-overview-card tone-stable" href="product_explorer.html?supporting_evidence=strong_sub_bsr">
+        <h3>Strong Sub-BSR</h3>
+        <strong class="kpi-value">1,239</strong>
+        <div class="card-metrics">
+          <span>2,168 eligible</span>
+          <span>57.1% rate</span>
+        </div>
+      </a>
+      <a class="kpi-card evidence-overview-card tone-winner" href="product_explorer.html?supporting_evidence=very_strong_sub_bsr">
+        <h3>Very Strong Sub-BSR</h3>
+        <strong class="kpi-value">661</strong>
+        <div class="card-metrics">
+          <span>2,168 eligible</span>
+          <span>30.5% rate</span>
+        </div>
+      </a>
+      </section>
+    <div class="section-header">
+      <div>
+        <h2>Secondary Activity Lists</h2>
+        <p class="muted">Deduplicated representative products from existing source-aware evidence fields</p>
+      </div>
+      
+    </div>
+      <div class="home-activity-grid">
+      <section class="panel">
+    <div class="section-header">
+      <div>
+        <h2>Biggest Seller Movers</h2>
+        
+      </div>
+      
+    </div>
+        <div class="activity-list">          <a class="activity-item" href="product_explorer.html?seller_evidence=seller_mover&focus=B0DSLWFXDS">
+            <span><strong>Custom Your Own Bootleg Shirts, Personalized Bootleg Rap Tee, Your Custom Text Shirt, Customized Photo Vintage T-Shirts</strong><span class="caption">Giant Big Hands</span></span>
+            <span class="status-badge tone-rising">#9,653</span>
+          </a>
+          <a class="activity-item" href="product_explorer.html?seller_evidence=seller_mover&focus=B0FSXS8QPN">
+            <span><strong>NAZENTI Custom Photo Shirt, Personalized Dad Shirt, Tshirt for Men, Daddy Gift, Gifts Fathers Day Christmas for Grandpa Papa</strong><span class="caption">LOVELYTEE</span></span>
+            <span class="status-badge tone-rising">Fast Movers</span>
+          </a>
+          <a class="activity-item" href="product_explorer.html?seller_evidence=seller_mover&focus=B0D8733R28">
+            <span><strong>Personalized A Queen was Born Birthday Shirt, Custom Name Date Month Birthday Gifts Women T-Shirt Sweatshirt Hoodie</strong><span class="caption">BEAUTIFS</span></span>
+            <span class="status-badge tone-rising">Must Review Today</span>
+          </a>
+          <a class="activity-item" href="product_explorer.html?seller_evidence=seller_mover&focus=B0H7S8XPFQ">
+            <span><strong>Custom Pet Portrait Watercolor Gifts for Pet Owners - Personalized Magnet, Custom Photo Dog Cat Acrylic Fridge Magnet with Name, Refrigerator Decor, Memorial Keepsake, Gift for Animal Lovers</strong><span class="caption">LASFOUR (Warrior)</span></span>
+            <span class="status-badge tone-rising">Must Review Today</span>
+          </a>
+          <a class="activity-item" href="product_explorer.html?seller_evidence=seller_mover&focus=B0GF322FGW">
+            <span><strong>Personalized 3D Photo Crystal Ball, Custom Engraved Picture Lamp with Wood Base, Night Light for Family, Gifts for Husband Wife Valentines Day, Christmas, Personalized Gifts, Photo Led Light</strong><span class="caption">NTBN Trading LLC</span></span>
+            <span class="status-badge tone-rising">#1,597</span>
+          </a>
+          <a class="activity-item" href="product_explorer.html?seller_evidence=seller_mover&focus=B0CXHSWKPT">
+            <span><strong>NAZENTI Custom Name Baby Boy Blanket, Personalized Embroidered Baby Name Nursery Blanket, Custom Knit Baby Blanket, Gifts for Baby Boy, Baby Girl, Birthday, Newborn Baby Gifts</strong><span class="caption">july17</span></span>
+            <span class="status-badge tone-rising">Must Review Today</span>
+          </a>
+          <a class="activity-item" href="product_explorer.html?seller_evidence=seller_mover&focus=B0H8T7XMH8">
+            <span><strong>Personalized Custom Name Bride 3D Inflated Effect Ceramic Mug | Future Mr &amp; Mrs Mug with Name, Wedding Engagement Gift for Wife To Be, Newlywed Bride Shower Keepsake Gift</strong><span class="caption">LASFOUR (Warrior)</span></span>
+            <span class="status-badge tone-rising">New Breakouts</span>
+          </a>
+          <a class="activity-item" href="product_explorer.html?seller_evidence=seller_mover&focus=B0DX27LNFJ">
+            <span><strong>Personalized Name Sign For Nursery, Custom wooden bow monogram name sign, Letter sign, Boho name sign, Girls name wood sign, Baby pink room decor, Baby gift, Retro nursery sign s8</strong><span class="caption">FLYTOSKY</span></span>
+            <span class="status-badge tone-rising">New Breakouts</span>
+          </a></div>
+      </section>
+      <section class="panel">
+    <div class="section-header">
+      <div>
+        <h2>Newest Seller Pushes</h2>
+        
+      </div>
+      
+    </div>
+        <div class="activity-list">          <a class="activity-item" href="product_explorer.html?seller_evidence=seller_new_push&focus=B0GN33PSXK">
+            <span><strong>SHAANT Personalized Bowling Shirts for Men, Women, Custom Name Bowling Jerseys for Team, Retro Vintage Shirt for Bowlers</strong><span class="caption">Leme Order</span></span>
+            <span class="status-badge tone-rising">Must Review Today</span>
+          </a>
+          <a class="activity-item" href="product_explorer.html?seller_evidence=seller_new_push&focus=B0H26FV58Y">
+            <span><strong>Personalized Dad And Kid Portrait Wooden Sign, Rustic Decor, Custom Photo on Wood Gifts for Daddy Papa Dad from Kids, Family Print Wall Decorations, Christmas Parents Sign, Fathers day Art Plaque 9</strong><span class="caption">FLYTOSKY</span></span>
+            <span class="status-badge tone-rising">Watchlist</span>
+          </a>
+          <a class="activity-item" href="product_explorer.html?seller_evidence=seller_new_push&focus=B0G6KRCWPH">
+            <span><strong>NAZENTI Personalized Best Dad Ever Shirt, for Dad, Custom Photo Shirt, for Dads Grandpa</strong><span class="caption">Giant Big Hands</span></span>
+            <span class="status-badge tone-rising">#812</span>
+          </a>
+          <a class="activity-item" href="product_explorer.html?seller_evidence=seller_new_push&focus=B0H2H8VN43">
+            <span><strong>NAZENTI Custom Photo Father&#x27;s Day T-Shirt, Personalized Dad Grandpa Shirt, Sweatshirt, Hoodie, Gifts for Christmas Birthday</strong><span class="caption">Dily Pod</span></span>
+            <span class="status-badge tone-rising">Watchlist</span>
+          </a>
+          <a class="activity-item" href="product_explorer.html?seller_evidence=seller_new_push&focus=B0GTZ5V38M">
+            <span><strong>WANDER PRINTS Custom Photo Best Mom Nana Personalized Pajama Pants | Mother&#x27;s Day • Mom Nana • Family Keepsake • Matching Loungewear • Cozy Home Style</strong><span class="caption">Peties Store (WP)</span></span>
+            <span class="status-badge tone-rising">Must Review Today</span>
+          </a>
+          <a class="activity-item" href="product_explorer.html?seller_evidence=seller_new_push&focus=B0H7RX7465">
+            <span><strong>Personalized Teacher Name Wooden Door Sign, 3D Welcome Classroom Decor, Custom Teacher Appreciation Gift, Back to School Door Hanger, Teachers Gifts 2026 Style 7</strong><span class="caption">bozota</span></span>
+            <span class="status-badge tone-rising">Must Review Today</span>
+          </a>
+          <a class="activity-item" href="product_explorer.html?seller_evidence=seller_new_push&focus=B0FGNMRS6N">
+            <span><strong>Personalized Welcome to Classroom Door Sign, Custom Teacher Wooden Sign with Name, You Are Smart, Brave, Kind, Loved Wooden Door Hanger With Flower, Gifts For Teacher, Back-to-School Gift</strong><span class="caption">bozota</span></span>
+            <span class="status-badge tone-rising">Must Review Today</span>
+          </a>
+          <a class="activity-item" href="product_explorer.html?seller_evidence=seller_new_push&focus=B0H93K23YW">
+            <span><strong>Reserved For Princesses Only - Personalized Custom Car Seat Cover, Passenger Princess Car Seat Protector with Photo and Name, Pink Crown Car Interior Accessory Gift for Women, Girls, Best Friends (2)</strong><span class="caption">LASFOUR (Warrior)</span></span>
+            <span class="status-badge tone-rising">Watchlist</span>
+          </a></div>
+      </section>
+      <section class="panel">
+    <div class="section-header">
+      <div>
+        <h2>Strongest Category Breakouts</h2>
+        
+      </div>
+      
+    </div>
+        <div class="activity-list">          <a class="activity-item" href="product_explorer.html?best_seller_evidence=category_breakout&focus=B08X7HVYNR">
+            <span><strong>Le Creuset Stoneware Vancouver Mug, 14 oz., Artichaut</strong><span class="caption">Mugs Best Sellers</span></span>
+            <span class="status-badge tone-rising">Must Review Today</span>
+          </a>
+          <a class="activity-item" href="product_explorer.html?best_seller_evidence=category_breakout&focus=B0C2P32131">
+            <span><strong>DyingSwan Small Led Marquee Letters, Light Up Letters, 8.58 Inch Led Letter Lights, Battery Powered Lighted Sign for Table, P</strong><span class="caption">Decorative Signs &amp; Plaques Best Sellers</span></span>
+            <span class="status-badge tone-rising">Must Review Today</span>
+          </a>
+          <a class="activity-item" href="product_explorer.html?best_seller_evidence=category_breakout&focus=B0H9BHBGB8">
+            <span><strong>Jimothy Viral Raccoon Shirt Funny Trash Panda Wildlife T-Shirt</strong><span class="caption">Women&#x27;s Novelty T-Shirts Best Sellers</span></span>
+            <span class="status-badge tone-rising">Must Review Today</span>
+          </a>
+          <a class="activity-item" href="product_explorer.html?best_seller_evidence=category_breakout&focus=B07KVJR8Y3">
+            <span><strong>Marvel Spider-Man Red Spider Vintage Comic Icon T-Shirt</strong><span class="caption">Men&#x27;s Novelty T-Shirts Best Sellers</span></span>
+            <span class="status-badge tone-rising">New Breakouts</span>
+          </a>
+          <a class="activity-item" href="product_explorer.html?best_seller_evidence=category_breakout&focus=B09NJJSHVT">
+            <span><strong>Goodstoworld Unisex 3D Fake Abs T Shirts Shredded Chest Printed Short Sleeve Costume Novelty Tees Shirt</strong><span class="caption">Men&#x27;s Novelty T-Shirts Best Sellers</span></span>
+            <span class="status-badge tone-rising">New Breakouts</span>
+          </a>
+          <a class="activity-item" href="product_explorer.html?best_seller_evidence=category_breakout&focus=B0DQP5D9JF">
+            <span><strong>Danica Studio Teppi 14 oz Imprint Mug</strong><span class="caption">Mugs Best Sellers</span></span>
+            <span class="status-badge tone-rising">New Breakouts</span>
+          </a>
+          <a class="activity-item" href="product_explorer.html?best_seller_evidence=category_breakout&focus=B0F1MZK8F4">
+            <span><strong>PARKLEES Men&#x27;s Cotton Linen Vintage Pattern Printed Old Style Shirt Casual Short Sleeve Button Down Retro Shirts</strong><span class="caption">Men&#x27;s Novelty Button-Down Shirts Best Sellers</span></span>
+            <span class="status-badge tone-rising">New Breakouts</span>
+          </a>
+          <a class="activity-item" href="product_explorer.html?best_seller_evidence=category_breakout&focus=B0F1FTZ1XS">
+            <span><strong>50th Birthday Gifts for Her Women, Cool Cute 1976 50th Birthday Gift for Turning 50 Year Old Woman, 50 and Fabulous Gifts for</strong><span class="caption">Novelty Coffee Mugs Best Sellers</span></span>
+            <span class="status-badge tone-rising">New Breakouts</span>
+          </a></div>
+      </section>
+      <section class="panel">
+    <div class="section-header">
+      <div>
+        <h2>Strongest New Release Breakouts</h2>
+        
+      </div>
+      
+    </div>
+        <div class="activity-list">          <a class="activity-item" href="product_explorer.html?new_release_evidence=new_release_breakout&focus=B0H1581VYV">
+            <span><strong>Custom Baseball Jerseys Personalized Name Number Hiphop Baseball Shirt Team Uniform for Men Women Youth</strong><span class="caption">Men&#x27;s Baseball Jerseys New Releases</span></span>
+            <span class="status-badge tone-rising">Must Review Today</span>
+          </a>
+          <a class="activity-item" href="product_explorer.html?new_release_evidence=new_release_breakout&focus=B0H6MMHLMK">
+            <span><strong>Personalized Floral Engagement Trinket Tray - Jewelry Dish Custom Couple Name and Portrait Photo, Personalized Wedding Gift for Couple, Gift for Bride, Bridal Shower Gifts 02</strong><span class="caption">MABUSHOP</span></span>
+            <span class="status-badge tone-rising">Must Review Today</span>
+          </a>
+          <a class="activity-item" href="product_explorer.html?new_release_evidence=new_release_breakout&focus=B0H6S8254M">
+            <span><strong>NAZENTI Personalized First Day and Last Day of School Sign, Custom Back to School Sign for Boy and Girl, First Days of Kinder</strong><span class="caption">Giant Big Hands</span></span>
+            <span class="status-badge tone-rising">Must Review Today</span>
+          </a>
+          <a class="activity-item" href="product_explorer.html?new_release_evidence=new_release_breakout&focus=B0H2LHV5XD">
+            <span><strong>Custom Nigeria Soccer Jersey Personalized Nigerian Shirt Naija Football Flag Pride Fan Gift Match Day Outfit Men Women</strong><span class="caption">Men&#x27;s Soccer Jerseys New Releases</span></span>
+            <span class="status-badge tone-rising">New Breakouts</span>
+          </a>
+          <a class="activity-item" href="product_explorer.html?new_release_evidence=new_release_breakout&focus=B0H1GKCVKF">
+            <span><strong>HANZSPROUT Ghana Jersey Men Women, Ghana Soccer Jersey, Ghanaian Pride Flag Shirt Fan Apparel Supporter Tournament Gift</strong><span class="caption">Women&#x27;s Soccer Jerseys New Releases</span></span>
+            <span class="status-badge tone-rising">New Breakouts</span>
+          </a>
+          <a class="activity-item" href="product_explorer.html?new_release_evidence=new_release_breakout&focus=B0GYQN6C56">
+            <span><strong>4 Pcs Back to School Table Decoration Wooden Apple Pencil Composition Notebook Tiered Tray Decor First Day of School Table Ce</strong><span class="caption">Decorative Signs &amp; Plaques New Releases</span></span>
+            <span class="status-badge tone-rising">New Breakouts</span>
+          </a>
+          <a class="activity-item" href="product_explorer.html?new_release_evidence=new_release_breakout&focus=B0H2TY6Q2Q">
+            <span><strong>No Soliciting Sign for Front Door, 10x5 Inch Aluminum Hanging Sign | UV Printed Aluminum No Solicitors Sign with Chain, Weath</strong><span class="caption">Decorative Signs &amp; Plaques New Releases</span></span>
+            <span class="status-badge tone-rising">Fast Movers</span>
+          </a></div>
+      </section>
+      <section class="panel">
+    <div class="section-header">
+      <div>
+        <h2>Strongest Valid Sub-BSR</h2>
+        
+      </div>
+      
+    </div>
+        <div class="activity-list">          <a class="activity-item" href="product_explorer.html?supporting_evidence=very_strong_sub_bsr&focus=B07T2S93Z8">
+            <span><strong>Jumway Not A Day Over Fabulous Mug Gifts Set- Birthday Gifts for Women - Funny Birthday Gift Ideas for Her,Friends, Coworkers</strong><span class="caption">Novelty Coffee Mugs Best Sellers</span></span>
+            <span class="status-badge tone-rising">#1</span>
+          </a>
+          <a class="activity-item" href="product_explorer.html?supporting_evidence=very_strong_sub_bsr&focus=B0FCDHYLPF">
+            <span><strong>TWPER Birthday Gift for Her Him Women Men Girlfriend Boyfriend, Positive Crochet Espresso Cup, Cute Small Coffee Lover Gift f</strong><span class="caption">Novelty Coffee Mugs Best Sellers</span></span>
+            <span class="status-badge tone-rising">#2</span>
+          </a>
+          <a class="activity-item" href="product_explorer.html?supporting_evidence=very_strong_sub_bsr&focus=B0H58DW5KC">
+            <span><strong>Custom National Soccer Jersey 2026 for Men Women Kids, Personalized Flag Design Name Number Gift for Fans Jerseys</strong><span class="caption">DATY SHOP</span></span>
+            <span class="status-badge tone-rising">#2</span>
+          </a>
+          <a class="activity-item" href="product_explorer.html?supporting_evidence=very_strong_sub_bsr&focus=B0H4TXKZPD">
+            <span><strong>IZI POD Custom Name 250th Anniversary Baseball Jersey Shirt, 250 Years of Freedom Button Down Jersey for Men Women Family</strong><span class="caption">bozota</span></span>
+            <span class="status-badge tone-rising">#3</span>
+          </a>
+          <a class="activity-item" href="product_explorer.html?supporting_evidence=very_strong_sub_bsr&focus=B0GLNQWQW5">
+            <span><strong>SHAANT Personalized Bowling Jerseys for Men, Custom Team Name Name Bowling Shirt, Gift for Bowling Team</strong><span class="caption">Leme Order</span></span>
+            <span class="status-badge tone-rising">#4</span>
+          </a>
+          <a class="activity-item" href="product_explorer.html?supporting_evidence=very_strong_sub_bsr&focus=B0D3LS95R8">
+            <span><strong>NAZENTI Personalized Dad Shirt, Custom With Photo and Kids Name, Grandpa Shirt, Fathers Day Dad Gift</strong><span class="caption">LOVELYTEE</span></span>
+            <span class="status-badge tone-rising">#5</span>
+          </a>
+          <a class="activity-item" href="product_explorer.html?supporting_evidence=very_strong_sub_bsr&focus=B08TT1CPQD">
+            <span><strong>Cricut Beveled Blank Mug to Decorate, White (6 count) | Ceramic-Coated, Dishwasher &amp; Microwave Safe - Mug Press &amp; Infusible I</strong><span class="caption">Mugs Best Sellers</span></span>
+            <span class="status-badge tone-rising">#5</span>
+          </a>
+          <a class="activity-item" href="product_explorer.html?supporting_evidence=very_strong_sub_bsr&focus=B0H3V3RG8B">
+            <span><strong>Macorner Personalized Couples Photo Building Brick Frame, Custom King &amp; Queen Love Picture Block, Romantic Gift for Anniversary, Boyfriend, Girlfriend, Husband, Wife</strong><span class="caption">MA Commerce (MC)</span></span>
+            <span class="status-badge tone-rising">#6</span>
+          </a></div>
+      </section>
+      </div>
+    <div class="section-header">
+      <div>
+        <h2>Dataset Overview</h2>
+        <p class="muted">Current presentation dataset and source-aware observation coverage</p>
+      </div>
+      
+    </div>
+      <section class="dashboard-grid" aria-label="Dataset overview">
+      <article class="kpi-card tone-stable">
+        <span class="kpi-label">Unique Products</span>
+        <strong class="kpi-value">7,877</strong>
+        <span class="kpi-caption">Across source-aware history</span>
+      </article>
+      <article class="kpi-card tone-idea">
+        <span class="kpi-label">Source-aware Observations</span>
+        <strong class="kpi-value">8,344</strong>
+        <span class="kpi-caption">Source-aware rows</span>
+      </article>
+      <article class="kpi-card tone-stable">
+        <span class="kpi-label">Marketplaces</span>
+        <strong class="kpi-value">1</strong>
+        <span class="kpi-caption">Distinct marketplaces</span>
+      </article>
+      <article class="kpi-card tone-winner">
+        <span class="kpi-label">Seller Sources</span>
+        <strong class="kpi-value">35</strong>
+        <span class="kpi-caption">Tracked seller sources</span>
+      </article>
+      <article class="kpi-card tone-rising">
+        <span class="kpi-label">Best Seller Sources</span>
+        <strong class="kpi-value">21</strong>
+        <span class="kpi-caption">Tracked category sources</span>
+      </article>
+      <article class="kpi-card tone-alert">
+        <span class="kpi-label">New Release Sources</span>
+        <strong class="kpi-value">18</strong>
+        <span class="kpi-caption">Tracked release sources</span>
+      </article>
+      <article class="kpi-card tone-stable">
+        <span class="kpi-label">Valid Sub-BSR</span>
+        <strong class="kpi-value">2,153</strong>
+        <span class="kpi-caption">Products with valid Sub-BSR</span>
+      </article>
+      <article class="kpi-card tone-neutral">
+        <span class="kpi-label">Last Crawl</span>
+        <strong class="kpi-value">2026-07-24</strong>
+        <span class="kpi-caption">Latest observed timestamp</span>
+      </article>
+      </section>
+    <div class="section-header">
+      <div>
+        <h2>Coverage Overview</h2>
+        <p class="muted">No-data products are counted separately from false evidence</p>
+      </div>
+      
+    </div>
+      <section class="dashboard-grid" aria-label="Coverage overview">
+      <article class="kpi-card tone-winner">
+        <span class="kpi-label">Seller Coverage</span>
+        <strong class="kpi-value">4,161</strong>
+        <span class="kpi-caption">Products with seller observations</span>
+      </article>
+      <article class="kpi-card tone-rising">
+        <span class="kpi-label">Best Seller Coverage</span>
+        <strong class="kpi-value">857</strong>
+        <span class="kpi-caption">Products with Best Seller observations</span>
+      </article>
+      <article class="kpi-card tone-alert">
+        <span class="kpi-label">New Release Coverage</span>
+        <strong class="kpi-value">874</strong>
+        <span class="kpi-caption">Products with New Release observations</span>
+      </article>
+      <article class="kpi-card tone-stable">
+        <span class="kpi-label">BSR Coverage</span>
+        <strong class="kpi-value">2,168</strong>
+        <span class="kpi-caption">Products with valid Sub-BSR</span>
+      </article>
+      <article class="kpi-card tone-neutral">
+        <span class="kpi-label">One Source Family</span>
+        <strong class="kpi-value">5,739</strong>
+        <span class="kpi-caption">Exactly one source family</span>
+      </article>
+      <article class="kpi-card tone-idea">
+        <span class="kpi-label">Two Source Families</span>
+        <strong class="kpi-value">44</strong>
+        <span class="kpi-caption">Two source families</span>
+      </article>
+      <article class="kpi-card tone-winner">
+        <span class="kpi-label">Three Source Families</span>
+        <strong class="kpi-value">—</strong>
+        <span class="kpi-caption">Three source families</span>
+      </article>
+      </section>
+    <div class="section-header">
+      <div>
+        <h2>Data Quality</h2>
+        <p class="muted">Informational only; no data is modified</p>
+      </div>
+      
+    </div>
+      <div class="data-quality-list">
+        <div class="quality-item">
+          <span>Unknown product type</span>
+          <strong>2,911</strong>
+        </div>
+        <div class="quality-item">
+          <span>Missing image</span>
+          <strong>148</strong>
+        </div>
+        <div class="quality-item">
+          <span>Missing product URL</span>
+          <strong>—</strong>
+        </div>
+        <div class="quality-item">
+          <span>Missing review data</span>
+          <strong>3,135</strong>
+        </div>
+        <div class="quality-item">
+          <span>Missing price</span>
+          <strong>2,530</strong>
+        </div>
+        <div class="quality-item">
+          <span>Multiple source families</span>
+          <strong>44</strong>
+        </div>
+        <div class="quality-item">
+          <span>Latest generation status</span>
+          <strong>Ready</strong>
+        </div>
+      </div>
+    <section class="panel">
+    <div class="section-header">
+      <div>
+        <h2>Calibration Status</h2>
+        <p class="muted">Secondary review diagnostic</p>
+      </div>
+      
+    </div>
+      <div class="data-quality-list">
+                <div class="quality-item">
+          <span>Human Review</span>
+          <strong>— / 587 completed</strong>
+        </div>
+                <div class="quality-item">
+          <span>Mode</span>
+          <strong>Diagnostic Only</strong>
+        </div>
+                <div class="quality-item">
+          <span>Report</span>
+          <strong><a class="utility-link" href="../evidence_human_review_analysis.html">Open calibration report</a></strong>
+        </div>
+      </div>
+    </section>
+    <div class="section-header">
+      <div>
+        <h2>Dataset Information</h2>
+        <p class="muted">Presentation metadata</p>
+      </div>
+      
+    </div>
+      <div class="data-quality-list">
+                <div class="quality-item">
+          <span>Dataset products</span>
+          <strong>5,783</strong>
+        </div>
+                <div class="quality-item">
+          <span>Source-aware Observations</span>
+          <strong>8,344</strong>
+        </div>
+                <div class="quality-item">
+          <span>Marketplaces</span>
+          <strong>amazon.com</strong>
+        </div>
+                <div class="quality-item">
+          <span>Generated</span>
+          <strong>2026-07-27 12:54:42</strong>
+        </div>
+                <div class="quality-item">
+          <span>Dashboard version</span>
+          <strong>Dashboard V2</strong>
+        </div>
+                <div class="quality-item">
+          <span>Analytics note</span>
+          <strong>Dashboard evidence reflects the current production evidence rules. Decision scoring and threshold recommendations are not active.</strong>
+        </div>
+      </div>
+    </details>
+    <span id="dataset-information"></span>
+
+      </div>
+    </main>
+  </div>
+  <script>
+(() => {
+    const container = document.querySelector("[data-home-research-queue]");
+    const panel = document.querySelector("[data-home-preview-panel]");
+    if (!container || !panel) return;
+    const items = Array.from(container.querySelectorAll("[data-home-preview-item]"));
+    if (!items.length) return;
+    const fields = {
+      image: panel.querySelector("[data-home-preview-image]"),
+      title: panel.querySelector("[data-home-preview-title]"),
+      seller: panel.querySelector("[data-home-preview-seller]"),
+      type: panel.querySelector("[data-home-preview-type]"),
+      reason: panel.querySelector("[data-home-preview-reason]"),
+      metric: panel.querySelector("[data-home-preview-metric]"),
+      state: panel.querySelector("[data-home-preview-state]"),
+      link: panel.querySelector("[data-home-preview-link]"),
+    };
+    let pinnedItem = null;
+
+    items.forEach((item) => {
+      item.addEventListener("pointerenter", () => updatePreview(item, false));
+      item.addEventListener("focus", () => updatePreview(item, false));
+      item.addEventListener("pointerleave", () => {
+        if (pinnedItem) updatePreview(pinnedItem, true);
+      });
+      item.addEventListener("blur", () => {
+        if (pinnedItem) updatePreview(pinnedItem, true);
+      });
+      item.addEventListener("click", (event) => {
+        if (event.metaKey || event.ctrlKey || event.shiftKey || event.altKey || event.button !== 0 || pinnedItem === item) return;
+        event.preventDefault();
+        pinnedItem = item;
+        updatePreview(item, true);
+      });
+    });
+
+    document.addEventListener("click", (event) => {
+      if (!pinnedItem) return;
+      if (event.target.closest("[data-home-preview-item]") || event.target.closest("[data-home-preview-panel]")) return;
+      pinnedItem = null;
+      setPinnedItem(null);
+      fields.state && (fields.state.textContent = "Hover preview");
+    });
+
+    function updatePreview(item, pinned) {
+      if (!item) return;
+      setText(fields.title, item.dataset.previewTitle);
+      setText(fields.seller, item.dataset.previewSeller);
+      setText(fields.type, item.dataset.previewType);
+      setText(fields.reason, item.dataset.previewReason);
+      setText(fields.metric, item.dataset.previewMetric);
+      if (fields.image) {
+        fields.image.src = item.dataset.previewImage || "";
+        fields.image.alt = `${item.dataset.previewTitle || "Product"} product preview`;
+      }
+      if (fields.link) fields.link.href = item.dataset.previewHref || "product_explorer.html";
+      setPinnedItem(pinned ? item : null);
+      fields.state && (fields.state.textContent = pinned ? "Pinned" : "Hover preview");
+    }
+
+    function setPinnedItem(item) {
+      items.forEach((candidate) => candidate.classList.toggle("is-pinned", candidate === item));
+      panel.classList.toggle("is-pinned", Boolean(item));
+    }
+
+    function setText(element, value) {
+      if (element) element.textContent = String(value || "");
+    }
+  })();
+  </script>
+
+</body>
+</html>

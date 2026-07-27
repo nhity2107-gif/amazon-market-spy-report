@@ -220,7 +220,7 @@ class EvidenceReviewAnalysisTests(unittest.TestCase):
             v2_result = generate_dashboard_v2(output_dir / "v2")
 
             self.assertTrue(Path(paths["priority_board"]).exists())
-            self.assertEqual(len(v2_result["pages"]), 5)
+            self.assertEqual(len(v2_result["pages"]), 4)
 
 
 def _review_fixture() -> list[dict[str, str]]:

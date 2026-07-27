@@ -8,7 +8,6 @@ from .theme import theme_styles
 
 V2_NAV_ITEMS = [
     {"key": "morning_brief", "label": "Home", "href": "index.html", "icon": "sun"},
-    {"key": "idea_explorer", "label": "Idea Explorer", "href": "idea_explorer.html", "icon": "idea"},
     {"key": "product_explorer", "label": "Product Explorer", "href": "product_explorer.html", "icon": "grid"},
     {"key": "competitor", "label": "Competitor Explorer", "href": "competitor.html", "icon": "store"},
     {"key": "market_explorer", "label": "Market Explorer", "href": "market_explorer.html", "icon": "chart"},

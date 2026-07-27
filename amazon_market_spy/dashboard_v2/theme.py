@@ -527,7 +527,25 @@ def theme_styles() -> str:
     object-fit: cover;
     border: 1px solid var(--color-neutral-100);
   }}
+  .product-title-thumbnail {{
+    width: 42px;
+    height: 42px;
+    border-radius: 8px;
+    object-fit: cover;
+    border: 1px solid var(--color-neutral-100);
+    background: var(--color-neutral-50);
+  }}
   .product-title-cell {{
+    display: grid;
+    gap: 2px;
+    min-width: 0;
+  }}
+  .product-title-cell.has-thumbnail {{
+    grid-template-columns: 42px minmax(0, 1fr);
+    align-items: center;
+    gap: var(--space-8);
+  }}
+  .product-title-copy {{
     display: grid;
     gap: 2px;
     min-width: 0;
@@ -1155,6 +1173,137 @@ def theme_styles() -> str:
   .source-detail-row span {{
     overflow-wrap: anywhere;
   }}
+  .seller-thumbnail-strip {{
+    display: grid;
+    grid-template-columns: repeat(5, minmax(0, 1fr));
+    column-gap: 2px;
+    row-gap: 18px;
+    align-items: start;
+    justify-content: start;
+    margin: 2px 0 20px;
+  }}
+  [data-seller-detail] {{
+    min-height: min(720px, calc(100vh - 120px));
+    display: grid;
+    grid-template-rows: auto auto auto auto minmax(0, 1fr);
+    row-gap: 14px;
+  }}
+  .seller-preview-header h2 {{
+    margin: 0;
+    font-size: 18px;
+    line-height: 1.2;
+  }}
+  .seller-focus-section {{
+    display: grid;
+    gap: 5px;
+    margin-bottom: 0;
+  }}
+  .seller-focus-section > span, .seller-preview-section h3 {{
+    margin: 0;
+    color: var(--color-neutral-400);
+    font-size: 11px;
+    font-weight: 800;
+    letter-spacing: .04em;
+    text-transform: uppercase;
+  }}
+  .seller-focus-tags {{
+    display: flex;
+    flex-wrap: wrap;
+    gap: 5px;
+  }}
+  .seller-focus-tags strong {{
+    min-height: 24px;
+    display: inline-flex;
+    align-items: center;
+    border: 1px solid var(--color-neutral-100);
+    border-radius: var(--radius-pill);
+    padding: 0 8px;
+    background: var(--color-neutral-25);
+    color: var(--color-neutral-600);
+    font-size: 12px;
+    line-height: 1;
+  }}
+  .seller-preview-section {{
+    display: grid;
+    gap: 4px;
+  }}
+  .seller-thumbnail-card {{
+    display: block;
+    position: relative;
+    width: 100%;
+    min-width: 0;
+    aspect-ratio: 1 / 1;
+    align-self: start;
+    color: inherit;
+    text-decoration: none;
+  }}
+  .seller-thumbnail-card img {{
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    border-radius: 6px;
+    object-fit: contain;
+    border: 0;
+    background: var(--color-neutral-50);
+  }}
+  .seller-thumbnail-card:hover img {{
+    opacity: .88;
+  }}
+  .seller-thumbnail-placeholder {{
+    display: block;
+    width: 100%;
+    aspect-ratio: 1 / 1;
+    align-self: start;
+    border-radius: 6px;
+    background: var(--color-neutral-50);
+  }}
+  .seller-preview-stats {{
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 10px;
+    margin: 6px 0 0;
+  }}
+  .seller-preview-stat {{
+    min-width: 0;
+    display: grid;
+    gap: 2px;
+    padding: 0;
+  }}
+  .seller-preview-stat strong {{
+    display: block;
+    margin: 0;
+    color: var(--color-neutral-800);
+    font-size: 17px;
+    font-weight: 800;
+    line-height: 1.1;
+  }}
+  .seller-preview-stat span {{
+    display: block;
+    color: var(--color-neutral-400);
+    font-size: 11px;
+    font-weight: 700;
+  }}
+  .seller-preview-cta {{
+    width: 100%;
+    margin-top: auto;
+    align-self: end;
+  }}
+  .seller-open-link {{
+    display: inline-flex;
+    width: 28px;
+    min-height: 28px;
+    align-items: center;
+    justify-content: center;
+    border-radius: 7px;
+    font-size: 16px;
+    line-height: 1;
+    text-decoration: none;
+  }}
+  .seller-open-link:hover {{
+    background: var(--color-neutral-50);
+    text-decoration: none;
+  }}
   .inspector-no-data {{
     min-height: 34px;
     display: grid;
@@ -1290,6 +1439,9 @@ def theme_styles() -> str:
     grid-template-columns: repeat(4, minmax(0, 1fr));
     gap: var(--space-8);
   }}
+  .research-queue-grid.minimal-queue-grid {{
+    grid-template-columns: minmax(0, 1fr) minmax(260px, 320px);
+  }}
   .research-queue-card .section-header {{
     margin-top: 0;
   }}
@@ -1340,11 +1492,47 @@ def theme_styles() -> str:
   .activity-item:hover {{
     background: var(--color-neutral-25);
   }}
+  .research-queue-item {{
+    grid-template-columns: 48px minmax(0, 1fr) auto;
+  }}
+  .research-queue-item.is-pinned {{
+    border-color: var(--color-focus);
+    background: #f3f7ff;
+  }}
+  .activity-thumbnail {{
+    width: 44px;
+    height: 44px;
+    border-radius: 8px;
+    object-fit: cover;
+    border: 1px solid var(--color-neutral-100);
+    background: var(--color-neutral-50);
+  }}
+  .activity-copy {{
+    min-width: 0;
+  }}
   .activity-item strong, .activity-item span {{
     display: block;
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
+  }}
+  .home-preview-panel {{
+    padding: var(--space-12);
+    position: sticky;
+    top: 68px;
+    align-self: start;
+  }}
+  .home-preview-panel.is-pinned {{
+    border-color: var(--color-focus);
+  }}
+  .home-preview-image {{
+    width: 100%;
+    aspect-ratio: 4 / 3;
+    border: 1px solid var(--color-neutral-100);
+    border-radius: 10px;
+    object-fit: cover;
+    background: var(--color-neutral-50);
+    transition: opacity 120ms ease;
   }}
   .compact-health-panel summary {{
     cursor: pointer;
@@ -1384,10 +1572,6 @@ def theme_styles() -> str:
     position: sticky;
     top: 68px;
   }}
-  .idea-detail-panel {{
-    margin-top: var(--space-8);
-    position: static;
-  }}
   .secondary-toolbar {{
     display: flex;
     align-items: center;
@@ -1413,6 +1597,129 @@ def theme_styles() -> str:
     color: var(--color-neutral-400);
     font-size: 11px;
     font-weight: 800;
+  }}
+  [data-market-detail] {{
+    min-height: min(680px, calc(100vh - 120px));
+    display: grid;
+    grid-template-rows: auto auto auto auto auto minmax(0, 1fr);
+    row-gap: 14px;
+  }}
+  .market-preview-header h2 {{
+    margin: 0;
+    font-size: 18px;
+    line-height: 1.2;
+  }}
+  .market-preview-header .caption {{
+    display: block;
+    margin-top: 4px;
+  }}
+  .market-tags-section {{
+    display: grid;
+    gap: 5px;
+  }}
+  .market-tags-section > span, .market-preview-section h3 {{
+    margin: 0;
+    color: var(--color-neutral-400);
+    font-size: 11px;
+    font-weight: 800;
+    letter-spacing: .04em;
+    text-transform: uppercase;
+  }}
+  .market-tags {{
+    display: flex;
+    flex-wrap: wrap;
+    gap: 5px;
+  }}
+  .market-tags strong {{
+    min-height: 24px;
+    display: inline-flex;
+    align-items: center;
+    border: 1px solid var(--color-neutral-100);
+    border-radius: var(--radius-pill);
+    padding: 0 8px;
+    background: var(--color-neutral-25);
+    color: var(--color-neutral-600);
+    font-size: 12px;
+    line-height: 1;
+  }}
+  .market-preview-section {{
+    display: grid;
+    gap: 6px;
+  }}
+  .market-product-grid {{
+    display: grid;
+    grid-template-columns: repeat(5, minmax(0, 1fr));
+    column-gap: 3px;
+    row-gap: 14px;
+    align-items: start;
+    margin-top: 2px;
+  }}
+  .market-product-card {{
+    display: block;
+    position: relative;
+    width: 100%;
+    min-width: 0;
+    aspect-ratio: 1 / 1;
+    color: inherit;
+    text-decoration: none;
+  }}
+  .market-product-card img {{
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    border: 0;
+    border-radius: 6px;
+    object-fit: contain;
+    background: var(--color-neutral-50);
+  }}
+  .market-product-card:hover img {{
+    opacity: .88;
+  }}
+  .market-leading-sellers {{
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+  }}
+  .market-leading-sellers span {{
+    min-height: 24px;
+    display: inline-flex;
+    align-items: center;
+    border-radius: var(--radius-pill);
+    padding: 0 8px;
+    background: var(--color-neutral-50);
+    color: var(--color-neutral-600);
+    font-size: 12px;
+    font-weight: 700;
+  }}
+  .market-preview-stats {{
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 10px;
+  }}
+  .market-preview-stat {{
+    min-width: 0;
+    display: grid;
+    gap: 2px;
+  }}
+  .market-preview-stat strong {{
+    display: block;
+    margin: 0;
+    color: var(--color-neutral-800);
+    font-size: 17px;
+    font-weight: 800;
+    line-height: 1.1;
+  }}
+  .market-preview-stat span {{
+    display: block;
+    color: var(--color-neutral-400);
+    font-size: 11px;
+    font-weight: 700;
+  }}
+  .market-preview-cta {{
+    width: 100%;
+    margin-top: auto;
+    align-self: end;
   }}
   @keyframes skeleton-shimmer {{
     0% {{ background-position: 120% 0; }}
@@ -1469,6 +1776,8 @@ def theme_styles() -> str:
     .product-workspace {{ grid-template-columns: 1fr; }}
     .quick-preview {{ position: static; }}
     .dashboard-grid, .evidence-card-grid, .home-activity-grid, .research-queue-grid, .explorer-layout {{ grid-template-columns: 1fr 1fr; }}
+    .research-queue-grid.minimal-queue-grid {{ grid-template-columns: 1fr; }}
+    .home-preview-panel {{ position: static; }}
   }}
   @media (max-width: 760px) {{
     .main {{ padding: var(--space-16); }}

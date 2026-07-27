@@ -6,7 +6,7 @@ import re
 from collections import Counter
 from html import escape
 from pathlib import Path
-from urllib.parse import quote
+from urllib.parse import quote, urlsplit, urlunsplit
 
 from .components import (
     bar_list,
@@ -57,6 +57,10 @@ def render_morning_brief(data: dict[str, object]) -> str:
     activity = _home_activity_sections(products)
     quality = _home_data_quality(products, dataset_info)
     calibration = _home_calibration_status(dataset_info)
+    scripts = f"""  <script>
+{_home_research_preview_script()}
+  </script>
+"""
     body = f"""
 {page_header("Dashboard Home", "Daily evidence, coverage, and dataset health for Product Team research", secondary_button("Analytics Frozen"))}
 {section_header("Research Today", "What should Product Team investigate first?")}
@@ -106,58 +110,7 @@ def render_morning_brief(data: dict[str, object]) -> str:
     </details>
     <span id="dataset-information"></span>
 """
-    return render_app_shell(title="Dashboard Home", active_key="morning_brief", body=body, dataset_info=dataset_info)
-
-
-def render_idea_explorer(data: dict[str, object]) -> str:
-    ideas = data["ideas"]
-    products = data["products"]
-    dimension_payload = _idea_dimension_payload(products, ideas)
-    dimension_json = _safe_json_script(dimension_payload)
-    table_html = f"""    <div class="table-shell idea-table-shell">
-      <table data-idea-dimension-table>
-        <thead>
-          <tr>
-            <th scope="col">Idea</th>
-            <th scope="col">Products</th>
-            <th scope="col">Momentum</th>
-            <th scope="col">Validation</th>
-            <th scope="col">Opportunity</th>
-          </tr>
-        </thead>
-        <tbody data-idea-dimension-tbody></tbody>
-      </table>
-    </div>"""
-    body = f"""
-{page_header("Idea Explorer", "Which ideas are worth investigating?", primary_button("Save View"))}
-    <section class="panel">
-      <div class="toolbar">
-        <div class="control-group">{search_input("Search ideas", "Search within the selected dimension", "idea-search")}</div>
-        <div class="segment-tabs" aria-label="Idea dimension mode">
-          <button class="btn btn-secondary" type="button" data-idea-mode="recipient" aria-pressed="true">Recipient</button>
-          <button class="btn btn-ghost" type="button" data-idea-mode="occasion" aria-pressed="false">Occasion</button>
-          <button class="btn btn-ghost" type="button" data-idea-mode="theme" aria-pressed="false">Theme</button>
-          <button class="btn btn-ghost" type="button" data-idea-mode="product_type" aria-pressed="false">Product Type</button>
-        </div>
-      </div>
-      <p class="guidance-line">Switch dimensions to review one idea type at a time. Rows are sorted by breakouts, movers, then product count.</p>
-    </section>
-{section_header("Idea Table", "One dimension per mode; legacy scores are available only in row detail when matched")}
-{table_html}
-    <aside class="panel detail-panel idea-detail-panel" data-idea-detail>
-{empty_state("Select an idea", "Choose a row to inspect representative product context and any matched legacy score.")}
-    </aside>
-{section_header("Evidence-Led Views", "Ordered by explicit existing fields only")}
-    <div class="home-activity-grid">
-{_idea_evidence_views(products)}
-    </div>
-"""
-    scripts = f"""  <script type="application/json" id="idea-dimension-data">{dimension_json}</script>
-  <script>
-{_idea_explorer_script()}
-  </script>
-"""
-    return render_app_shell(title="Idea Explorer", active_key="idea_explorer", body=body, scripts=scripts, dataset_info=_dataset_info(data))
+    return render_app_shell(title="Dashboard Home", active_key="morning_brief", body=body, scripts=scripts, dataset_info=dataset_info)
 
 
 def render_product_explorer(data: dict[str, object]) -> str:
@@ -434,7 +387,7 @@ def render_competitor(data: dict[str, object]) -> str:
 {table_html}
       </section>
       <aside class="panel detail-panel" data-seller-detail>
-{empty_state("Select a seller", "Choose a seller row to inspect evidence totals, product types, categories, and product links.")}
+{empty_state("Select a seller", "Choose a seller row to preview representative products and open Product Explorer.")}
       </aside>
     </div>
 """
@@ -486,24 +439,29 @@ def render_market_explorer(data: dict[str, object]) -> str:
         </select>
       </div>
     </section>
-    <section class="panel">
-{section_header("Market Groups", "Unknown product type remains visible")}
-      <div class="table-shell">
-        <table data-market-table>
-          <thead>
-          <tr>
-              <th scope="col">Market</th>
-              <th scope="col">Momentum</th>
-              <th scope="col">Validation</th>
-              <th scope="col">Competition</th>
-              <th scope="col">Open</th>
-            </tr>
-          </thead>
-          <tbody data-market-tbody></tbody>
-        </table>
-      </div>
-      <div class="empty-state" data-market-empty hidden><strong>No market groups match the current controls.</strong></div>
-    </section>
+    <div class="explorer-layout market-explorer-layout">
+      <section class="panel">
+{section_header("Market List", "Unknown product type remains visible")}
+        <div class="table-shell">
+          <table data-market-table>
+            <thead>
+            <tr>
+                <th scope="col">Market</th>
+                <th scope="col">Momentum</th>
+                <th scope="col">Validation</th>
+                <th scope="col">Competition</th>
+                <th scope="col">Open</th>
+              </tr>
+            </thead>
+            <tbody data-market-tbody></tbody>
+          </table>
+        </div>
+        <div class="empty-state" data-market-empty hidden><strong>No market groups match the current controls.</strong></div>
+      </section>
+      <aside class="panel detail-panel market-preview-panel" data-market-detail>
+{empty_state("Select a market", "Choose a market row to preview products and open Product Explorer.")}
+      </aside>
+    </div>
 """
     scripts = f"""  <script type="application/json" id="market-explorer-data">{market_json}</script>
   <script>
@@ -567,10 +525,12 @@ def _home_research_today(products: list[dict[str, object]]) -> str:
     preset = "research_today"
     rows = _diverse_products(_sort_products_for_preset(_preset_products(products, preset), preset), limit=8)
     items = "\n".join(_research_queue_item(product, preset) for product in rows) or empty_state("No qualifying products", "No products match Research Today in the current presentation data.")
+    preview_panel = _home_research_preview_panel(rows[0] if rows else None, preset)
     return f"""      <section class="panel research-queue-card minimal-research-card" data-research-queue-group="{escape(preset)}">
 {section_header("Research Today", "Breakouts, movers, and new pushes", f'<a class="utility-link" href="product_explorer.html?preset={quote_param(preset)}">Open Product Explorer</a>')}
         <div class="activity-list">{items}</div>
-      </section>"""
+      </section>
+{preview_panel}"""
 
 
 def _home_market_pulse(products: list[dict[str, object]]) -> str:
@@ -621,15 +581,124 @@ def _research_queue_item(product: dict[str, object], preset: str) -> str:
     asin = str(product.get("asin", "") or product.get("id", "") or "")
     title = str(product.get("title", "Untitled Product") or "Untitled Product")
     seller = str(product.get("seller", "Unknown Seller") or "Unknown Seller")
+    product_type = str(product.get("product_type", "Unknown") or "Unknown")
     href = f"product_explorer.html?preset={quote_param(preset)}&focus={quote_param(asin)}" if asin else f"product_explorer.html?preset={quote_param(preset)}"
     reason = _why_it_matters(product)
     metric = _market_proof(product)
     if metric == _missing():
         metric = _momentum_label(product)
-    return f"""          <a class="activity-item research-queue-item" href="{href}" data-queue-asin="{escape(asin)}">
-            <span><strong>{escape(title)}</strong><span class="caption">{escape(seller)} - {escape(reason)}</span></span>
+    tone = _primary_evidence_tone(product)
+    image = product_image_src(product, tone)
+    return f"""          <a class="activity-item research-queue-item" href="{href}" data-home-preview-item data-queue-asin="{escape(asin)}" data-preview-title="{escape(title)}" data-preview-seller="{escape(seller)}" data-preview-type="{escape(product_type)}" data-preview-reason="{escape(reason)}" data-preview-metric="{escape(metric)}" data-preview-image="{escape(image)}" data-preview-href="{escape(href)}">
+            <img class="activity-thumbnail" src="{escape(image)}" alt="{escape(title)} thumbnail">
+            <span class="activity-copy"><strong>{escape(title)}</strong><span class="caption">{escape(seller)} - {escape(reason)}</span></span>
             {status_badge(metric, _primary_evidence_tone(product))}
           </a>"""
+
+
+def _home_research_preview_panel(product: dict[str, object] | None, preset: str) -> str:
+    if not product:
+        return f"""      <aside class="panel home-preview-panel" aria-label="Research Today product preview" data-home-preview-panel>
+{empty_state("No preview available", "Research Today has no qualifying products.")}
+      </aside>"""
+    asin = str(product.get("asin", "") or product.get("id", "") or "")
+    title = str(product.get("title", "Untitled Product") or "Untitled Product")
+    seller = str(product.get("seller", "Unknown Seller") or "Unknown Seller")
+    product_type = str(product.get("product_type", "Unknown") or "Unknown")
+    href = f"product_explorer.html?preset={quote_param(preset)}&focus={quote_param(asin)}" if asin else f"product_explorer.html?preset={quote_param(preset)}"
+    reason = _why_it_matters(product)
+    metric = _market_proof(product)
+    if metric == _missing():
+        metric = _momentum_label(product)
+    image = product_image_src(product, _primary_evidence_tone(product))
+    return f"""      <aside class="panel home-preview-panel" aria-label="Research Today product preview" data-home-preview-panel>
+        <img class="home-preview-image" data-home-preview-image src="{escape(image)}" alt="{escape(title)} product preview">
+        <div class="inspector-heading">
+          <h2>Product Preview</h2>
+          <span class="caption" data-home-preview-state>Hover preview</span>
+        </div>
+        <h3 class="preview-title" data-home-preview-title>{escape(title)}</h3>
+        <div class="preview-meta">
+          <div class="preview-meta-row"><span>Seller</span><strong data-home-preview-seller>{escape(seller)}</strong></div>
+          <div class="preview-meta-row"><span>Type</span><strong data-home-preview-type>{escape(product_type)}</strong></div>
+          <div class="preview-meta-row"><span>Reason</span><strong data-home-preview-reason>{escape(reason)}</strong></div>
+          <div class="preview-meta-row"><span>Signal</span><strong data-home-preview-metric>{escape(metric)}</strong></div>
+        </div>
+        <div class="preview-actions">
+          <a class="btn btn-primary" data-home-preview-link href="{escape(href)}">Open Product Explorer</a>
+        </div>
+      </aside>"""
+
+
+def _home_research_preview_script() -> str:
+    return r"""(() => {
+    const container = document.querySelector("[data-home-research-queue]");
+    const panel = document.querySelector("[data-home-preview-panel]");
+    if (!container || !panel) return;
+    const items = Array.from(container.querySelectorAll("[data-home-preview-item]"));
+    if (!items.length) return;
+    const fields = {
+      image: panel.querySelector("[data-home-preview-image]"),
+      title: panel.querySelector("[data-home-preview-title]"),
+      seller: panel.querySelector("[data-home-preview-seller]"),
+      type: panel.querySelector("[data-home-preview-type]"),
+      reason: panel.querySelector("[data-home-preview-reason]"),
+      metric: panel.querySelector("[data-home-preview-metric]"),
+      state: panel.querySelector("[data-home-preview-state]"),
+      link: panel.querySelector("[data-home-preview-link]"),
+    };
+    let pinnedItem = null;
+
+    items.forEach((item) => {
+      item.addEventListener("pointerenter", () => updatePreview(item, false));
+      item.addEventListener("focus", () => updatePreview(item, false));
+      item.addEventListener("pointerleave", () => {
+        if (pinnedItem) updatePreview(pinnedItem, true);
+      });
+      item.addEventListener("blur", () => {
+        if (pinnedItem) updatePreview(pinnedItem, true);
+      });
+      item.addEventListener("click", (event) => {
+        if (event.metaKey || event.ctrlKey || event.shiftKey || event.altKey || event.button !== 0 || pinnedItem === item) return;
+        event.preventDefault();
+        pinnedItem = item;
+        updatePreview(item, true);
+      });
+    });
+
+    document.addEventListener("click", (event) => {
+      if (!pinnedItem) return;
+      if (event.target.closest("[data-home-preview-item]") || event.target.closest("[data-home-preview-panel]")) return;
+      pinnedItem = null;
+      setPinnedItem(null);
+      fields.state && (fields.state.textContent = "Hover preview");
+    });
+
+    function updatePreview(item, pinned) {
+      if (!item) return;
+      setText(fields.title, item.dataset.previewTitle);
+      setText(fields.seller, item.dataset.previewSeller);
+      setText(fields.type, item.dataset.previewType);
+      setText(fields.reason, item.dataset.previewReason);
+      setText(fields.metric, item.dataset.previewMetric);
+      if (fields.image) {
+        fields.image.src = item.dataset.previewImage || "";
+        fields.image.alt = `${item.dataset.previewTitle || "Product"} product preview`;
+      }
+      if (fields.link) fields.link.href = item.dataset.previewHref || "product_explorer.html";
+      setPinnedItem(pinned ? item : null);
+      fields.state && (fields.state.textContent = pinned ? "Pinned" : "Hover preview");
+    }
+
+    function setPinnedItem(item) {
+      items.forEach((candidate) => candidate.classList.toggle("is-pinned", candidate === item));
+      panel.classList.toggle("is-pinned", Boolean(item));
+    }
+
+    function setText(element, value) {
+      if (element) element.textContent = String(value || "");
+    }
+  })();"""
 
 
 def _preset_products(products: list[dict[str, object]], preset: str) -> list[dict[str, object]]:
@@ -1123,10 +1192,8 @@ def _seller_summaries(products: list[dict[str, object]]) -> list[dict[str, objec
     summaries = []
     for seller, rows in grouped.items():
         product_types = Counter(str(row.get("product_type", "") or "Unknown") for row in rows)
-        categories = Counter(str(row.get("idea", "") or row.get("category_name", "") or "Unknown") for row in rows)
-        seller_rank_values = [_num_or_none(row.get("seller_evidence_best_rank")) for row in rows]
-        review_values = [_num_or_none(row.get("review_count")) for row in rows if _num_or_none(row.get("review_count")) is not None]
-        price_values = [_float_or_none(row.get("price_value")) for row in rows if _float_or_none(row.get("price_value")) is not None]
+        seller_focus_tags = _seller_focus_tags(rows)
+        seller_focus = seller_focus_tags[0] if seller_focus_tags else ""
         summary = {
             "key": _slug(seller),
             "seller": seller,
@@ -1135,23 +1202,96 @@ def _seller_summaries(products: list[dict[str, object]]) -> list[dict[str, objec
             "seller_movers": sum(1 for row in rows if _product_has_evidence(row, "seller_mover")),
             "seller_new_pushes": sum(1 for row in rows if _product_has_evidence(row, "seller_new_push")),
             "strong_sub_bsr": sum(1 for row in rows if _product_has_evidence(row, "strong_sub_bsr")),
-            "median_seller_rank": _median(seller_rank_values),
-            "median_review_count": _median(review_values),
-            "median_price": _median_float(price_values),
-            "top_product_type": product_types.most_common(1)[0][0] if product_types else "Unknown",
+            "seller_focus": seller_focus,
+            "seller_focus_tags": seller_focus_tags,
             "latest_activity": max([str(row.get("date", "") or "") for row in rows] or [""]) or _missing(),
-            "top_product_types": _counter_rows(product_types),
-            "top_categories": _counter_rows(categories),
-            "biggest_movers": _seller_product_cards([row for row in rows if _product_has_evidence(row, "seller_mover")], "seller_movement", reverse=True),
-            "newest_pushes": _seller_product_cards([row for row in rows if _product_has_evidence(row, "seller_new_push")], "source_days_seen", reverse=False),
-            "leader_products": _seller_product_cards([row for row in rows if _product_has_evidence(row, "seller_leader")], "seller_evidence_best_rank", reverse=False),
-            "strong_bsr_products": _seller_product_cards([row for row in rows if _product_has_evidence(row, "strong_sub_bsr")], "bsr_evidence_best_sub_bsr", reverse=False),
-            "products_list": _seller_product_cards(rows, "title", reverse=False, limit=50),
+            "representative_products": _seller_product_cards(rows, "title", reverse=False, limit=10),
             "product_explorer_url": f"product_explorer.html?seller={quote_param(seller)}",
         }
         summary["activity_count"] = int(summary["seller_movers"]) + int(summary["seller_new_pushes"])
         summaries.append(summary)
     return sorted(summaries, key=lambda row: (-int(row["activity_count"]), -_date_sort_number(row["latest_activity"]), str(row["seller"]).lower()))
+
+
+_LOW_VALUE_FOCUS_VALUES = {
+    "unknown",
+    "uncategorized",
+    "n/a",
+    "none",
+    "-",
+    "seller",
+    "sellers",
+    "product",
+    "products",
+    "gift",
+    "gifts",
+    "amazon",
+    "custom",
+    "personalized",
+}
+_LOW_VALUE_FOCUS_WORDS = {
+    "amazon",
+    "gift",
+    "gifts",
+    "product",
+    "products",
+    "seller",
+    "sellers",
+}
+_FOCUS_QUALIFIER_WORDS = {"custom", "personalized"}
+
+
+def _seller_focus_tags(rows: list[dict[str, object]], limit: int = 3) -> list[str]:
+    counters: list[Counter[str]] = []
+    for fields in (
+        ("theme", "idea", "niche_primary", "niche", "category_name"),
+        ("product_type",),
+        ("style", "occasion", "recipient"),
+    ):
+        counter: Counter[str] = Counter()
+        for row in rows:
+            for field in fields:
+                value = _clean_focus_value(row.get(field))
+                if value:
+                    counter[value] += 1
+        counters.append(counter)
+
+    tags: list[str] = []
+    seen: set[str] = set()
+    for counter in counters:
+        for label, _ in counter.most_common():
+            key = label.casefold()
+            if key in seen:
+                continue
+            tags.append(label)
+            seen.add(key)
+            if len(tags) >= limit:
+                return tags
+    return tags
+
+
+def _clean_focus_value(value: object) -> str:
+    text = re.sub(r"\s+", " ", str(value or "").strip())
+    if not text:
+        return ""
+    normalized = text.casefold()
+    if normalized in {*_LOW_VALUE_FOCUS_VALUES, _missing().casefold()}:
+        return ""
+    tokens = re.findall(r"[a-z0-9]+", normalized)
+    if not tokens or all(token in _LOW_VALUE_FOCUS_VALUES for token in tokens):
+        return ""
+    cleaned_parts = []
+    for part in re.split(r"(\W+)", text):
+        if re.fullmatch(r"[A-Za-z0-9]+", part) and part.casefold() in _LOW_VALUE_FOCUS_WORDS:
+            continue
+        cleaned_parts.append(part)
+    cleaned = re.sub(r"\s+", " ", "".join(cleaned_parts)).strip(" -/|,")
+    cleaned = re.sub(r"^(for|and|the)\s+", "", cleaned, flags=re.IGNORECASE).strip(" -/|,")
+    cleaned = re.sub(r"\s+(for|and|the)$", "", cleaned, flags=re.IGNORECASE).strip(" -/|,")
+    cleaned_tokens = re.findall(r"[a-z0-9]+", cleaned.casefold())
+    if not cleaned_tokens or all(token in _FOCUS_QUALIFIER_WORDS for token in cleaned_tokens):
+        return ""
+    return cleaned
 
 
 def _date_sort_number(value: object) -> int:
@@ -1160,34 +1300,176 @@ def _date_sort_number(value: object) -> int:
 
 
 def _seller_table_row(row: dict[str, object]) -> str:
+    seller = str(row["seller"])
+    product_explorer_url = str(row["product_explorer_url"])
     return f"""          <tr data-seller-row data-seller-key="{escape(str(row['key']))}">
-            <td><button class="link-button" type="button" data-seller-select="{escape(str(row['key']))}"><strong>{escape(str(row['seller']))}</strong></button></td>
+            <td><button class="link-button" type="button" data-seller-select="{escape(str(row['key']))}"><strong>{escape(seller)}</strong></button></td>
             <td class="numeric-cell">{_fmt_int(row['activity_count'])}</td>
             <td class="numeric-cell">{status_badge(_fmt_int(row['seller_new_pushes']), "idea")}</td>
             <td class="numeric-cell">{status_badge(_fmt_int(row['seller_movers']), "rising")}</td>
-            <td><a class="utility-link row-open-link" href="{escape(str(row['product_explorer_url']))}">Open</a></td>
+            <td><a class="utility-link row-open-link seller-open-link" href="{escape(product_explorer_url)}" aria-label="Open {escape(seller)} in Product Explorer" title="Open in Product Explorer">&rarr;</a></td>
           </tr>"""
 
 
-def _seller_product_cards(rows: list[dict[str, object]], sort_field: str, *, reverse: bool, limit: int = 8) -> list[dict[str, str]]:
-    def sort_key(product: dict[str, object]) -> object:
-        if sort_field == "title":
-            return str(product.get("title", "")).lower()
-        value = _num_or_none(product.get(sort_field))
-        return value if value is not None else (10**9 if not reverse else -10**9)
-
+def _seller_product_cards(rows: list[dict[str, object]], sort_field: str, *, reverse: bool, limit: int = 10) -> list[dict[str, str]]:
     cards = []
-    for product in _diverse_products(sorted(rows, key=sort_key, reverse=reverse), limit=limit):
+    for product, image, image_field in _seller_representative_products(rows, limit=limit):
         asin = str(product.get("asin", "") or "")
+        tone = _primary_evidence_tone(product)
         cards.append(
             {
                 "title": str(product.get("title", "Untitled Product") or "Untitled Product"),
                 "asin": asin,
                 "meta": f"{product.get('product_type', 'Unknown')} - {_rank_or_missing(product.get('seller_evidence_best_rank'))}",
                 "url": f"product_explorer.html?seller={quote_param(str(product.get('seller', '') or 'Unknown Seller'))}&focus={quote_param(asin)}" if asin else "product_explorer.html",
+                "image": image,
+                "image_field": image_field,
+                "tone": tone,
             }
         )
     return cards
+
+
+_SELLER_THUMBNAIL_FIELDS = ("thumbnail_url", "image_url", "main_image", "image")
+_SELLER_IMAGE_COLLECTION_FIELDS = ("images", "image_urls", "additional_images")
+_SELLER_IDENTITY_FIELDS = ("asin", "product_id", "productId", "id", "listing_id", "listingId")
+_SELLER_URL_IDENTITY_FIELDS = ("canonical_url", "product_url", "listing_url", "url")
+
+
+def _seller_representative_products(rows: list[dict[str, object]], *, limit: int = 10) -> list[tuple[dict[str, object], str, str]]:
+    indexed = list(enumerate(rows))
+    selected: list[tuple[dict[str, object], str, str]] = []
+    seen: set[tuple[str, str]] = set()
+    for index, product in sorted(indexed, key=lambda item: _seller_product_rank_key(item[1], item[0])):
+        image, image_field = _seller_thumbnail_src(product)
+        if not image:
+            continue
+        identity = _seller_product_identity(product, index)
+        if identity in seen:
+            continue
+        seen.add(identity)
+        selected.append((product, image, image_field))
+        if len(selected) >= limit:
+            break
+    return selected
+
+
+def _seller_thumbnail_src(product: dict[str, object]) -> tuple[str, str]:
+    for field in _SELLER_THUMBNAIL_FIELDS:
+        image = _clean_image_src(product.get(field))
+        if image:
+            return image, field
+
+    for field in _SELLER_IMAGE_COLLECTION_FIELDS:
+        image, image_field = _first_image_from_collection(product.get(field), field)
+        if image:
+            return image, image_field
+    return "", ""
+
+
+def _first_image_from_collection(value: object, field: str) -> tuple[str, str]:
+    if isinstance(value, str):
+        text = value.strip()
+        if not text:
+            return "", ""
+        if text.startswith("[") or text.startswith("{"):
+            try:
+                return _first_image_from_collection(json.loads(text), field)
+            except json.JSONDecodeError:
+                pass
+        for item in re.split(r"[;,]\s*", text):
+            image = _clean_image_src(item)
+            if image:
+                return image, field
+        return "", ""
+
+    if isinstance(value, dict):
+        for nested_field in ("thumbnail_url", "image_url", "main_image", "image", "url", "src"):
+            image = _clean_image_src(value.get(nested_field))
+            if image:
+                return image, f"{field}.{nested_field}"
+        return "", ""
+
+    if isinstance(value, (list, tuple, set)):
+        for item in value:
+            if isinstance(item, dict):
+                image, image_field = _first_image_from_collection(item, field)
+            else:
+                image = _clean_image_src(item)
+                image_field = field
+            if image:
+                return image, image_field
+    return "", ""
+
+
+def _clean_image_src(value: object) -> str:
+    text = str(value or "").strip()
+    if not text or text.casefold() in {"-", "n/a", "none", "null", "no image", _missing().casefold()}:
+        return ""
+    if text.startswith("data:image/svg+xml"):
+        return ""
+    return text
+
+
+def _seller_product_identity(product: dict[str, object], index: int) -> tuple[str, str]:
+    for field in _SELLER_IDENTITY_FIELDS:
+        value = str(product.get(field, "") or "").strip()
+        if value:
+            normalized = value.upper() if field == "asin" else value.casefold()
+            return (field.casefold(), normalized)
+
+    for field in _SELLER_URL_IDENTITY_FIELDS:
+        value = _canonical_product_url(product.get(field))
+        if value:
+            return ("url", value)
+    return ("row", str(index))
+
+
+def _canonical_product_url(value: object) -> str:
+    text = str(value or "").strip()
+    if not text:
+        return ""
+    parsed = urlsplit(text)
+    if parsed.scheme and parsed.netloc:
+        return urlunsplit((parsed.scheme.casefold(), parsed.netloc.casefold(), parsed.path.rstrip("/"), "", ""))
+    return re.split(r"[?#]", text, maxsplit=1)[0].rstrip("/").casefold()
+
+
+def _seller_product_rank_key(product: dict[str, object], index: int) -> tuple[object, ...]:
+    return (
+        _missing_high(_seller_display_order_rank(product)),
+        _seller_product_identity_sort_value(product, index),
+        index,
+    )
+
+
+def _seller_display_order_rank(product: dict[str, object]) -> int | None:
+    for field in (
+        "source_rank",
+        "display_order_rank",
+        "display_rank",
+        "seller_display_order",
+        "display_order",
+        "order_rank",
+        "rank",
+        "position",
+    ):
+        value = _num_or_none(product.get(field))
+        if value is not None:
+            return value
+    return None
+
+
+def _seller_product_identity_sort_value(product: dict[str, object], index: int) -> tuple[str, str]:
+    identity = _seller_product_identity(product, index)
+    if identity[0] != "row":
+        return identity
+    fallback = str(product.get("title", "") or product.get("asin", "") or index).casefold()
+    return ("row", fallback)
+
+
+def _missing_high(value: int | float | None) -> int | float:
+    return value if value is not None else 10**9
 
 
 def _counter_rows(counter: Counter[str], limit: int = 6) -> list[dict[str, object]]:
@@ -1207,10 +1489,11 @@ def _competitor_script() -> str:
     const detail = document.querySelector("[data-seller-detail]");
     let currentSort = "activity";
     let currentPreset = "most_active";
-    let selectedKey = data[0]?.key || "";
+    let pinnedKey = data[0]?.key || "";
+    let hoverKey = "";
 
     render();
-    renderDetail(selectedKey);
+    renderDetail(pinnedKey);
 
     search?.addEventListener("input", render);
     sortSelect?.addEventListener("change", () => {
@@ -1239,10 +1522,32 @@ def _competitor_script() -> str:
       }
       const select = event.target.closest("[data-seller-select]");
       if (select) {
-        selectedKey = select.dataset.sellerSelect;
-        renderDetail(selectedKey);
+        pinnedKey = select.dataset.sellerSelect;
+        hoverKey = "";
+        renderDetail(pinnedKey);
+        renderSelection();
+        return;
+      }
+      const row = event.target.closest("[data-seller-row]");
+      if (row && !event.target.closest(".row-open-link")) {
+        pinnedKey = row.dataset.sellerKey;
+        hoverKey = "";
+        renderDetail(pinnedKey);
         renderSelection();
       }
+    });
+    document.querySelector("[data-seller-table]")?.addEventListener("pointerover", (event) => {
+      const row = event.target.closest("[data-seller-row]");
+      if (!row || row.dataset.sellerKey === hoverKey) return;
+      hoverKey = row.dataset.sellerKey;
+      renderDetail(hoverKey, { temporary: true });
+    });
+    document.querySelector("[data-seller-table]")?.addEventListener("pointerout", (event) => {
+      const row = event.target.closest("[data-seller-row]");
+      if (!row) return;
+      if (event.relatedTarget && row.contains(event.relatedTarget)) return;
+      if (hoverKey === row.dataset.sellerKey) hoverKey = "";
+      renderDetail(pinnedKey);
     });
 
     function render() {
@@ -1294,60 +1599,59 @@ def _competitor_script() -> str:
         <td class="numeric-cell">${formatNumber(row.activity_count)}</td>
         <td class="numeric-cell">${badge(row.seller_new_pushes, "idea")}</td>
         <td class="numeric-cell">${badge(row.seller_movers, "rising")}</td>
-        <td><a class="utility-link row-open-link" href="${escapeHtml(row.product_explorer_url)}">Open</a></td>
+        <td><a class="utility-link row-open-link seller-open-link" href="${escapeHtml(row.product_explorer_url)}" aria-label="Open ${escapeHtml(row.seller)} in Product Explorer" title="Open in Product Explorer">&rarr;</a></td>
       </tr>`;
     }
 
     function renderSelection() {
-      document.querySelectorAll("[data-seller-row]").forEach((row) => row.classList.toggle("is-focused", row.dataset.sellerKey === selectedKey));
+      document.querySelectorAll("[data-seller-row]").forEach((row) => row.classList.toggle("is-focused", row.dataset.sellerKey === pinnedKey));
     }
 
-    function renderDetail(key) {
+    function renderDetail(key, { temporary = false } = {}) {
       const seller = data.find((row) => row.key === key);
       if (!detail || !seller) return;
-      detail.innerHTML = `<h2>${escapeHtml(seller.seller)}</h2>
-        <p class="caption">Seller overview from explicit Product Explorer evidence fields.</p>
-        <div class="metric-grid">
-          ${metric("Products", formatNumber(seller.products))}
-          ${metric("Seller Leaders", formatNumber(seller.seller_leaders))}
-          ${metric("Seller Movers", formatNumber(seller.seller_movers))}
-          ${metric("New Pushes", formatNumber(seller.seller_new_pushes))}
-          ${metric("Strong Sub-BSR", formatNumber(seller.strong_sub_bsr))}
-          ${metric("Median Rank", rank(seller.median_seller_rank))}
-          ${metric("Median Reviews", missingNumber(seller.median_review_count))}
-          ${metric("Median Price", seller.median_price === null ? "\u2014" : `$${Number(seller.median_price).toFixed(2)}`)}
+      detail.innerHTML = `<div class="seller-preview-header">
+          <h2>${escapeHtml(seller.seller)}</h2>
         </div>
-        ${listSection("Top Product Types", seller.top_product_types)}
-        ${listSection("Top Categories", seller.top_categories)}
-        ${productSection("Biggest Movers", seller.biggest_movers)}
-        ${productSection("Newest Pushes", seller.newest_pushes)}
-        ${productSection("Leader Products", seller.leader_products)}
-        ${productSection("Strong Sub-BSR Products", seller.strong_bsr_products)}
-        ${productSection("Products", seller.products_list)}
-        <a class="btn btn-primary" href="${escapeHtml(seller.product_explorer_url)}">Open in Product Explorer</a>`;
+        ${sellerFocusHtml(seller)}
+        <section class="seller-preview-section">
+          <h3>Display Order Preview</h3>
+          ${sellerThumbnailStrip(seller.representative_products)}
+        </section>
+        <div class="seller-preview-stats" aria-label="Seller activity">
+          ${sellerStat("Products", formatNumber(seller.products))}
+          ${sellerStat("Fast Movers", formatNumber(seller.seller_movers))}
+          ${sellerStat("New Pushes", formatNumber(seller.seller_new_pushes))}
+        </div>
+        <a class="btn btn-primary seller-preview-cta" href="${escapeHtml(seller.product_explorer_url)}">Open in Product Explorer &rarr;</a>`;
+      detail.classList.toggle("is-previewing", temporary);
     }
 
-    function listSection(title, rows) {
-      if (!rows?.length) return `<section class="inspector-section"><h3>${escapeHtml(title)}</h3><div class="inspector-no-data">No data</div></section>`;
-      return `<section class="inspector-section"><h3>${escapeHtml(title)}</h3><div class="source-detail-list">${rows.map((row) => `<article class="source-detail-row"><strong>${escapeHtml(row.label)}</strong><span>${formatNumber(row.count)} products - ${escapeHtml(row.share)}</span></article>`).join("")}</div></section>`;
+    function sellerFocusHtml(seller) {
+      const tags = Array.isArray(seller.seller_focus_tags)
+        ? seller.seller_focus_tags
+        : String(seller.seller_focus || "").split(/[;,]/);
+      const cleanTags = tags.map((tag) => String(tag || "").trim()).filter((tag) => tag && tag.toLowerCase() !== "unknown").slice(0, 3);
+      if (!cleanTags.length) return "";
+      return `<section class="seller-focus-section" aria-label="Seller focus">
+        <span>Seller Focus</span>
+        <div class="seller-focus-tags">${cleanTags.map((tag) => `<strong>${escapeHtml(tag)}</strong>`).join("")}</div>
+      </section>`;
     }
 
-    function productSection(title, rows) {
-      if (!rows?.length) return `<section class="inspector-section"><h3>${escapeHtml(title)}</h3><div class="inspector-no-data">No qualifying products</div></section>`;
-      return `<section class="inspector-section"><h3>${escapeHtml(title)}</h3><div class="source-detail-list">${rows.map((row) => `<a class="source-detail-row" href="${escapeHtml(row.url)}"><strong>${escapeHtml(row.title)}</strong><span>${escapeHtml(row.meta || row.asin || "")}</span></a>`).join("")}</div></section>`;
+    function sellerThumbnailStrip(rows) {
+      const products = Array.isArray(rows) ? rows.slice(0, 10) : [];
+      const productCells = products.map((row) => `<a class="seller-thumbnail-card" href="${escapeHtml(row.url)}" title="${escapeHtml(row.title)}" aria-label="${escapeHtml(row.title)}">
+        <img src="${escapeHtml(row.image || "")}" alt="${escapeHtml(row.title)} thumbnail">
+      </a>`).join("");
+      return `<div class="seller-thumbnail-strip" aria-label="Display order products">${productCells}</div>`;
     }
 
-    function metric(label, value) {
-      return `<div class="metric"><span>${escapeHtml(label)}</span><strong>${escapeHtml(value)}</strong></div>`;
+    function sellerStat(label, value) {
+      return `<div class="seller-preview-stat"><strong>${escapeHtml(value)}</strong><span>${escapeHtml(label)}</span></div>`;
     }
     function badge(value, tone) {
       return `<span class="status-badge tone-${tone}">${formatNumber(value)}</span>`;
-    }
-    function rank(value) {
-      return value === null || value === undefined || value === "" ? "\u2014" : `#${formatNumber(value)}`;
-    }
-    function missingNumber(value) {
-      return value === null || value === undefined || value === "" ? "\u2014" : formatNumber(value);
     }
     function formatNumber(value) {
       return Number(value || 0).toLocaleString();
@@ -1384,8 +1688,12 @@ def _market_groups(products: list[dict[str, object]], mode: str) -> list[dict[st
         }
         rows.append(
             {
+                "key": f"{mode}:{_slug(label)}",
                 "label": label,
                 "mode": mode,
+                "market_tags": _market_tags(label, mode, group_products),
+                "representative_products": _market_product_cards(group_products, mode, label, limit=10),
+                "leading_sellers": _market_leading_sellers(group_products, limit=5),
                 "product_count": len(group_products),
                 "seller_count": len({str(product.get("seller", "") or "Unknown Seller") for product in group_products}),
                 "coverage": coverage,
@@ -1411,6 +1719,56 @@ def _market_groups(products: list[dict[str, object]], mode: str) -> list[dict[st
     return sorted(rows, key=lambda row: (-int(row["breakout_total"]), -int(row["momentum_total"]), -int(row["product_count"]), str(row["label"]).lower()))
 
 
+def _market_tags(label: str, mode: str, products: list[dict[str, object]], limit: int = 3) -> list[str]:
+    if mode == "product_type":
+        tag_fields = ("idea", "category_name", "theme", "occasion", "recipient")
+    else:
+        tag_fields = ("product_type", "theme", "occasion", "recipient")
+    tags: list[str] = []
+    seen = {label.casefold()}
+    for field in tag_fields:
+        counter: Counter[str] = Counter()
+        for product in products:
+            value = _clean_focus_value(product.get(field))
+            if value and value.casefold() not in seen:
+                counter[value] += 1
+        for value, _ in counter.most_common():
+            key = value.casefold()
+            if key in seen:
+                continue
+            tags.append(value)
+            seen.add(key)
+            if len(tags) >= limit:
+                return tags
+    return tags
+
+
+def _market_product_cards(rows: list[dict[str, object]], mode: str, label: str, *, limit: int = 10) -> list[dict[str, str]]:
+    cards = []
+    base_url = _market_deep_link(mode, label)
+    for product, image, image_field in _seller_representative_products(rows, limit=limit):
+        asin = str(product.get("asin", "") or "")
+        href = f"{base_url}&focus={quote_param(asin)}" if asin and "?" in base_url else f"{base_url}?focus={quote_param(asin)}" if asin else base_url
+        cards.append(
+            {
+                "title": str(product.get("title", "Untitled Product") or "Untitled Product"),
+                "asin": asin,
+                "url": href,
+                "image": image,
+                "image_field": image_field,
+            }
+        )
+    return cards
+
+
+def _market_leading_sellers(products: list[dict[str, object]], limit: int = 5) -> list[str]:
+    counter: Counter[str] = Counter()
+    for product in products:
+        seller = str(product.get("seller", "") or "Unknown Seller").strip() or "Unknown Seller"
+        counter[seller] += 1
+    return [seller for seller, _ in sorted(counter.items(), key=lambda item: (-item[1], item[0].casefold()))[:limit]]
+
+
 def _market_group_label(product: dict[str, object], mode: str) -> str:
     if mode == "product_type":
         return str(product.get("product_type", "") or "Unknown")
@@ -1428,16 +1786,22 @@ def _market_script() -> str:
     const payload = JSON.parse(document.getElementById("market-explorer-data")?.textContent || "{}");
     const tbody = document.querySelector("[data-market-tbody]");
     const empty = document.querySelector("[data-market-empty]");
+    const detail = document.querySelector("[data-market-detail]");
     const search = document.getElementById("market-search");
     const sortSelect = document.querySelector("[data-market-sort]");
     const minProducts = document.querySelector("[data-market-min-products]");
     const sourceFamily = document.querySelector("[data-market-source-family]");
     let mode = "category";
+    let pinnedKey = "";
+    let hoverKey = "";
+    let currentRows = [];
 
     renderMarket();
     document.querySelectorAll("[data-market-mode]").forEach((button) => {
       button.addEventListener("click", () => {
         mode = button.dataset.marketMode;
+        pinnedKey = "";
+        hoverKey = "";
         document.querySelectorAll("[data-market-mode]").forEach((item) => {
           const active = item.dataset.marketMode === mode;
           item.classList.toggle("btn-secondary", active);
@@ -1449,19 +1813,45 @@ def _market_script() -> str:
     });
     [search, sortSelect, minProducts, sourceFamily].forEach((control) => control?.addEventListener("input", renderMarket));
     [sortSelect, sourceFamily].forEach((control) => control?.addEventListener("change", renderMarket));
+    document.querySelector("[data-market-table]")?.addEventListener("click", (event) => {
+      if (event.target.closest(".row-open-link") || event.target.closest(".market-detail summary")) return;
+      const select = event.target.closest("[data-market-select]");
+      const row = select ? select.closest("[data-market-row]") : event.target.closest("[data-market-row]");
+      if (!row) return;
+      pinnedKey = row.dataset.marketKey || "";
+      hoverKey = "";
+      renderDetail(pinnedKey);
+      renderSelection();
+    });
+    document.querySelector("[data-market-table]")?.addEventListener("pointerover", (event) => {
+      const row = event.target.closest("[data-market-row]");
+      if (!row || row.dataset.marketKey === hoverKey) return;
+      hoverKey = row.dataset.marketKey || "";
+      renderDetail(hoverKey, { temporary: true });
+    });
+    document.querySelector("[data-market-table]")?.addEventListener("pointerout", (event) => {
+      const row = event.target.closest("[data-market-row]");
+      if (!row) return;
+      if (event.relatedTarget && row.contains(event.relatedTarget)) return;
+      if (hoverKey === row.dataset.marketKey) hoverKey = "";
+      renderDetail(pinnedKey);
+    });
 
     function renderMarket() {
       const query = (search?.value || "").trim().toLowerCase();
       const sortKey = sortSelect?.value || "default";
       const minCount = Number(minProducts?.value || 0);
       const family = sourceFamily?.value || "";
-      const rows = (payload[mode] || [])
+      currentRows = (payload[mode] || [])
         .filter((row) => row.product_count >= minCount)
         .filter((row) => !query || row.label.toLowerCase().includes(query))
         .filter((row) => !family || Number(row.coverage?.[family] || 0) > 0)
         .sort((left, right) => compareMarket(left, right, sortKey));
-      if (tbody) tbody.innerHTML = rows.map(marketRowHtml).join("");
-      if (empty) empty.hidden = rows.length > 0;
+      if (tbody) tbody.innerHTML = currentRows.map(marketRowHtml).join("");
+      if (empty) empty.hidden = currentRows.length > 0;
+      if (!currentRows.find((row) => row.key === pinnedKey)) pinnedKey = currentRows[0]?.key || "";
+      renderDetail(pinnedKey);
+      renderSelection();
     }
 
     function compareMarket(left, right, key) {
@@ -1482,8 +1872,8 @@ def _market_script() -> str:
     }
 
     function marketRowHtml(row) {
-      return `<tr>
-        <td><a class="utility-link" href="${escapeHtml(row.product_explorer_url)}"><strong>${escapeHtml(row.label)}</strong></a>${marketDetail(row)}</td>
+      return `<tr data-market-row data-market-key="${escapeHtml(row.key)}">
+        <td><button class="link-button" type="button" data-market-select="${escapeHtml(row.key)}"><strong>${escapeHtml(row.label)}</strong></button>${marketDetail(row)}</td>
         <td>${summaryValue("Momentum", Number(row.seller_mover_count || 0) + Number(row.new_release_rising_count || 0))}</td>
         <td>${summaryValue("Validation", Number(row.category_winner_count || 0) + Number(row.strong_sub_bsr_count || 0))}</td>
         <td>${escapeHtml(`${formatNumber(row.seller_count)} sellers`)}<span class="caption market-caption">${escapeHtml(row.median_review_count === null ? "Median reviews unknown" : `Median ${formatNumber(row.median_review_count)} reviews`)}</span></td>
@@ -1495,52 +1885,86 @@ def _market_script() -> str:
       return `<details class="market-detail"><summary>Details</summary>
         <div class="metric-grid">
           ${metric("Products", formatNumber(row.product_count))}
+          ${metric("Active Sellers", formatNumber(row.seller_count))}
           ${metric("Breakouts", formatNumber(Number(row.category_breakout_count || 0) + Number(row.new_release_breakout_count || 0)))}
-          ${metric("Category Breakouts", formatNumber(row.category_breakout_count))}
-          ${metric("New Release Breakouts", formatNumber(row.new_release_breakout_count))}
-          ${metric("Seller Movers", formatNumber(row.seller_mover_count))}
-          ${metric("New Release Rising", formatNumber(row.new_release_rising_count))}
-          ${metric("Coverage", stripHtml(coverage(row.coverage)))}
-          ${metric("Seller Leaders", formatNumber(row.seller_leader_count))}
-          ${metric("Very Strong Sub-BSR", formatNumber(row.very_strong_sub_bsr_count))}
-          ${metric("Median Price", row.median_price === null ? "\u2014" : `$${Number(row.median_price).toFixed(2)}`)}
-          ${metric("Median Rating", row.median_rating === null ? "\u2014" : Number(row.median_rating).toFixed(2))}
-          ${metric("Median Sub-BSR", row.median_sub_bsr === null ? "\u2014" : `#${formatNumber(row.median_sub_bsr)}`)}
         </div>
+        ${marketLeadingSellers(row.leading_sellers, "Leading Sellers")}
       </details>`;
+    }
+
+    function renderSelection() {
+      document.querySelectorAll("[data-market-row]").forEach((row) => row.classList.toggle("is-focused", row.dataset.marketKey === pinnedKey));
+    }
+
+    function renderDetail(key, { temporary = false } = {}) {
+      const row = currentRows.find((item) => item.key === key) || (payload[mode] || []).find((item) => item.key === key);
+      if (!detail) return;
+      if (!row) {
+        detail.innerHTML = `<div class="empty-state"><strong>Select a market</strong><p>Choose a market row to preview products and open Product Explorer.</p></div>`;
+        return;
+      }
+      detail.innerHTML = `<div class="market-preview-header">
+          <h2>${escapeHtml(row.label)}</h2>
+          <p class="caption">${escapeHtml(labelForMode(row.mode || mode))} market</p>
+        </div>
+        ${marketTags(row)}
+        <section class="market-preview-section">
+          <h3>Representative Products</h3>
+          ${marketProductGrid(row.representative_products)}
+        </section>
+        <section class="market-preview-section">
+          <h3>Leading Sellers</h3>
+          ${marketLeadingSellers(row.leading_sellers, "Leading sellers")}
+        </section>
+        <section class="market-preview-section">
+          <h3>Market Health</h3>
+          <div class="market-preview-stats" aria-label="Market health">
+            ${marketStat("Products", formatNumber(row.product_count))}
+            ${marketStat("Active Sellers", formatNumber(row.seller_count))}
+            ${marketStat("Breakouts", formatNumber(Number(row.category_breakout_count || 0) + Number(row.new_release_breakout_count || 0)))}
+          </div>
+        </section>
+        <a class="btn btn-primary market-preview-cta" href="${escapeHtml(row.product_explorer_url)}">Open Product Explorer &rarr;</a>`;
+      detail.classList.toggle("is-previewing", temporary);
+    }
+
+    function marketTags(row) {
+      const tags = Array.isArray(row.market_tags) ? row.market_tags.slice(0, 3) : [];
+      if (!tags.length) return "";
+      return `<section class="market-tags-section" aria-label="Market tags">
+        <span>Market Tags</span>
+        <div class="market-tags">${tags.map((tag) => `<strong>${escapeHtml(tag)}</strong>`).join("")}</div>
+      </section>`;
+    }
+
+    function marketProductGrid(rows) {
+      const products = Array.isArray(rows) ? rows.slice(0, 10) : [];
+      if (!products.length) return `<div class="inspector-no-data">No product images available</div>`;
+      return `<div class="market-product-grid" aria-label="Representative products">${products.map((row) => `<a class="market-product-card" href="${escapeHtml(row.url)}" title="${escapeHtml(row.title)}" aria-label="${escapeHtml(row.title)}">
+        <img src="${escapeHtml(row.image || "")}" alt="${escapeHtml(row.title)} thumbnail">
+      </a>`).join("")}</div>`;
+    }
+
+    function marketLeadingSellers(values, label) {
+      const sellers = Array.isArray(values) ? values.slice(0, 5).filter(Boolean) : [];
+      if (!sellers.length) return `<div class="inspector-no-data">No seller data available</div>`;
+      return `<div class="market-leading-sellers" aria-label="${escapeHtml(label)}">${sellers.map((seller) => `<span>${escapeHtml(seller)}</span>`).join("")}</div>`;
+    }
+
+    function marketStat(label, value) {
+      return `<div class="market-preview-stat"><strong>${escapeHtml(value)}</strong><span>${escapeHtml(label)}</span></div>`;
     }
 
     function summaryValue(label, value) {
       return `<span class="compact-summary-value" title="${escapeHtml(label)}">${formatNumber(value)}</span>`;
     }
 
-    function summaryBadges(items) {
-      const visible = items.filter(([, value]) => Number(value || 0) > 0);
-      const rows = visible.length ? visible : items;
-      return rows.map(([label, value, tone]) => `<span class="status-badge tone-${tone}" title="${escapeHtml(label)}">${escapeHtml(label)} ${formatNumber(value)}</span>`).join(" ");
-    }
-
     function metric(label, value) {
       return `<div class="metric"><span>${escapeHtml(label)}</span><strong>${escapeHtml(value)}</strong></div>`;
     }
 
-    function stripHtml(value) {
-      return String(value || "").replace(/<[^>]+>/g, " ").replace(/\s+/g, " ").trim() || "\u2014";
-    }
-
-    function coverage(value) {
-      const parts = [];
-      if (value?.seller) parts.push(`Seller ${formatNumber(value.seller)}`);
-      if (value?.best_seller) parts.push(`Best Seller ${formatNumber(value.best_seller)}`);
-      if (value?.new_release) parts.push(`New Release ${formatNumber(value.new_release)}`);
-      if (value?.bsr) parts.push(`BSR ${formatNumber(value.bsr)}`);
-      return parts.length ? parts.map((part) => `<span class="status-badge tone-neutral">${escapeHtml(part)}</span>`).join(" ") : "\u2014";
-    }
-    function badge(value, tone) {
-      return `<span class="status-badge tone-${tone}">${formatNumber(value)}</span>`;
-    }
-    function missingNumber(value) {
-      return value === null || value === undefined || value === "" ? "\u2014" : formatNumber(value);
+    function labelForMode(value) {
+      return value === "product_type" ? "Product Type" : "Category";
     }
     function formatNumber(value) {
       return Number(value || 0).toLocaleString();
@@ -1581,9 +2005,12 @@ def _idea_dimension_rows(
             for product in group_products
             if (reviews := _num_or_none(product.get("review_count", product.get("reviews")))) is not None and reviews <= 100
         )
+        product_explorer_url = f"product_explorer.html?{_dimension_product_param(field)}={quote_param(label)}"
+        preview_products = _idea_product_cards(group_products, field, label, limit=10)
         representative = _diverse_products(_sort_products_for_preset(group_products, "research_today"), limit=1)
         product = representative[0] if representative else group_products[0]
         asin = str(product.get("asin", "") or product.get("id", "") or "")
+        representative_url = preview_products[0]["url"] if preview_products else f"{product_explorer_url}&focus={quote_param(asin)}" if asin else product_explorer_url
         rows.append(
             {
                 "idea": label,
@@ -1595,14 +2022,55 @@ def _idea_dimension_rows(
                 "winners": winners,
                 "breakouts": breakouts,
                 "low_review_opportunities": low_review,
+                "idea_tags": _idea_preview_tags(label, field, group_products),
+                "representative_products": preview_products,
                 "representative_product": str(product.get("title", "Untitled Product") or "Untitled Product"),
                 "representative_seller": str(product.get("seller", "Unknown Seller") or "Unknown Seller"),
                 "representative_reason": _why_it_matters(product),
-                "representative_url": f"product_explorer.html?{_dimension_product_param(field)}={quote_param(label)}&focus={quote_param(asin)}" if asin else f"product_explorer.html?{_dimension_product_param(field)}={quote_param(label)}",
+                "representative_url": representative_url,
+                "product_explorer_url": product_explorer_url,
                 "legacy_score": legacy_scores.get(label.lower()),
             }
         )
     return sorted(rows, key=lambda row: (-int(row["breakouts"]), -int(row["movers"]), -int(row["products"]), str(row["idea"]).lower()))
+
+
+def _idea_product_cards(rows: list[dict[str, object]], field: str, label: str, *, limit: int = 10) -> list[dict[str, str]]:
+    cards = []
+    product_explorer_url = f"product_explorer.html?{_dimension_product_param(field)}={quote_param(label)}"
+    for product, image, image_field in _seller_representative_products(rows, limit=limit):
+        asin = str(product.get("asin", "") or "")
+        cards.append(
+            {
+                "title": str(product.get("title", "Untitled Product") or "Untitled Product"),
+                "asin": asin,
+                "url": f"{product_explorer_url}&focus={quote_param(asin)}" if asin else product_explorer_url,
+                "image": image,
+                "image_field": image_field,
+            }
+        )
+    return cards
+
+
+def _idea_preview_tags(label: str, field: str, products: list[dict[str, object]], limit: int = 3) -> list[str]:
+    tag_fields = [name for name in ("theme", "product_type", "occasion", "recipient") if name != field]
+    tags: list[str] = []
+    seen = {label.casefold()}
+    for tag_field in tag_fields:
+        counter: Counter[str] = Counter()
+        for product in products:
+            value = _clean_focus_value(product.get(tag_field))
+            if value and value.casefold() not in seen:
+                counter[value] += 1
+        for value, _ in counter.most_common():
+            key = value.casefold()
+            if key in seen:
+                continue
+            tags.append(value)
+            seen.add(key)
+            if len(tags) >= limit:
+                return tags
+    return tags
 
 
 def _dimension_product_param(field: str) -> str:
@@ -1612,128 +2080,6 @@ def _dimension_product_param(field: str) -> str:
         "theme": "theme",
         "occasion": "occasion",
     }.get(field, "q")
-
-
-def _idea_explorer_script() -> str:
-    return r"""(() => {
-    const payload = JSON.parse(document.getElementById("idea-dimension-data")?.textContent || "{}");
-    const tbody = document.querySelector("[data-idea-dimension-tbody]");
-    const detail = document.querySelector("[data-idea-detail]");
-    const search = document.getElementById("idea-search");
-    let mode = "recipient";
-    let selectedKey = "";
-
-    render();
-    document.querySelectorAll("[data-idea-mode]").forEach((button) => {
-      button.addEventListener("click", () => {
-        mode = button.dataset.ideaMode || "recipient";
-        selectedKey = "";
-        document.querySelectorAll("[data-idea-mode]").forEach((item) => {
-          const active = item.dataset.ideaMode === mode;
-          item.classList.toggle("btn-secondary", active);
-          item.classList.toggle("btn-ghost", !active);
-          item.setAttribute("aria-pressed", active ? "true" : "false");
-        });
-        render();
-      });
-    });
-    search?.addEventListener("input", render);
-    tbody?.addEventListener("click", (event) => {
-      const button = event.target.closest("[data-idea-select]");
-      if (!button) return;
-      selectedKey = button.dataset.ideaSelect || "";
-      renderDetail(rowByKey(selectedKey));
-      renderSelection();
-    });
-
-    function render() {
-      const query = (search?.value || "").trim().toLowerCase();
-      const rows = (payload[mode] || [])
-        .filter((row) => !query || row.idea.toLowerCase().includes(query) || row.representative_product.toLowerCase().includes(query))
-        .sort(compareIdeaRows);
-      if (tbody) tbody.innerHTML = rows.map(rowHtml).join("");
-      if (!selectedKey && rows.length) selectedKey = rowKey(rows[0]);
-      renderDetail(rowByKey(selectedKey) || rows[0]);
-      renderSelection();
-    }
-
-    function compareIdeaRows(left, right) {
-      return Number(right.breakouts || 0) - Number(left.breakouts || 0)
-        || Number(right.movers || 0) - Number(left.movers || 0)
-        || Number(right.products || 0) - Number(left.products || 0)
-        || String(left.idea || "").localeCompare(String(right.idea || ""), undefined, { sensitivity: "base", numeric: true });
-    }
-
-    function rowHtml(row) {
-      const key = rowKey(row);
-      const momentum = Number(row.movers || 0) + Number(row.new_pushes || 0);
-      const validation = Number(row.winners || 0) + Number(row.breakouts || 0);
-      return `<tr data-idea-row data-idea-key="${escapeHtml(key)}">
-        <td><button class="link-button" type="button" data-idea-select="${escapeHtml(key)}"><strong>${escapeHtml(row.idea)}</strong></button>${ideaRowDetail(row)}</td>
-        <td class="numeric-cell">${formatNumber(row.products)}</td>
-        <td class="numeric-cell">${formatNumber(momentum)}</td>
-        <td class="numeric-cell">${formatNumber(validation)}</td>
-        <td class="numeric-cell">${formatNumber(row.low_review_opportunities)}</td>
-      </tr>`;
-    }
-
-    function ideaRowDetail(row) {
-      return `<details class="row-detail idea-row-detail"><summary>Details</summary>
-        <div class="metric-grid">
-          ${metric("Active Sellers", formatNumber(row.active_sellers))}
-          ${metric("Movers", formatNumber(row.movers))}
-          ${metric("New Pushes", formatNumber(row.new_pushes))}
-          ${metric("Winners", formatNumber(row.winners))}
-          ${metric("Breakouts", formatNumber(row.breakouts))}
-          ${metric("Low Review Opportunities", formatNumber(row.low_review_opportunities))}
-        </div>
-        <a class="source-detail-row" href="${escapeHtml(row.representative_url)}"><strong>${escapeHtml(row.representative_product)}</strong><span>${escapeHtml(row.representative_seller)}</span><span>${escapeHtml(row.representative_reason || "")}</span></a>
-      </details>`;
-    }
-
-    function renderSelection() {
-      document.querySelectorAll("[data-idea-row]").forEach((row) => row.classList.toggle("is-focused", row.dataset.ideaKey === selectedKey));
-    }
-
-    function renderDetail(row) {
-      if (!detail || !row) return;
-      const legacy = row.legacy_score === null || row.legacy_score === undefined || row.legacy_score === "" ? "\u2014" : formatNumber(row.legacy_score);
-      detail.innerHTML = `<h2>${escapeHtml(row.idea)}</h2>
-        <p class="caption">${escapeHtml(labelForMode(mode))} dimension only.</p>
-        <div class="metric-grid">
-          ${metric("Products", formatNumber(row.products))}
-          ${metric("Active Sellers", formatNumber(row.active_sellers))}
-          ${metric("Breakouts", formatNumber(row.breakouts))}
-          ${metric("Legacy Score", legacy)}
-        </div>
-        <section class="inspector-section">
-          <h3>Representative Product</h3>
-          <a class="source-detail-row" href="${escapeHtml(row.representative_url)}"><strong>${escapeHtml(row.representative_product)}</strong><span>${escapeHtml(row.representative_seller)}</span><span>${escapeHtml(row.representative_reason || "")}</span></a>
-        </section>`;
-    }
-
-    function rowByKey(key) {
-      return (payload[mode] || []).find((row) => rowKey(row) === key) || null;
-    }
-    function rowKey(row) {
-      return `${row.dimension}:${row.idea}`;
-    }
-    function labelForMode(value) {
-      return { recipient: "Recipient", occasion: "Occasion", theme: "Theme", product_type: "Product Type" }[value] || "Idea";
-    }
-    function metric(label, value) {
-      return `<div class="metric"><span>${escapeHtml(label)}</span><strong>${escapeHtml(value)}</strong></div>`;
-    }
-    function badge(value, tone) {
-      return `<span class="status-badge tone-${tone}">${formatNumber(value)}</span>`;
-    }
-    function formatNumber(value) {
-      return Number(value || 0).toLocaleString();
-    }
-    function escapeHtml(value) {
-      return String(value ?? "").replace(/[&<>"']/g, (char) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[char]));
-    }
-  })();"""
 
 
 def _idea_evidence_views(products: list[dict[str, object]]) -> str:
@@ -2654,7 +3000,7 @@ def _product_explorer_script() -> str:
 
     tbody?.addEventListener("error", (event) => {
       const image = event.target;
-      if (!image.matches?.(".thumbnail") || image.dataset.fallback === "true") return;
+      if (!image.matches?.(".thumbnail, .product-title-thumbnail") || image.dataset.fallback === "true") return;
       const product = productById.get(image.closest("[data-product-row]")?.dataset.productId || "");
       image.dataset.fallback = "true";
       image.src = fallbackImage(product);
@@ -3271,9 +3617,12 @@ def _product_explorer_script() -> str:
             <td data-column="select" data-optional-column><input type="checkbox" data-row-checkbox value="${escapeHtml(product.__id)}" ${checked ? "checked" : ""} aria-label="Select ${escapeHtml(product.title)}"></td>
             <td data-column="image" data-optional-column><img class="thumbnail" src="${escapeHtml(productImage(product))}" alt="${escapeHtml(product.title)} thumbnail"></td>
             <td>
-              <span class="product-title-cell">
-                <strong>${escapeHtml(product.title)}</strong>
-                <span class="caption">${escapeHtml(subtitle)}</span>
+              <span class="product-title-cell has-thumbnail">
+                <img class="product-title-thumbnail" src="${escapeHtml(productImage(product))}" alt="${escapeHtml(product.title)} thumbnail">
+                <span class="product-title-copy">
+                  <strong>${escapeHtml(product.title)}</strong>
+                  <span class="caption">${escapeHtml(subtitle)}</span>
+                </span>
               </span>
             </td>
             <td data-column="why">${whyItMattersHtml(product)}</td>
