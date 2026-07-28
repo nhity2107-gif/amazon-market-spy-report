@@ -1,0 +1,2 @@
+[console_scripts]
+amazon-market-spy = amazon_market_spy.cli:main

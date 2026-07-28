@@ -1,0 +1,6 @@
+source_name,source_type,category,url,priority,active
+Competitor Store 1,seller,Personalized Mugs,https://www.amazon.com/s?i=merchant-items&me=EXAMPLESELLERID,1,yes
+Best Sellers - Mugs,best-seller,Personalized Mugs,https://www.amazon.com/Best-Sellers-Kitchen-Dining-Coffee-Mugs/zgbs/kitchen/367145011,1,yes
+New Releases - Mugs,new-release,Personalized Mugs,https://www.amazon.com/gp/new-releases/kitchen/367145011,2,yes
+Movers - Mugs,movers-and-shakers,Personalized Mugs,https://www.amazon.com/gp/movers-and-shakers/kitchen/367145011,2,yes
+Category - Mugs,category,Personalized Mugs,https://www.amazon.com/s?k=personalized+mug,3,yes

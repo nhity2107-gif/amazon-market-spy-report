@@ -1207,10 +1207,19 @@ def _seller_summaries(products: list[dict[str, object]]) -> list[dict[str, objec
             "latest_activity": max([str(row.get("date", "") or "") for row in rows] or [""]) or _missing(),
             "representative_products": _seller_product_cards(rows, "title", reverse=False, limit=10),
             "product_explorer_url": f"product_explorer.html?seller={quote_param(seller)}",
+            "seller_url": _seller_storefront_url(rows),
         }
         summary["activity_count"] = int(summary["seller_movers"]) + int(summary["seller_new_pushes"])
         summaries.append(summary)
     return sorted(summaries, key=lambda row: (-int(row["activity_count"]), -_date_sort_number(row["latest_activity"]), str(row["seller"]).lower()))
+
+
+def _seller_storefront_url(rows: list[dict[str, object]]) -> str:
+    for row in rows:
+        seller_url = str(row.get("seller_url", "") or "").strip()
+        if seller_url:
+            return seller_url
+    return ""
 
 
 _LOW_VALUE_FOCUS_VALUES = {
@@ -1623,8 +1632,19 @@ def _competitor_script() -> str:
           ${sellerStat("Fast Movers", formatNumber(seller.seller_movers))}
           ${sellerStat("New Pushes", formatNumber(seller.seller_new_pushes))}
         </div>
-        <a class="btn btn-primary seller-preview-cta" href="${escapeHtml(seller.product_explorer_url)}">Open in Product Explorer &rarr;</a>`;
+        <div class="seller-preview-actions">
+          <a class="btn btn-primary seller-preview-cta" href="${escapeHtml(seller.product_explorer_url)}">Open in Product Explorer &rarr;</a>
+          ${sellerStoreCta(seller)}
+        </div>`;
       detail.classList.toggle("is-previewing", temporary);
+    }
+
+    function sellerStoreCta(seller) {
+      const storeUrl = String(seller.seller_url || "").trim();
+      if (!storeUrl) {
+        return `<button class="btn btn-secondary seller-preview-cta seller-preview-cta-secondary" type="button" disabled>Store unavailable</button>`;
+      }
+      return `<a class="btn btn-secondary seller-preview-cta seller-preview-cta-secondary" href="${escapeHtml(storeUrl)}" target="_blank" rel="noopener">View Amazon Store &#8599;</a>`;
     }
 
     function sellerFocusHtml(seller) {

@@ -1,0 +1,135 @@
+Metadata-Version: 2.4
+Name: amazon-market-spy
+Version: 0.1.0
+Summary: CLI for tracking Amazon competitor search and seller listings from source URLs.
+Author: amazon-market-spy
+License-Expression: MIT
+Requires-Python: >=3.10
+Description-Content-Type: text/markdown
+Requires-Dist: playwright>=1.44
+
+# amazon-market-spy
+
+Python CLI for tracking Amazon competitor seller, category, best-seller, new-release, and movers-and-shakers pages from a source CSV.
+
+The tool reads tracked Amazon URLs, fetches or parses page HTML, extracts ASIN-level listing data, preserves display order as rank, and writes CSVs for daily market monitoring.
+
+## Install
+
+```powershell
+cd C:\Users\OS\amazon_market_spy
+python -m pip install -e .
+python -m playwright install chromium
+```
+
+No runtime packages are required beyond Python.
+
+## Run
+
+Use the source file already present on this machine:
+
+```powershell
+amazon-market-spy scan --sources ..\amazon_market_spyinput\links.csv.txt --output output
+```
+
+Without installing first:
+
+```powershell
+python -m amazon_market_spy scan --sources ..\amazon_market_spyinput\links.csv.txt --output output
+```
+
+Regenerate trend reports from existing daily snapshots:
+
+```powershell
+python -m amazon_market_spy trend --output output
+```
+
+## Input CSV
+
+Required columns:
+
+```csv
+source_name,source_type,category,url,priority,active
+```
+
+`active` accepts `yes`, `true`, `1`, or `y`.
+
+Supported `source_type` values:
+
+- `seller`
+- `best-seller` or `best_seller`
+- `new-release` or `new_release`
+- `movers-and-shakers`, `movers_shakers`, or `movers_and_shakers`
+- `category`
+
+Example rows:
+
+```csv
+source_name,source_type,category,url,priority,active
+Competitor Store 1,seller,Personalized Mugs,https://www.amazon.com/s?i=merchant-items&me=SELLERID,1,yes
+Best Sellers - Mugs,best-seller,Personalized Mugs,https://www.amazon.com/Best-Sellers-Kitchen-Dining-Coffee-Mugs/zgbs/kitchen/367145011,1,yes
+New Releases - Mugs,new-release,Personalized Mugs,https://www.amazon.com/gp/new-releases/kitchen/367145011,2,yes
+Movers - Mugs,movers-and-shakers,Personalized Mugs,https://www.amazon.com/gp/movers-and-shakers/kitchen/367145011,2,yes
+Category - Mugs,category,Personalized Mugs,https://www.amazon.com/s?k=personalized+mug,3,yes
+```
+
+## Outputs
+
+Each scan writes:
+
+- `output/latest_products.csv`
+- `output/source_summary.csv`
+- `output/market_changes.csv`
+- `output/rank_trends.csv`
+- `output/source_trends.csv`
+- `output/source_errors.csv`
+- `output/snapshots/market_spy_YYYYMMDD_HHMMSS.csv`
+- `output/pages/*.html` when live pages are fetched
+- `screenshots/*.png` when live pages are visited with Playwright
+
+`market_changes.csv` compares the current scan to the previous snapshot and flags new ASINs, removed ASINs, rank changes, price changes, and title changes.
+
+Rank is based on display order within each tracked page. `rank_delta` is positive when a product moves up, for example rank 5 to rank 2 gives `rank_delta = 3` and `rank_direction = up`.
+
+`rank_trends.csv` summarizes each ASIN across all snapshots. `source_trends.csv` summarizes product count and ASIN churn for each tracked source/page.
+
+## Offline HTML Mode
+
+If Amazon blocks automated requests, save pages manually from the browser and parse them:
+
+```powershell
+amazon-market-spy scan --sources ..\amazon_market_spyinput\links.csv.txt --html-dir saved_pages --offline --output output
+```
+
+For each source, name the saved HTML file with either the source slug or row number, for example:
+
+- `competitor-store-1.html`
+- `source-1.html`
+
+Live scans visit each active URL with Playwright Chromium, then parse the rendered HTML. The tool does not bypass CAPTCHA, login walls, or other access controls. Use conservative delays and comply with Amazon's terms and your internal policies.
+
+## Daily Tracking
+
+Run the same scan command once per day. Each run creates a timestamped snapshot and refreshes the trend reports.
+
+On Windows Task Scheduler, use:
+
+```text
+Program/script: python
+Arguments: -m amazon_market_spy scan --sources C:\Users\OS\amazon_market_spyinput\links.csv.txt --output C:\Users\OS\amazon_market_spy\output
+Start in: C:\Users\OS\amazon_market_spy
+```
+
+## Useful Options
+
+```powershell
+amazon-market-spy scan --help
+amazon-market-spy validate-sources --sources ..\amazon_market_spyinput\links.csv.txt
+amazon-market-spy trend --output output
+```
+
+Skip screenshots if disk space is tight:
+
+```powershell
+amazon-market-spy scan --sources input\links.csv --output output --no-screenshots
+```

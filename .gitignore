@@ -8,3 +8,4 @@ output/
 screenshots/
 artifacts/
 *.log
+data/master_snapshot.csv

@@ -339,6 +339,9 @@ class DashboardV2Tests(unittest.TestCase):
         self.assertIn("seller_focus_tags", competitor_html)
         self.assertIn("seller-focus-tags", competitor_html)
         self.assertIn("Open in Product Explorer &rarr;", competitor_html)
+        self.assertIn("View Amazon Store &#8599;", competitor_html)
+        self.assertIn("Store unavailable", competitor_html)
+        self.assertIn('target="_blank" rel="noopener"', competitor_html)
         self.assertIn("seller-preview-stat", competitor_html)
         self.assertIn("seller-open-link", competitor_html)
         self.assertIn('title="Open in Product Explorer">&rarr;</a>', competitor_html)
@@ -525,6 +528,28 @@ class DashboardV2Tests(unittest.TestCase):
         self.assertEqual(len(seller["representative_products"]), 2)
         self.assertEqual([card["asin"] for card in seller["representative_products"]], ["B0SELL0002", "B0SELL0001"])
         self.assertNotIn("placeholderCount", html)
+
+    def test_seller_preview_store_cta_uses_existing_seller_url(self) -> None:
+        products = [
+            _seller_preview_product(
+                1,
+                seller="Storefront Seller",
+                seller_url="https://www.amazon.com/s?me=A1STORE",
+            ),
+            _seller_preview_product(2, seller="No Store Seller", seller_url=""),
+        ]
+        data = {**MOCK_PRESENTATION_DATA, "products": products}
+
+        html = v2_pages.render_competitor(data)
+        payload = _seller_payload(html)
+        storefront_seller = next(row for row in payload if row["seller"] == "Storefront Seller")
+        no_store_seller = next(row for row in payload if row["seller"] == "No Store Seller")
+
+        self.assertEqual(storefront_seller["seller_url"], "https://www.amazon.com/s?me=A1STORE")
+        self.assertEqual(no_store_seller["seller_url"], "")
+        self.assertIn("View Amazon Store &#8599;", html)
+        self.assertIn('target="_blank" rel="noopener"', html)
+        self.assertIn("Store unavailable", html)
 
     def test_dxl_trading_current_dataset_matches_first_ten_display_order_products(self) -> None:
         if not (Path("output") / "latest_products.csv").exists():

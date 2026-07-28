@@ -1284,10 +1284,22 @@ def theme_styles() -> str:
     font-size: 11px;
     font-weight: 700;
   }}
-  .seller-preview-cta {{
+  .seller-preview-actions {{
     width: 100%;
     margin-top: auto;
     align-self: end;
+    display: grid;
+    gap: 8px;
+  }}
+  .seller-preview-cta {{
+    width: 100%;
+  }}
+  .seller-preview-cta-secondary {{
+    background: var(--color-neutral-0);
+    color: var(--color-neutral-600);
+  }}
+  .seller-preview-cta-secondary:disabled {{
+    width: 100%;
   }}
   .seller-open-link {{
     display: inline-flex;

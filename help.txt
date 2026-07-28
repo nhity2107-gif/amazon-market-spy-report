@@ -1,0 +1,84 @@
+﻿usage: amazon-market-spy scan [-h] [--sources SOURCES] [--include-inactive]
+                              [--output OUTPUT] [--snapshot-dir SNAPSHOT_DIR]
+                              [--master-snapshot MASTER_SNAPSHOT]
+                              [--timeout TIMEOUT] [--retries RETRIES]
+                              [--delay DELAY] [--user-agent USER_AGENT]
+                              [--zipcode ZIPCODE]
+                              [--marketplace-domain MARKETPLACE_DOMAIN]
+                              [--headful] [--browser-channel BROWSER_CHANNEL]
+                              [--browser-executable BROWSER_EXECUTABLE]
+                              [--wait-until {commit,domcontentloaded,load,networkidle}]
+                              [--ready-timeout READY_TIMEOUT]
+                              [--screenshot-dir SCREENSHOT_DIR]
+                              [--no-screenshots] [--no-error-screenshots]
+                              [--html-dir HTML_DIR] [--offline]
+                              [--no-save-html] [--limit-sources LIMIT_SOURCES]
+                              [--max-products MAX_PRODUCTS] [--scroll]
+                              [--max-scrolls MAX_SCROLLS]
+                              [--scroll-wait-ms SCROLL_WAIT_MS]
+                              [--max-pages MAX_PAGES] [--include-non-pod]
+                              [--fetch-category-rank]
+                              [--max-detail-pages MAX_DETAIL_PAGES]
+
+options:
+  -h, --help            show this help message and exit
+  --sources SOURCES     Source CSV path.
+  --include-inactive    Include rows where active is not yes/true/1.
+  --output OUTPUT       Output directory. Default: output
+  --snapshot-dir SNAPSHOT_DIR
+                        Directory for daily snapshot CSVs. Default:
+                        data/snapshots
+  --master-snapshot MASTER_SNAPSHOT
+                        Combined CSV rebuilt from all daily snapshots.
+                        Default: data/master_snapshot.csv
+  --timeout TIMEOUT     Playwright page timeout in seconds. Default: 30
+  --retries RETRIES     Retries per live URL after the first attempt. Default:
+                        2
+  --delay DELAY         Delay between live fetches. Default: 3.0
+  --user-agent USER_AGENT
+                        Custom HTTP User-Agent.
+  --zipcode ZIPCODE     Amazon delivery ZIP code. Default: 10001
+  --marketplace-domain MARKETPLACE_DOMAIN
+                        Amazon marketplace domain used to set delivery
+                        location. Default: https://www.amazon.com
+  --headful             Show the Chromium browser instead of running headless.
+  --browser-channel BROWSER_CHANNEL
+                        Installed browser channel for Playwright, for example
+                        chrome or msedge. Default: chrome
+  --browser-executable BROWSER_EXECUTABLE
+                        Explicit browser executable path for Playwright.
+  --wait-until {commit,domcontentloaded,load,networkidle}
+                        Playwright page.goto wait condition. Default:
+                        domcontentloaded
+  --ready-timeout READY_TIMEOUT
+                        Seconds to wait for Amazon product/listing selectors
+                        after navigation. Default: 15
+  --screenshot-dir SCREENSHOT_DIR
+                        Directory for Playwright screenshots.
+  --no-screenshots      Do not save Playwright screenshots.
+  --no-error-screenshots
+                        Do not save screenshots when Playwright visits fail.
+  --html-dir HTML_DIR   Directory of saved HTML files to parse before
+                        fetching.
+  --offline             Parse only saved HTML files; do not fetch.
+  --no-save-html        Do not save fetched HTML pages.
+  --limit-sources LIMIT_SOURCES
+                        Scan only the first N sources after sorting.
+  --max-products MAX_PRODUCTS
+                        Keep only the first N products per source.
+  --scroll              Auto-scroll live pages before extracting products.
+  --max-scrolls MAX_SCROLLS
+                        Maximum scroll attempts per live page. Default: 8
+  --scroll-wait-ms SCROLL_WAIT_MS
+                        Milliseconds to wait after each scroll. Default: 1500
+  --max-pages MAX_PAGES
+                        Maximum Amazon result pages to crawl per source.
+                        Default: 1
+  --include-non-pod     Include non-POD physical products in opportunity
+                        reports.
+  --fetch-category-rank
+                        Visit detail pages for top opportunity products and
+                        extract Amazon Best Sellers Rank/category rank.
+  --max-detail-pages MAX_DETAIL_PAGES
+                        Maximum product detail pages to visit for category
+                        rank extraction. Default: 100
