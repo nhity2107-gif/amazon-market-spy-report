@@ -2239,12 +2239,21 @@ class CliTests(unittest.TestCase):
         self.assertEqual(comparison_rows[0]["review_growth_30d"], "0")
         self.assertEqual(comparison_rows[0]["review_velocity_score"], "0")
         self.assertEqual(comparison_rows[0]["historical_status"], "new_vs_history")
-        self.assertEqual(comparison_rows[0]["opportunity_score"], "31")
-        self.assertEqual(comparison_rows[0]["pod_component"], "14")
-        self.assertEqual(comparison_rows[0]["momentum_component"], "5")
-        self.assertEqual(comparison_rows[0]["market_component"], "0")
+        self.assertEqual(comparison_rows[0]["opportunity_score"], "60")
+        self.assertEqual(comparison_rows[0]["pod_component"], "16")
+        self.assertEqual(comparison_rows[0]["momentum_component"], "12")
+        self.assertEqual(comparison_rows[0]["market_component"], "17")
         self.assertEqual(comparison_rows[0]["competition_component"], "6")
-        self.assertEqual(comparison_rows[0]["niche_component"], "6")
+        self.assertEqual(comparison_rows[0]["niche_component"], "15")
+        self.assertEqual(comparison_rows[0]["display_strength"], "85")
+        self.assertEqual(comparison_rows[0]["rank_strength"], "")
+        self.assertEqual(comparison_rows[0]["display_momentum"], "50")
+        self.assertEqual(comparison_rows[0]["rank_momentum"], "")
+        self.assertEqual(comparison_rows[0]["validation_score"], "84")
+        self.assertEqual(comparison_rows[0]["momentum_score"], "50")
+        self.assertEqual(comparison_rows[0]["stability_score"], "45")
+        self.assertEqual(comparison_rows[0]["freshness_score"], "100")
+        self.assertEqual(comparison_rows[0]["research_segment"], "Watchlist")
         self.assertEqual(len(alert_rows), 0)
         self.assertEqual(len(lark_alert_rows), 0)
         self.assertEqual(
@@ -2259,6 +2268,19 @@ class CliTests(unittest.TestCase):
                 "market_component",
                 "competition_component",
                 "niche_component",
+                "display_strength",
+                "rank_strength",
+                "display_momentum",
+                "rank_momentum",
+                "validation_score",
+                "momentum_score",
+                "stability_score",
+                "freshness_score",
+                "validation_confidence",
+                "momentum_confidence",
+                "stability_confidence",
+                "research_segment",
+                "score_reason",
                 "products_in_source",
                 "previous_display_rank",
                 "display_rank_change",
@@ -2267,8 +2289,12 @@ class CliTests(unittest.TestCase):
                 "display_percentile",
                 "asin",
                 "is_pod",
+                "production_model",
+                "production_confidence",
+                "production_reason",
                 "pod_type",
                 "pod_score",
+                "pod_confidence",
                 "pod_reason",
                 "pod_relevance",
                 "pod_relevance_reasons",
@@ -2448,10 +2474,10 @@ class CliTests(unittest.TestCase):
         self.assertEqual(seller_rows[0]["review_growth_7d"], "0")
         self.assertEqual(seller_rows[0]["review_growth_30d"], "0")
         self.assertEqual(seller_rows[0]["review_velocity_score"], "0")
-        self.assertEqual(seller_rows[0]["momentum_score"], "31")
+        self.assertEqual(seller_rows[0]["momentum_score"], "60")
         self.assertEqual(seller_rows[0]["pod_products"], "1")
         self.assertEqual(seller_rows[0]["pod_opportunities"], "0")
-        self.assertEqual(seller_rows[0]["pod_momentum_score"], "31")
+        self.assertEqual(seller_rows[0]["pod_momentum_score"], "60")
         self.assertEqual(seller_rows[0]["top_niche"], "Personalized Mug")
         self.assertEqual(seller_rows[0]["niche_count"], "1")
         self.assertEqual(seller_rows[0]["best_subcategory_rank"], "")

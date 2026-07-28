@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import tempfile
 import unittest
+from datetime import date, timedelta
 from pathlib import Path
 
 from amazon_market_spy.models import Source
@@ -783,12 +784,12 @@ class ReportingTests(unittest.TestCase):
         self.assertEqual(by_asin["B0RANK1111"]["rank_change_vs_previous_seen"], "13")
         self.assertEqual(by_asin["B0RANK1111"]["historical_status"], "improved_vs_previous_seen")
         self.assertEqual(by_asin["B0RANK1111"]["classification"], "new_win;rising")
-        self.assertEqual(by_asin["B0RANK1111"]["opportunity_score"], "59")
-        self.assertEqual(by_asin["B0RANK1111"]["pod_component"], "3")
-        self.assertEqual(by_asin["B0RANK1111"]["momentum_component"], "25")
-        self.assertEqual(by_asin["B0RANK1111"]["market_component"], "20")
+        self.assertEqual(by_asin["B0RANK1111"]["opportunity_score"], "56")
+        self.assertEqual(by_asin["B0RANK1111"]["pod_component"], "0")
+        self.assertEqual(by_asin["B0RANK1111"]["momentum_component"], "19")
+        self.assertEqual(by_asin["B0RANK1111"]["market_component"], "19")
         self.assertEqual(by_asin["B0RANK1111"]["competition_component"], "8")
-        self.assertEqual(by_asin["B0RANK1111"]["niche_component"], "3")
+        self.assertEqual(by_asin["B0RANK1111"]["niche_component"], "15")
         self.assertEqual(by_asin["B0RANK1111"]["image_url"], "https://example.com/rank-new.jpg")
         self.assertEqual(by_asin["B0RANK1111"]["review_count"], "112")
         self.assertEqual(by_asin["B0RANK1111"]["review_rating"], "4.7")
@@ -810,57 +811,58 @@ class ReportingTests(unittest.TestCase):
         self.assertEqual(by_asin["B0RANK1111"]["price_change_vs_previous_seen"], "-1.00")
         self.assertEqual(by_asin["B0NEW11111"]["historical_status"], "new_vs_history")
         self.assertEqual(by_asin["B0NEW11111"]["classification"], "")
-        self.assertEqual(by_asin["B0NEW11111"]["opportunity_score"], "11")
+        self.assertEqual(by_asin["B0NEW11111"]["opportunity_score"], "40")
         self.assertEqual(by_asin["B0NEW11111"]["days_seen"], "1")
         self.assertEqual(by_asin["B0NEW11111"]["best_rank_7d"], "10")
         self.assertEqual(by_asin["B0NEW11111"]["avg_rank_7d"], "10.00")
         self.assertEqual(by_asin["B0NEW11111"]["appearances_7d"], "1")
         self.assertEqual(by_asin["B0WIN11111"]["classification"], "new_win;rising;winner")
-        self.assertEqual(by_asin["B0WIN11111"]["opportunity_score"], "31")
+        self.assertEqual(by_asin["B0WIN11111"]["opportunity_score"], "61")
         self.assertEqual(by_asin["B0TREND111"]["classification"], "rising")
-        self.assertEqual(by_asin["B0TREND111"]["opportunity_score"], "31")
+        self.assertEqual(by_asin["B0TREND111"]["opportunity_score"], "44")
         self.assertEqual(by_asin["B0LOSE1111"]["classification"], "declining")
-        self.assertEqual(by_asin["B0LOSE1111"]["opportunity_score"], "11")
+        self.assertEqual(by_asin["B0LOSE1111"]["opportunity_score"], "0")
 
         alerts = build_trend_alerts(comparisons)
         self.assertEqual(
             [row["asin"] for row in alerts],
-            ["B0RANK1111", "B0WIN11111", "B0TREND111", "B0LOSE1111"],
+            ["B0WIN11111", "B0RANK1111", "B0TREND111", "B0LOSE1111"],
         )
 
         lark_alerts = build_lark_trend_alerts(comparisons, include_non_pod=True)
         self.assertEqual(
             [row["asin"] for row in lark_alerts],
-            ["B0RANK1111", "B0WIN11111", "B0TREND111"],
+            ["B0WIN11111", "B0RANK1111", "B0TREND111"],
         )
         self.assertEqual(list(lark_alerts[0].keys()), LARK_TREND_ALERT_FIELDS)
-        self.assertEqual(lark_alerts[0]["image_url"], "https://example.com/rank-new.jpg")
-        self.assertEqual(lark_alerts[0]["local_image_path"], "")
-        self.assertEqual(lark_alerts[0]["bsr_rank"], "12")
-        self.assertEqual(lark_alerts[0]["bsr_category"], "Handmade Products")
-        self.assertEqual(lark_alerts[0]["category_ranks_raw"], "#12 in Handmade Products; #4 in Coffee Mugs")
-        self.assertEqual(lark_alerts[0]["primary_bsr_rank"], "12")
-        self.assertEqual(lark_alerts[0]["sub_bsr_rank"], "4")
-        self.assertEqual(lark_alerts[0]["subcategory_rank_score"], "100")
-        self.assertEqual(lark_alerts[0]["review_count"], "112")
-        self.assertEqual(lark_alerts[0]["review_rating"], "4.7")
-        self.assertEqual(lark_alerts[0]["review_growth_7d"], "12")
-        self.assertEqual(lark_alerts[0]["review_growth_30d"], "12")
-        self.assertEqual(lark_alerts[0]["review_velocity_score"], "15")
-        self.assertEqual(lark_alerts[0]["pod_component"], "3")
-        self.assertEqual(lark_alerts[0]["momentum_component"], "25")
-        self.assertEqual(lark_alerts[0]["market_component"], "20")
-        self.assertEqual(lark_alerts[0]["competition_component"], "8")
-        self.assertEqual(lark_alerts[0]["niche_component"], "3")
-        self.assertEqual(lark_alerts[0]["alert_type"], "new_win")
-        self.assertEqual(lark_alerts[0]["priority"], "Low")
-        self.assertEqual(lark_alerts[0]["rank_change"], "13")
-        self.assertEqual(lark_alerts[0]["rank_direction"], "up")
-        self.assertEqual(lark_alerts[0]["first_seen"], "2026-06-10")
-        self.assertEqual(lark_alerts[0]["suggested_action"], "Research immediately")
-        self.assertEqual(lark_alerts[0]["status"], "New")
-        self.assertEqual(lark_alerts[0]["owner"], "")
-        self.assertEqual(lark_alerts[0]["note"], "")
+        rank_alert = lark_alerts[1]
+        self.assertEqual(rank_alert["image_url"], "https://example.com/rank-new.jpg")
+        self.assertEqual(rank_alert["local_image_path"], "")
+        self.assertEqual(rank_alert["bsr_rank"], "12")
+        self.assertEqual(rank_alert["bsr_category"], "Handmade Products")
+        self.assertEqual(rank_alert["category_ranks_raw"], "#12 in Handmade Products; #4 in Coffee Mugs")
+        self.assertEqual(rank_alert["primary_bsr_rank"], "12")
+        self.assertEqual(rank_alert["sub_bsr_rank"], "4")
+        self.assertEqual(rank_alert["subcategory_rank_score"], "100")
+        self.assertEqual(rank_alert["review_count"], "112")
+        self.assertEqual(rank_alert["review_rating"], "4.7")
+        self.assertEqual(rank_alert["review_growth_7d"], "12")
+        self.assertEqual(rank_alert["review_growth_30d"], "12")
+        self.assertEqual(rank_alert["review_velocity_score"], "15")
+        self.assertEqual(rank_alert["pod_component"], "0")
+        self.assertEqual(rank_alert["momentum_component"], "19")
+        self.assertEqual(rank_alert["market_component"], "19")
+        self.assertEqual(rank_alert["competition_component"], "8")
+        self.assertEqual(rank_alert["niche_component"], "15")
+        self.assertEqual(rank_alert["alert_type"], "new_win")
+        self.assertEqual(rank_alert["priority"], "Low")
+        self.assertEqual(rank_alert["rank_change"], "13")
+        self.assertEqual(rank_alert["rank_direction"], "up")
+        self.assertEqual(rank_alert["first_seen"], "2026-06-10")
+        self.assertEqual(rank_alert["suggested_action"], "Research immediately")
+        self.assertEqual(rank_alert["status"], "New")
+        self.assertEqual(rank_alert["owner"], "")
+        self.assertEqual(rank_alert["note"], "")
         self.assertEqual(lark_alerts[2]["alert_type"], "rising")
         self.assertEqual(lark_alerts[2]["suggested_action"], "Watch 2-3 days")
 
@@ -922,12 +924,114 @@ class ReportingTests(unittest.TestCase):
 
         self.assertEqual(comparisons[0]["sub_bsr_rank"], "149")
         self.assertEqual(comparisons[0]["subcategory_rank_score"], "90")
-        self.assertEqual(comparisons[0]["opportunity_score"], "41")
-        self.assertEqual(comparisons[0]["pod_component"], "14")
-        self.assertEqual(comparisons[0]["momentum_component"], "5")
-        self.assertEqual(comparisons[0]["market_component"], "15")
+        self.assertEqual(comparisons[0]["opportunity_score"], "60")
+        self.assertEqual(comparisons[0]["pod_component"], "16")
+        self.assertEqual(comparisons[0]["momentum_component"], "12")
+        self.assertEqual(comparisons[0]["market_component"], "11")
         self.assertEqual(comparisons[0]["competition_component"], "0")
-        self.assertEqual(comparisons[0]["niche_component"], "7")
+        self.assertEqual(comparisons[0]["niche_component"], "15")
+
+    def test_research_scores_follow_display_order_and_subcategory_rank_patterns(self) -> None:
+        cases = [
+            {
+                "name": "proven winner",
+                "asin": "B0PROVEN01",
+                "title": "Printed Quote Mug",
+                "display": [3, 2, 2, 3],
+                "rank": [25, 20, 18, 19],
+                "production_model": "pod",
+            },
+            {
+                "name": "fast mover",
+                "asin": "B0FASTMV01",
+                "title": "Graphic Tee Printed Shirt",
+                "display": [40, 20, 9, 4],
+                "rank": [500, 300, 140, 60],
+                "production_model": "pod",
+            },
+            {
+                "name": "early opportunity",
+                "asin": "B0EARLYO01",
+                "title": "UV Printed Metal Sign",
+                "display": [70, 30, 12],
+                "rank": [900, 400, 180],
+                "production_model": "pod",
+            },
+            {
+                "name": "declining product",
+                "asin": "B0DECLIN01",
+                "title": "Printed Pillow Cover",
+                "display": [3, 6, 15, 28],
+                "rank": [20, 40, 95, 180],
+                "production_model": "pod",
+            },
+            {
+                "name": "stable but weak",
+                "asin": "B0WEAK0001",
+                "title": "Printed Garden Flag",
+                "display": [70, 72, 71, 69],
+                "rank": [800, 820, 810, 790],
+                "production_model": "pod",
+            },
+            {
+                "name": "one-day spike",
+                "asin": "B0SPIKE001",
+                "title": "Personalized Coffee Mug",
+                "display": [80, 4],
+                "rank": [900, 90],
+                "production_model": "pod",
+            },
+            {
+                "name": "retail winner",
+                "asin": "B0RETAIL01",
+                "title": "Hallmark Keepsake Ornament",
+                "display": [2, 2, 1],
+                "rank": [15, 12, 10],
+                "production_model": "non_pod",
+            },
+        ]
+
+        rows = {case["name"]: _build_scored_history_case(**case) for case in cases}
+
+        proven = rows["proven winner"]
+        self.assertGreaterEqual(_score_int(proven, "validation_score"), 80)
+        self.assertGreaterEqual(_score_int(proven, "stability_score"), 80)
+        self.assertGreaterEqual(_score_int(proven, "momentum_score"), 45)
+        self.assertLess(_score_int(proven, "momentum_score"), 75)
+        self.assertEqual(proven["research_segment"], "Proven Winner")
+
+        fast = rows["fast mover"]
+        self.assertGreaterEqual(_score_int(fast, "momentum_score"), 85)
+        self.assertGreaterEqual(_score_int(fast, "validation_score"), 65)
+        self.assertLess(_score_int(fast, "stability_score"), 80)
+        self.assertEqual(fast["research_segment"], "Fast Mover")
+
+        early = rows["early opportunity"]
+        self.assertGreaterEqual(_score_int(early, "momentum_score"), 85)
+        self.assertGreaterEqual(_score_int(early, "validation_score"), 55)
+        self.assertGreaterEqual(_score_int(early, "freshness_score"), 80)
+        self.assertGreaterEqual(_score_int(early, "opportunity_score"), 80)
+        self.assertEqual(early["research_segment"], "Early Opportunity")
+
+        declining = rows["declining product"]
+        self.assertLessEqual(_score_int(declining, "momentum_score"), 35)
+        self.assertEqual(declining["research_segment"], "Declining")
+
+        weak = rows["stable but weak"]
+        self.assertLess(_score_int(weak, "validation_score"), 55)
+        self.assertGreaterEqual(_score_int(weak, "stability_score"), 80)
+        self.assertNotEqual(weak["research_segment"], "Proven Winner")
+
+        spike = rows["one-day spike"]
+        self.assertGreaterEqual(_score_int(spike, "momentum_score"), 80)
+        self.assertLess(_score_int(spike, "momentum_confidence"), 50)
+        self.assertEqual(spike["research_segment"], "Watchlist")
+
+        retail = rows["retail winner"]
+        self.assertGreaterEqual(_score_int(retail, "validation_score"), 80)
+        self.assertGreaterEqual(_score_int(retail, "stability_score"), 80)
+        self.assertLess(_score_int(retail, "opportunity_score"), 40)
+        self.assertNotEqual(retail["research_segment"], "Early Opportunity")
 
     def test_build_lark_trend_alerts_filters_non_pod_by_default(self) -> None:
         rows = [
@@ -1210,6 +1314,69 @@ class ReportingTests(unittest.TestCase):
         self.assertEqual(sellers[1]["seller_momentum_score"], "85")
         self.assertEqual(sellers[1]["best_subcategory_rank"], "300")
         self.assertEqual(sellers[1]["best_subcategory_product"], "Seller B Mug")
+
+
+def _build_scored_history_case(
+    name: str,
+    asin: str,
+    title: str,
+    display: list[int],
+    rank: list[int],
+    production_model: str,
+) -> dict[str, str]:
+    with tempfile.TemporaryDirectory() as temp_dir:
+        snapshot_dir = Path(temp_dir) / "snapshots"
+        start_date = date(2026, 6, 10)
+        is_pod = "yes" if production_model == "pod" else "no" if production_model == "non_pod" else "maybe"
+        pod_score = "88" if production_model == "pod" else "-88" if production_model == "non_pod" else "0"
+        pod_confidence = "high" if production_model in {"pod", "non_pod"} else "low"
+        pod_reason = "Fixture production model evidence."
+        today_path = snapshot_dir / f"{start_date + timedelta(days=len(display) - 1)}_snapshot.csv"
+
+        for index, (display_order, subcategory_rank) in enumerate(zip(display, rank, strict=True)):
+            snapshot_date = start_date + timedelta(days=index)
+            write_csv(
+                snapshot_dir / f"{snapshot_date}_snapshot.csv",
+                [
+                    {
+                        "date": snapshot_date.isoformat(),
+                        "fetched_at": f"{snapshot_date.isoformat()}T00:00:00+00:00",
+                        "source_name": "Best Sellers",
+                        "source_type": "best_seller",
+                        "page_type": "best_seller",
+                        "category": "Mugs",
+                        "asin": asin,
+                        "rank": str(display_order),
+                        "display_rank": str(display_order),
+                        "title": title,
+                        "image_url": f"https://example.com/{asin.lower()}-{index}.jpg",
+                        "price": "19.99",
+                        "review_count": str(60 + index),
+                        "review_rating": "4.6",
+                        "sub_bsr_rank": str(subcategory_rank),
+                        "sub_bsr_category": "Coffee Mugs",
+                        "product_url": f"https://www.amazon.com/dp/{asin}",
+                        "is_pod": is_pod,
+                        "production_model": production_model,
+                        "production_confidence": "95",
+                        "production_reason": pod_reason,
+                        "pod_type": production_model,
+                        "pod_score": pod_score,
+                        "pod_confidence": pod_confidence,
+                        "pod_reason": pod_reason,
+                    }
+                ],
+                PRODUCT_FIELDS,
+            )
+
+        comparisons = build_historical_comparison(snapshot_dir, today_path)
+
+    assert comparisons, f"Expected a scored comparison row for {name}"
+    return comparisons[0]
+
+
+def _score_int(row: dict[str, str], field: str) -> int:
+    return int(float(row.get(field, "") or 0))
 
 
 def _source_row(

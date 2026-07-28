@@ -299,7 +299,7 @@ class DashboardService:
         title = _first_text(merged, "title", "raw_title", default=asin or "Untitled Product")
         product_type = _product_type(merged)
         idea = _first_text(merged, "niche_primary", "niche", "category", default="Uncategorized")
-        score = _first_text(merged, "opportunity_score", "decision_score", "pod_momentum_score", default="0")
+        score = _first_text(merged, "opportunity_score", "validation_score", "decision_score", "pod_momentum_score", default="0")
         growth = _format_positive(_first_text(merged, "display_rank_change", "rank_change", "best_mover_rank_change", default="0"))
         badges = _badges(merged)
         product_url = _first_text(merged, "product_url", default="")
@@ -314,6 +314,20 @@ class DashboardService:
             "idea": idea,
             "score": score,
             "winner_score": _to_int(score),
+            "display_strength": _to_optional_int(_first_text(merged, "display_strength", default="")),
+            "rank_strength": _to_optional_int(_first_text(merged, "rank_strength", default="")),
+            "display_momentum": _to_optional_int(_first_text(merged, "display_momentum", default="")),
+            "rank_momentum": _to_optional_int(_first_text(merged, "rank_momentum", default="")),
+            "validation_score": _to_optional_int(_first_text(merged, "validation_score", default="")),
+            "momentum_score": _to_optional_int(_first_text(merged, "momentum_score", default="")),
+            "stability_score": _to_optional_int(_first_text(merged, "stability_score", default="")),
+            "freshness_score": _to_optional_int(_first_text(merged, "freshness_score", default="")),
+            "opportunity_score": _to_optional_int(_first_text(merged, "opportunity_score", default="")),
+            "validation_confidence": _to_optional_int(_first_text(merged, "validation_confidence", default="")),
+            "momentum_confidence": _to_optional_int(_first_text(merged, "momentum_confidence", default="")),
+            "stability_confidence": _to_optional_int(_first_text(merged, "stability_confidence", default="")),
+            "research_segment": _first_text(merged, "research_segment", default=""),
+            "score_reason": _first_text(merged, "score_reason", default=""),
             "growth": growth,
             "growth_value": _to_int(growth),
             "reviews": _first_text(merged, "review_count", default="-"),
@@ -340,6 +354,7 @@ class DashboardService:
             "sub_bsr_category": _first_text(merged, "sub_bsr_category", default=""),
             "product_type": product_type,
             "is_pod": _first_text(merged, "is_pod", default=""),
+            "production_model": _first_text(merged, "production_model", default=""),
             "recipient": _first_text(merged, "recipient", default="Unknown"),
             "theme": _first_text(merged, "theme", default="Unknown"),
             "occasion": _first_text(merged, "occasion", default="Unknown"),
@@ -774,22 +789,22 @@ def _truthy(value: object) -> bool:
 
 
 def _is_winner(row: dict[str, str]) -> bool:
-    status = f"{row.get('badges', '')};{row.get('badge', '')};{row.get('primary_bucket', '')};{row.get('alert_type', '')}".lower()
+    status = f"{row.get('badges', '')};{row.get('badge', '')};{row.get('primary_bucket', '')};{row.get('alert_type', '')};{row.get('research_segment', '')}".lower()
     return "top winner" in status or "winner" in status or "new breakout" in status
 
 
 def _is_rising(row: dict[str, str]) -> bool:
-    status = f"{row.get('badges', '')};{row.get('badge', '')};{row.get('primary_bucket', '')};{row.get('alert_type', '')}".lower()
+    status = f"{row.get('badges', '')};{row.get('badge', '')};{row.get('primary_bucket', '')};{row.get('alert_type', '')};{row.get('research_segment', '')}".lower()
     return "fast mover" in status or "rising" in status
 
 
 def _is_new_launch(row: dict[str, str]) -> bool:
-    status = f"{row.get('badges', '')};{row.get('badge', '')};{row.get('primary_bucket', '')};{row.get('alert_type', '')}".lower()
+    status = f"{row.get('badges', '')};{row.get('badge', '')};{row.get('primary_bucket', '')};{row.get('alert_type', '')};{row.get('research_segment', '')}".lower()
     return "new release" in status or "new launch" in status
 
 
 def _tone_from_badges(row: dict[str, str]) -> str:
-    badges = f"{row.get('badges', '')};{row.get('badge', '')};{row.get('primary_bucket', '')}".lower()
+    badges = f"{row.get('badges', '')};{row.get('badge', '')};{row.get('primary_bucket', '')};{row.get('research_segment', '')}".lower()
     if "fast mover" in badges or "rising" in badges:
         return "rising"
     if "top winner" in badges or "winner" in badges:

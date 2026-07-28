@@ -9,7 +9,7 @@ from urllib.parse import urljoin
 from .category_rank import ensure_category_rank_fields
 from .models import Source
 from .niche import ensure_niche_fields
-from .pod import classify_pod
+from .pod import classify_pod_row
 from .product_details import clean_title, ensure_detail_fix_fields, image_url_from_attrs, is_valid_product_title
 from .utils import is_asin, normalize_space, parse_compact_int, parse_money
 
@@ -386,7 +386,18 @@ def _product_record(
     pod_text: str = "",
 ) -> dict[str, str]:
     raw_title = clean_title(title)
-    pod = classify_pod(title, pod_text, source.category, source.display_name)
+    pod = classify_pod_row(
+        {
+            "title": title,
+            "raw_title": raw_title,
+            "product_url": product_url,
+            "category": source.category,
+            "source_name": source.display_name,
+            "source_type": source.source_type,
+            "seller_name": source.seller_name,
+            "description": pod_text,
+        }
+    )
     return ensure_detail_fix_fields(
         ensure_niche_fields(
             ensure_category_rank_fields(
@@ -403,8 +414,12 @@ def _product_record(
                 "priority": str(source.priority),
                 "asin": asin.strip().upper(),
                 "is_pod": pod["is_pod"],
+                "production_model": pod["production_model"],
+                "production_confidence": pod["production_confidence"],
+                "production_reason": pod["production_reason"],
                 "pod_type": pod["pod_type"],
                 "pod_score": pod["pod_score"],
+                "pod_confidence": pod["pod_confidence"],
                 "pod_reason": pod["pod_reason"],
                 "display_rank": str(rank),
                 "display_order": str(rank),

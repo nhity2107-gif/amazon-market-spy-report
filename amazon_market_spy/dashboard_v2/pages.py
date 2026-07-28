@@ -715,7 +715,30 @@ def _preset_products(products: list[dict[str, object]], preset: str) -> list[dic
     if not config:
         return list(products)
     evidence_keys = config["evidence"]
-    return [product for product in products if any(_product_has_evidence(product, key) for key in evidence_keys)]
+    return [
+        product
+        for product in products
+        if _product_matches_research_segment(product, preset)
+        or any(_product_has_evidence(product, key) for key in evidence_keys)
+    ]
+
+
+def _product_matches_research_segment(product: dict[str, object], preset: str) -> bool:
+    segment = str(product.get("research_segment", "") or "").strip().lower()
+    if preset == "research_today":
+        return segment in {"fast mover", "early opportunity", "proven winner"}
+    if preset == "proven_demand":
+        return segment == "proven winner" or (
+            (_num_or_none(product.get("validation_score")) or 0) >= 75
+            and (_num_or_none(product.get("stability_score")) or 0) >= 65
+        )
+    if preset == "early_opportunity":
+        return segment == "early opportunity"
+    if preset == "competitor_push":
+        return segment == "fast mover" and (
+            _product_has_evidence(product, "seller_mover") or _product_has_evidence(product, "seller_new_push")
+        )
+    return False
 
 
 def _sort_products_for_preset(products: list[dict[str, object]], preset: str) -> list[dict[str, object]]:
@@ -733,25 +756,60 @@ def _sort_products_for_preset(products: list[dict[str, object]], preset: str) ->
     def key_for(item: tuple[int, dict[str, object]]) -> tuple[object, ...]:
         index, product = item
         if preset == "research_today":
-            priority = _primary_evidence_index(product)
-            movement = _rank_improvement(product)
-            reviews = _num_or_none(product.get("review_count", product.get("reviews")))
-            return (priority, -missing_low(movement), missing_high(reviews), *fallback(index, product))
+            return (
+                _research_segment_priority(product),
+                -missing_low(_num_or_none(product.get("opportunity_score"))),
+                -missing_low(_num_or_none(product.get("momentum_score"))),
+                -missing_low(_num_or_none(product.get("validation_score"))),
+                *fallback(index, product),
+            )
         if preset == "proven_demand":
             sub_bsr = _valid_sub_bsr(product)
             category_rank = _num_or_none(product.get("best_seller_evidence_best_rank"))
             reviews = _num_or_none(product.get("review_count", product.get("reviews")))
-            return (missing_high(sub_bsr), missing_high(category_rank), -missing_low(reviews), *fallback(index, product))
+            return (
+                -missing_low(_num_or_none(product.get("validation_score"))),
+                -missing_low(_num_or_none(product.get("stability_score"))),
+                missing_high(sub_bsr),
+                missing_high(category_rank),
+                -missing_low(reviews),
+                *fallback(index, product),
+            )
         if preset == "early_opportunity":
             reviews = _num_or_none(product.get("review_count", product.get("reviews")))
             low_review_bucket = 0 if reviews is not None and reviews <= 100 else 1 if reviews is not None else 2
-            return (low_review_bucket, missing_high(reviews), -missing_low(_rank_improvement(product)), missing_high(_source_days_seen(product)), *fallback(index, product))
+            return (
+                -missing_low(_num_or_none(product.get("freshness_score"))),
+                -missing_low(_num_or_none(product.get("momentum_score"))),
+                -missing_low(_num_or_none(product.get("opportunity_score"))),
+                low_review_bucket,
+                missing_high(reviews),
+                missing_high(_source_days_seen(product)),
+                *fallback(index, product),
+            )
         if preset == "competitor_push":
             seller_movement = _num_or_none(product.get("seller_movement"))
-            return (-missing_low(seller_movement), missing_high(_source_days_seen(product)), *fallback(index, product))
+            return (
+                -missing_low(_num_or_none(product.get("momentum_score"))),
+                -missing_low(seller_movement),
+                missing_high(_source_days_seen(product)),
+                *fallback(index, product),
+            )
         return fallback(index, product)
 
     return [product for _, product in sorted(indexed, key=key_for)]
+
+
+def _research_segment_priority(product: dict[str, object]) -> int:
+    segment = str(product.get("research_segment", "") or "").strip().lower()
+    order = {
+        "fast mover": 0,
+        "early opportunity": 1,
+        "proven winner": 2,
+        "watchlist": 3,
+        "declining": 4,
+    }
+    return order.get(segment, _primary_evidence_index(product) + 10)
 
 
 def _diverse_products(
@@ -852,6 +910,9 @@ def _why_it_matters(product: dict[str, object]) -> str:
 
 
 def _momentum_label(product: dict[str, object]) -> str:
+    momentum_score = _num_or_none(product.get("momentum_score"))
+    if momentum_score is not None:
+        return _fmt_int(momentum_score)
     key = _primary_evidence_key(product)
     if key in {"seller_mover", "seller_new_push", "seller_leader"}:
         movement = _num_or_none(product.get("seller_movement"))
@@ -2286,6 +2347,10 @@ def _sort_controls() -> str:
     options = [
         ("", "Sort"),
         ("momentum", "Momentum"),
+        ("validation", "Validation"),
+        ("stability", "Stability"),
+        ("opportunity", "Opportunity"),
+        ("freshness", "Freshness"),
         ("title", "Product"),
         ("seller", "Seller"),
         ("idea", "Idea"),
@@ -2476,6 +2541,20 @@ PRODUCT_INDEX_FIELDS = (
     "seller",
     "idea",
     "winner_score",
+    "display_strength",
+    "rank_strength",
+    "display_momentum",
+    "rank_momentum",
+    "validation_score",
+    "momentum_score",
+    "stability_score",
+    "freshness_score",
+    "opportunity_score",
+    "validation_confidence",
+    "momentum_confidence",
+    "stability_confidence",
+    "research_segment",
+    "score_reason",
     "growth",
     "growth_value",
     "review_count",
@@ -2485,6 +2564,7 @@ PRODUCT_INDEX_FIELDS = (
     "source_rank_change",
     "product_type",
     "is_pod",
+    "production_model",
     "recipient",
     "theme",
     "occasion",
@@ -2800,8 +2880,12 @@ def _product_explorer_script() -> str:
       title: { label: "Product", type: "text", value: (product) => product.title },
       seller: { label: "Seller", type: "text", value: (product) => product.seller },
       idea: { label: "Idea", type: "text", value: (product) => product.idea },
-      momentum: { label: "Momentum", type: "number", value: (product) => rankImprovement(product) },
-      winner_score: { label: "Winner Score", type: "number", value: (product) => product.scoreValue },
+      momentum: { label: "Momentum", type: "number", value: (product) => product.momentumScore ?? rankImprovement(product) },
+      validation: { label: "Validation", type: "number", value: (product) => product.validationScore },
+      stability: { label: "Stability", type: "number", value: (product) => product.stabilityScore },
+      opportunity: { label: "Opportunity", type: "number", value: (product) => product.opportunityScore ?? product.scoreValue },
+      freshness: { label: "Freshness", type: "number", value: (product) => product.freshnessScore },
+      winner_score: { label: "Winner Score", type: "number", value: (product) => product.opportunityScore ?? product.scoreValue },
       growth: { label: "Growth", type: "number", value: (product) => product.growthValue },
       reviews: { label: "Reviews", type: "number", value: (product) => product.reviewValue },
       price: { label: "Price", type: "number", value: (product) => product.priceValue },
@@ -3196,6 +3280,20 @@ def _product_explorer_script() -> str:
       normalized.title = textValue(product.title, "Untitled Product");
       normalized.asin = textValue(product.asin, "");
       normalized.scoreValue = numberValue(product.winner_score);
+      normalized.displayStrength = numberValue(product.display_strength);
+      normalized.rankStrength = numberValue(product.rank_strength);
+      normalized.displayMomentum = numberValue(product.display_momentum);
+      normalized.rankMomentum = numberValue(product.rank_momentum);
+      normalized.validationScore = numberValue(product.validation_score);
+      normalized.momentumScore = numberValue(product.momentum_score);
+      normalized.stabilityScore = numberValue(product.stability_score);
+      normalized.freshnessScore = numberValue(product.freshness_score);
+      normalized.opportunityScore = numberValue(product.opportunity_score);
+      normalized.validationConfidence = numberValue(product.validation_confidence);
+      normalized.momentumConfidence = numberValue(product.momentum_confidence);
+      normalized.stabilityConfidence = numberValue(product.stability_confidence);
+      normalized.researchSegment = textValue(product.research_segment, "");
+      normalized.scoreReason = textValue(product.score_reason, "");
       normalized.growthValue = numberValue(product.growth_value ?? product.growth);
       normalized.reviewValue = numberValue(product.review_count);
       normalized.priceValue = numberValue(product.price_value);
@@ -3407,6 +3505,7 @@ def _product_explorer_script() -> str:
     }
 
     function momentumLabel(product) {
+      if (product.momentumScore !== null) return formatNumber(product.momentumScore);
       const key = product.primaryEvidence?.key || "";
       if (key === "seller_new_push") {
         const days = sourceDaysSeen(product, "seller");
@@ -3578,7 +3677,7 @@ def _product_explorer_script() -> str:
 
     function matchesProduct(product) {
       const preset = PRODUCT_PRESETS[state.preset] || PRODUCT_PRESETS[DEFAULT_PRESET];
-      if (preset?.evidence?.length && !preset.evidence.some((key) => product[key] === true)) return false;
+      if (!productMatchesPreset(product, state.preset, preset)) return false;
       const view = SAVED_VIEWS[state.savedView] || SAVED_VIEWS.all;
       if (view.predicate && !view.predicate(product)) return false;
       if (view.text && !product.__search.includes(normalizeSearch(view.text))) return false;
@@ -3614,6 +3713,22 @@ def _product_explorer_script() -> str:
       return true;
     }
 
+    function productMatchesPreset(product, presetKey, preset) {
+      if (!preset) return true;
+      const segment = normalizeSearch(product.researchSegment || "");
+      if (presetKey === "research_today") {
+        if (["fast mover", "early opportunity", "proven winner"].includes(segment)) return true;
+      }
+      if (presetKey === "proven_demand") {
+        if (segment === "proven winner") return true;
+        if ((product.validationScore ?? 0) >= 75 && (product.stabilityScore ?? 0) >= 65) return true;
+      }
+      if (presetKey === "early_opportunity" && segment === "early opportunity") return true;
+      if (presetKey === "competitor_push" && segment === "fast mover" && product.hasSellerEvidence) return true;
+      if (preset.evidence?.length) return preset.evidence.some((key) => product[key] === true);
+      return true;
+    }
+
     function sortProducts(matched) {
       const { key, direction } = state.sort;
       if (!SORT_FIELDS[key] || !["asc", "desc"].includes(direction)) {
@@ -3640,30 +3755,45 @@ def _product_explorer_script() -> str:
     function comparePresetProducts(left, right, preset) {
       const key = validPreset(preset);
       if (key === "research_today") {
-        return compareNumber(primaryEvidenceIndex(left), primaryEvidenceIndex(right), "asc")
-          || compareNumber(rankImprovement(left), rankImprovement(right), "desc")
-          || compareNumber(left.reviewValue, right.reviewValue, "asc")
+        return compareNumber(segmentPriority(left), segmentPriority(right), "asc")
+          || compareNumber(left.opportunityScore, right.opportunityScore, "desc")
+          || compareNumber(left.momentumScore, right.momentumScore, "desc")
+          || compareNumber(left.validationScore, right.validationScore, "desc")
           || compareFallback(left, right);
       }
       if (key === "proven_demand") {
-        return compareNumber(left.subBsrRank, right.subBsrRank, "asc")
+        return compareNumber(left.validationScore, right.validationScore, "desc")
+          || compareNumber(left.stabilityScore, right.stabilityScore, "desc")
+          || compareNumber(left.subBsrRank, right.subBsrRank, "asc")
           || compareNumber(left.bestSellerBestRank, right.bestSellerBestRank, "asc")
           || compareNumber(left.reviewValue, right.reviewValue, "desc")
           || compareFallback(left, right);
       }
       if (key === "early_opportunity") {
-        return compareNumber(reviewPreference(left), reviewPreference(right), "asc")
-          || compareNumber(left.reviewValue, right.reviewValue, "asc")
-          || compareNumber(rankImprovement(left), rankImprovement(right), "desc")
+        return compareNumber(left.freshnessScore, right.freshnessScore, "desc")
+          || compareNumber(left.momentumScore, right.momentumScore, "desc")
+          || compareNumber(left.opportunityScore, right.opportunityScore, "desc")
+          || compareNumber(reviewPreference(left), reviewPreference(right), "asc")
           || compareNumber(sourceDaysSeen(left), sourceDaysSeen(right), "asc")
           || compareFallback(left, right);
       }
       if (key === "competitor_push") {
-        return compareNumber(left.sellerMovement, right.sellerMovement, "desc")
+        return compareNumber(left.momentumScore, right.momentumScore, "desc")
+          || compareNumber(left.sellerMovement, right.sellerMovement, "desc")
           || compareNumber(sourceDaysSeen(left), sourceDaysSeen(right), "asc")
           || compareFallback(left, right);
       }
       return compareFallback(left, right);
+    }
+
+    function segmentPriority(product) {
+      const key = normalizeSearch(product.researchSegment || "");
+      if (key === "fast mover") return 0;
+      if (key === "early opportunity") return 1;
+      if (key === "proven winner") return 2;
+      if (key === "watchlist") return 3;
+      if (key === "declining") return 4;
+      return primaryEvidenceIndex(product) + 10;
     }
 
     function reviewPreference(product) {

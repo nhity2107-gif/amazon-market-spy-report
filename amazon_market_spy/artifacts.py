@@ -14,7 +14,7 @@ from .evidence import EVIDENCE_FIELDS, PRODUCT_EVIDENCE_FIELDS, apply_observatio
 from .niche import GROUP_LABELS, ensure_niche_fields, niche_group, niche_tags
 from .pod import ensure_pod_fields, pod_allowed
 from .product_details import display_product_title, ensure_detail_fix_fields
-from .reporting import LARK_TREND_ALERT_FIELDS, write_csv
+from .reporting import LARK_TREND_ALERT_FIELDS, RESEARCH_SCORE_FIELDS, write_csv
 from .source_identity import parse_source_rank
 from .utils import ensure_parent, is_asin
 
@@ -97,6 +97,7 @@ PRIORITY_BOARD_FIELDS = [
     "previous_display_rank",
     "display_rank_change",
     "growth_velocity",
+    *RESEARCH_SCORE_FIELDS,
     "opportunity_score",
     "primary_bsr_rank",
     "sub_bsr_rank",
@@ -645,11 +646,13 @@ def _apply_badge_flags(row: dict[str, str], flags: dict[str, bool]) -> None:
         row[f"badge_{name}"] = _bool_attr(value)
 
 
-def _today_sort_key(row: dict[str, str]) -> tuple[int, int, int, str]:
+def _today_sort_key(row: dict[str, str]) -> tuple[int, int, int, int, int, str]:
     _ensure_decision_fields(row)
     return (
-        -(_to_int(row.get("decision_score", "")) or 0),
         _bucket_sort_order(row.get("primary_bucket", "")),
+        -(_to_int(row.get("opportunity_score", "")) or 0),
+        -(_to_int(row.get("momentum_score", "")) or 0),
+        -(_to_int(row.get("validation_score", "")) or 0),
         _product_display_rank(row),
         row.get("asin", ""),
     )
@@ -658,8 +661,8 @@ def _today_sort_key(row: dict[str, str]) -> tuple[int, int, int, str]:
 def _bucket_sort_order(bucket: str) -> int:
     order = {
         "Must Review Today": 0,
-        "New Breakouts": 1,
-        "Fast Movers": 2,
+        "Fast Movers": 1,
+        "New Breakouts": 2,
         "Watchlist": 3,
         "Products": 4,
     }
@@ -725,6 +728,13 @@ def _today_signal_sections(
 
 
 def _primary_bucket(row: dict[str, str]) -> str:
+    segment = str(row.get("research_segment", "") or "").strip().lower()
+    if segment == "proven winner":
+        return "Must Review Today"
+    if segment == "fast mover":
+        return "Fast Movers"
+    if segment == "early opportunity":
+        return "New Breakouts"
     if _is_top_winner(row) or _is_top_10(row):
         return "Must Review Today"
     if _is_new_breakout(row):
@@ -746,7 +756,18 @@ def _ensure_decision_fields(row: dict[str, str]) -> None:
     badges = _badges_for_row(row)
     badge_count = len(badges)
     opportunity_score = _to_int(row.get("opportunity_score", "")) or 0
-    decision_score = opportunity_score + top_rank_score + velocity_score + newness_score + bsr_score + pod_score + (badge_count * 5)
+    validation_score = _to_int(row.get("validation_score", "")) or top_rank_score + bsr_score
+    momentum_score = _to_int(row.get("momentum_score", "")) or velocity_score
+    stability_score = _to_int(row.get("stability_score", "")) or 0
+    freshness_score = _to_int(row.get("freshness_score", "")) or newness_score
+    decision_score = (
+        (opportunity_score * 2)
+        + validation_score
+        + momentum_score
+        + int(stability_score * 0.5)
+        + int(freshness_score * 0.25)
+        + (badge_count * 3)
+    )
     winner_signal_score = _winner_signal_score(row)
     row["growth_velocity"] = _format_decimal(growth_velocity)
     row["top_rank_score"] = str(top_rank_score)
@@ -863,6 +884,7 @@ def _priority_board_csv_rows(rows: list[dict[str, str]]) -> list[dict[str, str]]
                 "previous_display_rank": row.get("previous_display_rank", ""),
                 "display_rank_change": row.get("display_rank_change", "") or row.get("source_rank_change", "") or _rank_change(row),
                 "growth_velocity": row.get("growth_velocity", ""),
+                **{field: row.get(field, "") for field in RESEARCH_SCORE_FIELDS},
                 "opportunity_score": row.get("opportunity_score", ""),
                 "primary_bsr_rank": row.get("primary_bsr_rank", "") or row.get("bsr_rank", ""),
                 "sub_bsr_rank": row.get("sub_bsr_rank", ""),
@@ -2530,6 +2552,8 @@ def _winner_source_quality_score(row: dict[str, str]) -> int:
 
 
 def _is_new_winner(row: dict[str, str]) -> bool:
+    if str(row.get("research_segment", "") or "").strip().lower() in {"early opportunity", "proven winner"}:
+        return True
     labels = _classification_labels(row)
     return (
         "new_win" in labels
@@ -2539,10 +2563,13 @@ def _is_new_winner(row: dict[str, str]) -> bool:
 
 
 def _is_fast_rising(row: dict[str, str]) -> bool:
-    return _rank_movement_value(row) >= 10
+    segment = str(row.get("research_segment", "") or "").strip().lower()
+    return segment == "fast mover" or (_to_int(row.get("momentum_score", "")) or 0) >= 75 or _rank_movement_value(row) >= 10
 
 
 def _is_stable_winner(row: dict[str, str]) -> bool:
+    if str(row.get("research_segment", "") or "").strip().lower() == "proven winner":
+        return True
     labels = _classification_labels(row)
     days_seen = _to_int(row.get("days_seen", "")) or 0
     return "winner" in labels or (_product_display_rank(row) <= 10 and days_seen >= 7)
@@ -2616,16 +2643,21 @@ def _is_top_10(row: dict[str, str]) -> bool:
 
 
 def _derived_is_top_winner(row: dict[str, str]) -> bool:
+    if str(row.get("research_segment", "") or "").strip().lower() == "proven winner":
+        return True
     labels = _classification_labels(row)
     alert_type = row.get("alert_type", "").strip().lower()
     return "winner" in labels or alert_type == "winner" or _product_display_rank(row) <= 10
 
 
 def _derived_is_fast_mover(row: dict[str, str]) -> bool:
-    return _rank_movement_value(row) >= 10
+    segment = str(row.get("research_segment", "") or "").strip().lower()
+    return segment == "fast mover" or (_to_int(row.get("momentum_score", "")) or 0) >= 75 or _rank_movement_value(row) >= 10
 
 
 def _derived_is_new_breakout(row: dict[str, str]) -> bool:
+    if str(row.get("research_segment", "") or "").strip().lower() == "early opportunity":
+        return True
     labels = _classification_labels(row)
     return "new_win" in labels or (_is_recent_product(row) and (_rank_movement_value(row) >= 5 or _product_display_rank(row) <= 20))
 

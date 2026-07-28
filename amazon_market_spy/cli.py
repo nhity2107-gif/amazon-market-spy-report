@@ -47,7 +47,7 @@ from .notifications import (
 )
 from .parser import parse_amazon_search_results
 from .niche import classify_niche, ensure_niche_fields
-from .pod import classify_pod, ensure_pod_fields
+from .pod import classify_pod_row, ensure_pod_fields
 from .product_details import (
     ensure_detail_fix_fields,
     extract_detail_page_fields,
@@ -65,6 +65,7 @@ from .reporting import (
     PRODUCT_FIELDS,
     RANK_TREND_FIELDS,
     RANK_AUDIT_FIELDS,
+    RESEARCH_SCORE_FIELDS,
     SELLER_INTELLIGENCE_FIELDS,
     SUMMARY_FIELDS,
     SOURCE_TREND_FIELDS,
@@ -2264,7 +2265,7 @@ def apply_display_rank_metrics(rows: list[dict[str, str]], historical_rows: list
         if not source_row:
             continue
         changed = False
-        for field in [*DISPLAY_RANK_FIELDS, *SOURCE_HISTORY_FIELDS, *EVIDENCE_FIELDS, *PRODUCT_EVIDENCE_FIELDS]:
+        for field in [*DISPLAY_RANK_FIELDS, *RESEARCH_SCORE_FIELDS, *SOURCE_HISTORY_FIELDS, *EVIDENCE_FIELDS, *PRODUCT_EVIDENCE_FIELDS]:
             value = source_row.get(field, "")
             if value and row.get(field, "") != value:
                 row[field] = value
@@ -2455,15 +2456,7 @@ def _merge_detail_cache_entry(row: dict[str, str], cached: dict[str, str], *, me
         row["title"] = cached_title
         row["title_source"] = "detail_cache"
         row["title_fixed"] = cached.get("title_fixed", "") or "true"
-        row.update(
-            classify_pod(
-                row.get("title", ""),
-                row.get("category", ""),
-                row.get("source_name", ""),
-                row.get("seller_name", ""),
-                row.get("badge", ""),
-            )
-        )
+        row.update(classify_pod_row(row))
         row.update(
             classify_niche(
                 title=row.get("title", ""),
@@ -2759,15 +2752,7 @@ def apply_detail_fixes(rows: list[dict[str, str]], fixes_by_asin: dict[str, dict
             row["title"] = fix["title"]
             row["title_source"] = "detail_page"
             row["title_fixed"] = "true"
-            row.update(
-                classify_pod(
-                    row.get("title", ""),
-                    row.get("category", ""),
-                    row.get("source_name", ""),
-                    row.get("seller_name", ""),
-                    row.get("badge", ""),
-                )
-            )
+            row.update(classify_pod_row(row))
             row.update(
                 classify_niche(
                     title=row.get("title", ""),

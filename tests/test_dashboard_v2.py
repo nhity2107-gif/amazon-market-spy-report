@@ -1188,7 +1188,7 @@ class DashboardV2Tests(unittest.TestCase):
         )
         self.assertTrue(all(card["url"].startswith("product_explorer.html?q=Lake%20House&focus=") for card in row["representative_products"]))
 
-    def test_dashboard_v2_finalization_does_not_introduce_new_scores(self) -> None:
+    def test_dashboard_v2_finalization_exposes_research_scores_without_score_cards(self) -> None:
         with tempfile.TemporaryDirectory() as temp_dir:
             root = Path(temp_dir)
             _write_service_fixture(root)
@@ -1204,9 +1204,12 @@ class DashboardV2Tests(unittest.TestCase):
             self.assertNotIn("Opportunity Score", html, filename)
 
         self.assertNotIn("decision_score", v2_pages.PRODUCT_INDEX_FIELDS)
-        self.assertNotIn("opportunity_score", v2_pages.PRODUCT_INDEX_FIELDS)
         self.assertNotIn("decisionScore", "".join(v2_pages.PRODUCT_INDEX_FIELDS))
-        self.assertNotIn("opportunityScore", "".join(v2_pages.PRODUCT_INDEX_FIELDS))
+        self.assertIn("validation_score", v2_pages.PRODUCT_INDEX_FIELDS)
+        self.assertIn("momentum_score", v2_pages.PRODUCT_INDEX_FIELDS)
+        self.assertIn("stability_score", v2_pages.PRODUCT_INDEX_FIELDS)
+        self.assertIn("freshness_score", v2_pages.PRODUCT_INDEX_FIELDS)
+        self.assertIn("opportunity_score", v2_pages.PRODUCT_INDEX_FIELDS)
 
     def test_product_explorer_filters_and_sorting_work_from_index_before_detail_load(self) -> None:
         with tempfile.TemporaryDirectory() as temp_dir:

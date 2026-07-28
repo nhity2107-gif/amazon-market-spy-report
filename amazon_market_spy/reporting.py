@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import csv
+import math
 from collections import defaultdict
 from collections.abc import Iterable
 from datetime import date, datetime, timedelta
@@ -36,12 +37,33 @@ from .utils import ensure_parent, is_asin
 
 SourceMetadata = dict[tuple[str, str, str], dict[str, str]]
 
-SCORE_COMPONENT_FIELDS = [
+LEGACY_SCORE_COMPONENT_FIELDS = [
     "pod_component",
     "momentum_component",
     "market_component",
     "competition_component",
     "niche_component",
+]
+
+RESEARCH_SCORE_FIELDS = [
+    "display_strength",
+    "rank_strength",
+    "display_momentum",
+    "rank_momentum",
+    "validation_score",
+    "momentum_score",
+    "stability_score",
+    "freshness_score",
+    "validation_confidence",
+    "momentum_confidence",
+    "stability_confidence",
+    "research_segment",
+    "score_reason",
+]
+
+SCORE_COMPONENT_FIELDS = [
+    *LEGACY_SCORE_COMPONENT_FIELDS,
+    *RESEARCH_SCORE_FIELDS,
 ]
 
 DISPLAY_RANK_FIELDS = [
@@ -136,8 +158,12 @@ PRODUCT_FIELDS = [
     "priority",
     "asin",
     "is_pod",
+    "production_model",
+    "production_confidence",
+    "production_reason",
     "pod_type",
     "pod_score",
+    "pod_confidence",
     "pod_reason",
     *EVIDENCE_FIELDS,
     *PRODUCT_EVIDENCE_FIELDS,
@@ -149,6 +175,7 @@ PRODUCT_FIELDS = [
     "display_rank",
     "display_order",
     *DISPLAY_RANK_FIELDS,
+    *RESEARCH_SCORE_FIELDS,
     "rank",
     "rank_basis",
     "position",
@@ -246,10 +273,16 @@ RANK_TREND_FIELDS = [
     "review_growth_7d",
     "review_growth_30d",
     "review_velocity_score",
+    "opportunity_score",
     *DISPLAY_RANK_FIELDS,
+    *RESEARCH_SCORE_FIELDS,
     "is_pod",
+    "production_model",
+    "production_confidence",
+    "production_reason",
     "pod_type",
     "pod_score",
+    "pod_confidence",
     "pod_reason",
     *EVIDENCE_FIELDS,
     *PRODUCT_EVIDENCE_FIELDS,
@@ -371,8 +404,12 @@ HISTORICAL_COMPARISON_FIELDS = [
     "category",
     "asin",
     "is_pod",
+    "production_model",
+    "production_confidence",
+    "production_reason",
     "pod_type",
     "pod_score",
+    "pod_confidence",
     "pod_reason",
     *EVIDENCE_FIELDS,
     *PRODUCT_EVIDENCE_FIELDS,
@@ -430,8 +467,12 @@ LARK_TREND_ALERT_FIELDS = [
     *DISPLAY_RANK_FIELDS,
     "asin",
     "is_pod",
+    "production_model",
+    "production_confidence",
+    "production_reason",
     "pod_type",
     "pod_score",
+    "pod_confidence",
     "pod_reason",
     *EVIDENCE_FIELDS,
     *PRODUCT_EVIDENCE_FIELDS,
@@ -763,6 +804,44 @@ def build_rank_trends(
         niche_fields = ensure_niche_fields(latest)
         category_rank_fields = ensure_category_rank_fields(latest)
         detail_fields = ensure_detail_fix_fields(latest)
+        latest_date = _row_snapshot_date(latest)
+        first_seen_date = _row_snapshot_date(first)
+        classification = _classification(
+            first_seen_date=first_seen_date,
+            current_date=latest_date,
+            current_rank=latest_rank,
+            days_seen=days_seen,
+            rank_change_previous=rank_change,
+        )
+        score_breakdown = _opportunity_score_breakdown(
+            pod_score=_to_int(pod_fields.get("pod_score", "")) or 0,
+            production_model=pod_fields.get("production_model", ""),
+            classification=classification,
+            days_seen=days_seen,
+            rank_change_previous=rank_change,
+            subcategory_rank=_to_int(category_rank_fields.get("sub_bsr_rank", "")),
+            subcategory_rank_score=_to_int(category_rank_fields.get("subcategory_rank_score", "")) or 0,
+            review_count=review_count,
+            review_growth_7d=review_growth_7d,
+            review_growth_30d=review_growth_30d,
+            review_rating=review_rating,
+            source_type=_source_type(latest),
+            is_best_seller_badge=_contains_any(
+                " ".join([latest.get("badge", ""), latest.get("badges", ""), latest.get("evidence_labels", "")]).lower(),
+                ["best seller", "category winner"],
+            ),
+            is_new_release_source=_source_type(latest) == "category_new_release",
+            display_rank_change=rank_change,
+            display_percentile=None,
+            current_display_rank=latest_rank,
+            products_in_source=0,
+            all_rows=rows,
+            current_date=latest_date,
+            first_seen_date=first_seen_date,
+            latest_seen_date=latest_date,
+            source_count=1,
+            total_snapshots=total_snapshots,
+        )
 
         trends.append(
             {
@@ -794,9 +873,15 @@ def build_rank_trends(
                 "review_growth_7d": str(review_growth_7d),
                 "review_growth_30d": str(review_growth_30d),
                 "review_velocity_score": str(review_velocity_score),
+                "opportunity_score": score_breakdown["opportunity_score"],
+                **{field: score_breakdown[field] for field in RESEARCH_SCORE_FIELDS},
                 "is_pod": pod_fields.get("is_pod", ""),
+                "production_model": pod_fields.get("production_model", ""),
+                "production_confidence": pod_fields.get("production_confidence", ""),
+                "production_reason": pod_fields.get("production_reason", ""),
                 "pod_type": pod_fields.get("pod_type", ""),
                 "pod_score": pod_fields.get("pod_score", ""),
+                "pod_confidence": pod_fields.get("pod_confidence", ""),
                 "pod_reason": pod_fields.get("pod_reason", ""),
                 "niche_primary": niche_fields.get("niche_primary", ""),
                 "niche_secondary": niche_fields.get("niche_secondary", ""),
@@ -867,8 +952,12 @@ def build_product_history_rows(
                     **{field: row.get(field, "") for field in CATEGORY_RANK_FIELDS},
                     **{field: row.get(field, "") for field in NICHE_FIELDS},
                     "is_pod": row.get("is_pod", ""),
+                    "production_model": row.get("production_model", ""),
+                    "production_confidence": row.get("production_confidence", ""),
+                    "production_reason": row.get("production_reason", ""),
                     "pod_type": row.get("pod_type", ""),
                     "pod_score": row.get("pod_score", ""),
+                    "pod_confidence": row.get("pod_confidence", ""),
                     "pod_reason": row.get("pod_reason", ""),
                 }
             )
@@ -952,9 +1041,12 @@ def build_historical_comparison(
     today_path = today_snapshot_path if today_snapshot_path is not None else paths[-1]
     today_rows = _consolidate_snapshot_rows(read_csv(today_path), metadata)
     today_source_counts: dict[tuple[str, str, str], int] = defaultdict(int)
+    today_sources_by_asin: dict[str, set[tuple[str, str, str]]] = defaultdict(set)
     for row in today_rows:
         if _valid_asin(row):
-            today_source_counts[_source_instance_key(row, metadata)] += 1
+            source_key = _source_instance_key(row, metadata)
+            today_source_counts[source_key] += 1
+            today_sources_by_asin[_normalized_asin(row)].add(source_key)
     try:
         today_index = paths.index(today_path)
     except ValueError:
@@ -1017,25 +1109,32 @@ def build_historical_comparison(
         )
         score_breakdown = _opportunity_score_breakdown(
             pod_score=_to_int(pod_fields.get("pod_score", "")) or 0,
+            production_model=pod_fields.get("production_model", ""),
             classification=classification,
             days_seen=days_seen,
             rank_change_previous=rank_change_previous,
-            category_rank=_to_int(category_rank_fields.get("primary_bsr_rank", "") or category_rank_fields.get("bsr_rank", "")),
             subcategory_rank=_to_int(category_rank_fields.get("sub_bsr_rank", "")),
             subcategory_rank_score=_to_int(category_rank_fields.get("subcategory_rank_score", "")) or 0,
             review_count=review_count,
             review_growth_7d=review_growth_7d,
             review_growth_30d=review_growth_30d,
             review_rating=review_rating,
-            niche_score=_to_int(niche_fields.get("niche_score", "")) or 0,
-            title=today.get("title", ""),
-            category=today.get("category", ""),
-            source_name=_display_source_name(today, source_meta),
-            niche_primary=niche_fields.get("niche_primary", ""),
-            niche_tags=niche_fields.get("niche_tags", ""),
-            pod_reason=pod_fields.get("pod_reason", ""),
+            source_type=source_type,
+            is_best_seller_badge=_contains_any(
+                " ".join([today.get("badge", ""), today.get("badges", ""), today.get("evidence_labels", "")]).lower(),
+                ["best seller", "category winner"],
+            ),
+            is_new_release_source=source_type == "category_new_release",
             display_rank_change=_to_int(display_rank_fields.get("display_rank_change", "")),
             display_percentile=_to_float(display_rank_fields.get("display_percentile", "")),
+            current_display_rank=_display_rank_number(today),
+            products_in_source=today_source_counts.get(_source_instance_key(today, metadata), 0),
+            all_rows=all_rows,
+            current_date=today_date,
+            first_seen_date=first_seen_date,
+            latest_seen_date=today_date,
+            source_count=len(today_sources_by_asin.get(_normalized_asin(today), set())) or 1,
+            total_snapshots=today_index + 1,
         )
 
         comparisons.append(
@@ -1051,8 +1150,12 @@ def build_historical_comparison(
                 "category": today.get("category", ""),
                 "asin": _normalized_asin(today),
                 "is_pod": pod_fields.get("is_pod", ""),
+                "production_model": pod_fields.get("production_model", ""),
+                "production_confidence": pod_fields.get("production_confidence", ""),
+                "production_reason": pod_fields.get("production_reason", ""),
                 "pod_type": pod_fields.get("pod_type", ""),
                 "pod_score": pod_fields.get("pod_score", ""),
+                "pod_confidence": pod_fields.get("pod_confidence", ""),
                 "pod_reason": pod_fields.get("pod_reason", ""),
                 "niche_primary": niche_fields.get("niche_primary", ""),
                 "niche_secondary": niche_fields.get("niche_secondary", ""),
@@ -1140,6 +1243,9 @@ def build_lark_trend_alerts(
         labels = _classification_labels(row.get("classification", ""))
         if "declining" in labels:
             continue
+        research_segment = row.get("research_segment", "").strip().lower()
+        if research_segment == "watchlist" and not labels.intersection({"new_win", "rising", "winner"}):
+            continue
         opportunity_score = _to_int(row.get("opportunity_score", "")) or 0
         if not (labels.intersection({"new_win", "rising", "winner"}) or opportunity_score >= 60):
             continue
@@ -1159,8 +1265,12 @@ def build_lark_trend_alerts(
                 **{field: row.get(field, "") for field in DISPLAY_RANK_FIELDS},
                 "asin": asin,
                 "is_pod": row.get("is_pod", ""),
+                "production_model": row.get("production_model", ""),
+                "production_confidence": row.get("production_confidence", ""),
+                "production_reason": row.get("production_reason", ""),
                 "pod_type": row.get("pod_type", ""),
                 "pod_score": row.get("pod_score", ""),
+                "pod_confidence": row.get("pod_confidence", ""),
                 "pod_reason": row.get("pod_reason", ""),
                 **{field: row.get(field, "") for field in EVIDENCE_FIELDS},
                 **{field: row.get(field, "") for field in PRODUCT_EVIDENCE_FIELDS},
@@ -1551,6 +1661,10 @@ def filter_by_classification(rows: list[dict[str, str]], label: str) -> list[dic
 
 def _is_opportunity_row(row: dict[str, str]) -> bool:
     labels = _classification_labels(row.get("classification", ""))
+    if row.get("research_segment", "").strip().lower() == "watchlist" and not labels.intersection(
+        {"new_win", "rising", "winner"}
+    ):
+        return False
     opportunity_score = _to_int(row.get("opportunity_score", "")) or 0
     return bool(labels.intersection({"new_win", "rising", "winner"}) or opportunity_score >= 60)
 
@@ -1829,6 +1943,401 @@ def _historical_status(history: list[dict[str, str]], rank_delta: int | None) ->
     return "declined_vs_previous_seen"
 
 
+def _clamp_score(value: float | int, *, lower: int = 0, upper: int = 100) -> int:
+    return max(lower, min(upper, int(round(value))))
+
+
+def _format_score(value: int | None) -> str:
+    return str(value) if value is not None else ""
+
+
+def _weighted_available(components: list[tuple[int | None, float]]) -> int | None:
+    available = [(score, weight) for score, weight in components if score is not None]
+    if not available:
+        return None
+    weight_total = sum(weight for _, weight in available)
+    if weight_total <= 0:
+        return None
+    return _clamp_score(sum(score * weight for score, weight in available) / weight_total)
+
+
+def _display_strength_score(
+    position: int | None,
+    products_in_source: int,
+    display_percentile: float | None,
+) -> int | None:
+    if position is None or position <= 0:
+        return None
+    absolute = 100 / (1 + ((position - 1) / 30))
+    context_score: float | None = None
+    if display_percentile is not None and display_percentile > 0:
+        context_score = max(0, 100 - display_percentile)
+    elif products_in_source > 1:
+        context_score = max(0, 100 * (1 - ((position - 1) / (products_in_source - 1))))
+    score = (absolute * 0.85) + ((context_score if context_score is not None else absolute) * 0.15)
+    return _clamp_score(score)
+
+
+def _subcategory_rank_number(row: dict[str, str]) -> int | None:
+    return _to_int(row.get("sub_bsr_rank", "") or row.get("bsr_evidence_best_sub_bsr", ""))
+
+
+def _subcategory_rank_strength_score(
+    rank: int | None,
+    fallback_score: int,
+    source_type: str,
+) -> int | None:
+    if rank is None or rank <= 0:
+        return _clamp_score(fallback_score) if fallback_score > 0 else None
+    base = 100 / math.pow(1 + ((rank - 1) / 500), 0.55)
+    source_key = source_type.strip().lower()
+    if source_key == "category_new_release":
+        base += 3
+    return _clamp_score(base)
+
+
+def _dated_metric_series(rows: list[dict[str, str]], value_fn) -> list[tuple[date | None, int]]:
+    series: list[tuple[date | None, int]] = []
+    for row in rows:
+        value = value_fn(row)
+        if value is None or value <= 0:
+            continue
+        series.append((_row_snapshot_date(row), value))
+    return series
+
+
+def _series_momentum_score(series: list[tuple[date | None, int]]) -> int | None:
+    if not series:
+        return None
+    if len(series) == 1:
+        return 50
+
+    first_date, first = series[0]
+    latest_date, latest = series[-1]
+    _, previous = series[-2]
+    total_improvement = first - latest
+    recent_improvement = previous - latest
+    total_pct = total_improvement / first if first > 0 else 0
+    recent_pct = recent_improvement / previous if previous > 0 else 0
+    days = 1
+    if first_date is not None and latest_date is not None:
+        days = max(1, (latest_date - first_date).days)
+    else:
+        days = max(1, len(series) - 1)
+    velocity_pct = total_pct / days
+    consistency = _direction_consistency([value for _, value in series])
+    score = (
+        50
+        + (28 * math.tanh(total_pct * 2.4))
+        + (14 * math.tanh(recent_pct * 3.0))
+        + (8 * math.tanh(velocity_pct * 20))
+        + (8 * consistency)
+    )
+    if len(series) == 2:
+        score = min(score, 88)
+    return _clamp_score(score)
+
+
+def _direction_consistency(values: list[int]) -> float:
+    if len(values) < 2:
+        return 0
+    improving = 0
+    declining = 0
+    for previous, current in zip(values, values[1:]):
+        delta = previous - current
+        if delta > 0:
+            improving += 1
+        elif delta < 0:
+            declining += 1
+    total = improving + declining
+    if total == 0:
+        return 0
+    return (improving - declining) / total
+
+
+def _series_stability_score(series: list[tuple[date | None, int]], *, strong_threshold: int) -> int | None:
+    if not series:
+        return None
+    values = [value for _, value in series]
+    if len(values) == 1:
+        return 45
+    logs = [math.log(max(1, value)) for value in values]
+    log_span = max(logs) - min(logs)
+    score = 100 - min(80, log_span * 22)
+    reversals = _direction_reversals(values)
+    score -= reversals * 6
+    strong_share = sum(1 for value in values if value <= strong_threshold) / len(values)
+    if strong_share >= 0.75:
+        score += 8
+    elif strong_share >= 0.5:
+        score += 4
+    if len(values) < 4:
+        score -= (4 - len(values)) * 7
+    return _clamp_score(score)
+
+
+def _direction_reversals(values: list[int]) -> int:
+    directions: list[int] = []
+    for previous, current in zip(values, values[1:]):
+        delta = previous - current
+        if delta > 0:
+            directions.append(1)
+        elif delta < 0:
+            directions.append(-1)
+    return sum(1 for previous, current in zip(directions, directions[1:]) if previous != current)
+
+
+def _freshness_score(
+    first_seen_date: date | None,
+    latest_seen_date: date | None,
+    current_date: date | None,
+    observation_count: int,
+) -> int:
+    if first_seen_date is None or current_date is None:
+        return 35
+    age_days = max(0, (current_date - first_seen_date).days)
+    if age_days <= 1:
+        score = 100
+    elif age_days <= 3:
+        score = 92
+    elif age_days <= 7:
+        score = 82
+    elif age_days <= 14:
+        score = 68
+    elif age_days <= 30:
+        score = 52
+    elif age_days <= 60:
+        score = 35
+    else:
+        score = 20
+    if latest_seen_date is not None and current_date is not None:
+        stale_days = max(0, (current_date - latest_seen_date).days)
+        if stale_days > 0:
+            score -= min(25, stale_days * 5)
+    if observation_count <= 2 and age_days <= 7:
+        score += 3
+    return _clamp_score(score)
+
+
+def _score_confidence(
+    *,
+    observation_count: int,
+    days_seen: int,
+    primary_component_count: int,
+    source_count: int,
+    total_snapshots: int,
+    continuity_count: int,
+    mode: str,
+) -> int:
+    continuity = continuity_count / total_snapshots if total_snapshots > 0 else 0
+    if mode == "momentum":
+        score = (
+            min(35, max(0, observation_count - 1) * 10)
+            + min(15, days_seen * 2)
+            + (18 if primary_component_count >= 2 else 10 if primary_component_count == 1 else 0)
+            + min(10, source_count * 4)
+            + min(5, int(continuity * 5))
+        )
+    elif mode == "stability":
+        score = (
+            min(45, observation_count * 9)
+            + min(22, days_seen * 3)
+            + (18 if primary_component_count >= 2 else 10 if primary_component_count == 1 else 0)
+            + min(8, source_count * 3)
+            + min(7, int(continuity * 7))
+        )
+    else:
+        score = (
+            min(30, observation_count * 6)
+            + min(18, days_seen * 2)
+            + (35 if primary_component_count >= 2 else 20 if primary_component_count == 1 else 0)
+            + min(10, source_count * 4)
+            + min(7, int(continuity * 7))
+        )
+    return _clamp_score(score)
+
+
+def _validation_secondary_adjustment(
+    *,
+    is_best_seller_badge: bool,
+    review_count: int | None,
+    review_rating: float | None,
+    days_seen: int,
+    source_count: int,
+) -> int:
+    adjustment = 0
+    if is_best_seller_badge:
+        adjustment += 2
+    if review_count is not None and review_rating is not None:
+        if review_count >= 500 and review_rating >= 4.4:
+            adjustment += 3
+        elif review_count >= 100 and review_rating >= 4.2:
+            adjustment += 2
+        elif review_count >= 25 and review_rating >= 4.0:
+            adjustment += 1
+    if days_seen >= 14:
+        adjustment += 3
+    elif days_seen >= 7:
+        adjustment += 2
+    if source_count <= 1 and days_seen <= 1:
+        adjustment -= 2
+    return max(-5, min(5, adjustment))
+
+
+def _momentum_secondary_adjustment(
+    *,
+    review_growth_7d: int,
+    review_growth_30d: int,
+    is_new_release_source: bool,
+) -> int:
+    growth = max(0, review_growth_7d, review_growth_30d)
+    adjustment = 0
+    if review_growth_7d >= 20 or review_growth_30d >= 50:
+        adjustment += 5
+    elif review_growth_7d >= 10 or review_growth_30d >= 25:
+        adjustment += 4
+    elif review_growth_7d >= 5 or review_growth_30d >= 10:
+        adjustment += 2
+    elif growth > 0:
+        adjustment += 1
+    if is_new_release_source:
+        adjustment += 3
+    return max(-5, min(8, adjustment))
+
+
+def _competition_adjustment(review_count: int | None, review_rating: float | None) -> int:
+    if review_count is None:
+        return 0
+    if review_count >= 3000:
+        return -5
+    if review_count >= 1000:
+        return -3
+    if review_count <= 100 and (review_rating is None or review_rating >= 4.0):
+        return 3
+    if review_count <= 300:
+        return 1
+    return 0
+
+
+def _pod_opportunity_adjustment(production_model: str, pod_score: int) -> int:
+    model = production_model.strip().lower()
+    if model == "pod":
+        return 8
+    if model == "unknown":
+        return -8
+    if model == "non_pod":
+        return -35
+    return 6 if pod_score >= 40 else -5 if pod_score < 0 else 0
+
+
+def _opportunity_from_scores(
+    *,
+    validation_score: int,
+    momentum_score: int,
+    stability_score: int,
+    freshness_score: int,
+    production_model: str,
+    pod_score: int,
+    review_count: int | None,
+    review_rating: float | None,
+    confidence_floor: int,
+) -> int:
+    foundation = math.exp((0.55 * math.log(max(1, validation_score))) + (0.45 * math.log(max(1, momentum_score))))
+    if validation_score < 35:
+        foundation *= 0.65
+    if momentum_score < 35:
+        foundation *= 0.65
+    score = foundation
+    score += (stability_score - 50) * 0.12
+    if freshness_score >= 60:
+        score += (freshness_score - 60) * 0.12
+    else:
+        score -= (60 - freshness_score) * 0.08
+    score += _competition_adjustment(review_count, review_rating)
+    score += _pod_opportunity_adjustment(production_model, pod_score)
+    if confidence_floor < 35:
+        score = min(score, 60)
+    elif confidence_floor < 50:
+        score = min(score, 75)
+    if production_model.strip().lower() == "non_pod":
+        score = min(35, score * 0.35)
+    elif production_model.strip().lower() == "unknown":
+        score = min(65, score * 0.75)
+    return _clamp_score(score)
+
+
+def _research_segment(
+    *,
+    validation_score: int,
+    momentum_score: int,
+    stability_score: int,
+    freshness_score: int,
+    opportunity_score: int,
+    validation_confidence: int,
+    momentum_confidence: int,
+    stability_confidence: int,
+    production_model: str,
+) -> str:
+    model = production_model.strip().lower()
+    if momentum_score <= 35 and validation_score >= 40 and momentum_confidence >= 45:
+        return "Declining"
+    if momentum_score >= 75 and momentum_confidence < 50:
+        return "Watchlist"
+    if (
+        model == "pod"
+        and momentum_score >= 68
+        and freshness_score >= 65
+        and 35 <= validation_score < 82
+        and momentum_confidence >= 40
+        and opportunity_score >= 55
+    ):
+        return "Early Opportunity"
+    if momentum_score >= 78 and validation_score >= 45 and momentum_confidence >= 50:
+        return "Fast Mover"
+    if (
+        validation_score >= 75
+        and stability_score >= 70
+        and momentum_score >= 45
+        and validation_confidence >= 50
+        and stability_confidence >= 45
+    ):
+        return "Proven Winner"
+    return "Watchlist"
+
+
+def _score_reason(
+    *,
+    segment: str,
+    display_strength: int | None,
+    rank_strength: int | None,
+    display_momentum: int | None,
+    rank_momentum: int | None,
+    validation_score: int,
+    momentum_score: int,
+    stability_score: int,
+    production_model: str,
+    confidence_floor: int,
+) -> str:
+    model = production_model.strip().lower()
+    if model == "non_pod" and validation_score >= 70:
+        return "Strong current display position and sub-category rank, but low POD opportunity."
+    if confidence_floor < 50 and momentum_score >= 70:
+        return "Fast movement in display order and rank, but limited observation history."
+    if segment == "Fast Mover":
+        if (display_momentum or 0) >= 70 and (rank_momentum or 0) >= 60:
+            return "Rapid display-order improvement with improving sub-category rank."
+        return "Rapid display-order improvement with moderate rank support."
+    if segment == "Early Opportunity":
+        return "New POD product with rising display order and improving sub-category rank."
+    if segment == "Proven Winner":
+        return "Strong current display position and top sub-category rank with stable history."
+    if segment == "Declining":
+        return "Display order and sub-category rank are moving downward."
+    if display_strength is not None or rank_strength is not None:
+        return "Interesting Amazon position signals, but confidence is still limited."
+    return "Insufficient display-order or sub-category-rank evidence."
+
+
 def _classification(
     first_seen_date: date | None,
     current_date: date | None,
@@ -1857,55 +2366,155 @@ def _classification(
 def _opportunity_score_breakdown(
     *,
     pod_score: int,
+    production_model: str,
     classification: str,
     days_seen: int,
     rank_change_previous: int | None,
-    category_rank: int | None,
     subcategory_rank: int | None,
     subcategory_rank_score: int,
     review_count: int | None,
     review_growth_7d: int,
     review_growth_30d: int,
     review_rating: float | None,
-    niche_score: int,
-    title: str,
-    category: str,
-    source_name: str,
-    niche_primary: str,
-    niche_tags: str,
-    pod_reason: str,
+    source_type: str,
+    is_best_seller_badge: bool,
+    is_new_release_source: bool,
     display_rank_change: int | None,
     display_percentile: float | None,
+    current_display_rank: int | None,
+    products_in_source: int,
+    all_rows: list[dict[str, str]],
+    current_date: date | None,
+    first_seen_date: date | None,
+    latest_seen_date: date | None,
+    source_count: int,
+    total_snapshots: int,
 ) -> dict[str, str]:
     labels = _classification_labels(classification)
+    display_strength = _display_strength_score(current_display_rank, products_in_source, display_percentile)
+    rank_strength = _subcategory_rank_strength_score(subcategory_rank, subcategory_rank_score, source_type)
+    display_series = _dated_metric_series(all_rows, _display_rank_number)
+    rank_series = _dated_metric_series(all_rows, _subcategory_rank_number)
+    display_momentum = _series_momentum_score(display_series)
+    rank_momentum = _series_momentum_score(rank_series)
+    primary_component_count = sum(1 for value in (display_strength, rank_strength) if value is not None)
+
+    validation_base = _weighted_available([(display_strength, 60), (rank_strength, 40)])
+    validation_score = _clamp_score(
+        (validation_base if validation_base is not None else 0)
+        + _validation_secondary_adjustment(
+            is_best_seller_badge=is_best_seller_badge or "winner" in labels,
+            review_count=review_count,
+            review_rating=review_rating,
+            days_seen=days_seen,
+            source_count=source_count,
+        )
+    )
+    momentum_base = _weighted_available([(display_momentum, 60), (rank_momentum, 40)])
+    momentum_score = _clamp_score(
+        (momentum_base if momentum_base is not None else 50)
+        + _momentum_secondary_adjustment(
+            review_growth_7d=review_growth_7d,
+            review_growth_30d=review_growth_30d,
+            is_new_release_source=is_new_release_source,
+        )
+    )
+    stability_score = _weighted_available(
+        [
+            (_series_stability_score(display_series, strong_threshold=10), 60),
+            (_series_stability_score(rank_series, strong_threshold=100), 40),
+        ]
+    )
+    if stability_score is None:
+        stability_score = 45
+    observation_count = len(all_rows)
+    freshness_score = _freshness_score(first_seen_date, latest_seen_date, current_date, observation_count)
+    validation_confidence = _score_confidence(
+        observation_count=observation_count,
+        days_seen=days_seen,
+        primary_component_count=primary_component_count,
+        source_count=source_count,
+        total_snapshots=total_snapshots,
+        continuity_count=observation_count,
+        mode="validation",
+    )
+    momentum_confidence = _score_confidence(
+        observation_count=observation_count,
+        days_seen=days_seen,
+        primary_component_count=sum(1 for value in (display_momentum, rank_momentum) if value is not None),
+        source_count=source_count,
+        total_snapshots=total_snapshots,
+        continuity_count=observation_count,
+        mode="momentum",
+    )
+    stability_confidence = _score_confidence(
+        observation_count=observation_count,
+        days_seen=days_seen,
+        primary_component_count=primary_component_count,
+        source_count=source_count,
+        total_snapshots=total_snapshots,
+        continuity_count=observation_count,
+        mode="stability",
+    )
+    confidence_floor = min(validation_confidence, momentum_confidence, stability_confidence)
+    opportunity_score = _opportunity_from_scores(
+        validation_score=validation_score,
+        momentum_score=momentum_score,
+        stability_score=stability_score,
+        freshness_score=freshness_score,
+        production_model=production_model,
+        pod_score=pod_score,
+        review_count=review_count,
+        review_rating=review_rating,
+        confidence_floor=confidence_floor,
+    )
+    research_segment = _research_segment(
+        validation_score=validation_score,
+        momentum_score=momentum_score,
+        stability_score=stability_score,
+        freshness_score=freshness_score,
+        opportunity_score=opportunity_score,
+        validation_confidence=validation_confidence,
+        momentum_confidence=momentum_confidence,
+        stability_confidence=stability_confidence,
+        production_model=production_model,
+    )
+    reason = _score_reason(
+        segment=research_segment,
+        display_strength=display_strength,
+        rank_strength=rank_strength,
+        display_momentum=display_momentum,
+        rank_momentum=rank_momentum,
+        validation_score=validation_score,
+        momentum_score=momentum_score,
+        stability_score=stability_score,
+        production_model=production_model,
+        confidence_floor=confidence_floor,
+    )
     components = {
         "pod_component": _weighted_component(_pod_strength_score(pod_score), 30),
-        "momentum_component": _weighted_component(
-            _momentum_strength_score(rank_change_previous, labels, days_seen, display_rank_change, display_percentile),
-            25,
-        ),
-        "market_component": _weighted_component(
-            _market_strength_score(category_rank, subcategory_rank, subcategory_rank_score),
-            20,
-        ),
+        "momentum_component": _weighted_component(momentum_score, 25),
+        "market_component": _weighted_component(validation_score, 20),
         "competition_component": _weighted_component(
             _competition_strength_score(review_count, review_growth_7d, review_growth_30d, review_rating),
             10,
         ),
-        "niche_component": _weighted_component(
-            _niche_strength_score(
-                niche_score=niche_score,
-                title=title,
-                category=category,
-                source_name=source_name,
-                niche_primary=niche_primary,
-                niche_tags=niche_tags,
-                pod_reason=pod_reason,
-            ),
-            15,
-        ),
+        "niche_component": _weighted_component(max(freshness_score, stability_score), 15),
+        "display_strength": _format_score(display_strength),
+        "rank_strength": _format_score(rank_strength),
+        "display_momentum": _format_score(display_momentum),
+        "rank_momentum": _format_score(rank_momentum),
+        "validation_score": str(validation_score),
+        "momentum_score": str(momentum_score),
+        "stability_score": str(stability_score),
+        "freshness_score": str(freshness_score),
+        "validation_confidence": str(validation_confidence),
+        "momentum_confidence": str(momentum_confidence),
+        "stability_confidence": str(stability_confidence),
+        "research_segment": research_segment,
+        "score_reason": reason,
+        "opportunity_score": str(opportunity_score),
     }
-    components["opportunity_score"] = str(min(100, sum(int(value) for value in components.values())))
     return components
 
 
