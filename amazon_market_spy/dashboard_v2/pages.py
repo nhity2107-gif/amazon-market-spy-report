@@ -114,7 +114,7 @@ def render_morning_brief(data: dict[str, object]) -> str:
 
 
 def render_product_explorer(data: dict[str, object]) -> str:
-    products = data["products"]
+    products = _product_explorer_products(data)
     first_product = products[0] if products else {}
     product_json = _safe_json_script(_product_index_payload(products))
     table = f"""    <div class="table-shell product-table-shell">
@@ -156,6 +156,10 @@ def render_product_explorer(data: dict[str, object]) -> str:
         <section>
           <h2>Product Type</h2>
           {_single_category_filter_control("product_type", "Product Type")}
+        </section>
+        <section>
+          <h2>POD Product</h2>
+          {_pod_filter_control()}
         </section>
         <section>
           <h2>Seller</h2>
@@ -295,7 +299,7 @@ def clean_product_explorer_detail_assets(output_dir: Path) -> None:
 
 
 def write_product_explorer_detail_assets(output_dir: Path, data: dict[str, object]) -> list[dict[str, object]]:
-    products = data.get("products", [])
+    products = _product_explorer_products(data)
     if not isinstance(products, list):
         return []
 
@@ -474,6 +478,11 @@ def render_market_explorer(data: dict[str, object]) -> str:
 def _dataset_info(data: dict[str, object]) -> dict[str, object]:
     info = data.get("dataset_info", {}) if isinstance(data, dict) else {}
     return info if isinstance(info, dict) else {}
+
+
+def _product_explorer_products(data: dict[str, object]) -> list[dict[str, object]]:
+    products = data.get("product_explorer_products", data.get("products", [])) if isinstance(data, dict) else []
+    return products if isinstance(products, list) else []
 
 
 PRIMARY_EVIDENCE_PRIORITY = [
@@ -2331,6 +2340,56 @@ def _single_category_filter_control(field: str, label: str) -> str:
             </label>"""
 
 
+DEFAULT_POD_FILTER = "pod"
+POD_FILTER_OPTIONS = (
+    ("all", "All Products"),
+    ("pod", "POD Products"),
+    ("non_pod", "Non-POD Products"),
+    ("unknown", "Unknown"),
+)
+POD_FILTER_VALUES = {value for value, _ in POD_FILTER_OPTIONS}
+POD_PRODUCT_VALUES = {"yes", "maybe"}
+NON_POD_PRODUCT_VALUES = {"no"}
+
+
+def _pod_filter_control() -> str:
+    options = "".join(
+        f'<option value="{escape(value)}"{" selected" if value == DEFAULT_POD_FILTER else ""}>{escape(label)}</option>'
+        for value, label in POD_FILTER_OPTIONS
+    )
+    return f"""            <label class="filter-control minimal-filter-control" for="product-filter-pod">
+              <span>POD Product</span>
+              <select id="product-filter-pod" class="select-input" data-pod-filter aria-label="POD Product filter">
+                {options}
+              </select>
+            </label>"""
+
+
+def _pod_filter_bucket(product: dict[str, object]) -> str:
+    value = str(product.get("is_pod", "") or "").strip().lower()
+    if value in POD_PRODUCT_VALUES:
+        return "pod"
+    if value in NON_POD_PRODUCT_VALUES:
+        return "non_pod"
+    return "unknown"
+
+
+def _normalize_pod_filter(value: object, *, default: str = DEFAULT_POD_FILTER) -> str:
+    normalized = str(value or "").strip().lower()
+    if normalized in POD_FILTER_VALUES:
+        return normalized
+    return default
+
+
+def _pod_filter_matches(product: dict[str, object], pod_filter: object = DEFAULT_POD_FILTER) -> bool:
+    normalized = _normalize_pod_filter(pod_filter)
+    return normalized == "all" or _pod_filter_bucket(product) == normalized
+
+
+def _filter_products_by_pod(products: list[dict[str, object]], pod_filter: object = DEFAULT_POD_FILTER) -> list[dict[str, object]]:
+    return [product for product in products if _pod_filter_matches(product, pod_filter)]
+
+
 def _advanced_filter_controls(*, exclude: set[str] | None = None) -> str:
     excluded = exclude or set()
     category_controls = [
@@ -2425,6 +2484,7 @@ PRODUCT_INDEX_FIELDS = (
     "source_days_seen",
     "source_rank_change",
     "product_type",
+    "is_pod",
     "recipient",
     "theme",
     "occasion",
@@ -2496,6 +2556,7 @@ def _product_index_record(product: dict[str, object], index: int) -> dict[str, o
     record["seller_days_seen"] = _best_source_days_seen(product, "seller")
     record["best_seller_days_seen"] = _best_source_days_seen(product, "best_seller")
     record["new_release_days_seen"] = _best_source_days_seen(product, "new_release")
+    record["pod_filter"] = _pod_filter_bucket(product)
     asin = str(product.get("asin", "") or "").strip().upper()
     if asin:
         record["amazon_path"] = f"/dp/{asin}"
@@ -2609,6 +2670,7 @@ def _product_explorer_script() -> str:
     const filterTextSummary = document.querySelector("[data-filter-text-summary]");
     const filterSummary = document.querySelector("[data-active-filter-summary]");
     const filterChips = document.querySelector("[data-active-filter-chips]");
+    const podFilter = document.querySelector("[data-pod-filter]");
     const preview = document.querySelector("[data-quick-preview]");
     const columnsToggle = document.querySelector("[data-columns-toggle]");
     const columnMenu = document.querySelector("[data-column-menu]");
@@ -2636,6 +2698,7 @@ def _product_explorer_script() -> str:
     const PAGE_SIZES = [50, 100, 200];
     const LOW_REVIEW_LIMIT = 50;
     const DEFAULT_PRESET = "research_today";
+    const DEFAULT_POD_FILTER = "pod";
     const DEFAULT_COLUMNS = new Set(["why", "momentum", "market_proof"]);
     const OPTIONAL_COLUMNS = {
       select: "Row Select",
@@ -2658,6 +2721,13 @@ def _product_explorer_script() -> str:
       occasion: { label: "Occasion", param: "occasion" },
       seller: { label: "Seller", param: "seller" },
     };
+    const POD_FILTERS = {
+      all: { label: "All Products" },
+      pod: { label: "POD Products" },
+      non_pod: { label: "Non-POD Products" },
+      unknown: { label: "Unknown" },
+    };
+    const POD_BUCKETS = new Set(["pod", "non_pod", "unknown"]);
     const RANGE_FIELDS = {
       score: { label: "Score", minParam: "score_min", maxParam: "score_max", value: (product) => product.scoreValue },
       growth: { label: "Growth", minParam: "growth_min", maxParam: "growth_max", value: (product) => product.growthValue },
@@ -2863,6 +2933,12 @@ def _product_explorer_script() -> str:
         resetPage();
         applyWorkspace({ updateUrl: true });
       });
+    });
+
+    podFilter?.addEventListener("change", () => {
+      state.pod = validPodFilter(podFilter.value, DEFAULT_POD_FILTER);
+      resetPage();
+      applyWorkspace({ updateUrl: true });
     });
 
     columnsToggle?.addEventListener("click", () => {
@@ -3114,6 +3190,7 @@ def _product_explorer_script() -> str:
       normalized.recipient = textValue(product.recipient, "Unknown");
       normalized.theme = textValue(product.theme, "Unknown");
       normalized.occasion = textValue(product.occasion, "Unknown");
+      normalized.pod_filter = validPodBucket(product.pod_filter) || podFilterBucket(product.is_pod);
       normalized.seller = textValue(product.seller, "Unknown Seller");
       normalized.idea = textValue(product.idea, "Uncategorized");
       normalized.title = textValue(product.title, "Untitled Product");
@@ -3434,6 +3511,7 @@ def _product_explorer_script() -> str:
       Object.entries(CATEGORY_FIELDS).forEach(([field, config]) => {
         next.categories[field] = new Set(params.getAll(config.param).filter((value) => availableValues[field].has(value)));
       });
+      next.pod = validPodFilter(params.get("pod_filter") || params.get("pod") || DEFAULT_POD_FILTER, DEFAULT_POD_FILTER);
       Object.entries(RANGE_FIELDS).forEach(([field, config]) => {
         const min = validRangeValue(params.get(config.minParam));
         const max = validRangeValue(params.get(config.maxParam));
@@ -3463,6 +3541,7 @@ def _product_explorer_script() -> str:
         preset: DEFAULT_PRESET,
         savedView: "all",
         categories: Object.fromEntries(Object.keys(CATEGORY_FIELDS).map((field) => [field, new Set()])),
+        pod: DEFAULT_POD_FILTER,
         ranges: Object.fromEntries(Object.keys(RANGE_FIELDS).map((field) => [field, { min: "", max: "" }])),
         evidence: Object.fromEntries(Object.keys(EVIDENCE_FILTER_GROUPS).map((family) => [family, new Set()])),
         quick: new Set(),
@@ -3512,6 +3591,7 @@ def _product_explorer_script() -> str:
         const values = state.categories[field];
         if (values.size > 0 && !values.has(textValue(product[field], "Unknown"))) return false;
       }
+      if (state.pod !== "all" && product.pod_filter !== state.pod) return false;
       for (const [field, config] of Object.entries(RANGE_FIELDS)) {
         const value = config.value(product);
         const range = state.ranges[field];
@@ -3736,6 +3816,7 @@ def _product_explorer_script() -> str:
           chips.push(chipHtml(`${config.label}: ${value}`, "category", value, field));
         });
       });
+      if (state.pod !== "all") chips.push(chipHtml(`POD Product: ${POD_FILTERS[state.pod]?.label || state.pod}`, "pod", state.pod));
       Object.entries(RANGE_FIELDS).forEach(([field, config]) => {
         const range = state.ranges[field];
         if (range.min !== "" || range.max !== "") {
@@ -3775,6 +3856,7 @@ def _product_explorer_script() -> str:
       if (type === "saved_view") state.savedView = "all";
       if (type === "search") state.q = "";
       if (type === "category" && state.categories[field]) state.categories[field].delete(value);
+      if (type === "pod") state.pod = "all";
       if (type === "range" && state.ranges[value]) state.ranges[value] = { min: "", max: "" };
       if (type === "evidence" && state.evidence[field]) state.evidence[field].delete(value);
       if (type === "quick") state.quick.delete(value);
@@ -3788,6 +3870,7 @@ def _product_explorer_script() -> str:
           option.selected = state.categories[field].has(option.value);
         });
       });
+      if (podFilter && podFilter.value !== state.pod) podFilter.value = state.pod;
       Object.keys(RANGE_FIELDS).forEach((field) => {
         if (rangeInputs.min[field]) rangeInputs.min[field].value = state.ranges[field].min;
         if (rangeInputs.max[field]) rangeInputs.max[field].value = state.ranges[field].max;
@@ -3855,6 +3938,7 @@ def _product_explorer_script() -> str:
       params.set("preset", state.preset || DEFAULT_PRESET);
       if (state.q) params.set("q", state.q);
       if (state.savedView !== "all") params.set("view", state.savedView);
+      params.set("pod_filter", validPodFilter(state.pod, DEFAULT_POD_FILTER));
       Object.entries(CATEGORY_FIELDS).forEach(([field, config]) => {
         Array.from(state.categories[field]).sort().forEach((value) => params.append(config.param, value));
       });
@@ -3888,6 +3972,21 @@ def _product_explorer_script() -> str:
 
     function validPreset(key) {
       return key && PRODUCT_PRESETS[key] ? key : DEFAULT_PRESET;
+    }
+
+    function validPodFilter(key, fallback = "") {
+      return key && POD_FILTERS[key] ? key : fallback;
+    }
+
+    function validPodBucket(key) {
+      return POD_BUCKETS.has(key) ? key : "";
+    }
+
+    function podFilterBucket(value) {
+      const normalized = textValue(value, "").toLowerCase();
+      if (normalized === "yes" || normalized === "maybe") return "pod";
+      if (normalized === "no") return "non_pod";
+      return "unknown";
     }
 
     function validRangeValue(value) {

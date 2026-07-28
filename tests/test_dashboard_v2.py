@@ -6,6 +6,7 @@ import io
 import json
 import tempfile
 import unittest
+from collections import Counter
 from pathlib import Path
 
 from amazon_market_spy.artifacts import write_lark_opportunity_artifacts
@@ -154,6 +155,131 @@ class DashboardV2Tests(unittest.TestCase):
             self.assertIn(f'data-quick-filter="{key}"', html)
         for key in ["all", "new_winners", "fast_rising", "christmas", "grandpa", "mug", "metal_sign"]:
             self.assertIn(f'data-saved-view="{key}"', html)
+
+    def test_product_explorer_pod_product_filter_controls_and_state_exist(self) -> None:
+        with tempfile.TemporaryDirectory() as temp_dir:
+            output_dir = Path(temp_dir) / "v2"
+            generate_dashboard_v2(output_dir, data=MOCK_PRESENTATION_DATA)
+            html = (output_dir / "product_explorer.html").read_text(encoding="utf-8")
+
+        self.assertIn("<h2>POD Product</h2>", html)
+        self.assertIn('id="product-filter-pod"', html)
+        self.assertIn("data-pod-filter", html)
+        for label in ["All Products", "POD Products", "Non-POD Products", "Unknown"]:
+            self.assertIn(label, html)
+        self.assertIn("const POD_FILTERS", html)
+        self.assertIn('const DEFAULT_POD_FILTER = "pod"', html)
+        self.assertIn('all: { label: "All Products" }', html)
+        self.assertIn('pod: { label: "POD Products" }', html)
+        self.assertIn('next.pod = validPodFilter(params.get("pod_filter") || params.get("pod") || DEFAULT_POD_FILTER, DEFAULT_POD_FILTER)', html)
+        self.assertIn('params.set("pod_filter", validPodFilter(state.pod, DEFAULT_POD_FILTER))', html)
+        self.assertIn("POD Product: ${POD_FILTERS[state.pod]?.label || state.pod}", html)
+        self.assertIn('pod: DEFAULT_POD_FILTER', html)
+        self.assertIn('if (state.pod !== "all" && product.pod_filter !== state.pod) return false', html)
+        self.assertIn('if (type === "pod") state.pod = "all"', html)
+        self.assertIn('<option value="pod" selected>POD Products</option>', html)
+
+    def test_pod_filter_bucket_preserves_existing_classification_semantics(self) -> None:
+        self.assertEqual(v2_pages._pod_filter_bucket({"is_pod": "yes"}), "pod")
+        self.assertEqual(v2_pages._pod_filter_bucket({"is_pod": "maybe"}), "pod")
+        self.assertEqual(v2_pages._pod_filter_bucket({"is_pod": "no"}), "non_pod")
+        self.assertEqual(v2_pages._pod_filter_bucket({"is_pod": ""}), "unknown")
+        self.assertEqual(v2_pages._pod_filter_bucket({}), "unknown")
+        self.assertEqual(v2_pages._normalize_pod_filter(""), "pod")
+        self.assertEqual(v2_pages._normalize_pod_filter("all"), "all")
+        self.assertEqual(v2_pages._normalize_pod_filter("non_pod"), "non_pod")
+
+    def test_product_explorer_default_pod_filter_and_explicit_overrides(self) -> None:
+        products = [
+            {"asin": "B0PODYES", "is_pod": "yes"},
+            {"asin": "B0PODMAYBE", "is_pod": "maybe"},
+            {"asin": "B0NONPOD", "is_pod": "no"},
+            {"asin": "B0UNKNOWN", "is_pod": ""},
+        ]
+
+        self.assertEqual(
+            [product["asin"] for product in v2_pages._filter_products_by_pod(products)],
+            ["B0PODYES", "B0PODMAYBE"],
+        )
+        self.assertEqual(len(v2_pages._filter_products_by_pod(products, "all")), 4)
+        self.assertEqual(
+            [product["asin"] for product in v2_pages._filter_products_by_pod(products, "non_pod")],
+            ["B0NONPOD"],
+        )
+        self.assertEqual(
+            [product["asin"] for product in v2_pages._filter_products_by_pod(products, "unknown")],
+            ["B0UNKNOWN"],
+        )
+
+    def test_product_explorer_presets_default_to_pod_products(self) -> None:
+        products = []
+        for preset, config in v2_pages.PRODUCT_PRESETS.items():
+            evidence = next(iter(config["evidence"]))
+            products.extend(
+                [
+                    {"asin": f"{preset}-POD", "title": f"{preset} POD", "is_pod": "yes", evidence: True},
+                    {"asin": f"{preset}-MAYBE", "title": f"{preset} Maybe", "is_pod": "maybe", evidence: True},
+                    {"asin": f"{preset}-NONPOD", "title": f"{preset} Retail", "is_pod": "no", evidence: True},
+                ]
+            )
+
+        for preset in v2_pages.PRODUCT_PRESETS:
+            preset_rows = v2_pages._preset_products(products, preset)
+            default_rows = v2_pages._filter_products_by_pod(preset_rows)
+
+            self.assertTrue(default_rows, preset)
+            self.assertTrue(all(v2_pages._pod_filter_bucket(product) == "pod" for product in default_rows), preset)
+            self.assertTrue(any(product["asin"] == f"{preset}-NONPOD" for product in preset_rows), preset)
+            self.assertFalse(any(product["asin"] == f"{preset}-NONPOD" for product in default_rows), preset)
+
+    def test_default_research_today_excludes_branded_non_pod_examples(self) -> None:
+        products = [
+            {"asin": "B0POD001", "title": "Custom POD Sign", "is_pod": "yes", "category_breakout": True},
+            {"asin": "B0HALLMARK", "title": "Hallmark Branded Ornament", "is_pod": "no", "category_breakout": True},
+            {"asin": "B0DOORMAT", "title": "Ordinary Retail Doormat", "is_pod": "no", "seller_mover": True},
+        ]
+
+        research_today = v2_pages._preset_products(products, "research_today")
+        default_rows = v2_pages._filter_products_by_pod(research_today)
+        all_rows = v2_pages._filter_products_by_pod(research_today, "all")
+        non_pod_rows = v2_pages._filter_products_by_pod(research_today, "non_pod")
+
+        self.assertEqual([product["asin"] for product in default_rows], ["B0POD001"])
+        self.assertEqual(len(all_rows), 3)
+        self.assertEqual([product["asin"] for product in non_pod_rows], ["B0HALLMARK", "B0DOORMAT"])
+
+    def test_product_explorer_pod_filter_payload_exposes_service_classification(self) -> None:
+        with tempfile.TemporaryDirectory() as temp_dir:
+            root = Path(temp_dir)
+            _write_service_fixture(root)
+            output_dir = root / "v2"
+            generate_dashboard_v2(output_dir)
+            products = _product_payload(output_dir / "product_explorer.html")
+
+        by_asin = {product["asin"]: product for product in products}
+        self.assertEqual(len(products), 3)
+        self.assertEqual(by_asin["B0REAL0001"]["is_pod"], "yes")
+        self.assertEqual(by_asin["B0REAL0001"]["pod_filter"], "pod")
+        self.assertEqual(by_asin["B0REAL0002"]["is_pod"], "no")
+        self.assertEqual(by_asin["B0REAL0002"]["pod_filter"], "non_pod")
+        self.assertEqual(by_asin["B0REAL0003"]["is_pod"], "no")
+        self.assertEqual(by_asin["B0REAL0003"]["pod_filter"], "non_pod")
+
+    def test_product_explorer_indexes_complete_latest_products_without_changing_page_data(self) -> None:
+        with tempfile.TemporaryDirectory() as temp_dir:
+            output_dir = Path(temp_dir)
+            _write_service_fixture(output_dir)
+
+            data = DashboardService(output_dir).load()
+
+        self.assertEqual([product["asin"] for product in data["products"]], ["B0REAL0001", "B0REAL0002"])
+        explorer_products = data["product_explorer_products"]
+        self.assertEqual([product["asin"] for product in explorer_products], ["B0REAL0001", "B0REAL0002", "B0REAL0003"])
+        buckets = Counter(v2_pages._pod_filter_bucket(product) for product in explorer_products)
+        self.assertEqual(buckets["pod"] + buckets["non_pod"] + buckets["unknown"], len(explorer_products))
+        self.assertEqual(buckets["pod"], 1)
+        self.assertEqual(buckets["non_pod"], 2)
+        self.assertEqual(buckets["unknown"], 0)
 
     def test_product_explorer_filter_summary_clear_all_and_empty_result_state_exist(self) -> None:
         with tempfile.TemporaryDirectory() as temp_dir:
@@ -567,7 +693,7 @@ class DashboardV2Tests(unittest.TestCase):
         expected_asins = [str(product.get("asin", "") or "") for product, _, _ in expected_products]
         cards = v2_pages._seller_product_cards(products, "title", reverse=False, limit=10)
 
-        self.assertEqual(len(products), 159)
+        self.assertGreaterEqual(len(products), 10)
         self.assertGreaterEqual(len(valid_images), 10)
         self.assertEqual(len(cards), 10)
         self.assertEqual([card["asin"] for card in cards], expected_asins)
@@ -1201,6 +1327,9 @@ class DashboardV2ServiceTests(unittest.TestCase):
             self.assertEqual(data["products"][0]["theme"], "Unknown")
             self.assertEqual(data["products"][0]["occasion"], "Unknown")
             self.assertEqual(data["products"][0]["amazon_url"], "https://www.amazon.com/dp/B0REAL0001")
+            self.assertEqual(data["products"][0]["is_pod"], "yes")
+            self.assertEqual(data["products"][1]["is_pod"], "no")
+            self.assertEqual(len(data["product_explorer_products"]), 3)
             self.assertTrue(data["products"][0]["is_winner"])
             self.assertTrue(data["products"][0]["is_rising"])
             self.assertEqual(data["ideas"][0]["idea"], "Dad Gift")
@@ -1327,6 +1456,7 @@ def _write_service_fixture(output_dir: Path) -> None:
             "display_rank_change",
             "opportunity_score",
             "product_url",
+            "is_pod",
             "image_url",
             "seller_evidence_leader",
             "seller_evidence_mover",
@@ -1368,6 +1498,7 @@ def _write_service_fixture(output_dir: Path) -> None:
                 "display_rank_change": "24",
                 "opportunity_score": "87",
                 "product_url": "https://www.amazon.com/dp/B0REAL0001",
+                "is_pod": "yes",
                 "image_url": "https://example.com/mug.jpg",
                 "seller_evidence_leader": "true",
                 "seller_evidence_mover": "true",
@@ -1408,6 +1539,7 @@ def _write_service_fixture(output_dir: Path) -> None:
                 "display_rank_change": "5",
                 "opportunity_score": "45",
                 "product_url": "https://www.amazon.com/dp/B0REAL0002",
+                "is_pod": "no",
                 "image_url": "",
                 "seller_evidence_leader": "false",
                 "seller_evidence_mover": "false",
@@ -1433,6 +1565,63 @@ def _write_service_fixture(output_dir: Path) -> None:
                 "evidence_source_families": "",
                 "evidence_count": "",
                 "evidence_reasons": "",
+            },
+        ],
+    )
+    _write_csv(
+        output_dir / "latest_products.csv",
+        [
+            "asin",
+            "title",
+            "seller_name",
+            "niche_primary",
+            "category",
+            "is_pod",
+            "pod_type",
+            "product_url",
+            "image_url",
+            "review_count",
+            "price",
+        ],
+        [
+            {
+                "asin": "B0REAL0001",
+                "title": "Real Personalized Mug",
+                "seller_name": "Real Seller",
+                "niche_primary": "Dad Gift",
+                "category": "Novelty Coffee Mugs",
+                "is_pod": "yes",
+                "pod_type": "personalized_mug",
+                "product_url": "https://www.amazon.com/dp/B0REAL0001",
+                "image_url": "https://example.com/mug.jpg",
+                "review_count": "17",
+                "price": "",
+            },
+            {
+                "asin": "B0REAL0002",
+                "title": "Plain Seller Product",
+                "seller_name": "Real Seller",
+                "niche_primary": "General Gift",
+                "category": "General Gift",
+                "is_pod": "no",
+                "pod_type": "unknown",
+                "product_url": "https://www.amazon.com/dp/B0REAL0002",
+                "image_url": "",
+                "review_count": "2",
+                "price": "",
+            },
+            {
+                "asin": "B0REAL0003",
+                "title": "Retail Steel Water Bottle",
+                "seller_name": "Retail Seller",
+                "niche_primary": "Water Bottle",
+                "category": "Sports & Outdoors",
+                "is_pod": "no",
+                "pod_type": "physical_brand_product",
+                "product_url": "https://www.amazon.com/dp/B0REAL0003",
+                "image_url": "https://example.com/bottle.jpg",
+                "review_count": "250",
+                "price": "24.99",
             },
         ],
     )

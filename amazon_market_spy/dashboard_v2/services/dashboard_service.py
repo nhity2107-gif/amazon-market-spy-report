@@ -150,13 +150,18 @@ class DashboardService:
         historical_rows = self._read_csv("historical_comparison.csv")
 
         lark_by_asin = _rows_by_asin(lark_rows)
+        priority_by_asin = _rows_by_asin(priority_rows)
         latest_by_asin = _rows_by_asin(latest_rows)
         trend_by_asin = _rows_by_asin(trend_rows)
         historical_by_asin = _rows_grouped_by_asin(historical_rows)
         source_products = priority_rows or lark_rows or latest_rows
         products = [
-            self._product_from_row(row, lark_by_asin, latest_by_asin, trend_by_asin, historical_by_asin)
+            self._product_from_row(row, priority_by_asin, lark_by_asin, latest_by_asin, trend_by_asin, historical_by_asin)
             for row in source_products
+        ]
+        product_explorer_products = [
+            self._product_from_row(row, priority_by_asin, lark_by_asin, latest_by_asin, trend_by_asin, historical_by_asin)
+            for row in _product_explorer_source_rows(latest_rows, priority_rows, lark_rows)
         ]
         ideas = [self._idea_from_row(row) for row in niche_rows[:80]]
         competitors = [self._competitor_from_row(row) for row in seller_rows[:80]]
@@ -165,6 +170,7 @@ class DashboardService:
             "morning_brief": self._summary(priority_rows, seller_rows, niche_rows),
             "ideas": ideas,
             "products": products,
+            "product_explorer_products": product_explorer_products,
             "competitors": competitors,
             "market": self._market(niche_rows),
             "dataset_info": self._dataset_info(historical_rows, products),
@@ -275,13 +281,20 @@ class DashboardService:
     def _product_from_row(
         self,
         row: dict[str, str],
+        priority_by_asin: dict[str, dict[str, str]],
         lark_by_asin: dict[str, dict[str, str]],
         latest_by_asin: dict[str, dict[str, str]],
         trend_by_asin: dict[str, dict[str, str]],
         historical_by_asin: dict[str, list[dict[str, str]]],
     ) -> dict[str, Any]:
         asin = row.get("asin", "").strip().upper()
-        merged = _merge_row(row, lark_by_asin.get(asin, {}), latest_by_asin.get(asin, {}), trend_by_asin.get(asin, {}))
+        merged = _merge_row(
+            row,
+            priority_by_asin.get(asin, {}),
+            lark_by_asin.get(asin, {}),
+            latest_by_asin.get(asin, {}),
+            trend_by_asin.get(asin, {}),
+        )
         evidence_rows = historical_by_asin.get(asin) or ([merged] if _has_source_context(merged) else [])
         title = _first_text(merged, "title", "raw_title", default=asin or "Untitled Product")
         product_type = _product_type(merged)
@@ -326,6 +339,7 @@ class DashboardService:
             "sub_bsr_rank": _to_optional_int(_first_text(merged, "sub_bsr_rank", default="")),
             "sub_bsr_category": _first_text(merged, "sub_bsr_category", default=""),
             "product_type": product_type,
+            "is_pod": _first_text(merged, "is_pod", default=""),
             "recipient": _first_text(merged, "recipient", default="Unknown"),
             "theme": _first_text(merged, "theme", default="Unknown"),
             "occasion": _first_text(merged, "occasion", default="Unknown"),
@@ -485,6 +499,35 @@ def _rows_grouped_by_asin(rows: list[dict[str, str]]) -> dict[str, list[dict[str
             continue
         grouped.setdefault(asin, []).append(row)
     return grouped
+
+
+def _product_explorer_source_rows(
+    latest_rows: list[dict[str, str]],
+    priority_rows: list[dict[str, str]],
+    lark_rows: list[dict[str, str]],
+) -> list[dict[str, str]]:
+    if latest_rows:
+        rows = list(latest_rows)
+        seen = {_product_identity(row) for row in rows}
+        for fallback_row in [*priority_rows, *lark_rows]:
+            identity = _product_identity(fallback_row)
+            if identity and identity not in seen:
+                rows.append(fallback_row)
+                seen.add(identity)
+        return rows
+    return priority_rows or lark_rows
+
+
+def _product_identity(row: dict[str, str]) -> str:
+    asin = str(row.get("asin", "") or "").strip().upper()
+    if asin:
+        return f"asin:{asin}"
+    product_url = str(row.get("product_url", "") or row.get("amazon_url", "") or "").strip().lower()
+    if product_url:
+        return f"url:{product_url}"
+    title = str(row.get("title", "") or row.get("raw_title", "") or "").strip().lower()
+    seller = _seller_name(row).strip().lower()
+    return f"title:{title}|seller:{seller}" if title else ""
 
 
 def _evidence_payload(row: dict[str, str], evidence_rows: list[dict[str, str]]) -> dict[str, Any]:
