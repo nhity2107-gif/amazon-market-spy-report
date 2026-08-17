@@ -1175,9 +1175,8 @@ def theme_styles() -> str:
   }}
   .seller-thumbnail-strip {{
     display: grid;
-    grid-template-columns: repeat(5, minmax(0, 1fr));
-    column-gap: 2px;
-    row-gap: 18px;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 14px 10px;
     align-items: start;
     justify-content: start;
     margin: 2px 0 20px;
@@ -1228,18 +1227,20 @@ def theme_styles() -> str:
     gap: 4px;
   }}
   .seller-thumbnail-card {{
-    display: block;
-    position: relative;
+    display: grid;
+    gap: 6px;
     width: 100%;
     min-width: 0;
-    aspect-ratio: 1 / 1;
     align-self: start;
     color: inherit;
     text-decoration: none;
   }}
-  .seller-thumbnail-card img {{
-    position: absolute;
-    inset: 0;
+  .seller-thumbnail-image {{
+    display: block;
+    width: 100%;
+    aspect-ratio: 1 / 1;
+  }}
+  .seller-thumbnail-image img {{
     width: 100%;
     height: 100%;
     border-radius: 6px;
@@ -1247,8 +1248,33 @@ def theme_styles() -> str:
     border: 0;
     background: var(--color-neutral-50);
   }}
-  .seller-thumbnail-card:hover img {{
+  .seller-thumbnail-card:hover .seller-thumbnail-image img {{
     opacity: .88;
+  }}
+  .seller-thumbnail-meta {{
+    display: grid;
+    gap: 3px;
+    color: var(--color-neutral-500, var(--color-neutral-600));
+    font-size: 10px;
+    line-height: 1.2;
+  }}
+  .seller-thumbnail-meta > span {{
+    display: flex;
+    min-width: 0;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 4px;
+  }}
+  .seller-thumbnail-meta strong {{
+    min-width: 0;
+    color: var(--color-neutral-400);
+    font-weight: 700;
+  }}
+  .seller-thumbnail-meta em {{
+    flex: 0 0 auto;
+    color: var(--color-neutral-700);
+    font-style: normal;
+    font-weight: 800;
   }}
   .seller-thumbnail-placeholder {{
     display: block;

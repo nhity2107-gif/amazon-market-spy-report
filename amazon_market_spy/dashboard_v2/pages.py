@@ -1275,7 +1275,7 @@ def _seller_summaries(products: list[dict[str, object]]) -> list[dict[str, objec
             "seller_focus": seller_focus,
             "seller_focus_tags": seller_focus_tags,
             "latest_activity": max([str(row.get("date", "") or "") for row in rows] or [""]) or _missing(),
-            "representative_products": _seller_product_cards(rows, "title", reverse=False, limit=10),
+            "representative_products": _seller_product_cards(rows, "title", reverse=False, limit=15),
             "product_explorer_url": f"product_explorer.html?seller={quote_param(seller)}",
             "seller_url": _seller_storefront_url(rows),
         }
@@ -1390,7 +1390,7 @@ def _seller_table_row(row: dict[str, object]) -> str:
           </tr>"""
 
 
-def _seller_product_cards(rows: list[dict[str, object]], sort_field: str, *, reverse: bool, limit: int = 10) -> list[dict[str, str]]:
+def _seller_product_cards(rows: list[dict[str, object]], sort_field: str, *, reverse: bool, limit: int = 10) -> list[dict[str, object]]:
     cards = []
     for product, image, image_field in _seller_representative_products(rows, limit=limit):
         asin = str(product.get("asin", "") or "")
@@ -1404,6 +1404,8 @@ def _seller_product_cards(rows: list[dict[str, object]], sort_field: str, *, rev
                 "image": image,
                 "image_field": image_field,
                 "tone": tone,
+                "display_order": _seller_display_order_rank(product),
+                "sub_category_bsr": _valid_sub_bsr(product),
             }
         )
     return cards
@@ -1532,6 +1534,7 @@ def _seller_display_order_rank(product: dict[str, object]) -> int | None:
         "order_rank",
         "rank",
         "position",
+        "seller_evidence_best_rank",
     ):
         value = _num_or_none(product.get(field))
         if value is not None:
@@ -1730,9 +1733,13 @@ def _competitor_script() -> str:
     }
 
     function sellerThumbnailStrip(rows) {
-      const products = Array.isArray(rows) ? rows.slice(0, 10) : [];
+      const products = Array.isArray(rows) ? rows.slice(0, 15) : [];
       const productCells = products.map((row) => `<a class="seller-thumbnail-card" href="${escapeHtml(row.url)}" title="${escapeHtml(row.title)}" aria-label="${escapeHtml(row.title)}">
-        <img src="${escapeHtml(row.image || "")}" alt="${escapeHtml(row.title)} thumbnail">
+        <span class="seller-thumbnail-image"><img src="${escapeHtml(row.image || "")}" alt="${escapeHtml(row.title)} thumbnail"></span>
+        <span class="seller-thumbnail-meta">
+          <span><strong>Display Order</strong><em>${formatRank(row.display_order)}</em></span>
+          <span><strong>Sub-category BSR</strong><em>${formatRank(row.sub_category_bsr)}</em></span>
+        </span>
       </a>`).join("");
       return `<div class="seller-thumbnail-strip" aria-label="Display order products">${productCells}</div>`;
     }
@@ -1745,6 +1752,10 @@ def _competitor_script() -> str:
     }
     function formatNumber(value) {
       return Number(value || 0).toLocaleString();
+    }
+    function formatRank(value) {
+      const rank = Number(value);
+      return Number.isFinite(rank) && rank > 0 ? `#${rank.toLocaleString()}` : "\u2014";
     }
     function escapeHtml(value) {
       return String(value ?? "").replace(/[&<>"']/g, (char) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[char]));

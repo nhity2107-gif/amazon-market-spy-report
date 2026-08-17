@@ -475,7 +475,11 @@ class DashboardV2Tests(unittest.TestCase):
         self.assertIn("Fast Movers", competitor_html)
         self.assertIn("slice(0, 3)", competitor_html)
         self.assertIn("Display Order Preview", competitor_html)
-        self.assertIn("slice(0, 10)", competitor_html)
+        self.assertIn("slice(0, 15)", competitor_html)
+        self.assertIn("seller-thumbnail-image", competitor_html)
+        self.assertIn("seller-thumbnail-meta", competitor_html)
+        self.assertIn("Display Order", competitor_html)
+        self.assertIn("Sub-category BSR", competitor_html)
         self.assertNotIn("View Seller Products", competitor_html)
         self.assertIn('addEventListener("pointerover"', competitor_html)
         self.assertIn("pinnedKey", competitor_html)
@@ -654,6 +658,26 @@ class DashboardV2Tests(unittest.TestCase):
         self.assertEqual(len(seller["representative_products"]), 2)
         self.assertEqual([card["asin"] for card in seller["representative_products"]], ["B0SELL0002", "B0SELL0001"])
         self.assertNotIn("placeholderCount", html)
+
+    def test_seller_summary_preview_uses_fifteen_products_with_order_and_subcategory_bsr(self) -> None:
+        products = [
+            _seller_preview_product(index, source_rank=index, sub_bsr_rank=index * 100)
+            for index in range(1, 21)
+        ]
+
+        seller = v2_pages._seller_summaries(products)[0]
+        cards = seller["representative_products"]
+
+        self.assertEqual(len(cards), 15)
+        self.assertEqual([card["display_order"] for card in cards], list(range(1, 16)))
+        self.assertEqual([card["sub_category_bsr"] for card in cards], [index * 100 for index in range(1, 16)])
+
+    def test_seller_preview_uses_seller_evidence_rank_as_display_order_fallback(self) -> None:
+        product = _seller_preview_product(1, source_rank=None, seller_evidence_best_rank=7)
+
+        card = v2_pages._seller_product_cards([product], "title", reverse=False, limit=15)[0]
+
+        self.assertEqual(card["display_order"], 7)
 
     def test_seller_preview_store_cta_uses_existing_seller_url(self) -> None:
         products = [
