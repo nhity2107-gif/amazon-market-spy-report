@@ -1401,6 +1401,7 @@ def _seller_product_cards(rows: list[dict[str, object]], sort_field: str, *, rev
                 "asin": asin,
                 "meta": f"{product.get('product_type', 'Unknown')} - {_rank_or_missing(product.get('seller_evidence_best_rank'))}",
                 "url": f"product_explorer.html?seller={quote_param(str(product.get('seller', '') or 'Unknown Seller'))}&focus={quote_param(asin)}" if asin else "product_explorer.html",
+                "amazon_url": _product_url(product) or (f"https://www.amazon.com/dp/{quote_param(asin)}" if asin else ""),
                 "image": image,
                 "image_field": image_field,
                 "tone": tone,
@@ -1763,7 +1764,7 @@ def _competitor_script() -> str:
     function sellerThumbnailStrip(rows) {
       const products = Array.isArray(rows) ? rows.slice(0, 15) : [];
       const productCells = products.map((row) => `<article class="seller-thumbnail-card">
-        <a class="seller-thumbnail-image" href="${escapeHtml(row.url)}" title="${escapeHtml(row.title)}" aria-label="${escapeHtml(row.title)}"><img src="${escapeHtml(row.image || "")}" alt="${escapeHtml(row.title)} thumbnail"></a>
+        <a class="seller-thumbnail-image" href="${escapeHtml(row.amazon_url || row.url)}" target="_blank" rel="noopener" title="${escapeHtml(row.title)}" aria-label="${escapeHtml(row.title)} on Amazon"><img src="${escapeHtml(row.image || "")}" alt="${escapeHtml(row.title)} thumbnail"></a>
         <span class="seller-thumbnail-meta">
           <span><strong>Display Order</strong><em>${formatRank(row.display_order)}</em></span>
           <span>${subCategoryLabel(row)}<em>${formatRank(row.sub_category_bsr)}</em></span>

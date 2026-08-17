@@ -477,6 +477,8 @@ class DashboardV2Tests(unittest.TestCase):
         self.assertIn("Display Order Preview", competitor_html)
         self.assertIn("slice(0, 15)", competitor_html)
         self.assertIn("seller-thumbnail-image", competitor_html)
+        self.assertIn("row.amazon_url || row.url", competitor_html)
+        self.assertIn('aria-label="${escapeHtml(row.title)} on Amazon"', competitor_html)
         self.assertIn("seller-thumbnail-meta", competitor_html)
         self.assertIn("Display Order", competitor_html)
         self.assertIn("subCategoryLabel(row)", competitor_html)
@@ -679,6 +681,7 @@ class DashboardV2Tests(unittest.TestCase):
         self.assertEqual([card["sub_category_bsr"] for card in cards], [index * 100 for index in range(1, 16)])
         self.assertTrue(all(card["sub_category_name"] == "Handmade Baby" for card in cards))
         self.assertTrue(all(card["sub_category_url"].endswith("121190737011/ref=pd_zg_hrsr_handmade") for card in cards))
+        self.assertTrue(all(card["amazon_url"].startswith("https://www.amazon.com/example/dp/") for card in cards))
 
     def test_seller_preview_uses_seller_evidence_rank_as_display_order_fallback(self) -> None:
         product = _seller_preview_product(1, source_rank=None, seller_evidence_best_rank=7)
