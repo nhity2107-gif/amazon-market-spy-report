@@ -479,7 +479,8 @@ class DashboardV2Tests(unittest.TestCase):
         self.assertIn("seller-thumbnail-image", competitor_html)
         self.assertIn("seller-thumbnail-meta", competitor_html)
         self.assertIn("Display Order", competitor_html)
-        self.assertIn("Sub-category BSR", competitor_html)
+        self.assertIn("subCategoryLabel(row)", competitor_html)
+        self.assertIn("No Sub-category", competitor_html)
         self.assertNotIn("View Seller Products", competitor_html)
         self.assertIn('addEventListener("pointerover"', competitor_html)
         self.assertIn("pinnedKey", competitor_html)
@@ -661,7 +662,12 @@ class DashboardV2Tests(unittest.TestCase):
 
     def test_seller_summary_preview_uses_fifteen_products_with_order_and_subcategory_bsr(self) -> None:
         products = [
-            _seller_preview_product(index, source_rank=index, sub_bsr_rank=index * 100)
+            _seller_preview_product(
+                index,
+                source_rank=index,
+                sub_bsr_rank=index * 100,
+                sub_bsr_category="Handmade Baby",
+            )
             for index in range(1, 21)
         ]
 
@@ -671,6 +677,8 @@ class DashboardV2Tests(unittest.TestCase):
         self.assertEqual(len(cards), 15)
         self.assertEqual([card["display_order"] for card in cards], list(range(1, 16)))
         self.assertEqual([card["sub_category_bsr"] for card in cards], [index * 100 for index in range(1, 16)])
+        self.assertTrue(all(card["sub_category_name"] == "Handmade Baby" for card in cards))
+        self.assertTrue(all(card["sub_category_url"].endswith("121190737011/ref=pd_zg_hrsr_handmade") for card in cards))
 
     def test_seller_preview_uses_seller_evidence_rank_as_display_order_fallback(self) -> None:
         product = _seller_preview_product(1, source_rank=None, seller_evidence_best_rank=7)

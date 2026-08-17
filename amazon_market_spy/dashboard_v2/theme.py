@@ -1265,10 +1265,20 @@ def theme_styles() -> str:
     justify-content: space-between;
     gap: 4px;
   }}
-  .seller-thumbnail-meta strong {{
+  .seller-thumbnail-meta strong,
+  .seller-thumbnail-meta a {{
     min-width: 0;
+    overflow: hidden;
     color: var(--color-neutral-400);
     font-weight: 700;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }}
+  .seller-thumbnail-meta a {{
+    color: var(--color-primary-700);
+    text-decoration: underline;
+    text-decoration-color: var(--color-neutral-200);
+    text-underline-offset: 2px;
   }}
   .seller-thumbnail-meta em {{
     flex: 0 0 auto;

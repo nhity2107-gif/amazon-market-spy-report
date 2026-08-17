@@ -1406,6 +1406,8 @@ def _seller_product_cards(rows: list[dict[str, object]], sort_field: str, *, rev
                 "tone": tone,
                 "display_order": _seller_display_order_rank(product),
                 "sub_category_bsr": _valid_sub_bsr(product),
+                "sub_category_name": _seller_sub_category_name(product),
+                "sub_category_url": _seller_sub_category_url(product),
             }
         )
     return cards
@@ -1540,6 +1542,32 @@ def _seller_display_order_rank(product: dict[str, object]) -> int | None:
         if value is not None:
             return value
     return None
+
+
+_KNOWN_SUB_CATEGORY_URLS = {
+    "handmade baby": "https://www.amazon.com/gp/bestsellers/handmade/121190737011/ref=pd_zg_hrsr_handmade",
+}
+
+
+def _seller_sub_category_name(product: dict[str, object]) -> str:
+    for field in ("bsr_evidence_best_sub_bsr_category", "sub_bsr_category"):
+        value = str(product.get(field, "") or "").strip()
+        if value and not _is_missing_display(value):
+            return value
+    return ""
+
+
+def _seller_sub_category_url(product: dict[str, object]) -> str:
+    for field in (
+        "bsr_evidence_best_sub_bsr_url",
+        "sub_bsr_url",
+        "subcategory_bsr_url",
+        "sub_category_bsr_url",
+    ):
+        value = str(product.get(field, "") or "").strip()
+        if value.startswith(("https://", "http://")):
+            return value
+    return _KNOWN_SUB_CATEGORY_URLS.get(_seller_sub_category_name(product).casefold(), "")
 
 
 def _seller_product_identity_sort_value(product: dict[str, object], index: int) -> tuple[str, str]:
@@ -1734,13 +1762,13 @@ def _competitor_script() -> str:
 
     function sellerThumbnailStrip(rows) {
       const products = Array.isArray(rows) ? rows.slice(0, 15) : [];
-      const productCells = products.map((row) => `<a class="seller-thumbnail-card" href="${escapeHtml(row.url)}" title="${escapeHtml(row.title)}" aria-label="${escapeHtml(row.title)}">
-        <span class="seller-thumbnail-image"><img src="${escapeHtml(row.image || "")}" alt="${escapeHtml(row.title)} thumbnail"></span>
+      const productCells = products.map((row) => `<article class="seller-thumbnail-card">
+        <a class="seller-thumbnail-image" href="${escapeHtml(row.url)}" title="${escapeHtml(row.title)}" aria-label="${escapeHtml(row.title)}"><img src="${escapeHtml(row.image || "")}" alt="${escapeHtml(row.title)} thumbnail"></a>
         <span class="seller-thumbnail-meta">
           <span><strong>Display Order</strong><em>${formatRank(row.display_order)}</em></span>
-          <span><strong>Sub-category BSR</strong><em>${formatRank(row.sub_category_bsr)}</em></span>
+          <span>${subCategoryLabel(row)}<em>${formatRank(row.sub_category_bsr)}</em></span>
         </span>
-      </a>`).join("");
+      </article>`).join("");
       return `<div class="seller-thumbnail-strip" aria-label="Display order products">${productCells}</div>`;
     }
 
@@ -1756,6 +1784,12 @@ def _competitor_script() -> str:
     function formatRank(value) {
       const rank = Number(value);
       return Number.isFinite(rank) && rank > 0 ? `#${rank.toLocaleString()}` : "\u2014";
+    }
+    function subCategoryLabel(row) {
+      const name = String(row.sub_category_name || "").trim() || "No Sub-category";
+      const url = String(row.sub_category_url || "").trim();
+      if (!url) return `<strong title="${escapeHtml(name)}">${escapeHtml(name)}</strong>`;
+      return `<a href="${escapeHtml(url)}" target="_blank" rel="noopener" title="${escapeHtml(name)}">${escapeHtml(name)}</a>`;
     }
     function escapeHtml(value) {
       return String(value ?? "").replace(/[&<>"']/g, (char) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[char]));
