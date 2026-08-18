@@ -1152,9 +1152,8 @@
   }
   .seller-thumbnail-strip {
     display: grid;
-    grid-template-columns: repeat(5, minmax(0, 1fr));
-    column-gap: 2px;
-    row-gap: 18px;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 14px 10px;
     align-items: start;
     justify-content: start;
     margin: 2px 0 20px;
@@ -1205,18 +1204,20 @@
     gap: 4px;
   }
   .seller-thumbnail-card {
-    display: block;
-    position: relative;
+    display: grid;
+    gap: 6px;
     width: 100%;
     min-width: 0;
-    aspect-ratio: 1 / 1;
     align-self: start;
     color: inherit;
     text-decoration: none;
   }
-  .seller-thumbnail-card img {
-    position: absolute;
-    inset: 0;
+  .seller-thumbnail-image {
+    display: block;
+    width: 100%;
+    aspect-ratio: 1 / 1;
+  }
+  .seller-thumbnail-image img {
     width: 100%;
     height: 100%;
     border-radius: 6px;
@@ -1224,8 +1225,43 @@
     border: 0;
     background: var(--color-neutral-50);
   }
-  .seller-thumbnail-card:hover img {
+  .seller-thumbnail-card:hover .seller-thumbnail-image img {
     opacity: .88;
+  }
+  .seller-thumbnail-meta {
+    display: grid;
+    gap: 3px;
+    color: var(--color-neutral-500, var(--color-neutral-600));
+    font-size: 10px;
+    line-height: 1.2;
+  }
+  .seller-thumbnail-meta > span {
+    display: flex;
+    min-width: 0;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 4px;
+  }
+  .seller-thumbnail-meta strong,
+  .seller-thumbnail-meta a {
+    min-width: 0;
+    overflow: hidden;
+    color: var(--color-neutral-400);
+    font-weight: 700;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+  .seller-thumbnail-meta a {
+    color: var(--color-primary-700);
+    text-decoration: underline;
+    text-decoration-color: var(--color-neutral-200);
+    text-underline-offset: 2px;
+  }
+  .seller-thumbnail-meta em {
+    flex: 0 0 auto;
+    color: var(--color-neutral-700);
+    font-style: normal;
+    font-weight: 800;
   }
   .seller-thumbnail-placeholder {
     display: block;
@@ -1806,7 +1842,7 @@
       </nav>
       <div class="dataset-strip" aria-label="Dataset status">
         <span class="dataset-pill">Ready</span>
-        <span class="dataset-generated">Generated 2026-08-17 09:10:20</span>
+        <span class="dataset-generated">Generated 2026-08-18 13:30:06</span>
         <a class="utility-link" href="#dataset-information">Dataset Information</a>
         <a class="utility-link" href="../evidence_human_review_analysis.html">Human Review: 0 / 587 completed</a>
       </div>
@@ -1837,62 +1873,62 @@
       </div>
       <div class="control-group"><a class="utility-link" href="product_explorer.html?preset=research_today">Open Product Explorer</a></div>
     </div>
-        <div class="activity-list">          <a class="activity-item research-queue-item" href="product_explorer.html?preset=research_today&focus=B0H6TZC24M" data-home-preview-item data-queue-asin="B0H6TZC24M" data-preview-title="Custom Baseball Jersey Personalized Player Name and Number" data-preview-seller="Men&#x27;s Baseball Jerseys New Releases" data-preview-type="Custom Shirt" data-preview-reason="No primary evidence" data-preview-metric="Best Seller #66" data-preview-image="https://images-na.ssl-images-amazon.com/images/I/61sfhxCJP1L._AC_UL600_SR600,400_.jpg" data-preview-href="product_explorer.html?preset=research_today&amp;focus=B0H6TZC24M">
-            <img class="activity-thumbnail" src="https://images-na.ssl-images-amazon.com/images/I/61sfhxCJP1L._AC_UL600_SR600,400_.jpg" alt="Custom Baseball Jersey Personalized Player Name and Number thumbnail">
-            <span class="activity-copy"><strong>Custom Baseball Jersey Personalized Player Name and Number</strong><span class="caption">Men&#x27;s Baseball Jerseys New Releases - No primary evidence</span></span>
-            <span class="status-badge tone-neutral">Best Seller #66</span>
+        <div class="activity-list">          <a class="activity-item research-queue-item" href="product_explorer.html?preset=research_today&focus=B0H7RPJRM6" data-home-preview-item data-queue-asin="B0H7RPJRM6" data-preview-title="Custom T Shirts for Men Women, Personalized 100% Cotton T-Shirt with Photo Logo and Text, Design Your Own Shirt" data-preview-seller="Men&#x27;s Novelty T-Shirts New Releases" data-preview-type="Custom Shirt" data-preview-reason="Very Strong Sub-BSR at #59" data-preview-metric="Best Seller #60" data-preview-image="https://images-na.ssl-images-amazon.com/images/I/7110wKpSgiL._AC_UL600_SR600,400_.jpg" data-preview-href="product_explorer.html?preset=research_today&amp;focus=B0H7RPJRM6">
+            <img class="activity-thumbnail" src="https://images-na.ssl-images-amazon.com/images/I/7110wKpSgiL._AC_UL600_SR600,400_.jpg" alt="Custom T Shirts for Men Women, Personalized 100% Cotton T-Shirt with Photo Logo and Text, Design Your Own Shirt thumbnail">
+            <span class="activity-copy"><strong>Custom T Shirts for Men Women, Personalized 100% Cotton T-Shirt with Photo Logo and Text, Design Your Own Shirt</strong><span class="caption">Men&#x27;s Novelty T-Shirts New Releases - Very Strong Sub-BSR at #59</span></span>
+            <span class="status-badge tone-winner">Best Seller #60</span>
           </a>
-          <a class="activity-item research-queue-item" href="product_explorer.html?preset=research_today&focus=B0GV4NVT6J" data-home-preview-item data-queue-asin="B0GV4NVT6J" data-preview-title="Funny Trucker Hats Women Men,Adjustable Cotton Trendy Cute Vintage Hat | Women/Men Gifts for Birthday,Christmas,WhiteElephant" data-preview-seller="Women&#x27;s Novelty Baseball Caps New Releases" data-preview-type="Decorated Cap" data-preview-reason="Category breakout" data-preview-metric="Best Seller #23" data-preview-image="https://images-na.ssl-images-amazon.com/images/I/81iQ+JNS5FL._AC_UL600_SR600,400_.jpg" data-preview-href="product_explorer.html?preset=research_today&amp;focus=B0GV4NVT6J">
-            <img class="activity-thumbnail" src="https://images-na.ssl-images-amazon.com/images/I/81iQ+JNS5FL._AC_UL600_SR600,400_.jpg" alt="Funny Trucker Hats Women Men,Adjustable Cotton Trendy Cute Vintage Hat | Women/Men Gifts for Birthday,Christmas,WhiteElephant thumbnail">
-            <span class="activity-copy"><strong>Funny Trucker Hats Women Men,Adjustable Cotton Trendy Cute Vintage Hat | Women/Men Gifts for Birthday,Christmas,WhiteElephant</strong><span class="caption">Women&#x27;s Novelty Baseball Caps New Releases - Category breakout</span></span>
-            <span class="status-badge tone-rising">Best Seller #23</span>
+          <a class="activity-item research-queue-item" href="product_explorer.html?preset=research_today&focus=B0H4KGY6JX" data-home-preview-item data-queue-asin="B0H4KGY6JX" data-preview-title="Fall Decor - Hello Fall Garden Flag | Fall Decorations for Home | Thanksgiving Decorations Party Favors Supplies for Outdoor" data-preview-seller="Outdoor Flags &amp; Banners New Releases" data-preview-type="Printed Flag" data-preview-reason="Category breakout" data-preview-metric="Best Seller #33" data-preview-image="https://images-na.ssl-images-amazon.com/images/I/81DEPrngJtL._AC_UL600_SR600,400_.jpg" data-preview-href="product_explorer.html?preset=research_today&amp;focus=B0H4KGY6JX">
+            <img class="activity-thumbnail" src="https://images-na.ssl-images-amazon.com/images/I/81DEPrngJtL._AC_UL600_SR600,400_.jpg" alt="Fall Decor - Hello Fall Garden Flag | Fall Decorations for Home | Thanksgiving Decorations Party Favors Supplies for Outdoor thumbnail">
+            <span class="activity-copy"><strong>Fall Decor - Hello Fall Garden Flag | Fall Decorations for Home | Thanksgiving Decorations Party Favors Supplies for Outdoor</strong><span class="caption">Outdoor Flags &amp; Banners New Releases - Category breakout</span></span>
+            <span class="status-badge tone-rising">Best Seller #33</span>
           </a>
-          <a class="activity-item research-queue-item" href="product_explorer.html?preset=research_today&focus=B0H9XSXR2F" data-home-preview-item data-queue-asin="B0H9XSXR2F" data-preview-title="Personalized Senior Mom Shirt Class of 2027, Custom Photo Graduation T Shirt with Vintage Year" data-preview-seller="Men&#x27;s Novelty T-Shirts New Releases" data-preview-type="Custom Shirt" data-preview-reason="Category breakout" data-preview-metric="Best Seller #36" data-preview-image="https://images-na.ssl-images-amazon.com/images/I/61OjaZGCkcL._AC_UL600_SR600,400_.jpg" data-preview-href="product_explorer.html?preset=research_today&amp;focus=B0H9XSXR2F">
-            <img class="activity-thumbnail" src="https://images-na.ssl-images-amazon.com/images/I/61OjaZGCkcL._AC_UL600_SR600,400_.jpg" alt="Personalized Senior Mom Shirt Class of 2027, Custom Photo Graduation T Shirt with Vintage Year thumbnail">
-            <span class="activity-copy"><strong>Personalized Senior Mom Shirt Class of 2027, Custom Photo Graduation T Shirt with Vintage Year</strong><span class="caption">Men&#x27;s Novelty T-Shirts New Releases - Category breakout</span></span>
-            <span class="status-badge tone-rising">Best Seller #36</span>
+          <a class="activity-item research-queue-item" href="product_explorer.html?preset=research_today&focus=B0H3TDQGZW" data-home-preview-item data-queue-asin="B0H3TDQGZW" data-preview-title="Halloween Ghost Glass Cup Spooky Pumpkin Cup for Fall Halloween Themed Gift | 16oz Fall Iced Coffee Tumbler with Lid &amp; Straws" data-preview-seller="Novelty Drinking Glasses New Releases" data-preview-type="Decorated Glass" data-preview-reason="New Release rising" data-preview-metric="Best Seller #29" data-preview-image="https://images-na.ssl-images-amazon.com/images/I/71hiQLZdOrL._AC_UL600_SR600,400_.jpg" data-preview-href="product_explorer.html?preset=research_today&amp;focus=B0H3TDQGZW">
+            <img class="activity-thumbnail" src="https://images-na.ssl-images-amazon.com/images/I/71hiQLZdOrL._AC_UL600_SR600,400_.jpg" alt="Halloween Ghost Glass Cup Spooky Pumpkin Cup for Fall Halloween Themed Gift | 16oz Fall Iced Coffee Tumbler with Lid &amp; Straws thumbnail">
+            <span class="activity-copy"><strong>Halloween Ghost Glass Cup Spooky Pumpkin Cup for Fall Halloween Themed Gift | 16oz Fall Iced Coffee Tumbler with Lid &amp; Straws</strong><span class="caption">Novelty Drinking Glasses New Releases - New Release rising</span></span>
+            <span class="status-badge tone-rising">Best Seller #29</span>
           </a>
-          <a class="activity-item research-queue-item" href="product_explorer.html?preset=research_today&focus=B0GD7333W9" data-home-preview-item data-queue-asin="B0GD7333W9" data-preview-title="Personalized Metal Wedding Sign, Custom Couple’s Name Sign Gift for Husband Wife, Last Name &amp; Marriage Date Wall Art, Wedding Date Signs, Valentines Anniversary Wedding Gifts for Him 1" data-preview-seller="NTBN Trading LLC" data-preview-type="Engraved Gift" data-preview-reason="Seller Leader at rank #6" data-preview-metric="8 reviews" data-preview-image="https://m.media-amazon.com/images/I/71YWNVkzY6L._AC_UY218_.jpg" data-preview-href="product_explorer.html?preset=research_today&amp;focus=B0GD7333W9">
-            <img class="activity-thumbnail" src="https://m.media-amazon.com/images/I/71YWNVkzY6L._AC_UY218_.jpg" alt="Personalized Metal Wedding Sign, Custom Couple’s Name Sign Gift for Husband Wife, Last Name &amp; Marriage Date Wall Art, Wedding Date Signs, Valentines Anniversary Wedding Gifts for Him 1 thumbnail">
-            <span class="activity-copy"><strong>Personalized Metal Wedding Sign, Custom Couple’s Name Sign Gift for Husband Wife, Last Name &amp; Marriage Date Wall Art, Wedding Date Signs, Valentines Anniversary Wedding Gifts for Him 1</strong><span class="caption">NTBN Trading LLC - Seller Leader at rank #6</span></span>
-            <span class="status-badge tone-winner">8 reviews</span>
+          <a class="activity-item research-queue-item" href="product_explorer.html?preset=research_today&focus=B0D5LZSVSV" data-home-preview-item data-queue-asin="B0D5LZSVSV" data-preview-title="Niorasen Birthday Gifts for Men Husband Gamer Teen Boys, Cotton Funny Socks | Personalized Fathers Day Gift for Dad Husband," data-preview-seller="Men&#x27;s Novelty Socks New Releases" data-preview-type="Decorated Blank Product" data-preview-reason="Category Winner at rank #15" data-preview-metric="Best Seller #15" data-preview-image="https://images-na.ssl-images-amazon.com/images/I/71pCxLtV5TL._AC_UL600_SR600,400_.jpg" data-preview-href="product_explorer.html?preset=research_today&amp;focus=B0D5LZSVSV">
+            <img class="activity-thumbnail" src="https://images-na.ssl-images-amazon.com/images/I/71pCxLtV5TL._AC_UL600_SR600,400_.jpg" alt="Niorasen Birthday Gifts for Men Husband Gamer Teen Boys, Cotton Funny Socks | Personalized Fathers Day Gift for Dad Husband, thumbnail">
+            <span class="activity-copy"><strong>Niorasen Birthday Gifts for Men Husband Gamer Teen Boys, Cotton Funny Socks | Personalized Fathers Day Gift for Dad Husband,</strong><span class="caption">Men&#x27;s Novelty Socks New Releases - Category Winner at rank #15</span></span>
+            <span class="status-badge tone-winner">Best Seller #15</span>
           </a>
-          <a class="activity-item research-queue-item" href="product_explorer.html?preset=research_today&focus=B0HBNCJ31G" data-home-preview-item data-queue-asin="B0HBNCJ31G" data-preview-title="Personalized Football Mom Shirt, Custom Name and Number Football Mama Shirts for Women, Sport Mom Sweashirt Gifts" data-preview-seller="NTBN Trading LLC" data-preview-type="Custom Shirt" data-preview-reason="New seller push detected 6 days ago" data-preview-metric="Seller #1" data-preview-image="https://m.media-amazon.com/images/I/61U-HQi6IIL._AC_UY218_.jpg" data-preview-href="product_explorer.html?preset=research_today&amp;focus=B0HBNCJ31G">
-            <img class="activity-thumbnail" src="https://m.media-amazon.com/images/I/61U-HQi6IIL._AC_UY218_.jpg" alt="Personalized Football Mom Shirt, Custom Name and Number Football Mama Shirts for Women, Sport Mom Sweashirt Gifts thumbnail">
-            <span class="activity-copy"><strong>Personalized Football Mom Shirt, Custom Name and Number Football Mama Shirts for Women, Sport Mom Sweashirt Gifts</strong><span class="caption">NTBN Trading LLC - New seller push detected 6 days ago</span></span>
-            <span class="status-badge tone-idea">Seller #1</span>
+          <a class="activity-item research-queue-item" href="product_explorer.html?preset=research_today&focus=B0FKGTJBMP" data-home-preview-item data-queue-asin="B0FKGTJBMP" data-preview-title="Halloween Shirts for Women: Pumpkin Ghost Short Sleeve Costume T-Shirt | Pumpkin ghost graphic shirt with crew neck fit for H" data-preview-seller="Women&#x27;s Novelty T-Shirts Best Sellers" data-preview-type="Printed Shirt" data-preview-reason="Very Strong Sub-BSR at #2" data-preview-metric="Best Seller #2" data-preview-image="https://images-na.ssl-images-amazon.com/images/I/71ovuGtiyGL._AC_UL600_SR600,400_.jpg" data-preview-href="product_explorer.html?preset=research_today&amp;focus=B0FKGTJBMP">
+            <img class="activity-thumbnail" src="https://images-na.ssl-images-amazon.com/images/I/71ovuGtiyGL._AC_UL600_SR600,400_.jpg" alt="Halloween Shirts for Women: Pumpkin Ghost Short Sleeve Costume T-Shirt | Pumpkin ghost graphic shirt with crew neck fit for H thumbnail">
+            <span class="activity-copy"><strong>Halloween Shirts for Women: Pumpkin Ghost Short Sleeve Costume T-Shirt | Pumpkin ghost graphic shirt with crew neck fit for H</strong><span class="caption">Women&#x27;s Novelty T-Shirts Best Sellers - Very Strong Sub-BSR at #2</span></span>
+            <span class="status-badge tone-winner">Best Seller #2</span>
           </a>
-          <a class="activity-item research-queue-item" href="product_explorer.html?preset=research_today&focus=B0H8H8N4V8" data-home-preview-item data-queue-asin="B0H8H8N4V8" data-preview-title="Artisanal Ringed Octopus Blue Glassware, 3D Handcrafted Marine Animal Bar Glass, Coastal Decor Gift for Ocean Lovers" data-preview-seller="Novelty Drinking Glasses New Releases" data-preview-type="Decorated Glass" data-preview-reason="New Release breakout with 2 reviews" data-preview-metric="Best Seller #55" data-preview-image="https://images-na.ssl-images-amazon.com/images/I/71fW5H+hJJL._AC_UL600_SR600,400_.jpg" data-preview-href="product_explorer.html?preset=research_today&amp;focus=B0H8H8N4V8">
-            <img class="activity-thumbnail" src="https://images-na.ssl-images-amazon.com/images/I/71fW5H+hJJL._AC_UL600_SR600,400_.jpg" alt="Artisanal Ringed Octopus Blue Glassware, 3D Handcrafted Marine Animal Bar Glass, Coastal Decor Gift for Ocean Lovers thumbnail">
-            <span class="activity-copy"><strong>Artisanal Ringed Octopus Blue Glassware, 3D Handcrafted Marine Animal Bar Glass, Coastal Decor Gift for Ocean Lovers</strong><span class="caption">Novelty Drinking Glasses New Releases - New Release breakout with 2 reviews</span></span>
-            <span class="status-badge tone-winner">Best Seller #55</span>
+          <a class="activity-item research-queue-item" href="product_explorer.html?preset=research_today&focus=B0H4WKKGR8" data-home-preview-item data-queue-asin="B0H4WKKGR8" data-preview-title="Kinlea Personalized Jewelry Dish with Initials &amp; Date, Custom Ring Dish for Engagement Rings, Bridesmaid Gifts, Bridal Shower" data-preview-seller="Jewelry Trays New Releases" data-preview-type="Decorated Blank Product" data-preview-reason="Very Strong Sub-BSR at #143" data-preview-metric="Sub-BSR #143" data-preview-image="https://images-na.ssl-images-amazon.com/images/I/51oHgpSjULL._AC_UL600_SR600,400_.jpg" data-preview-href="product_explorer.html?preset=research_today&amp;focus=B0H4WKKGR8">
+            <img class="activity-thumbnail" src="https://images-na.ssl-images-amazon.com/images/I/51oHgpSjULL._AC_UL600_SR600,400_.jpg" alt="Kinlea Personalized Jewelry Dish with Initials &amp; Date, Custom Ring Dish for Engagement Rings, Bridesmaid Gifts, Bridal Shower thumbnail">
+            <span class="activity-copy"><strong>Kinlea Personalized Jewelry Dish with Initials &amp; Date, Custom Ring Dish for Engagement Rings, Bridesmaid Gifts, Bridal Shower</strong><span class="caption">Jewelry Trays New Releases - Very Strong Sub-BSR at #143</span></span>
+            <span class="status-badge tone-winner">Sub-BSR #143</span>
           </a>
-          <a class="activity-item research-queue-item" href="product_explorer.html?preset=research_today&focus=B0H18D45KD" data-home-preview-item data-queue-asin="B0H18D45KD" data-preview-title="Agroon Fall Garden Flag 12x18 Inch Double Sided | Autumn Tree Maple Leaves Burlap Flag for Yard Outdoor Decoration" data-preview-seller="Outdoor Flags &amp; Banners New Releases" data-preview-type="Printed Flag" data-preview-reason="No primary evidence" data-preview-metric="Best Seller #85" data-preview-image="https://images-na.ssl-images-amazon.com/images/I/81jgIzZC8IL._AC_UL600_SR600,400_.jpg" data-preview-href="product_explorer.html?preset=research_today&amp;focus=B0H18D45KD">
-            <img class="activity-thumbnail" src="https://images-na.ssl-images-amazon.com/images/I/81jgIzZC8IL._AC_UL600_SR600,400_.jpg" alt="Agroon Fall Garden Flag 12x18 Inch Double Sided | Autumn Tree Maple Leaves Burlap Flag for Yard Outdoor Decoration thumbnail">
-            <span class="activity-copy"><strong>Agroon Fall Garden Flag 12x18 Inch Double Sided | Autumn Tree Maple Leaves Burlap Flag for Yard Outdoor Decoration</strong><span class="caption">Outdoor Flags &amp; Banners New Releases - No primary evidence</span></span>
-            <span class="status-badge tone-neutral">Best Seller #85</span>
+          <a class="activity-item research-queue-item" href="product_explorer.html?preset=research_today&focus=B0GM6WNBLP" data-home-preview-item data-queue-asin="B0GM6WNBLP" data-preview-title="SHAANT Personalized Bowling Shirts for Men Women, Custom Name Bowling Jersey Polo for Team, Hawaiian Shirt for Bowlers" data-preview-seller="Leme Order" data-preview-type="Custom Shirt" data-preview-reason="New seller push detected 5 days ago" data-preview-metric="Sub-BSR #15" data-preview-image="https://m.media-amazon.com/images/I/81AqLjqh6aL._AC_UY218_.jpg" data-preview-href="product_explorer.html?preset=research_today&amp;focus=B0GM6WNBLP">
+            <img class="activity-thumbnail" src="https://m.media-amazon.com/images/I/81AqLjqh6aL._AC_UY218_.jpg" alt="SHAANT Personalized Bowling Shirts for Men Women, Custom Name Bowling Jersey Polo for Team, Hawaiian Shirt for Bowlers thumbnail">
+            <span class="activity-copy"><strong>SHAANT Personalized Bowling Shirts for Men Women, Custom Name Bowling Jersey Polo for Team, Hawaiian Shirt for Bowlers</strong><span class="caption">Leme Order - New seller push detected 5 days ago</span></span>
+            <span class="status-badge tone-idea">Sub-BSR #15</span>
           </a>
-          <a class="activity-item research-queue-item" href="product_explorer.html?preset=research_today&focus=B0FX4MVVJS" data-home-preview-item data-queue-asin="B0FX4MVVJS" data-preview-title="NAZENTI Personalized Soccer Ball Christmas Ornament, Custom Family Girl, Boy Soccer Player Ornament with Name &amp; Number, Soccer Keepsake Men Player Christmas Tree Decoration, Xmas Gifts" data-preview-seller="FunGiftsNGoods" data-preview-type="Custom Ornament" data-preview-reason="Seller Leader at rank #9" data-preview-metric="21 reviews" data-preview-image="https://m.media-amazon.com/images/I/817GnMz2ahL._AC_UY218_.jpg" data-preview-href="product_explorer.html?preset=research_today&amp;focus=B0FX4MVVJS">
-            <img class="activity-thumbnail" src="https://m.media-amazon.com/images/I/817GnMz2ahL._AC_UY218_.jpg" alt="NAZENTI Personalized Soccer Ball Christmas Ornament, Custom Family Girl, Boy Soccer Player Ornament with Name &amp; Number, Soccer Keepsake Men Player Christmas Tree Decoration, Xmas Gifts thumbnail">
-            <span class="activity-copy"><strong>NAZENTI Personalized Soccer Ball Christmas Ornament, Custom Family Girl, Boy Soccer Player Ornament with Name &amp; Number, Soccer Keepsake Men Player Christmas Tree Decoration, Xmas Gifts</strong><span class="caption">FunGiftsNGoods - Seller Leader at rank #9</span></span>
-            <span class="status-badge tone-winner">21 reviews</span>
+          <a class="activity-item research-queue-item" href="product_explorer.html?preset=research_today&focus=B0HCZ1RVCB" data-home-preview-item data-queue-asin="B0HCZ1RVCB" data-preview-title="IDK IDC &amp; Idgaf Hat Humorous Baseball Cap, Funny Attitude Adjustable Distressed Baseball Dad Hat for Men Women" data-preview-seller="Men&#x27;s Baseball Caps New Releases" data-preview-type="Embroidered Cap" data-preview-reason="Very Strong Sub-BSR at #40" data-preview-metric="Best Seller #40" data-preview-image="https://images-na.ssl-images-amazon.com/images/I/51GKHoW1TYL._AC_UL600_SR600,400_.jpg" data-preview-href="product_explorer.html?preset=research_today&amp;focus=B0HCZ1RVCB">
+            <img class="activity-thumbnail" src="https://images-na.ssl-images-amazon.com/images/I/51GKHoW1TYL._AC_UL600_SR600,400_.jpg" alt="IDK IDC &amp; Idgaf Hat Humorous Baseball Cap, Funny Attitude Adjustable Distressed Baseball Dad Hat for Men Women thumbnail">
+            <span class="activity-copy"><strong>IDK IDC &amp; Idgaf Hat Humorous Baseball Cap, Funny Attitude Adjustable Distressed Baseball Dad Hat for Men Women</strong><span class="caption">Men&#x27;s Baseball Caps New Releases - Very Strong Sub-BSR at #40</span></span>
+            <span class="status-badge tone-winner">Best Seller #40</span>
           </a></div>
       </section>
       <aside class="panel home-preview-panel" aria-label="Research Today product preview" data-home-preview-panel>
-        <img class="home-preview-image" data-home-preview-image src="https://images-na.ssl-images-amazon.com/images/I/61sfhxCJP1L._AC_UL600_SR600,400_.jpg" alt="Custom Baseball Jersey Personalized Player Name and Number product preview">
+        <img class="home-preview-image" data-home-preview-image src="https://images-na.ssl-images-amazon.com/images/I/7110wKpSgiL._AC_UL600_SR600,400_.jpg" alt="Custom T Shirts for Men Women, Personalized 100% Cotton T-Shirt with Photo Logo and Text, Design Your Own Shirt product preview">
         <div class="inspector-heading">
           <h2>Product Preview</h2>
           <span class="caption" data-home-preview-state>Hover preview</span>
         </div>
-        <h3 class="preview-title" data-home-preview-title>Custom Baseball Jersey Personalized Player Name and Number</h3>
+        <h3 class="preview-title" data-home-preview-title>Custom T Shirts for Men Women, Personalized 100% Cotton T-Shirt with Photo Logo and Text, Design Your Own Shirt</h3>
         <div class="preview-meta">
-          <div class="preview-meta-row"><span>Seller</span><strong data-home-preview-seller>Men&#x27;s Baseball Jerseys New Releases</strong></div>
+          <div class="preview-meta-row"><span>Seller</span><strong data-home-preview-seller>Men&#x27;s Novelty T-Shirts New Releases</strong></div>
           <div class="preview-meta-row"><span>Type</span><strong data-home-preview-type>Custom Shirt</strong></div>
-          <div class="preview-meta-row"><span>Reason</span><strong data-home-preview-reason>No primary evidence</strong></div>
-          <div class="preview-meta-row"><span>Signal</span><strong data-home-preview-metric>Best Seller #66</strong></div>
+          <div class="preview-meta-row"><span>Reason</span><strong data-home-preview-reason>Very Strong Sub-BSR at #59</strong></div>
+          <div class="preview-meta-row"><span>Signal</span><strong data-home-preview-metric>Best Seller #60</strong></div>
         </div>
         <div class="preview-actions">
-          <a class="btn btn-primary" data-home-preview-link href="product_explorer.html?preset=research_today&amp;focus=B0H6TZC24M">Open Product Explorer</a>
+          <a class="btn btn-primary" data-home-preview-link href="product_explorer.html?preset=research_today&amp;focus=B0H7RPJRM6">Open Product Explorer</a>
         </div>
       </aside>
     </div>
@@ -1906,22 +1942,22 @@
     <section class="market-pulse-grid" aria-label="Market pulse">
       <article class="kpi-card tone-rising">
         <span class="kpi-label">Momentum</span>
-        <strong class="kpi-value">652</strong>
+        <strong class="kpi-value">605</strong>
         <span class="kpi-caption">Seller movers + New Release rising</span>
       </article>
       <article class="kpi-card tone-winner">
         <span class="kpi-label">Validation</span>
-        <strong class="kpi-value">1,360</strong>
+        <strong class="kpi-value">1,418</strong>
         <span class="kpi-caption">Winners + Strong Sub-BSR</span>
       </article>
       <article class="kpi-card tone-idea">
         <span class="kpi-label">Breakouts</span>
-        <strong class="kpi-value">49</strong>
+        <strong class="kpi-value">104</strong>
         <span class="kpi-caption">Category + New Release breakouts</span>
       </article>
       <article class="kpi-card tone-stable">
         <span class="kpi-label">New Pushes</span>
-        <strong class="kpi-value">119</strong>
+        <strong class="kpi-value">140</strong>
         <span class="kpi-caption">Fresh seller pushes</span>
       </article>
     </section>
@@ -1935,17 +1971,17 @@
     <section class="data-status-grid" aria-label="Data status">
       <article class="kpi-card tone-stable">
         <span class="kpi-label">Products</span>
-        <strong class="kpi-value">6,053</strong>
+        <strong class="kpi-value">6,090</strong>
         <span class="kpi-caption">Visible in V2</span>
       </article>
       <article class="kpi-card tone-idea">
         <span class="kpi-label">Observations</span>
-        <strong class="kpi-value">8,019</strong>
+        <strong class="kpi-value">8,066</strong>
         <span class="kpi-caption">Source-aware rows</span>
       </article>
       <article class="kpi-card tone-neutral">
         <span class="kpi-label">Generated</span>
-        <strong class="kpi-value">2026-08-17 09:10:20</strong>
+        <strong class="kpi-value">2026-08-18 13:30:06</strong>
         <span class="kpi-caption">Latest V2 build</span>
       </article>
     </section>
@@ -1961,90 +1997,90 @@
       <section class="evidence-card-grid" aria-label="Evidence overview">
       <a class="kpi-card evidence-overview-card tone-winner" href="product_explorer.html?seller_evidence=seller_leader">
         <h3>Seller Leader</h3>
-        <strong class="kpi-value">285</strong>
+        <strong class="kpi-value">278</strong>
         <div class="card-metrics">
-          <span>4,171 eligible</span>
-          <span>6.8% rate</span>
+          <span>4,214 eligible</span>
+          <span>6.6% rate</span>
         </div>
       </a>
       <a class="kpi-card evidence-overview-card tone-rising" href="product_explorer.html?seller_evidence=seller_mover">
         <h3>Seller Mover</h3>
-        <strong class="kpi-value">471</strong>
+        <strong class="kpi-value">397</strong>
         <div class="card-metrics">
-          <span>4,171 eligible</span>
-          <span>11.3% rate</span>
+          <span>4,214 eligible</span>
+          <span>9.4% rate</span>
         </div>
       </a>
       <a class="kpi-card evidence-overview-card tone-idea" href="product_explorer.html?seller_evidence=seller_new_push">
         <h3>Seller New Push</h3>
-        <strong class="kpi-value">119</strong>
+        <strong class="kpi-value">140</strong>
         <div class="card-metrics">
-          <span>4,171 eligible</span>
-          <span>2.9% rate</span>
+          <span>4,214 eligible</span>
+          <span>3.3% rate</span>
         </div>
       </a>
       <a class="kpi-card evidence-overview-card tone-winner" href="product_explorer.html?best_seller_evidence=category_winner">
         <h3>Category Winner</h3>
-        <strong class="kpi-value">190</strong>
+        <strong class="kpi-value">189</strong>
         <div class="card-metrics">
-          <span>966 eligible</span>
-          <span>19.7% rate</span>
+          <span>955 eligible</span>
+          <span>19.8% rate</span>
         </div>
       </a>
       <a class="kpi-card evidence-overview-card tone-rising" href="product_explorer.html?best_seller_evidence=category_breakout">
         <h3>Category Breakout</h3>
-        <strong class="kpi-value">32</strong>
+        <strong class="kpi-value">70</strong>
         <div class="card-metrics">
-          <span>966 eligible</span>
-          <span>3.3% rate</span>
+          <span>955 eligible</span>
+          <span>7.3% rate</span>
         </div>
       </a>
       <a class="kpi-card evidence-overview-card tone-stable" href="product_explorer.html?best_seller_evidence=category_stable">
         <h3>Category Stable</h3>
-        <strong class="kpi-value">385</strong>
+        <strong class="kpi-value">363</strong>
         <div class="card-metrics">
-          <span>966 eligible</span>
-          <span>39.9% rate</span>
+          <span>955 eligible</span>
+          <span>38.0% rate</span>
         </div>
       </a>
       <a class="kpi-card evidence-overview-card tone-rising" href="product_explorer.html?new_release_evidence=new_release_rising">
         <h3>New Release Rising</h3>
-        <strong class="kpi-value">181</strong>
+        <strong class="kpi-value">210</strong>
         <div class="card-metrics">
-          <span>1,003 eligible</span>
-          <span>18.0% rate</span>
+          <span>1,008 eligible</span>
+          <span>20.8% rate</span>
         </div>
       </a>
       <a class="kpi-card evidence-overview-card tone-winner" href="product_explorer.html?new_release_evidence=new_release_breakout">
         <h3>New Release Breakout</h3>
-        <strong class="kpi-value">17</strong>
+        <strong class="kpi-value">34</strong>
         <div class="card-metrics">
-          <span>1,003 eligible</span>
-          <span>1.7% rate</span>
+          <span>1,008 eligible</span>
+          <span>3.4% rate</span>
         </div>
       </a>
       <a class="kpi-card evidence-overview-card tone-idea" href="product_explorer.html?new_release_evidence=new_release_watch">
         <h3>New Release Candidate</h3>
-        <strong class="kpi-value">708</strong>
+        <strong class="kpi-value">743</strong>
         <div class="card-metrics">
-          <span>1,003 eligible</span>
-          <span>70.6% rate</span>
+          <span>1,008 eligible</span>
+          <span>73.7% rate</span>
         </div>
       </a>
       <a class="kpi-card evidence-overview-card tone-stable" href="product_explorer.html?supporting_evidence=strong_sub_bsr">
         <h3>Strong Sub-BSR</h3>
-        <strong class="kpi-value">1,205</strong>
+        <strong class="kpi-value">1,272</strong>
         <div class="card-metrics">
-          <span>2,050 eligible</span>
-          <span>58.8% rate</span>
+          <span>2,157 eligible</span>
+          <span>59.0% rate</span>
         </div>
       </a>
       <a class="kpi-card evidence-overview-card tone-winner" href="product_explorer.html?supporting_evidence=very_strong_sub_bsr">
         <h3>Very Strong Sub-BSR</h3>
-        <strong class="kpi-value">707</strong>
+        <strong class="kpi-value">776</strong>
         <div class="card-metrics">
-          <span>2,050 eligible</span>
-          <span>34.5% rate</span>
+          <span>2,157 eligible</span>
+          <span>36.0% rate</span>
         </div>
       </a>
       </section>
@@ -2064,37 +2100,37 @@
       </div>
       
     </div>
-        <div class="activity-list">          <a class="activity-item" href="product_explorer.html?seller_evidence=seller_mover&focus=B0GSFNS3HH">
-            <span><strong>Personalized Christian Pillow for Girls with Name &amp; Birth Flower, God Says I Am Bible Verse Throw Pillow, Inspirational Faith-Based Bedroom Decor, Christian Gift for Daughter, Kids (Insert Included)</strong><span class="caption">MA Commerce (MC)</span></span>
-            <span class="status-badge tone-rising">#879</span>
+        <div class="activity-list">          <a class="activity-item" href="product_explorer.html?seller_evidence=seller_mover&focus=B0G1MPCH3X">
+            <span><strong>Personalized Grandma Nightgowns for Women, Custom Women&#x27;s Sleep Tee, Gift for Grandma, Mother</strong><span class="caption">ZuneArt (Warrior)</span></span>
+            <span class="status-badge tone-rising">#266</span>
           </a>
-          <a class="activity-item" href="product_explorer.html?seller_evidence=seller_mover&focus=B0CXHSWKPT">
-            <span><strong>NAZENTI Custom Name Baby Boy Blanket, Personalized Embroidered Baby Name Nursery Blanket, Custom Knit Baby Blanket, Gifts for Baby Boy, Baby Girl, Birthday, Newborn Baby Gifts</strong><span class="caption">july17</span></span>
+          <a class="activity-item" href="product_explorer.html?seller_evidence=seller_mover&focus=B0HCCJ38L7">
+            <span><strong>LOVELYPOD Personalized Bowling Shirts for Men, Bowlings Jersey, Men Bowling Shirts with Name, Custom Bowlings Team Gifts 2</strong><span class="caption">NTK Trading</span></span>
             <span class="status-badge tone-rising">Must Review Today</span>
           </a>
-          <a class="activity-item" href="product_explorer.html?seller_evidence=seller_mover&focus=B0H26NK553">
-            <span><strong>Adventure Partners for Life Couple Gift - Personalized Solar Mason Jar Light, Custom Camping Couple Lantern for Husband Wife, Anniversary Outdoor Decor for Patio Garden, Romantic Mason Jar Lamp (1)</strong><span class="caption">ZuneArt (Warrior)</span></span>
-            <span class="status-badge tone-rising">#1,359</span>
+          <a class="activity-item" href="product_explorer.html?seller_evidence=seller_mover&focus=B0H4TXKZPD">
+            <span><strong>IZI POD Custom Name 250th Anniversary Baseball Jersey Shirt, 250 Years of Freedom Button Down Jersey for Men Women Family</strong><span class="caption">bozota</span></span>
+            <span class="status-badge tone-rising">#3</span>
           </a>
-          <a class="activity-item" href="product_explorer.html?seller_evidence=seller_mover&focus=B0CR4DCJKQ">
-            <span><strong>NAZENTI Personalized Mom Grandma &amp; Grandkids Hearts Sweatshirt, Grandma Sweatshirts for Women, Birthday Gifts for Mom Grandma</strong><span class="caption">GoPod Shop</span></span>
-            <span class="status-badge tone-rising">#1,245</span>
+          <a class="activity-item" href="product_explorer.html?seller_evidence=seller_mover&focus=B0H3NGYW3C">
+            <span><strong>A Man Of God Personalized Stainless Steel Tumbler, Custom Name Bible Letter Fathers Day Christian Gifts for Husband, Dad, Pastor - Bible Verse 20oz Coffee Cup, Religious Gift for Men (C2)</strong><span class="caption">ZuneArt (Warrior)</span></span>
+            <span class="status-badge tone-rising">#1,034</span>
           </a>
-          <a class="activity-item" href="product_explorer.html?seller_evidence=seller_mover&focus=B0CF1P4LSL">
-            <span><strong>Pawfect House To My Wife Tumbler 2026, 20 Oz Stainless Steel Tumbler, Anniversary Birthday Gifts For Women, Her, Romantic Travel Cup For Her Drinkware, Wife Gift From Husband, Couples Gifts</strong><span class="caption">Pawfect House Gifts (PFH)</span></span>
-            <span class="status-badge tone-rising">#13,695</span>
+          <a class="activity-item" href="product_explorer.html?seller_evidence=seller_mover&focus=B0GXDGYD4K">
+            <span><strong>WANDER PRINTS When You Miss Me Personalized Memorial Pillow | Sympathy Gift • Memorial Keepsake • Comfort Gift • Loss Remembrance • Home Comfort</strong><span class="caption">Peties Store (WP)</span></span>
+            <span class="status-badge tone-rising">#2,041</span>
           </a>
-          <a class="activity-item" href="product_explorer.html?seller_evidence=seller_mover&focus=B0H87NCVRV">
-            <span><strong>WANDER PRINTS Adventure Book Couple Personalized Leather Journal | Line Art • Couples • Travel Memories • Anniversary Keepsake • Rustic Adventure Style</strong><span class="caption">Peties Store (WP)</span></span>
+          <a class="activity-item" href="product_explorer.html?seller_evidence=seller_mover&focus=B0H6S5TCXS">
+            <span><strong>LOVELYPOD Personalised Maid of Honor Shirt, Photo Bridesmaid Shirt, MOH Bachelorette Party Tee</strong><span class="caption">LOVELY POD</span></span>
+            <span class="status-badge tone-rising">#24,101</span>
+          </a>
+          <a class="activity-item" href="product_explorer.html?seller_evidence=seller_mover&focus=B0FJ1RWWJB">
+            <span><strong>Personalized Nurse Badge Reel with Name, Add Your Own Photo, Personalized RN Badge Reel Retractable Id Holder Accessories for Office Workers Nurses, Gift for Nurse, RN, LPN, CAN /3</strong><span class="caption">Poppop Store</span></span>
+            <span class="status-badge tone-rising">#4,107</span>
+          </a>
+          <a class="activity-item" href="product_explorer.html?seller_evidence=seller_mover&focus=B0H6X1Q9GW">
+            <span><strong>Personalized Linen Wedding Welcome Sign, Custom Sheer Fabric Wedding Banner with Names &amp; Date, Romantic Ceremony Reception Signage, Bridal Shower Decor, Elegant Linen Welcome Banner 06</strong><span class="caption">Poppop Store</span></span>
             <span class="status-badge tone-rising">Must Review Today</span>
-          </a>
-          <a class="activity-item" href="product_explorer.html?seller_evidence=seller_mover&focus=B0CTDBYVBV">
-            <span><strong>NAZENTI Personalized Cheer Glitter Sweatshirt - Custom Cheerleader Sweatshirt, Cheer Mom Shirts for Women</strong><span class="caption">BEAUTIFS</span></span>
-            <span class="status-badge tone-rising">Fast Movers</span>
-          </a>
-          <a class="activity-item" href="product_explorer.html?seller_evidence=seller_mover&focus=B0G26FNDWV">
-            <span><strong>Personalized Corgi 2D Flat Ornament – Custom Dog Name Corgi Santa Hat with Christmas Lights Decoration, Corgi Christmas Ornament</strong><span class="caption">ZuneArt (Warrior)</span></span>
-            <span class="status-badge tone-rising">Fast Movers</span>
           </a></div>
       </section>
       <section class="panel">
@@ -2105,37 +2141,37 @@
       </div>
       
     </div>
-        <div class="activity-list">          <a class="activity-item" href="product_explorer.html?seller_evidence=seller_new_push&focus=B0CNG9X3QN">
-            <span><strong>NAZENTI Personalized Toddler Infant Baby Bodysuits, Custom Baby Onesie with Name, Protected By Dog Photo Onesie for Baby Boy Baby Girl On Birthday, Baby Shower Gifts, Mom-to-be, Dog Lovers Gifts</strong><span class="caption">AGift2U</span></span>
+        <div class="activity-list">          <a class="activity-item" href="product_explorer.html?seller_evidence=seller_new_push&focus=B0HDRRZKW3">
+            <span><strong>Custom Photo Ceramic Plant Pot, Personalized Pet Portrait Planter with Dog Cat Picture, Custom Succulent Flower Pot for Plant Lovers, Memorial Keepsake for Dog &amp; Cat Lovers, Unique Pet Loss 03</strong><span class="caption">Only Gift 4U</span></span>
             <span class="status-badge tone-rising">Must Review Today</span>
           </a>
-          <a class="activity-item" href="product_explorer.html?seller_evidence=seller_new_push&focus=B0GHMVDSKD">
-            <span><strong>DILYPOD Personalized Billiard Shirts for Billiard Enthusiasts, Custom 3D Pool Shirt with Name, Team Jersey for Players, Tournament Matches, League Games, Stylish Performance Sportswear Design (4)</strong><span class="caption">NTK Trading</span></span>
+          <a class="activity-item" href="product_explorer.html?seller_evidence=seller_new_push&focus=B0HDJ6DKPZ">
+            <span><strong>NAZENTI Personalized Bowling Shirts for Men, Bowling Jersey, Men Bowling Shirt, 3D Polo Shirt, Gift for Bowling Lover</strong><span class="caption">BEAUTIFS</span></span>
             <span class="status-badge tone-rising">Must Review Today</span>
           </a>
-          <a class="activity-item" href="product_explorer.html?seller_evidence=seller_new_push&focus=B0GHN2YLDW">
-            <span><strong>DILYPOD Personalized Billard Shirts for Men, 3D Pool Polo Shirt for Team, Custom Name Jersey for Players</strong><span class="caption">NTK Trading</span></span>
+          <a class="activity-item" href="product_explorer.html?seller_evidence=seller_new_push&focus=B0HDB7X6D7">
+            <span><strong>NAZENTI Personalized Senior Mom Shirt Class of 2027, Proud Senior Mom Tee | Custom Photo Name Graduation T-Shirt for Women, Senior 2027 Last First Day of School Shirt, Graduation Gift for Mom</strong><span class="caption">NicePod-LLC</span></span>
             <span class="status-badge tone-rising">Must Review Today</span>
           </a>
-          <a class="activity-item" href="product_explorer.html?seller_evidence=seller_new_push&focus=B0FDGJJNZG">
-            <span><strong>NAZENTI Personalized Football Mom Quarter Zip, American Football Shirts Custom Name, Women Tee, Tshirt Sweatshirt Senior Gift</strong><span class="caption">LOVELYTEE</span></span>
+          <a class="activity-item" href="product_explorer.html?seller_evidence=seller_new_push&focus=B0HF9HYPS2">
+            <span><strong>NAZENTI Personalized Just A Girl Who Loves Books Wooden Plaque, Custom Name Reading Girl Figurine 3-Layered Wooden Book Sign, Gifts For Book Lovers, Bookworms, Readers, Library Shelf Decor For Women 6</strong><span class="caption">Only Gift 4U</span></span>
             <span class="status-badge tone-rising">Must Review Today</span>
           </a>
-          <a class="activity-item" href="product_explorer.html?seller_evidence=seller_new_push&focus=B0GXV3BDJR">
-            <span><strong>Macorner Personalized Leather Journal Gifts for Board Game Lover, Board Game Gift for Men Women, Game Night Score Book For Family, Couples, Grandparent, Gaming Notebook for Friends, Bestfriend</strong><span class="caption">MA Commerce (MC)</span></span>
+          <a class="activity-item" href="product_explorer.html?seller_evidence=seller_new_push&focus=B0H83P7ZBB">
+            <span><strong>Sweetee Personalized Women&#x27;s Football Mom Shirt &amp; Sweatshirt</strong><span class="caption">DXL Trading</span></span>
             <span class="status-badge tone-rising">Must Review Today</span>
           </a>
-          <a class="activity-item" href="product_explorer.html?seller_evidence=seller_new_push&focus=B0HD79VX3F">
-            <span><strong>Custom Funny Patriotic Men Swim Trunks, Birthday Gifts for Husband, Son, Grandson, 3D Novelty Graphic Board Shorts</strong><span class="caption">POLIFY</span></span>
+          <a class="activity-item" href="product_explorer.html?seller_evidence=seller_new_push&focus=B0CKMP7YT7">
+            <span><strong>NAZENTI Personalized Baby&#x27;s First Christmas Ornament 2025, Personalized Baby 1st Christmas Ornament, Custom New Babys Gifts Keepsake, First New Baby Girl Boy, Xmas Gift for New Mom Dad 2</strong><span class="caption">LOVELYTEE</span></span>
             <span class="status-badge tone-rising">Must Review Today</span>
           </a>
-          <a class="activity-item" href="product_explorer.html?seller_evidence=seller_new_push&focus=B0C4GX7FMC">
-            <span><strong>Custom Hawaiian Shirt with Faces, Tropical Floral Shirt Short Sleeve Button Down Beach Shirt, Custom Pet Hawaiian Shirt</strong><span class="caption">DATY SHOP</span></span>
-            <span class="status-badge tone-rising">Watchlist</span>
+          <a class="activity-item" href="product_explorer.html?seller_evidence=seller_new_push&focus=B0H5QVPYML">
+            <span><strong>Wrappiness Custom Seersucker Makeup Bag, Personalized Embroidered Monogram Toiletry Pouch, Summer Beach Organizer, Gift for Her, Bridesmaid Gift</strong><span class="caption">Wrappiness</span></span>
+            <span class="status-badge tone-rising">Must Review Today</span>
           </a>
-          <a class="activity-item" href="product_explorer.html?seller_evidence=seller_new_push&focus=B0H9M3879K">
-            <span><strong>Personalized Husky Sun Catcher, Dog Memorial Gifts, Custom Husky with Wings Ornaments Christmas Tree Decor, Loss of Dog Sympathy Gift Memorial Suncatchers</strong><span class="caption">BEAUTIFS</span></span>
-            <span class="status-badge tone-rising">Watchlist</span>
+          <a class="activity-item" href="product_explorer.html?seller_evidence=seller_new_push&focus=B0HDJB6YPL">
+            <span><strong>To My Grandson Pocket Hug Coin Keychain from Grandma, Birthday Gifts For Grandson, My Greatest Adventure</strong><span class="caption">POLIFY</span></span>
+            <span class="status-badge tone-rising">Must Review Today</span>
           </a></div>
       </section>
       <section class="panel">
@@ -2146,37 +2182,37 @@
       </div>
       
     </div>
-        <div class="activity-list">          <a class="activity-item" href="product_explorer.html?best_seller_evidence=category_breakout&focus=B0FKGTJBMP">
-            <span><strong>Halloween Shirts for Women: Pumpkin Ghost Short Sleeve Costume T-Shirt | Pumpkin ghost graphic shirt with crew neck fit for H</strong><span class="caption">Women&#x27;s Novelty T-Shirts Best Sellers</span></span>
+        <div class="activity-list">          <a class="activity-item" href="product_explorer.html?best_seller_evidence=category_breakout&focus=B07J66V6ZS">
+            <span><strong>Lumsburry Build-on Brick Coffee Mug, Funny DIY Unique Novelty Drinking Cup | Building Blocks Creative Mug, for Men Women Kids</strong><span class="caption">Novelty Coffee Mugs Best Sellers</span></span>
+            <span class="status-badge tone-rising">Fast Movers</span>
+          </a>
+          <a class="activity-item" href="product_explorer.html?best_seller_evidence=category_breakout&focus=B0CG1HBWMV">
+            <span><strong>365RUSTIC Highland Cow Christmas Tree Keepsake Ornaments, Farmhouse Themed 2 Side Printed Flat Wooden Ornament, Farm Animal X</strong><span class="caption">Best Sellers in Christmas Pendant, Drop &amp; Finial Ornaments</span></span>
             <span class="status-badge tone-rising">Must Review Today</span>
           </a>
-          <a class="activity-item" href="product_explorer.html?best_seller_evidence=category_breakout&focus=B0BBMGRLDK">
-            <span><strong>KIDDAD Womens Graphic Shirt Teacher Kindness Shirts Be Kind Tee Shirt | Teacher Graphic Shirt Kindness Shirts Boho Floral Sho</strong><span class="caption">Women&#x27;s Novelty T-Shirts Best Sellers</span></span>
-            <span class="status-badge tone-rising">Fast Movers</span>
+          <a class="activity-item" href="product_explorer.html?best_seller_evidence=category_breakout&focus=B0C2PQTGV5">
+            <span><strong>AVOIN colorlife Fall Welcome Pumpkin Garden Flag 12x18 Inch Outside | Double Sided, Weather &amp; Fade Resistant, Yard Outdoor De</strong><span class="caption">Outdoor Flags &amp; Banners Best Sellers</span></span>
+            <span class="status-badge tone-rising">Must Review Today</span>
           </a>
-          <a class="activity-item" href="product_explorer.html?best_seller_evidence=category_breakout&focus=B0DR6JBLKV">
-            <span><strong>TeeUnion Tuxedo T-Shirt Classic Party Tee Funny Concert Festival Costume Shirt</strong><span class="caption">Men&#x27;s Novelty T-Shirts Best Sellers</span></span>
-            <span class="status-badge tone-rising">Fast Movers</span>
+          <a class="activity-item" href="product_explorer.html?best_seller_evidence=category_breakout&focus=B0FD2Y513F">
+            <span><strong>KIDDAD Halloween Shirts for Women Halloween Pumpkin Shirt Boo Ghost Shirts | Womens Halloween Shirts Cute Ghost Shirts Hallow</strong><span class="caption">Women&#x27;s Novelty T-Shirts Best Sellers</span></span>
+            <span class="status-badge tone-rising">#11</span>
           </a>
-          <a class="activity-item" href="product_explorer.html?best_seller_evidence=category_breakout&focus=B0FDWQF2FW">
-            <span><strong>Wedding Gifts for Couples 2026 Bridal Shower Gift for Bride To Be Engagement Gifts for Couples Newlyweds His and Hers Mr and</strong><span class="caption">Novelty Coffee Mugs Best Sellers</span></span>
-            <span class="status-badge tone-rising">Fast Movers</span>
-          </a>
-          <a class="activity-item" href="product_explorer.html?best_seller_evidence=category_breakout&focus=B0GV4NVT6J">
-            <span><strong>Funny Trucker Hats Women Men,Adjustable Cotton Trendy Cute Vintage Hat | Women/Men Gifts for Birthday,Christmas,WhiteElephant</strong><span class="caption">Women&#x27;s Novelty Baseball Caps New Releases</span></span>
-            <span class="status-badge tone-rising">Fast Movers</span>
-          </a>
-          <a class="activity-item" href="product_explorer.html?best_seller_evidence=category_breakout&focus=B0FRXXTMS5">
-            <span><strong>Acrylic Tabby Cat Christmas Hanging Ornaments with Loop | for Car Interior, Keychain, Backpack, Home, Garden, Patio &amp; Party |</strong><span class="caption">Decorative Hanging Ornaments Best Sellers</span></span>
-            <span class="status-badge tone-rising">Fast Movers</span>
-          </a>
-          <a class="activity-item" href="product_explorer.html?best_seller_evidence=category_breakout&focus=B0GJSHMLN6">
-            <span><strong>WITTSPOT 70th Birthday Gifts for Men, Dad - Mens Birthday Gift Ideas, Dad Birthday Gift, mens Gifts Ideas - Funny, Gag Gifts</strong><span class="caption">Novelty Coffee Mugs Best Sellers</span></span>
-            <span class="status-badge tone-rising">Fast Movers</span>
-          </a>
-          <a class="activity-item" href="product_explorer.html?best_seller_evidence=category_breakout&focus=B0GLYNGPWP">
-            <span><strong>Trgowaul Colorful 60th Birthday Back in 1966 Poster Acrylic Table Sign | Vintage 60th Birthday Decorations Women Men, 60 Anni</strong><span class="caption">Decorative Signs &amp; Plaques Best Sellers</span></span>
+          <a class="activity-item" href="product_explorer.html?best_seller_evidence=category_breakout&focus=B0GKGX1PNT">
+            <span><strong>Tires Valley Forge Automotive Officially Licensed T-Shirt</strong><span class="caption">Men&#x27;s Novelty T-Shirts Best Sellers</span></span>
             <span class="status-badge tone-rising">New Breakouts</span>
+          </a>
+          <a class="activity-item" href="product_explorer.html?best_seller_evidence=category_breakout&focus=B0BBMM4BGB">
+            <span><strong>Fall Decorations for Home Thanksgiving Signs Wooden Table Sign Vintage Farmhouse Block Sign Harvest Fall Autumn Home Decor</strong><span class="caption">Decorative Signs &amp; Plaques Best Sellers</span></span>
+            <span class="status-badge tone-rising">#14</span>
+          </a>
+          <a class="activity-item" href="product_explorer.html?best_seller_evidence=category_breakout&focus=B0CMBLB3KY">
+            <span><strong>Just Another Sexy Bald Guy | Funny Dad Husband Grandpa Joke Dude Men Humor T-Shirt</strong><span class="caption">Men&#x27;s Novelty T-Shirts Best Sellers</span></span>
+            <span class="status-badge tone-rising">Fast Movers</span>
+          </a>
+          <a class="activity-item" href="product_explorer.html?best_seller_evidence=category_breakout&focus=B0H38MRS2S">
+            <span><strong>Fall Decorations for Home Football Pumpkin Wood Sign Fall Wall Shelf Decor | Fall decor football pumpkin sign for fall decora</strong><span class="caption">Decorative Signs &amp; Plaques New Releases</span></span>
+            <span class="status-badge tone-rising">#120</span>
           </a></div>
       </section>
       <section class="panel">
@@ -2187,37 +2223,37 @@
       </div>
       
     </div>
-        <div class="activity-list">          <a class="activity-item" href="product_explorer.html?new_release_evidence=new_release_breakout&focus=B0H3N74Y6N">
-            <span><strong>American Trends Men&#x27;s Cruise Hawaiian Shirt, Short Sleeve Button Down Wear | Lightweight Short Sleeve, Wrinkle-Resistant, Mul</strong><span class="caption">Men&#x27;s Novelty Button-Down Shirts New Releases</span></span>
+        <div class="activity-list">          <a class="activity-item" href="product_explorer.html?new_release_evidence=new_release_breakout&focus=B0H3JRS9Y8">
+            <span><strong>Baseball Jersey Shirts for Men Women Graphic Baseball Game Day Fan Jerseys Button Up Short Sleeve Cardigan Tops</strong><span class="caption">Men&#x27;s Baseball Jerseys New Releases</span></span>
             <span class="status-badge tone-rising">Must Review Today</span>
           </a>
-          <a class="activity-item" href="product_explorer.html?new_release_evidence=new_release_breakout&focus=B0H4VP2FMV">
+          <a class="activity-item" href="product_explorer.html?new_release_evidence=new_release_breakout&focus=B0H2R2DJXW">
+            <span><strong>People 1 Star Absolute Nightmare Would Not Recommend Funny T-Shirt</strong><span class="caption">Women&#x27;s Novelty T-ShirtsNew Releases</span></span>
+            <span class="status-badge tone-rising">Must Review Today</span>
+          </a>
+          <a class="activity-item" href="product_explorer.html?new_release_evidence=new_release_breakout&focus=B0H4ZHG8BT">
+            <span><strong>The Garden Morning 2026 Floral Print Baseball Cap Breathable Casual | Sun Hat, Adjustable Hat Outdoor Daily Wear</strong><span class="caption">Women&#x27;s Novelty Baseball Caps New Releases</span></span>
+            <span class="status-badge tone-rising">Must Review Today</span>
+          </a>
+          <a class="activity-item" href="product_explorer.html?new_release_evidence=new_release_breakout&focus=B0H4VKL8QF">
             <span><strong>Men&#x27;s Jesus The Way The Truth and Life Hawaiian Shirt Christian Cross Shirts</strong><span class="caption">Men&#x27;s Novelty Button-Down Shirts New Releases</span></span>
             <span class="status-badge tone-rising">Must Review Today</span>
           </a>
-          <a class="activity-item" href="product_explorer.html?new_release_evidence=new_release_breakout&focus=B0H8H8N4V8">
-            <span><strong>Artisanal Ringed Octopus Blue Glassware, 3D Handcrafted Marine Animal Bar Glass, Coastal Decor Gift for Ocean Lovers</strong><span class="caption">Novelty Drinking Glasses New Releases</span></span>
+          <a class="activity-item" href="product_explorer.html?new_release_evidence=new_release_breakout&focus=B0H8C54G4C">
+            <span><strong>LASFOUR Personalized Teacher Baseball Jersey with Name, Custom School Spirit Jersey, BackTo Shool Tee Shirt, Teacher Gift</strong><span class="caption">LASFOUR (Warrior)</span></span>
+            <span class="status-badge tone-rising">#46</span>
+          </a>
+          <a class="activity-item" href="product_explorer.html?new_release_evidence=new_release_breakout&focus=B0HCP3V6HC">
+            <span><strong>Halloween Pumpkin Wreath Sash Fall Front Door Orange Bow Decor Soft Cotton Feel Fabric Raised Embroidery Scalloped Trim Seaso</strong><span class="caption">Decorative Hanging Ornaments New Releases</span></span>
+            <span class="status-badge tone-rising">Must Review Today</span>
+          </a>
+          <a class="activity-item" href="product_explorer.html?new_release_evidence=new_release_breakout&focus=B0H6X7DVVL">
+            <span><strong>Custom Baseball Jersey Stripes Personalized Baseball Shirt with Team Name Number Team Uniform Gifts for Men Women Youth</strong><span class="caption">Men&#x27;s Baseball Jerseys New Releases</span></span>
             <span class="status-badge tone-rising">Fast Movers</span>
           </a>
-          <a class="activity-item" href="product_explorer.html?new_release_evidence=new_release_breakout&focus=B0H7BW7CHQ">
-            <span><strong>Personalized Engagement Gifts for Couples, Wooden Engagement Ornament 2026 | Custom Ornaments with Picture and Keepsake Card,</strong><span class="caption">Decorative Hanging Ornaments New Releases</span></span>
+          <a class="activity-item" href="product_explorer.html?new_release_evidence=new_release_breakout&focus=B0H5K62G8Y">
+            <span><strong>Bokon 2 Pack 14 oz Ghost Icon Glass Cups, Pink Halloween Drinkware | Hand Blown Vintage Swirl Glass, Cute Ghost Design, Heat</strong><span class="caption">Novelty Drinking Glasses New Releases</span></span>
             <span class="status-badge tone-rising">Fast Movers</span>
-          </a>
-          <a class="activity-item" href="product_explorer.html?new_release_evidence=new_release_breakout&focus=B0H7RRWJNH">
-            <span><strong>Custom Philippines Baseball Jersey Personalized Name Number Pilipinas Button Down Shirt for Men Women Youth</strong><span class="caption">Men&#x27;s Baseball Jerseys New Releases</span></span>
-            <span class="status-badge tone-rising">Fast Movers</span>
-          </a>
-          <a class="activity-item" href="product_explorer.html?new_release_evidence=new_release_breakout&focus=B0H2C9FG52">
-            <span><strong>Relax Gold Crown Premium Snapback Adjustable Hat Full Suede One Size Fits Most USA Embroidery Men and Women</strong><span class="caption">Men&#x27;s Baseball Caps New Releases</span></span>
-            <span class="status-badge tone-rising">Fast Movers</span>
-          </a>
-          <a class="activity-item" href="product_explorer.html?new_release_evidence=new_release_breakout&focus=B0H9P7B4RP">
-            <span><strong>Don&#x27;t Talk to Me I Have A Hot Wife Hat</strong><span class="caption">Women&#x27;s Novelty Baseball Caps New Releases</span></span>
-            <span class="status-badge tone-rising">Fast Movers</span>
-          </a>
-          <a class="activity-item" href="product_explorer.html?new_release_evidence=new_release_breakout&focus=B0H9RQ2C26">
-            <span><strong>Custom Photo &amp; Text T-Shirt, Front &amp; Back Print, Unisex Crew Neck | 100% cotton, soft crew neck. Custom photo &amp; text, front &amp;</strong><span class="caption">Men&#x27;s Novelty T-Shirts New Releases</span></span>
-            <span class="status-badge tone-rising">New Breakouts</span>
           </a></div>
       </section>
       <section class="panel">
@@ -2232,16 +2268,20 @@
             <span><strong>Men Hawaiian Shirt Short Sleeve Summer Beach Button Down Shirts with Pocket | Lightweight Beach Vacation Tropical,Casual Crui</strong><span class="caption">Men&#x27;s Novelty Button-Down Shirts Best Sellers</span></span>
             <span class="status-badge tone-rising">#1</span>
           </a>
-          <a class="activity-item" href="product_explorer.html?supporting_evidence=very_strong_sub_bsr&focus=B01HMWWLCI">
-            <span><strong>American Flag Made in USA | American Flags for Outside 3X5 | Premium US Flag 3X5 Heavy Duty Outdoor with Embroidered Stars an</strong><span class="caption">Outdoor Flags &amp; Banners Best Sellers</span></span>
+          <a class="activity-item" href="product_explorer.html?supporting_evidence=very_strong_sub_bsr&focus=B0DYWFH57V">
+            <span><strong>Funky Junque Adult Trucker Snapback Hat 2-Tone Baseball Cap | 5-Panel Baseball Cap for Women and Men, Cotton-Poly Blend, Adju</strong><span class="caption">Women&#x27;s Novelty Baseball Caps Best Sellers</span></span>
+            <span class="status-badge tone-rising">#1</span>
+          </a>
+          <a class="activity-item" href="product_explorer.html?supporting_evidence=very_strong_sub_bsr&focus=B077K7PKP1">
+            <span><strong>Pooqla LED Marquee Letter Lights Sign, Light Up Alphabet Letter for Home Party Wedding Decoration A</strong><span class="caption">Decorative Signs &amp; Plaques Best Sellers</span></span>
             <span class="status-badge tone-rising">#1</span>
           </a>
           <a class="activity-item" href="product_explorer.html?supporting_evidence=very_strong_sub_bsr&focus=B0BJZ8WJ86">
             <span><strong>True Classic Mens T-Shirts – Short Sleeve Crew Neck T Shirts for Man, Cotton Blend Plain Novelty Men&#x27;s T-Shirts</strong><span class="caption">Men&#x27;s Novelty T-Shirts Best Sellers</span></span>
             <span class="status-badge tone-rising">#1</span>
           </a>
-          <a class="activity-item" href="product_explorer.html?supporting_evidence=very_strong_sub_bsr&focus=B077K7PKP1">
-            <span><strong>Pooqla LED Marquee Letter Lights Sign, Light Up Alphabet Letter for Home Party Wedding Decoration A</strong><span class="caption">Decorative Signs &amp; Plaques Best Sellers</span></span>
+          <a class="activity-item" href="product_explorer.html?supporting_evidence=very_strong_sub_bsr&focus=B01HMWWLCI">
+            <span><strong>American Flag Made in USA | American Flags for Outside 3X5 | Premium US Flag 3X5 Heavy Duty Outdoor with Embroidered Stars an</strong><span class="caption">Outdoor Flags &amp; Banners Best Sellers</span></span>
             <span class="status-badge tone-rising">#1</span>
           </a>
           <a class="activity-item" href="product_explorer.html?supporting_evidence=very_strong_sub_bsr&focus=B09RPKGVDW">
@@ -2255,10 +2295,6 @@
           <a class="activity-item" href="product_explorer.html?supporting_evidence=very_strong_sub_bsr&focus=B07T2S93Z8">
             <span><strong>Jumway Not A Day Over Fabulous Mug Gifts Set- Birthday Gifts for Women - Funny Birthday Gift Ideas for Her,Friends, Coworkers</strong><span class="caption">Novelty Coffee Mugs Best Sellers</span></span>
             <span class="status-badge tone-rising">#1</span>
-          </a>
-          <a class="activity-item" href="product_explorer.html?supporting_evidence=very_strong_sub_bsr&focus=B0DJ1865M5">
-            <span><strong>COOFANDY Men&#x27;s Knit Short Sleeve Shirts Button Down Summer Polo Shirt | Cable Knit Textured, Beach Wedding Dress Shirt, Casua</strong><span class="caption">Men&#x27;s Novelty Button-Down Shirts Best Sellers</span></span>
-            <span class="status-badge tone-rising">#2</span>
           </a></div>
       </section>
       </div>
@@ -2272,12 +2308,12 @@
       <section class="dashboard-grid" aria-label="Dataset overview">
       <article class="kpi-card tone-stable">
         <span class="kpi-label">Unique Products</span>
-        <strong class="kpi-value">7,666</strong>
+        <strong class="kpi-value">7,708</strong>
         <span class="kpi-caption">Across source-aware history</span>
       </article>
       <article class="kpi-card tone-idea">
         <span class="kpi-label">Source-aware Observations</span>
-        <strong class="kpi-value">8,019</strong>
+        <strong class="kpi-value">8,066</strong>
         <span class="kpi-caption">Source-aware rows</span>
       </article>
       <article class="kpi-card tone-stable">
@@ -2302,12 +2338,12 @@
       </article>
       <article class="kpi-card tone-stable">
         <span class="kpi-label">Valid Sub-BSR</span>
-        <strong class="kpi-value">2,028</strong>
+        <strong class="kpi-value">2,133</strong>
         <span class="kpi-caption">Products with valid Sub-BSR</span>
       </article>
       <article class="kpi-card tone-neutral">
         <span class="kpi-label">Last Crawl</span>
-        <strong class="kpi-value">2026-08-17</strong>
+        <strong class="kpi-value">2026-08-18</strong>
         <span class="kpi-caption">Latest observed timestamp</span>
       </article>
       </section>
@@ -2321,32 +2357,32 @@
       <section class="dashboard-grid" aria-label="Coverage overview">
       <article class="kpi-card tone-winner">
         <span class="kpi-label">Seller Coverage</span>
-        <strong class="kpi-value">4,171</strong>
+        <strong class="kpi-value">4,214</strong>
         <span class="kpi-caption">Products with seller observations</span>
       </article>
       <article class="kpi-card tone-rising">
         <span class="kpi-label">Best Seller Coverage</span>
-        <strong class="kpi-value">966</strong>
+        <strong class="kpi-value">955</strong>
         <span class="kpi-caption">Products with Best Seller observations</span>
       </article>
       <article class="kpi-card tone-alert">
         <span class="kpi-label">New Release Coverage</span>
-        <strong class="kpi-value">1,003</strong>
+        <strong class="kpi-value">1,008</strong>
         <span class="kpi-caption">Products with New Release observations</span>
       </article>
       <article class="kpi-card tone-stable">
         <span class="kpi-label">BSR Coverage</span>
-        <strong class="kpi-value">2,050</strong>
+        <strong class="kpi-value">2,157</strong>
         <span class="kpi-caption">Products with valid Sub-BSR</span>
       </article>
       <article class="kpi-card tone-neutral">
         <span class="kpi-label">One Source Family</span>
-        <strong class="kpi-value">6,013</strong>
+        <strong class="kpi-value">6,063</strong>
         <span class="kpi-caption">Exactly one source family</span>
       </article>
       <article class="kpi-card tone-idea">
         <span class="kpi-label">Two Source Families</span>
-        <strong class="kpi-value">40</strong>
+        <strong class="kpi-value">27</strong>
         <span class="kpi-caption">Two source families</span>
       </article>
       <article class="kpi-card tone-winner">
@@ -2365,11 +2401,11 @@
       <div class="data-quality-list">
         <div class="quality-item">
           <span>Unknown product type</span>
-          <strong>164</strong>
+          <strong>151</strong>
         </div>
         <div class="quality-item">
           <span>Missing image</span>
-          <strong>527</strong>
+          <strong>587</strong>
         </div>
         <div class="quality-item">
           <span>Missing product URL</span>
@@ -2377,15 +2413,15 @@
         </div>
         <div class="quality-item">
           <span>Missing review data</span>
-          <strong>3,278</strong>
+          <strong>3,348</strong>
         </div>
         <div class="quality-item">
           <span>Missing price</span>
-          <strong>2,615</strong>
+          <strong>2,652</strong>
         </div>
         <div class="quality-item">
           <span>Multiple source families</span>
-          <strong>40</strong>
+          <strong>27</strong>
         </div>
         <div class="quality-item">
           <span>Latest generation status</span>
@@ -2425,11 +2461,11 @@
       <div class="data-quality-list">
                 <div class="quality-item">
           <span>Dataset products</span>
-          <strong>6,053</strong>
+          <strong>6,090</strong>
         </div>
                 <div class="quality-item">
           <span>Source-aware Observations</span>
-          <strong>8,019</strong>
+          <strong>8,066</strong>
         </div>
                 <div class="quality-item">
           <span>Marketplaces</span>
@@ -2437,7 +2473,7 @@
         </div>
                 <div class="quality-item">
           <span>Generated</span>
-          <strong>2026-08-17 09:10:20</strong>
+          <strong>2026-08-18 13:30:06</strong>
         </div>
                 <div class="quality-item">
           <span>Dashboard version</span>
