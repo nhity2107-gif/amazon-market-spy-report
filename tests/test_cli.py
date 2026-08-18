@@ -23,6 +23,7 @@ from amazon_market_spy.cli import (
     main,
     parse_source_pages,
     repair_bsr_outputs,
+    select_bsr_repair_candidates,
     source_page_limit,
     source_scroll_enabled,
     write_outputs,
@@ -324,6 +325,92 @@ class CliTests(unittest.TestCase):
         self.assertEqual(products[1]["bsr_rank"], "")
         self.assertEqual(products[1]["primary_bsr_rank"], "")
         self.assertEqual(products[1]["sub_bsr_rank"], "")
+
+    def test_fetch_category_ranks_prioritizes_missing_seller_preview_products_round_robin(self) -> None:
+        class FakeFetcher:
+            def __init__(self) -> None:
+                self.urls: list[str] = []
+
+            def fetch(self, url: str) -> str:
+                self.urls.append(url)
+                return "<html></html>"
+
+        product_rows = [
+            {
+                "asin": "B0SELLA002",
+                "source_type": "seller",
+                "seller_name": "Seller A",
+                "display_order": "2",
+                "product_url": "https://www.amazon.com/dp/B0SELLA002",
+            },
+            {
+                "asin": "B0SELLB001",
+                "source_type": "seller",
+                "seller_name": "Seller B",
+                "display_order": "1",
+                "product_url": "https://www.amazon.com/dp/B0SELLB001",
+            },
+            {
+                "asin": "B0SELLA001",
+                "source_type": "seller",
+                "seller_name": "Seller A",
+                "display_order": "1",
+                "product_url": "https://www.amazon.com/dp/B0SELLA001",
+            },
+        ]
+        opportunities = [
+            {"asin": "B0OPPORT01", "product_url": "https://www.amazon.com/dp/B0OPPORT01"},
+        ]
+        fetcher = FakeFetcher()
+
+        fetch_category_ranks_for_opportunities(
+            fetcher,  # type: ignore[arg-type]
+            opportunities,
+            max_detail_pages=2,
+            detail_delay=0,
+            product_rows=product_rows,
+        )
+
+        self.assertEqual(
+            fetcher.urls,
+            [
+                "https://www.amazon.com/dp/B0SELLA001",
+                "https://www.amazon.com/dp/B0SELLB001",
+            ],
+        )
+
+    def test_bsr_repair_prioritizes_missing_seller_preview_before_opportunities(self) -> None:
+        products = [
+            {
+                "asin": "B0OPPORT01",
+                "source_type": "search_result",
+                "display_order": "1",
+            },
+            {
+                "asin": "B0SELLA002",
+                "source_type": "seller",
+                "seller_name": "Seller A",
+                "display_order": "2",
+            },
+            {
+                "asin": "B0SELLA001",
+                "source_type": "seller",
+                "seller_name": "Seller A",
+                "display_order": "1",
+            },
+        ]
+
+        selected, skipped_fresh = select_bsr_repair_candidates(
+            products,
+            priority_asins={"B0OPPORT01"},
+            opportunity_scores={"B0OPPORT01": 99},
+            limit=2,
+            only_missing=True,
+            today="2026-08-18",
+        )
+
+        self.assertEqual([row["asin"] for row in selected], ["B0SELLA001", "B0SELLA002"])
+        self.assertEqual(skipped_fresh, 0)
 
     def test_rank_audit_rows_warn_for_text_scan(self) -> None:
         rows = [

@@ -103,6 +103,7 @@ DEFAULT_SNAPSHOT_DIR = Path("data/snapshots")
 DEFAULT_MASTER_SNAPSHOT_PATH = Path("data/master_snapshot.csv")
 DEFAULT_MAX_DETAIL_PAGES = 100
 DEFAULT_MAX_DETAIL_FIXES = 300
+SELLER_PREVIEW_PRODUCT_LIMIT = 15
 DEFAULT_DETAIL_DELAY_SECONDS = 3.0
 DEFAULT_DETAIL_TIMEOUT_SECONDS = 30
 DEFAULT_SELLER_MAX_PAGES = 3
@@ -1371,11 +1372,19 @@ def _bsr_repair_context(output_dir: Path) -> tuple[set[str], dict[str, int]]:
     return priority_asins, opportunity_scores
 
 
-def _bsr_repair_sort_key(row: dict[str, str], priority_asins: set[str], today: str) -> tuple[int, int, int, int, int, int, int, str]:
+def _bsr_repair_sort_key(
+    row: dict[str, str],
+    priority_asins: set[str],
+    today: str,
+) -> tuple[int, int, str, int, int, int, int, int, int, int, str]:
     asin = _row_asin(row)
     display_rank = _display_rank_value(row)
     score = _repair_opportunity_score(row, {})
+    seller_preview_missing = _is_missing_seller_preview_row(row)
     return (
+        0 if seller_preview_missing else 1,
+        display_rank if seller_preview_missing else SELLER_PREVIEW_PRODUCT_LIMIT + 1,
+        _seller_identity(row) if seller_preview_missing else "",
         0 if asin in priority_asins else 1,
         0 if _missing_bsr_fields_reason(row) else 1,
         0 if (row.get("rank_parse_confidence", "") or "").strip().lower() != "high" else 1,
@@ -1400,6 +1409,26 @@ def _display_rank_value(row: dict[str, str]) -> int:
         or _to_int(row.get("position", ""))
         or 10**9
     )
+
+
+def _is_missing_seller_preview_row(row: dict[str, str]) -> bool:
+    source_type = (row.get("source_type", "") or row.get("page_type", "") or "").strip().lower()
+    display_rank = _display_rank_value(row)
+    return (
+        source_type == "seller"
+        and 1 <= display_rank <= SELLER_PREVIEW_PRODUCT_LIMIT
+        and bool(_missing_bsr_fields_reason(row))
+    )
+
+
+def _seller_identity(row: dict[str, str]) -> str:
+    return (
+        row.get("source_id", "")
+        or row.get("seller_id", "")
+        or row.get("seller_name", "")
+        or row.get("source_name", "")
+        or ""
+    ).strip().lower()
 
 
 def _is_fresh_high_confidence_bsr(row: dict[str, str], today: str) -> bool:
@@ -1859,6 +1888,7 @@ def write_outputs(
                 max_detail_pages=max_detail_pages,
                 detail_delay=detail_delay,
                 detail_timeout=detail_timeout,
+                product_rows=products,
             )
             if ranks_by_asin:
                 apply_category_ranks(products, ranks_by_asin)
@@ -2041,8 +2071,10 @@ def fetch_category_ranks_for_opportunities(
     max_detail_pages: int = DEFAULT_MAX_DETAIL_PAGES,
     detail_delay: float = DEFAULT_DETAIL_DELAY_SECONDS,
     detail_timeout: int = DEFAULT_DETAIL_TIMEOUT_SECONDS,
+    product_rows: list[dict[str, str]] | None = None,
 ) -> dict[str, dict[str, str]]:
-    candidates = _category_rank_candidates(opportunity_rows, max_detail_pages)
+    priority_rows = _category_rank_priority_rows(product_rows or [], opportunity_rows)
+    candidates = _category_rank_candidates(priority_rows, max_detail_pages)
     if not candidates:
         print("Amazon BSR detail pages: 0 candidates")
         return {}
@@ -2918,12 +2950,14 @@ def _detail_fix_priority_key(row: dict[str, str], reason: str) -> tuple[int, int
         bucket = 0
     elif new_asin and missing_bsr:
         bucket = 1
-    elif top and needs_title_or_image:
+    elif _is_missing_seller_preview_row(row):
         bucket = 2
-    elif top and missing_bsr:
+    elif top and needs_title_or_image:
         bucket = 3
-    else:
+    elif top and missing_bsr:
         bucket = 4
+    else:
+        bucket = 5
     display_rank = _display_rank_value(row)
     opportunity_score = _to_int(row.get("opportunity_score", "")) or 0
     return (bucket, display_rank, -opportunity_score, _row_asin(row))
@@ -2948,11 +2982,19 @@ def _new_asin_detail_complete(row: dict[str, str], cache_entry: dict[str, str] |
     )
 
 
-def _detail_refresh_candidate_key(row: dict[str, str]) -> tuple[int, int, int, str]:
+def _detail_refresh_candidate_key(row: dict[str, str]) -> tuple[int, int, str, int, int, str]:
     display_rank = _display_rank_value(row)
     missing_bsr = 0 if not has_extracted_bsr(row) else 1
     opportunity_score = _to_int(row.get("opportunity_score", "")) or 0
-    return (display_rank, missing_bsr, -opportunity_score, _row_asin(row))
+    seller_preview_missing = _is_missing_seller_preview_row(row)
+    return (
+        0 if seller_preview_missing else 1,
+        display_rank,
+        _seller_identity(row) if seller_preview_missing else "",
+        missing_bsr,
+        -opportunity_score,
+        _row_asin(row),
+    )
 
 
 def _to_int(value: str) -> int | None:
@@ -2985,6 +3027,17 @@ def _category_rank_candidates(rows: list[dict[str, str]], max_detail_pages: int)
         if len(candidates) >= limit:
             break
     return candidates
+
+
+def _category_rank_priority_rows(
+    product_rows: list[dict[str, str]],
+    opportunity_rows: list[dict[str, str]],
+) -> list[dict[str, str]]:
+    seller_preview_rows = sorted(
+        (row for row in product_rows if _is_missing_seller_preview_row(row)),
+        key=lambda row: (_display_rank_value(row), _seller_identity(row), _row_asin(row)),
+    )
+    return [*seller_preview_rows, *opportunity_rows]
 
 
 def _row_asin(row: dict[str, str]) -> str:
@@ -3352,6 +3405,7 @@ def write_trend_outputs(
                 max_detail_pages=max_detail_pages,
                 detail_delay=detail_delay,
                 detail_timeout=detail_timeout,
+                product_rows=products,
             )
             if ranks_by_asin:
                 apply_category_ranks(products, ranks_by_asin)
