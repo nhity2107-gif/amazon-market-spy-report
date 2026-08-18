@@ -477,6 +477,7 @@ class DashboardV2Tests(unittest.TestCase):
         self.assertIn("Display Order Preview", competitor_html)
         self.assertIn("slice(0, 15)", competitor_html)
         self.assertIn("seller-thumbnail-image", competitor_html)
+        self.assertIn("grid-template-columns: repeat(4, minmax(0, 1fr));", competitor_html)
         self.assertIn("row.amazon_url || row.url", competitor_html)
         self.assertIn('aria-label="${escapeHtml(row.title)} on Amazon"', competitor_html)
         self.assertIn("seller-thumbnail-meta", competitor_html)

@@ -1175,8 +1175,8 @@ def theme_styles() -> str:
   }}
   .seller-thumbnail-strip {{
     display: grid;
-    grid-template-columns: repeat(3, minmax(0, 1fr));
-    gap: 14px 10px;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 10px 8px;
     align-items: start;
     justify-content: start;
     margin: 2px 0 20px;
@@ -1228,7 +1228,7 @@ def theme_styles() -> str:
   }}
   .seller-thumbnail-card {{
     display: grid;
-    gap: 6px;
+    gap: 4px;
     width: 100%;
     min-width: 0;
     align-self: start;
@@ -1253,10 +1253,10 @@ def theme_styles() -> str:
   }}
   .seller-thumbnail-meta {{
     display: grid;
-    gap: 3px;
+    gap: 2px;
     color: var(--color-neutral-500, var(--color-neutral-600));
-    font-size: 10px;
-    line-height: 1.2;
+    font-size: 9px;
+    line-height: 1.15;
   }}
   .seller-thumbnail-meta > span {{
     display: flex;
