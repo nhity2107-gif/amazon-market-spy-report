@@ -300,6 +300,12 @@ class NotificationTests(unittest.TestCase):
         summary_json = json.dumps(summary_card)
         product_json = json.dumps(product_card)
         self.assertIn("Amazon POD Market Spy Summary", summary_json)
+        self.assertEqual(summary_card["header"]["template"], "blue")
+        self.assertEqual(summary_card["header"]["subtitle"]["content"], "Daily opportunity briefing")
+        self.assertEqual(
+            sum(1 for element in summary_card["elements"] if element["tag"] == "column_set"),
+            2,
+        )
         self.assertIn("Report Date", summary_json)
         self.assertIn("2026-06-18", summary_json)
         self.assertIn("Products Tracked", summary_json)
@@ -315,6 +321,9 @@ class NotificationTests(unittest.TestCase):
         self.assertIn("img_v3_cached_new_win", product_json)
         self.assertIn('"tag": "img"', product_json)
         self.assertNotIn("[Product image]", product_json)
+        self.assertEqual(product_card["header"]["template"], "green")
+        self.assertTrue(product_card["config"]["enable_forward"])
+        self.assertTrue(any(element["tag"] == "column_set" for element in product_card["elements"]))
         self.assertIn("New Win", product_json)
         self.assertIn("New Winner Personalized Coffee Mug", product_json)
         self.assertIn("LASFOUR (Warrior)", product_json)
@@ -329,6 +338,37 @@ class NotificationTests(unittest.TestCase):
         self.assertIn("View Dashboard", product_json)
         self.assertIn("https://www.amazon.com/dp/B0NEWWIN11", product_json)
         self.assertNotIn("Rising Personalized Coffee Mug", product_json)
+
+    def test_lark_product_card_uses_signal_color_and_rank_confidence_warning(self) -> None:
+        with tempfile.TemporaryDirectory() as temp_dir:
+            output_dir = Path(temp_dir) / "output"
+            write_csv(
+                output_dir / "lark_trend_alerts.csv",
+                [
+                    {
+                        "date": "2026-06-18",
+                        "alert_type": "rising",
+                        "opportunity_score": "88",
+                        "asin": "B0RISING12",
+                        "title": "Rising Personalized Ornament",
+                        "seller_name": "Signal Seller",
+                        "today_rank": "3",
+                        "previous_display_rank": "22",
+                        "rank_parse_confidence": "medium",
+                        "product_url": "https://www.amazon.com/dp/B0RISING12",
+                    }
+                ],
+                LARK_TREND_ALERT_FIELDS,
+            )
+
+            payloads = build_lark_interactive_card_payloads(output_dir, top_products=1)
+
+        product_card = payloads[1]["card"]
+        product_json = json.dumps(product_card)
+        self.assertEqual(product_card["header"]["template"], "orange")
+        self.assertIn("🚀 Rising", product_card["header"]["title"]["content"])
+        self.assertIn("BSR confidence: medium", product_json)
+        self.assertIn("#22 -> #3", product_json)
 
     def test_build_lark_interactive_card_payloads_respects_top_products_limit(self) -> None:
         with tempfile.TemporaryDirectory() as temp_dir:

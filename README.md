@@ -7,7 +7,7 @@ The tool reads tracked Amazon URLs, fetches or parses page HTML, extracts ASIN-l
 ## Install
 
 ```powershell
-cd C:\Users\OS\amazon_market_spy
+cd D:\amazon_market_spy
 python -m pip install -e .
 ```
 
@@ -233,7 +233,7 @@ Legacy dashboards are still generated for backward compatibility but now route i
 
 `priority_board.csv` exports the deduped decision rows with `asin`, `primary_bucket`, `badges`, `badge_count`, `decision_score`, `title`, `seller_name`, `niche_primary`, `source_name`, `display_rank`, `previous_display_rank`, `display_rank_change`, `growth_velocity`, `opportunity_score`, `primary_bsr_rank`, `sub_bsr_rank`, `product_url`, and `image_url`, plus compatibility fields. Growth velocity is `display_rank_change / max(days_seen, 1)`. Decision score is `opportunity_score + top_rank_score + velocity_score + newness_score + bsr_score + pod_score + badge_count * 5`.
 
-Use `notify-lark --card --top-products 5` to send Lark interactive cards: one `Amazon POD Market Spy Summary` card plus up to five product opportunity cards sorted by `opportunity_score` descending. The summary card shows report date, products tracked, New Wins, Rising Products, High Opportunity Products, Top Niches, Top Sellers, and a `View Dashboard` button. Each product card includes the product image when a Lark `image_key` can be created, title, seller, opportunity score, display rank in the tracked source, display rank movement, Amazon BSR, best subcategory rank, reviews/rating, niche, and `Open Amazon` / `View Dashboard` buttons. Product card rows come from `lark_trend_alerts.csv`, falling back to `trend_alerts.csv` and then `latest_products.csv` if needed. If Lark rejects a card payload, the command sends the existing plain text notification as a fallback.
+Use `notify-lark --card --top-products 5` to send mobile-first Lark interactive cards: one `Amazon POD Market Spy Summary` card plus up to five product opportunity cards sorted by `opportunity_score` descending. The summary card uses a 2x2 KPI layout for Products Tracked, High Opportunity Products, New Wins, and Rising Products, followed by ranked Top Niches, ranked Top Sellers, and a `View Dashboard` button. Each product card uses a signal-specific header color (green for New Win, orange for Rising, blue for Opportunity), an optional product image, a compact Score / Display Rank / Rank Movement row, market evidence, and `Open Amazon` / `View Dashboard` buttons. A visible note warns when BSR parsing confidence is below `high`. Product card rows come from `lark_trend_alerts.csv`, falling back to `trend_alerts.csv` and then `latest_products.csv` if needed. If Lark rejects a card payload, the command sends the existing plain text notification as a fallback.
 
 Lark cards cannot render external Amazon image URLs directly; they require uploaded image keys. In card mode the tool reads `local_image_path` first, otherwise downloads `image_url`, uploads it to `https://open.larksuite.com/open-apis/im/v1/images`, and stores the returned `image_key` in `output\lark_image_keys.json` by ASIN. If image upload fails or credentials are missing, the product card is still sent without an image block. Debug logs include ASIN, source image URL/path, whether an `image_key` was created, and the cached/uploaded key.
 
@@ -333,7 +333,7 @@ python .\amazon_market_spy.py publish-report --output output
 Install:
 
 ```powershell
-cd C:\Users\OS\amazon_market_spy
+cd D:\amazon_market_spy
 python -m pip install -r requirements.txt
 python -m pip install -e .
 ```
@@ -446,8 +446,8 @@ On Windows Task Scheduler, use:
 
 ```text
 Program/script: python
-Arguments: -m amazon_market_spy scan --sources C:\Users\OS\amazon_market_spy\input\links.csv --output C:\Users\OS\amazon_market_spy\output --snapshot-dir C:\Users\OS\amazon_market_spy\data\snapshots --master-snapshot C:\Users\OS\amazon_market_spy\data\master_snapshot.csv
-Start in: C:\Users\OS\amazon_market_spy
+Arguments: -m amazon_market_spy scan --sources D:\amazon_market_spy\input\links.csv --output D:\amazon_market_spy\output --snapshot-dir D:\amazon_market_spy\data\snapshots --master-snapshot D:\amazon_market_spy\data\master_snapshot.csv
+Start in: D:\amazon_market_spy
 ```
 
 ## Useful Options

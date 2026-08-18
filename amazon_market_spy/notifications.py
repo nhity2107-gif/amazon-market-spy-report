@@ -501,34 +501,75 @@ def _dedupe_rows(rows: list[dict[str, str]]) -> list[dict[str, str]]:
 def _summary_card(context: dict[str, object], report_url: str, include_local_path: bool) -> dict[str, object]:
     top_sellers = context["top_sellers"]
     top_niches = context["top_niches"]
-    content = "\n".join(
-        [
-            f"**Report Date:** {context['report_date'] or 'n/a'}",
-            f"**Products Tracked:** {context['products_tracked']}",
-            f"**New Wins:** {context['new_wins']}",
-            f"**Rising Products:** {context['rising']}",
-            f"**High Opportunity Products:** {context['high_opportunity_products']}",
-            f"**Top Niches:** {_top_niches_summary(top_niches)}",
-            f"**Top Sellers:** {_top_sellers_summary(top_sellers)}",
-        ]
-    )
+    report_date = str(context["report_date"] or "n/a")
+    elements: list[dict[str, object]] = [
+        {
+            "tag": "div",
+            "text": {
+                "tag": "lark_md",
+                "content": (
+                    f"**Report Date:** {report_date}\n"
+                    "**Daily market pulse**\n"
+                    "Scan the strongest POD signals first, then open the dashboard for full evidence."
+                ),
+            },
+        },
+        _metric_row(
+            [
+                ("Products Tracked", str(context["products_tracked"])),
+                ("High Opportunity Products", str(context["high_opportunity_products"])),
+            ]
+        ),
+        _metric_row(
+            [
+                ("New Wins", str(context["new_wins"])),
+                ("Rising Products", str(context["rising"])),
+            ]
+        ),
+        {"tag": "hr"},
+        {
+            "tag": "div",
+            "text": {
+                "tag": "lark_md",
+                "content": f"**🔥 Top Niches**\n{_top_niches_summary(top_niches)}",
+            },
+        },
+        {
+            "tag": "div",
+            "text": {
+                "tag": "lark_md",
+                "content": f"**🏪 Top Sellers**\n{_top_sellers_summary(top_sellers)}",
+            },
+        },
+    ]
     if include_local_path:
-        content += f"\n**Local report:** {context['local_report_path']}"
+        elements.append(
+            {
+                "tag": "note",
+                "elements": [
+                    {
+                        "tag": "plain_text",
+                        "content": f"Local report: {context['local_report_path']}",
+                    }
+                ],
+            }
+        )
+    elements.append(
+        {
+            "tag": "action",
+            "actions": [
+                _button("View Dashboard", report_url, button_type="primary"),
+            ],
+        }
+    )
     return {
-        "config": {"wide_screen_mode": True},
+        "config": {"wide_screen_mode": True, "enable_forward": True},
         "header": {
             "template": "blue",
-            "title": {"tag": "plain_text", "content": "Amazon POD Market Spy Summary"},
+            "title": {"tag": "plain_text", "content": "📊 Amazon POD Market Spy Summary"},
+            "subtitle": {"tag": "plain_text", "content": "Daily opportunity briefing"},
         },
-        "elements": [
-            {"tag": "div", "text": {"tag": "lark_md", "content": content}},
-            {
-                "tag": "action",
-                "actions": [
-                    _button("View Dashboard", report_url, button_type="primary"),
-                ],
-            },
-        ],
+        "elements": elements,
     }
 
 
@@ -544,6 +585,7 @@ def _product_card(row: dict[str, str], report_url: str, index: int) -> dict[str,
     niche = row.get("niche_primary", "") or "Unknown"
     product_url = row.get("product_url", "")
     image_key = row.get("_lark_image_key", "").strip()
+    alert_label = _alert_label(row)
 
     elements: list[dict[str, object]] = []
     image_element = _image_element(image_key, title)
@@ -558,31 +600,65 @@ def _product_card(row: dict[str, str], report_url: str, index: int) -> dict[str,
                 "content": "\n".join(
                     [
                         f"**{_escape_lark_markdown(_shorten(title, 68))}**",
-                        f"**Seller:** {_escape_lark_markdown(_shorten(seller, 44))}",
-                        f"**Opportunity Score:** {score}",
-                        f"**Display Rank:** {_escape_lark_markdown(_display_rank_for_source(row))}",
-                        f"**Display Rank Movement:** {_display_rank_movement(previous_display_rank, display_rank)}",
-                        f"**Amazon BSR:** {_escape_lark_markdown(category_rank or 'n/a')}",
-                        f"**Best Subcategory Rank:** {_escape_lark_markdown(subcategory_rank or 'n/a')}",
-                        f"**Reviews:** {_escape_lark_markdown(reviews_rating)}",
-                        f"**Niche:** {_escape_lark_markdown(_shorten(niche, 44))}",
+                        f"Seller: {_escape_lark_markdown(_shorten(seller, 44))}",
                     ]
                 ),
             },
         }
     )
+    elements.append(
+        _metric_row(
+            [
+                ("Opportunity Score", score),
+                ("Display Rank", _display_rank_for_source(row)),
+                ("Display Rank Movement", _display_rank_movement(previous_display_rank, display_rank)),
+            ]
+        )
+    )
+    elements.extend(
+        [
+            {"tag": "hr"},
+            {
+                "tag": "div",
+                "text": {
+                    "tag": "lark_md",
+                    "content": "\n".join(
+                        [
+                            "**Market evidence**",
+                            f"Amazon BSR: {_escape_lark_markdown(category_rank or 'n/a')}",
+                            f"Best Subcategory Rank: {_escape_lark_markdown(subcategory_rank or 'n/a')}",
+                            f"Reviews: {_escape_lark_markdown(reviews_rating)}",
+                            f"Niche: {_escape_lark_markdown(_shorten(niche, 44))}",
+                        ]
+                    ),
+                },
+            },
+        ]
+    )
+    rank_warning = _rank_confidence_warning(row)
+    if rank_warning:
+        elements.append(
+            {
+                "tag": "note",
+                "elements": [{"tag": "plain_text", "content": rank_warning}],
+            }
+        )
 
     actions = []
     if product_url:
-        actions.append(_button("Open Amazon", product_url))
-    actions.append(_button("View Dashboard", report_url, button_type="primary"))
+        actions.append(_button("Open Amazon", product_url, button_type="primary"))
+    actions.append(_button("View Dashboard", report_url))
     elements.append({"tag": "action", "actions": actions})
 
     return {
-        "config": {"wide_screen_mode": True},
+        "config": {"wide_screen_mode": True, "enable_forward": True},
         "header": {
-            "template": "green",
-            "title": {"tag": "plain_text", "content": _shorten(f"{_alert_label(row)} - {title}", 78)},
+            "template": _alert_header_template(alert_label),
+            "title": {
+                "tag": "plain_text",
+                "content": _shorten(f"#{index} · {_alert_icon(alert_label)} {alert_label} · Score {score}", 78),
+            },
+            "subtitle": {"tag": "plain_text", "content": _shorten(title, 78)},
         },
         "elements": elements,
     }
@@ -608,14 +684,68 @@ def _alert_label(row: dict[str, str]) -> str:
         return "New Win"
     if alert_type == "rising" or "rising" in labels:
         return "Rising"
-    return "⭐ Opportunity"
+    return "Opportunity"
+
+
+def _alert_icon(alert_label: str) -> str:
+    return {
+        "New Win": "🏆",
+        "Rising": "🚀",
+        "Opportunity": "⭐",
+    }.get(alert_label, "⭐")
+
+
+def _alert_header_template(alert_label: str) -> str:
+    return {
+        "New Win": "green",
+        "Rising": "orange",
+        "Opportunity": "blue",
+    }.get(alert_label, "blue")
+
+
+def _metric_row(metrics: list[tuple[str, str]]) -> dict[str, object]:
+    return {
+        "tag": "column_set",
+        "flex_mode": "none",
+        "background_style": "default",
+        "columns": [
+            {
+                "tag": "column",
+                "width": "weighted",
+                "weight": 1,
+                "elements": [
+                    {
+                        "tag": "div",
+                        "text": {
+                            "tag": "lark_md",
+                            "content": (
+                                f"**{_escape_lark_markdown(value or '0')}**\n"
+                                f"{_escape_lark_markdown(label)}"
+                            ),
+                        },
+                    }
+                ],
+            }
+            for label, value in metrics
+        ],
+    }
+
+
+def _rank_confidence_warning(row: dict[str, str]) -> str:
+    confidence = row.get("rank_parse_confidence", "").strip().lower()
+    if not confidence or confidence == "high":
+        return ""
+    return f"⚠️ BSR confidence: {confidence}. Verify rank evidence before acting."
 
 
 def _top_niches_summary(rows: list[dict[str, str]]) -> str:
     if not rows:
         return "None"
-    return "; ".join(
-        f"{index}. {_escape_lark_markdown(_shorten(row.get('niche', '') or row.get('niche_primary', '') or 'Unknown', 32))}"
+    return "\n".join(
+        (
+            f"{index}. **{_escape_lark_markdown(_shorten(row.get('niche', '') or row.get('niche_primary', '') or 'Unknown', 32))}**"
+            f" · momentum {_format_number(row.get('niche_momentum_score', '') or '0')}"
+        )
         for index, row in enumerate(rows[:LARK_TOP_NICHE_LIMIT], start=1)
     )
 
@@ -623,8 +753,11 @@ def _top_niches_summary(rows: list[dict[str, str]]) -> str:
 def _top_sellers_summary(rows: list[dict[str, str]]) -> str:
     if not rows:
         return "None"
-    return "; ".join(
-        f"{index}. {_escape_lark_markdown(_shorten(_seller_display_name(row), 32))}"
+    return "\n".join(
+        (
+            f"{index}. **{_escape_lark_markdown(_shorten(_seller_display_name(row), 32))}**"
+            f" · momentum {_format_number(row.get('pod_momentum_score', '') or row.get('momentum_score', '') or '0')}"
+        )
         for index, row in enumerate(rows[:3], start=1)
     )
 

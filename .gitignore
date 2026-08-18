@@ -9,3 +9,5 @@ screenshots/
 artifacts/
 *.log
 data/master_snapshot.csv
+data/snapshots/*.csv
+debug_html/detail_failed_*.html

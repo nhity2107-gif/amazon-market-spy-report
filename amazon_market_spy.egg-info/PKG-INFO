@@ -17,7 +17,7 @@ The tool reads tracked Amazon URLs, fetches or parses page HTML, extracts ASIN-l
 ## Install
 
 ```powershell
-cd C:\Users\OS\amazon_market_spy
+cd D:\amazon_market_spy
 python -m pip install -e .
 python -m playwright install chromium
 ```
@@ -116,8 +116,8 @@ On Windows Task Scheduler, use:
 
 ```text
 Program/script: python
-Arguments: -m amazon_market_spy scan --sources C:\Users\OS\amazon_market_spyinput\links.csv.txt --output C:\Users\OS\amazon_market_spy\output
-Start in: C:\Users\OS\amazon_market_spy
+Arguments: -m amazon_market_spy scan --sources D:\amazon_market_spyinput\links.csv.txt --output D:\amazon_market_spy\output
+Start in: D:\amazon_market_spy
 ```
 
 ## Useful Options

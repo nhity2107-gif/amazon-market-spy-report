@@ -507,7 +507,19 @@ class PlaywrightFetcher:
         self._playwright_timeout_error = TimeoutError
         try:
             self._playwright = sync_playwright().start()
-            launch_options = {"headless": self.headless}
+            # Long scans can otherwise let Chromium's temporary profile grow by
+            # several gigabytes and exhaust the system drive before the context
+            # is closed. These caches are disposable for our one-pass fetches.
+            launch_options = {
+                "headless": self.headless,
+                "args": [
+                    "--disk-cache-size=1",
+                    "--media-cache-size=1",
+                    "--renderer-process-limit=2",
+                    "--disable-extensions",
+                    "--disable-background-networking",
+                ],
+            }
             if self.browser_executable:
                 launch_options["executable_path"] = self.browser_executable
             elif self.browser_channel:
