@@ -337,7 +337,7 @@ class DashboardService:
             "price_value": _to_optional_float(_first_text(merged, "latest_price", "price", default="")),
             "bsr": _format_rank(_first_text(merged, "sub_bsr_rank", "primary_bsr_rank", "bsr_rank", default="")),
             "source": _first_text(merged, "source_name", "primary_bucket", "source_type", default="Tracked"),
-            "source_url": _first_text(merged, "source_url", default=""),
+            "source_url": _first_text(merged, "source_url", "page_url", default=""),
             "source_type": _first_text(merged, "source_type", default="unknown"),
             "source_id": _first_text(merged, "source_id", default=""),
             "source_rank": _to_optional_int(_first_text(merged, "source_rank", "display_rank", "today_rank", "rank", default="")),

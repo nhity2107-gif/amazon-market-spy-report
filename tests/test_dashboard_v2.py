@@ -465,8 +465,8 @@ class DashboardV2Tests(unittest.TestCase):
         self.assertIn("seller_focus_tags", competitor_html)
         self.assertIn("seller-focus-tags", competitor_html)
         self.assertIn("Open in Product Explorer &rarr;", competitor_html)
-        self.assertIn("View Amazon Store &#8599;", competitor_html)
-        self.assertIn("Store unavailable", competitor_html)
+        self.assertIn("View Amazon Page &#8599;", competitor_html)
+        self.assertNotIn("Store unavailable", competitor_html)
         self.assertIn('target="_blank" rel="noopener"', competitor_html)
         self.assertIn("seller-preview-stat", competitor_html)
         self.assertIn("seller-open-link", competitor_html)
@@ -692,7 +692,7 @@ class DashboardV2Tests(unittest.TestCase):
 
         self.assertEqual(card["display_order"], 7)
 
-    def test_seller_preview_store_cta_uses_existing_seller_url(self) -> None:
+    def test_seller_preview_amazon_page_cta_uses_storefront_or_source_url(self) -> None:
         products = [
             _seller_preview_product(
                 1,
@@ -700,6 +700,12 @@ class DashboardV2Tests(unittest.TestCase):
                 seller_url="https://www.amazon.com/s?me=A1STORE",
             ),
             _seller_preview_product(2, seller="No Store Seller", seller_url=""),
+            _seller_preview_product(
+                3,
+                seller="Mugs Best Sellers",
+                seller_url="",
+                source_url="https://www.amazon.com/gp/bestsellers/kitchen/9302388011",
+            ),
         ]
         data = {**MOCK_PRESENTATION_DATA, "products": products}
 
@@ -707,12 +713,16 @@ class DashboardV2Tests(unittest.TestCase):
         payload = _seller_payload(html)
         storefront_seller = next(row for row in payload if row["seller"] == "Storefront Seller")
         no_store_seller = next(row for row in payload if row["seller"] == "No Store Seller")
+        best_seller_page = next(row for row in payload if row["seller"] == "Mugs Best Sellers")
 
         self.assertEqual(storefront_seller["seller_url"], "https://www.amazon.com/s?me=A1STORE")
+        self.assertEqual(storefront_seller["amazon_page_url"], "https://www.amazon.com/s?me=A1STORE")
         self.assertEqual(no_store_seller["seller_url"], "")
-        self.assertIn("View Amazon Store &#8599;", html)
+        self.assertEqual(no_store_seller["amazon_page_url"], "")
+        self.assertEqual(best_seller_page["amazon_page_url"], "https://www.amazon.com/gp/bestsellers/kitchen/9302388011")
+        self.assertIn("View Amazon Page &#8599;", html)
         self.assertIn('target="_blank" rel="noopener"', html)
-        self.assertIn("Store unavailable", html)
+        self.assertNotIn("Store unavailable", html)
 
     def test_dxl_trading_current_dataset_matches_first_ten_display_order_products(self) -> None:
         if not (Path("output") / "latest_products.csv").exists():
@@ -1367,6 +1377,7 @@ class DashboardV2ServiceTests(unittest.TestCase):
             self.assertEqual(data["products"][0]["theme"], "Unknown")
             self.assertEqual(data["products"][0]["occasion"], "Unknown")
             self.assertEqual(data["products"][0]["amazon_url"], "https://www.amazon.com/dp/B0REAL0001")
+            self.assertEqual(data["products"][0]["source_url"], "https://www.amazon.com/gp/bestsellers/test")
             self.assertEqual(data["products"][0]["is_pod"], "yes")
             self.assertEqual(data["products"][1]["is_pod"], "no")
             self.assertEqual(len(data["product_explorer_products"]), 3)
@@ -1496,6 +1507,7 @@ def _write_service_fixture(output_dir: Path) -> None:
             "display_rank_change",
             "opportunity_score",
             "product_url",
+            "page_url",
             "is_pod",
             "image_url",
             "seller_evidence_leader",
@@ -1538,6 +1550,7 @@ def _write_service_fixture(output_dir: Path) -> None:
                 "display_rank_change": "24",
                 "opportunity_score": "87",
                 "product_url": "https://www.amazon.com/dp/B0REAL0001",
+                "page_url": "https://www.amazon.com/gp/bestsellers/test",
                 "is_pod": "yes",
                 "image_url": "https://example.com/mug.jpg",
                 "seller_evidence_leader": "true",
@@ -1579,6 +1592,7 @@ def _write_service_fixture(output_dir: Path) -> None:
                 "display_rank_change": "5",
                 "opportunity_score": "45",
                 "product_url": "https://www.amazon.com/dp/B0REAL0002",
+                "page_url": "",
                 "is_pod": "no",
                 "image_url": "",
                 "seller_evidence_leader": "false",
