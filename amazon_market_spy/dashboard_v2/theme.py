@@ -1175,8 +1175,8 @@ def theme_styles() -> str:
   }}
   .seller-thumbnail-strip {{
     display: grid;
-    grid-template-columns: repeat(3, minmax(0, 1fr));
-    gap: 14px 10px;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 10px 8px;
     align-items: start;
     justify-content: start;
     margin: 2px 0 20px;
@@ -1238,7 +1238,7 @@ def theme_styles() -> str:
   .seller-thumbnail-image {{
     display: block;
     width: 100%;
-    aspect-ratio: 1 / 1;
+    aspect-ratio: 4 / 3;
   }}
   .seller-thumbnail-image img {{
     width: 100%;
@@ -1834,6 +1834,7 @@ def theme_styles() -> str:
     .primary-nav {{ justify-content: flex-start; }}
     .search-input, #idea-search.search-input, #product-search.search-input {{ min-width: 0; width: 100%; }}
     .mover-row, .idea-summary-card {{ grid-template-columns: 1fr; }}
+    .seller-thumbnail-strip {{ grid-template-columns: repeat(2, minmax(0, 1fr)); }}
   }}
   </style>
 """
