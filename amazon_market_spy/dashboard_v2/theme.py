@@ -1616,9 +1616,21 @@ def theme_styles() -> str:
     gap: var(--space-12);
     align-items: start;
   }}
+  .competitor-explorer-layout {{
+    grid-template-columns: minmax(500px, 2fr) minmax(0, 3fr);
+  }}
+  .competitor-explorer-layout .seller-thumbnail-strip {{
+    grid-template-columns: repeat(5, minmax(0, 1fr));
+  }}
   .detail-panel {{
     position: sticky;
     top: 68px;
+  }}
+  .competitor-explorer-layout [data-seller-detail] {{
+    max-height: calc(100vh - 84px);
+    overflow-y: auto;
+    overscroll-behavior: contain;
+    scrollbar-gutter: stable;
   }}
   .secondary-toolbar {{
     display: flex;
@@ -1629,6 +1641,24 @@ def theme_styles() -> str:
   }}
   .seller-table {{
     min-width: 720px;
+  }}
+  .competitor-explorer-layout .seller-table {{
+    min-width: 0;
+    table-layout: fixed;
+  }}
+  .competitor-explorer-layout .seller-table th,
+  .competitor-explorer-layout .seller-table td {{
+    padding-inline: 7px;
+  }}
+  .competitor-explorer-layout .seller-table th:nth-child(1) {{ width: 43%; }}
+  .competitor-explorer-layout .seller-table th:nth-child(2) {{ width: 14%; }}
+  .competitor-explorer-layout .seller-table th:nth-child(3) {{ width: 17%; }}
+  .competitor-explorer-layout .seller-table th:nth-child(4) {{ width: 18%; }}
+  .competitor-explorer-layout .seller-table th:nth-child(5) {{ width: 8%; }}
+  .competitor-explorer-layout .seller-table td:first-child {{
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
   }}
   [data-market-table] {{
     min-width: 820px;
@@ -1826,6 +1856,8 @@ def theme_styles() -> str:
     .dashboard-grid, .evidence-card-grid, .home-activity-grid, .research-queue-grid, .explorer-layout {{ grid-template-columns: 1fr 1fr; }}
     .research-queue-grid.minimal-queue-grid {{ grid-template-columns: 1fr; }}
     .home-preview-panel {{ position: static; }}
+    .competitor-explorer-layout {{ grid-template-columns: minmax(440px, 1fr) minmax(0, 1.35fr); }}
+    .competitor-explorer-layout .seller-thumbnail-strip {{ grid-template-columns: repeat(4, minmax(0, 1fr)); }}
   }}
   @media (max-width: 760px) {{
     .main {{ padding: var(--space-16); }}
@@ -1835,6 +1867,13 @@ def theme_styles() -> str:
     .search-input, #idea-search.search-input, #product-search.search-input {{ min-width: 0; width: 100%; }}
     .mover-row, .idea-summary-card {{ grid-template-columns: 1fr; }}
     .seller-thumbnail-strip {{ grid-template-columns: repeat(2, minmax(0, 1fr)); }}
+    .competitor-explorer-layout .seller-thumbnail-strip {{ grid-template-columns: repeat(2, minmax(0, 1fr)); }}
+    .competitor-explorer-layout [data-seller-detail] {{
+      position: static;
+      max-height: none;
+      overflow-y: visible;
+      scrollbar-gutter: auto;
+    }}
   }}
   </style>
 """

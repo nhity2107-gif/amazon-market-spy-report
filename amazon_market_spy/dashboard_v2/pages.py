@@ -367,7 +367,7 @@ def render_competitor(data: dict[str, object]) -> str:
       {kpi_card("New Pushes", str(total_pushes), "Fresh seller pushes", "idea")}
       </section>
     </details>
-    <div class="explorer-layout">
+    <div class="explorer-layout competitor-explorer-layout">
       <section class="panel">
 {section_header("Seller Activity", "Compact seller-level summary")}
         <div class="secondary-toolbar">
