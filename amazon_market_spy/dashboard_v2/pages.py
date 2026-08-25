@@ -482,7 +482,48 @@ def _dataset_info(data: dict[str, object]) -> dict[str, object]:
 
 def _product_explorer_products(data: dict[str, object]) -> list[dict[str, object]]:
     products = data.get("product_explorer_products", data.get("products", [])) if isinstance(data, dict) else []
-    return products if isinstance(products, list) else []
+    return _deduplicate_product_explorer_products(products) if isinstance(products, list) else []
+
+
+def _deduplicate_product_explorer_products(products: list[dict[str, object]]) -> list[dict[str, object]]:
+    deduplicated: list[dict[str, object]] = []
+    asin_positions: dict[str, int] = {}
+    for product in products:
+        if not isinstance(product, dict):
+            continue
+        asin = str(product.get("asin", "") or "").strip().upper()
+        if not asin:
+            deduplicated.append(product)
+            continue
+        if asin not in asin_positions:
+            asin_positions[asin] = len(deduplicated)
+            deduplicated.append(product)
+            continue
+        position = asin_positions[asin]
+        if _product_explorer_record_score(product) > _product_explorer_record_score(deduplicated[position]):
+            deduplicated[position] = product
+    return deduplicated
+
+
+def _product_explorer_record_score(product: dict[str, object]) -> tuple[int, int, int]:
+    evidence_score = _safe_int(product.get("evidence_count"))
+    source_family_score = _source_family_count(product)
+    completeness_fields = (
+        "title",
+        "seller",
+        "image_url",
+        "amazon_url",
+        "product_url",
+        "price_value",
+        "review_count",
+        "primary_bsr_rank",
+        "sub_bsr_rank",
+        "product_type",
+    )
+    completeness_score = sum(
+        1 for field in completeness_fields if str(product.get(field, "") or "").strip() not in {"", "-"}
+    )
+    return evidence_score, source_family_score, completeness_score
 
 
 PRIMARY_EVIDENCE_PRIORITY = [

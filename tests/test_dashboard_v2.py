@@ -281,6 +281,43 @@ class DashboardV2Tests(unittest.TestCase):
         self.assertEqual(buckets["non_pod"], 2)
         self.assertEqual(buckets["unknown"], 0)
 
+    def test_product_explorer_deduplicates_asins_without_changing_competitor_rows(self) -> None:
+        products = [
+            {
+                "asin": "b0duplicate",
+                "title": "Sparse duplicate",
+                "seller": "Seller Link A",
+                "evidence_count": 1,
+                "image_url": "https://example.com/sparse.jpg",
+            },
+            {
+                "asin": "B0DUPLICATE",
+                "title": "Complete duplicate",
+                "seller": "Seller Link B",
+                "evidence_count": 3,
+                "image_url": "https://example.com/complete.jpg",
+                "product_url": "https://www.amazon.com/dp/B0DUPLICATE",
+                "review_count": 25,
+            },
+            {"asin": "", "title": "Product without ASIN A", "seller": "Seller Link A"},
+            {"asin": "", "title": "Product without ASIN B", "seller": "Seller Link B"},
+        ]
+
+        explorer_products = v2_pages._product_explorer_products({"products": products})
+
+        self.assertEqual(len(explorer_products), 3)
+        self.assertEqual(explorer_products[0]["title"], "Complete duplicate")
+        self.assertEqual([product["title"] for product in explorer_products[1:]], ["Product without ASIN A", "Product without ASIN B"])
+        self.assertEqual(len(products), 4)
+        competitor_summaries = v2_pages._seller_summaries(products)
+        duplicate_cards = [
+            card
+            for seller in competitor_summaries
+            for card in seller["representative_products"]
+            if card["asin"].upper() == "B0DUPLICATE"
+        ]
+        self.assertEqual(len(duplicate_cards), 2)
+
     def test_product_explorer_filter_summary_clear_all_and_empty_result_state_exist(self) -> None:
         with tempfile.TemporaryDirectory() as temp_dir:
             output_dir = Path(temp_dir) / "v2"
