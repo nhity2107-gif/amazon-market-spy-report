@@ -1264,6 +1264,7 @@ def _seller_summaries(products: list[dict[str, object]]) -> list[dict[str, objec
         product_types = Counter(str(row.get("product_type", "") or "Unknown") for row in rows)
         seller_focus_tags = _seller_focus_tags(rows)
         seller_focus = seller_focus_tags[0] if seller_focus_tags else ""
+        preview_limit = _seller_preview_limit(rows)
         summary = {
             "key": _slug(seller),
             "seller": seller,
@@ -1275,7 +1276,8 @@ def _seller_summaries(products: list[dict[str, object]]) -> list[dict[str, objec
             "seller_focus": seller_focus,
             "seller_focus_tags": seller_focus_tags,
             "latest_activity": max([str(row.get("date", "") or "") for row in rows] or [""]) or _missing(),
-            "representative_products": _seller_product_cards(rows, "title", reverse=False, limit=15),
+            "preview_limit": preview_limit,
+            "representative_products": _seller_product_cards(rows, "title", reverse=False, limit=preview_limit),
             "product_explorer_url": f"product_explorer.html?seller={quote_param(seller)}",
             "seller_url": _seller_storefront_url(rows),
             "amazon_page_url": _seller_amazon_page_url(rows),
@@ -1291,6 +1293,15 @@ def _seller_storefront_url(rows: list[dict[str, object]]) -> str:
         if seller_url:
             return seller_url
     return ""
+
+
+def _seller_preview_limit(rows: list[dict[str, object]]) -> int:
+    if _seller_storefront_url(rows):
+        return 20
+    ranking_source_types = {"best_seller", "category_best_seller", "new_release", "category_new_release"}
+    if any(str(row.get("source_type", "") or "").strip().lower() in ranking_source_types for row in rows):
+        return 100
+    return 20
 
 
 def _seller_amazon_page_url(rows: list[dict[str, object]]) -> str:
@@ -1739,7 +1750,7 @@ def _competitor_script() -> str:
         ${sellerFocusHtml(seller)}
         <section class="seller-preview-section">
           <h3>Display Order Preview</h3>
-          ${sellerThumbnailStrip(seller.representative_products)}
+          ${sellerThumbnailStrip(seller.representative_products, seller.preview_limit)}
         </section>
         <div class="seller-preview-stats" aria-label="Seller activity">
           ${sellerStat("Products", formatNumber(seller.products))}
@@ -1773,8 +1784,9 @@ def _competitor_script() -> str:
       </section>`;
     }
 
-    function sellerThumbnailStrip(rows) {
-      const products = Array.isArray(rows) ? rows.slice(0, 15) : [];
+    function sellerThumbnailStrip(rows, previewLimit) {
+      const limit = Math.max(0, Number(previewLimit || 20));
+      const products = Array.isArray(rows) ? rows.slice(0, limit) : [];
       const productCells = products.map((row) => `<article class="seller-thumbnail-card">
         <a class="seller-thumbnail-image" href="${escapeHtml(row.amazon_url || row.url)}" target="_blank" rel="noopener" title="${escapeHtml(row.title)}" aria-label="${escapeHtml(row.title)} on Amazon"><img src="${escapeHtml(row.image || "")}" alt="${escapeHtml(row.title)} thumbnail"></a>
         <span class="seller-thumbnail-meta">

@@ -475,7 +475,8 @@ class DashboardV2Tests(unittest.TestCase):
         self.assertIn("Fast Movers", competitor_html)
         self.assertIn("slice(0, 3)", competitor_html)
         self.assertIn("Display Order Preview", competitor_html)
-        self.assertIn("slice(0, 15)", competitor_html)
+        self.assertIn("seller.preview_limit", competitor_html)
+        self.assertIn("previewLimit || 20", competitor_html)
         self.assertIn("grid-template-columns: repeat(4, minmax(0, 1fr))", competitor_html)
         self.assertIn("aspect-ratio: 4 / 3", competitor_html)
         self.assertIn("seller-thumbnail-image", competitor_html)
@@ -664,7 +665,7 @@ class DashboardV2Tests(unittest.TestCase):
         self.assertEqual([card["asin"] for card in seller["representative_products"]], ["B0SELL0002", "B0SELL0001"])
         self.assertNotIn("placeholderCount", html)
 
-    def test_seller_summary_preview_uses_fifteen_products_with_order_and_subcategory_bsr(self) -> None:
+    def test_seller_summary_preview_uses_twenty_products_with_order_and_subcategory_bsr(self) -> None:
         products = [
             _seller_preview_product(
                 index,
@@ -672,18 +673,51 @@ class DashboardV2Tests(unittest.TestCase):
                 sub_bsr_rank=index * 100,
                 sub_bsr_category="Handmade Baby",
             )
-            for index in range(1, 21)
+            for index in range(1, 26)
         ]
 
         seller = v2_pages._seller_summaries(products)[0]
         cards = seller["representative_products"]
 
-        self.assertEqual(len(cards), 15)
-        self.assertEqual([card["display_order"] for card in cards], list(range(1, 16)))
-        self.assertEqual([card["sub_category_bsr"] for card in cards], [index * 100 for index in range(1, 16)])
+        self.assertEqual(seller["preview_limit"], 20)
+        self.assertEqual(len(cards), 20)
+        self.assertEqual([card["display_order"] for card in cards], list(range(1, 21)))
+        self.assertEqual([card["sub_category_bsr"] for card in cards], [index * 100 for index in range(1, 21)])
         self.assertTrue(all(card["sub_category_name"] == "Handmade Baby" for card in cards))
         self.assertTrue(all(card["sub_category_url"].endswith("121190737011/ref=pd_zg_hrsr_handmade") for card in cards))
         self.assertTrue(all(card["amazon_url"].startswith("https://www.amazon.com/example/dp/") for card in cards))
+
+    def test_ranking_source_preview_uses_one_hundred_products(self) -> None:
+        for source_type, seller_name in (
+            ("best_seller", "Mugs Best Sellers"),
+            ("new_release", "Mugs New Releases"),
+        ):
+            with self.subTest(source_type=source_type):
+                products = [
+                    _seller_preview_product(index, seller=seller_name, source_type=source_type)
+                    for index in range(1, 121)
+                ]
+
+                seller = v2_pages._seller_summaries(products)[0]
+
+                self.assertEqual(seller["preview_limit"], 100)
+                self.assertEqual(len(seller["representative_products"]), 100)
+
+    def test_seller_storefront_preview_stays_at_twenty_when_products_have_ranking_evidence(self) -> None:
+        products = [
+            _seller_preview_product(
+                index,
+                seller="Mixed Source Seller",
+                seller_url="https://www.amazon.com/s?me=A1STORE",
+                source_type="category_new_release" if index % 2 else "seller",
+            )
+            for index in range(1, 31)
+        ]
+
+        seller = v2_pages._seller_summaries(products)[0]
+
+        self.assertEqual(seller["preview_limit"], 20)
+        self.assertEqual(len(seller["representative_products"]), 20)
 
     def test_seller_preview_uses_seller_evidence_rank_as_display_order_fallback(self) -> None:
         product = _seller_preview_product(1, source_rank=None, seller_evidence_best_rank=7)
