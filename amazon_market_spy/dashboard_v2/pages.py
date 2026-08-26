@@ -127,6 +127,7 @@ def render_product_explorer(data: dict[str, object]) -> str:
             <th scope="col" data-column-header="why">Why It Matters</th>
             <th scope="col" aria-sort="none" data-column-header="momentum"><button class="sort-button" type="button" data-sort-key="momentum">Momentum <span data-sort-indicator aria-hidden="true"></span></button></th>
             <th scope="col" data-column-header="market_proof">Proof</th>
+            <th scope="col" aria-sort="none" data-column-header="bought_past_month"><button class="sort-button" type="button" data-sort-key="bought_past_month">Bought/mo <span data-sort-indicator aria-hidden="true"></span></button></th>
             <th scope="col" aria-sort="none" data-column-header="seller" data-optional-column hidden><button class="sort-button" type="button" data-sort-key="seller">Seller <span data-sort-indicator aria-hidden="true"></span></button></th>
             <th scope="col" data-column-header="product_type" data-optional-column hidden>Product Type</th>
             <th scope="col" aria-sort="none" data-column-header="primary_evidence" data-optional-column hidden><button class="sort-button" type="button" data-sort-key="evidence_count">Primary Evidence <span data-sort-indicator aria-hidden="true"></span></button></th>
@@ -1473,6 +1474,7 @@ def _seller_product_cards(rows: list[dict[str, object]], sort_field: str, *, rev
                 "sub_category_bsr": _valid_sub_bsr(product),
                 "sub_category_name": _seller_sub_category_name(product),
                 "sub_category_url": _seller_sub_category_url(product),
+                "bought_past_month": _num_or_none(product.get("bought_past_month")),
             }
         )
     return cards
@@ -1833,6 +1835,7 @@ def _competitor_script() -> str:
         <span class="seller-thumbnail-meta">
           <span><strong>Display Order</strong><em>${formatRank(row.display_order)}</em></span>
           <span>${subCategoryLabel(row)}<em>${formatRank(row.sub_category_bsr)}</em></span>
+          ${boughtPastMonthMeta(row)}
         </span>
       </article>`).join("");
       return `<div class="seller-thumbnail-strip" aria-label="Display order products">${productCells}</div>`;
@@ -1840,6 +1843,16 @@ def _competitor_script() -> str:
 
     function sellerStat(label, value) {
       return `<div class="seller-preview-stat"><strong>${escapeHtml(value)}</strong><span>${escapeHtml(label)}</span></div>`;
+    }
+    function boughtPastMonthMeta(row) {
+      const value = Number(row.bought_past_month);
+      if (!Number.isFinite(value) || value <= 0) return "";
+      return `<span><strong>Bought/mo</strong><em class="demand-badge demand-badge-compact">${escapeHtml(formatBoughtPastMonth(value))}</em></span>`;
+    }
+    function formatBoughtPastMonth(value) {
+      if (value >= 1000000 && value % 1000000 === 0) return `${value / 1000000}M+`;
+      if (value >= 1000 && value % 1000 === 0) return `${value / 1000}K+`;
+      return `${formatNumber(value)}+`;
     }
     function badge(value, tone) {
       return `<span class="status-badge tone-${tone}">${formatNumber(value)}</span>`;
@@ -2669,6 +2682,7 @@ PRODUCT_INDEX_FIELDS = (
     "growth",
     "growth_value",
     "review_count",
+    "bought_past_month",
     "price_value",
     "source",
     "source_days_seen",
@@ -2999,6 +3013,7 @@ def _product_explorer_script() -> str:
       winner_score: { label: "Winner Score", type: "number", value: (product) => product.opportunityScore ?? product.scoreValue },
       growth: { label: "Growth", type: "number", value: (product) => product.growthValue },
       reviews: { label: "Reviews", type: "number", value: (product) => product.reviewValue },
+      bought_past_month: { label: "Bought/mo", type: "number", value: (product) => product.boughtPastMonthValue },
       price: { label: "Price", type: "number", value: (product) => product.priceValue },
       evidence_count: { label: "Evidence Count", type: "number", value: (product) => product.evidenceCount },
       seller_best_rank: { label: "Seller Best Rank", type: "number", value: (product) => product.sellerBestRank },
@@ -3407,6 +3422,7 @@ def _product_explorer_script() -> str:
       normalized.scoreReason = textValue(product.score_reason, "");
       normalized.growthValue = numberValue(product.growth_value ?? product.growth);
       normalized.reviewValue = numberValue(product.review_count);
+      normalized.boughtPastMonthValue = numberValue(product.bought_past_month);
       normalized.priceValue = numberValue(product.price_value);
       normalized.statusText = `${textValue(product.status, "")} ${textValue(product.source, "")}`.toLowerCase();
       normalized.isWinner = Boolean(product.is_winner) || normalized.statusText.includes("winner") || normalized.statusText.includes("new breakout");
@@ -3969,6 +3985,7 @@ def _product_explorer_script() -> str:
             <td data-column="why">${whyItMattersHtml(product)}</td>
             <td class="numeric-cell" data-column="momentum">${displayValueHtml(momentumLabel(product))}</td>
             <td data-column="market_proof">${displayValueHtml(marketProof(product))}</td>
+            <td class="numeric-cell" data-column="bought_past_month">${boughtPastMonthBadgeHtml(product)}</td>
             <td data-column="seller" data-optional-column>${escapeHtml(product.seller)}</td>
             <td data-column="product_type" data-optional-column>${escapeHtml(product.product_type)}</td>
             <td data-column="primary_evidence" data-optional-column>${evidenceCellHtml(product)}</td>
@@ -4342,6 +4359,7 @@ def _product_explorer_script() -> str:
       setText("[data-preview-why]", whyItMatters(product));
       setText("[data-preview-momentum]", momentumLabel(product));
       setText("[data-preview-proof]", marketProof(product));
+      setText("[data-preview-bought]", boughtPastMonthDisplay(product));
       setText("[data-preview-seller]", product.seller);
       setText("[data-preview-idea]", product.idea);
       setText("[data-preview-type]", product.product_type);
@@ -4788,6 +4806,25 @@ def _product_explorer_script() -> str:
 
     function reviewDisplay(product) {
       return product.reviewValue === null ? "\u2014" : formatNumber(product.reviewValue);
+    }
+
+    function boughtPastMonthDisplay(product) {
+      return product.boughtPastMonthValue === null || product.boughtPastMonthValue <= 0
+        ? "\u2014"
+        : formatBoughtPastMonth(product.boughtPastMonthValue);
+    }
+
+    function boughtPastMonthBadgeHtml(product) {
+      const value = boughtPastMonthDisplay(product);
+      return value === "\u2014"
+        ? '<span class="missing-value">\u2014</span>'
+        : `<span class="demand-badge" title="Amazon bought in past month">${escapeHtml(value)}</span>`;
+    }
+
+    function formatBoughtPastMonth(value) {
+      if (value >= 1000000 && value % 1000000 === 0) return `${value / 1000000}M+`;
+      if (value >= 1000 && value % 1000 === 0) return `${value / 1000}K+`;
+      return `${formatNumber(value)}+`;
     }
 
     function priceDisplay(product) {

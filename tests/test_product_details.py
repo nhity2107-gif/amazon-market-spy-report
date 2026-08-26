@@ -66,6 +66,29 @@ class ProductDetailTests(unittest.TestCase):
 
         self.assertEqual(fields.image_url, "https://example.com/hires.jpg")
 
+    def test_extracts_bought_past_month_from_product_page(self) -> None:
+        html = """
+        <div id="socialProofingAsinFaceout_feature_div">
+          <span id="social-proofing-faceout-title-tk_bought">3K+ bought in past month</span>
+        </div>
+        """
+
+        fields = extract_detail_page_fields(html)
+
+        self.assertEqual(fields.bought_past_month, "3000")
+
+    def test_extracts_bought_past_month_from_quick_view(self) -> None:
+        html = '<p id="pqv-bought-in-last-month">50+ bought in past month</p>'
+
+        fields = extract_detail_page_fields(html)
+
+        self.assertEqual(fields.bought_past_month, "50")
+
+    def test_leaves_bought_past_month_blank_when_signal_is_absent(self) -> None:
+        fields = extract_detail_page_fields("<div>Ships tomorrow</div>")
+
+        self.assertEqual(fields.bought_past_month, "")
+
 
 if __name__ == "__main__":
     unittest.main()

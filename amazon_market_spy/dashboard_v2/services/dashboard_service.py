@@ -332,6 +332,7 @@ class DashboardService:
             "growth_value": _to_int(growth),
             "reviews": _first_text(merged, "review_count", default="-"),
             "review_count": _to_optional_int(_first_text(merged, "review_count", default="")),
+            "bought_past_month": _to_optional_int(_first_text(merged, "bought_past_month", default="")),
             "review_rating": _to_optional_float(_first_text(merged, "review_rating", "rating", default="")),
             "price": _format_price(_first_text(merged, "latest_price", "price", default="")),
             "price_value": _to_optional_float(_first_text(merged, "latest_price", "price", default="")),

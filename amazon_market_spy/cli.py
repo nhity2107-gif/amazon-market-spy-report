@@ -144,6 +144,8 @@ DETAIL_CACHE_FIELDS = [
     *CATEGORY_RANK_FIELDS,
     "review_count",
     "review_rating",
+    "bought_past_month",
+    "detail_bought_past_month_checked",
     "title_fixed",
     "image_fixed",
     "detail_fixed_at",
@@ -997,6 +999,8 @@ def run_repair_asin(args: argparse.Namespace) -> int:
         "detail_image_found": "true" if detail_fields.image_url else "false",
         "detail_bsr_found": "true",
         "detail_bsr_error": "",
+        "bought_past_month": detail_fields.bought_past_month,
+        "detail_bought_past_month_checked": "true",
         **rank_fields,
     }))
     _log_debug_bsr_state("after detail fetch", repair_row)
@@ -2514,7 +2518,7 @@ def _merge_detail_cache_entry(row: dict[str, str], cached: dict[str, str], *, me
                 changed = True
         if changed:
             ensure_category_rank_fields(row)
-    for field in ("review_count", "review_rating"):
+    for field in ("review_count", "review_rating", "bought_past_month"):
         value = (cached.get(field, "") or "").strip()
         if value and not (row.get(field, "") or "").strip():
             row[field] = value
@@ -2527,6 +2531,7 @@ def _detail_cache_is_complete(entry: dict[str, str]) -> bool:
         is_valid_product_title(entry.get("title", ""))
         and _has_valid_image_url(entry)
         and _has_high_confidence_bsr(entry)
+        and entry.get("detail_bought_past_month_checked", "").strip().lower() == "true"
     )
 
 
@@ -2611,6 +2616,7 @@ def fetch_detail_fixes_for_products(
             "detail_error": "",
             "detail_bsr_found": "false",
             "detail_bsr_error": "",
+            "detail_bought_past_month_checked": "false",
         }
         html = ""
         screenshot: bytes | None = None
@@ -2623,6 +2629,8 @@ def fetch_detail_fixes_for_products(
             fix["detail_page_status"] = status
             fix["detail_error"] = error
             detail_fields = extract_detail_page_fields(html)
+            fix["bought_past_month"] = detail_fields.bought_past_month
+            fix["detail_bought_past_month_checked"] = "true"
             rank_fields = extract_bsr_from_product_page(
                 html,
                 source_url=rank_source_url or url,
@@ -2773,11 +2781,15 @@ def apply_detail_fixes(rows: list[dict[str, str]], fixes_by_asin: dict[str, dict
             "detail_error",
             "detail_bsr_found",
             "detail_bsr_error",
+            "detail_bought_past_month_checked",
         ):
             if field in fix and row.get(field, "") != fix.get(field, ""):
                 row[field] = fix.get(field, "")
                 changed = True
         if _merge_detail_category_rank_fields(row, fix):
+            changed = True
+        if fix.get("bought_past_month") and row.get("bought_past_month", "") != fix["bought_past_month"]:
+            row["bought_past_month"] = fix["bought_past_month"]
             changed = True
         if fix.get("title") and row.get("title", "") != fix["title"]:
             row["raw_title"] = row.get("raw_title", "") or row.get("title", "")
@@ -2938,6 +2950,8 @@ def _detail_fetch_reason(
     bsr_reason = _bsr_refresh_reason(row)
     if bsr_reason:
         reasons.append(bsr_reason)
+    if row.get("detail_bought_past_month_checked", "").strip().lower() != "true":
+        reasons.append("bought_past_month_not_checked")
     return ",".join(reasons)
 
 
@@ -2979,6 +2993,7 @@ def _new_asin_detail_complete(row: dict[str, str], cache_entry: dict[str, str] |
         and is_valid_product_title(row.get("title", ""))
         and bool((row.get("image_url", "") or "").strip())
         and not _bsr_refresh_reason(row)
+        and cache_entry.get("detail_bought_past_month_checked", "").strip().lower() == "true"
     )
 
 

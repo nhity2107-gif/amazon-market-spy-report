@@ -6,7 +6,7 @@ from dataclasses import dataclass
 from html import unescape
 from html.parser import HTMLParser
 
-from .utils import normalize_space
+from .utils import normalize_space, parse_compact_int
 
 
 DETAIL_DEBUG_FIELDS = [
@@ -41,12 +41,17 @@ OPTION_ONLY_RE = re.compile(
     r")(?:\s+\d{1,2})?$",
     re.IGNORECASE,
 )
+BOUGHT_PAST_MONTH_RE = re.compile(
+    r"([0-9][0-9,.]*\s*[kKmM]?[+]?)\s+bought\s+in\s+past\s+month",
+    re.IGNORECASE,
+)
 
 
 @dataclass
 class DetailPageFields:
     title: str = ""
     image_url: str = ""
+    bought_past_month: str = ""
 
 
 class ProductDetailHTMLParser(HTMLParser):
@@ -59,6 +64,7 @@ class ProductDetailHTMLParser(HTMLParser):
         self.landing_image_old_hires: str = ""
         self.wrapper_image: str = ""
         self.og_image: str = ""
+        self.text_parts: list[str] = []
         self._in_product_title = False
         self._product_title_depth = 0
         self._in_document_title = False
@@ -119,12 +125,13 @@ class ProductDetailHTMLParser(HTMLParser):
         self._depth = max(0, self._depth - 1)
 
     def handle_data(self, data: str) -> None:
+        text = normalize_space(data)
+        if text:
+            self.text_parts.append(text)
         if self._in_product_title:
-            text = normalize_space(data)
             if text:
                 self.title_parts.append(text)
         if self._in_document_title:
-            text = normalize_space(data)
             if text:
                 self.document_title_parts.append(text)
 
@@ -169,6 +176,7 @@ def ensure_detail_fix_fields(row: dict[str, str]) -> dict[str, str]:
     row.setdefault("detail_error", "")
     row.setdefault("detail_bsr_found", "")
     row.setdefault("detail_bsr_error", "")
+    row.setdefault("detail_bought_past_month_checked", "")
     if not row.get("raw_title", "") and row.get("title", ""):
         row["raw_title"] = row.get("title", "")
     if row.get("image_url", "") and not row.get("image_source", ""):
@@ -186,7 +194,21 @@ def extract_detail_page_fields(html: str) -> DetailPageFields:
     if not title:
         title = clean_title(" ".join(parser.document_title_parts))
     image_url = parser.landing_image or parser.landing_image_old_hires or parser.wrapper_image or parser.og_image
-    return DetailPageFields(title=title, image_url=image_url)
+    bought_past_month = extract_bought_past_month(" ".join(parser.text_parts))
+    return DetailPageFields(
+        title=title,
+        image_url=image_url,
+        bought_past_month=bought_past_month,
+    )
+
+
+def extract_bought_past_month(value: str) -> str:
+    """Return Amazon's lower-bound monthly purchase signal as a normalized integer."""
+    match = BOUGHT_PAST_MONTH_RE.search(normalize_space(unescape(value or "")))
+    if not match:
+        return ""
+    count = parse_compact_int(match.group(1))
+    return str(count) if count is not None else ""
 
 
 def image_url_from_attrs(attr: dict[str, str]) -> str:

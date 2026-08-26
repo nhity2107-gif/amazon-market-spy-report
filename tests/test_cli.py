@@ -65,6 +65,7 @@ class CliTests(unittest.TestCase):
             "raw_bsr_block": raw_bsr,
             "review_count": "42",
             "review_rating": "4.7",
+            "detail_bought_past_month_checked": "true",
             "title_fixed": "true",
             "image_fixed": "true",
             "rank_parse_method": "product_information_item_details",
@@ -1232,6 +1233,9 @@ class CliTests(unittest.TestCase):
                   <body>
                     <span id="productTitle">Personalized Dad Coffee Mug Custom Father's Day Gift</span>
                     <img id="landingImage" src="https://example.com/landing.jpg">
+                    <div id="socialProofingAsinFaceout_feature_div">
+                      <span>3K+ bought in past month</span>
+                    </div>
                     <div id="detailBullets_feature_div">
                       <span>Best Sellers Rank</span>
                       <span>#65,003 in Home & Kitchen</span>
@@ -1275,6 +1279,8 @@ class CliTests(unittest.TestCase):
         self.assertEqual(row["detail_error"], "")
         self.assertEqual(row["detail_bsr_found"], "true")
         self.assertEqual(row["detail_bsr_error"], "")
+        self.assertEqual(row["bought_past_month"], "3000")
+        self.assertEqual(row["detail_bought_past_month_checked"], "true")
         self.assertEqual(row["primary_bsr_rank"], "65003")
         self.assertEqual(row["primary_bsr_category"], "Home & Kitchen")
         self.assertEqual(row["sub_bsr_rank"], "149")

@@ -1616,6 +1616,44 @@ def theme_styles() -> str:
     gap: var(--space-12);
     align-items: start;
   }}
+  .demand-badge,
+  .status-badge[data-preview-bought] {{
+    display: inline-flex;
+    min-height: 24px;
+    align-items: center;
+    justify-content: center;
+    padding: 0 9px;
+    border: 1px solid #e79a2f;
+    border-radius: var(--radius-pill);
+    background: linear-gradient(180deg, #fff8e8 0%, #ffedc4 100%);
+    color: #914600;
+    box-shadow: 0 1px 2px rgba(145, 70, 0, .14);
+    font-size: var(--type-caption);
+    font-style: normal;
+    font-weight: 850;
+    line-height: 1;
+    white-space: nowrap;
+  }}
+  .demand-badge::before,
+  .status-badge[data-preview-bought]::before {{
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: #e8790a;
+    content: "";
+    margin-right: 5px;
+    box-shadow: 0 0 0 2px rgba(232, 121, 10, .14);
+  }}
+  .demand-badge-compact {{
+    min-height: 18px;
+    padding: 0 5px;
+    font-size: 9px;
+  }}
+  .demand-badge-compact::before {{
+    width: 4px;
+    height: 4px;
+    margin-right: 3px;
+  }}
   .competitor-explorer-layout {{
     grid-template-columns: minmax(500px, 2fr) minmax(0, 3fr);
   }}

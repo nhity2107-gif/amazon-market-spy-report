@@ -350,7 +350,7 @@ class DashboardV2Tests(unittest.TestCase):
             generate_dashboard_v2(output_dir, data=MOCK_PRESENTATION_DATA)
             html = (output_dir / "product_explorer.html").read_text(encoding="utf-8")
 
-        for key in ["title", "seller", "idea", "winner_score", "growth", "reviews", "price"]:
+        for key in ["title", "seller", "idea", "winner_score", "growth", "reviews", "bought_past_month", "price"]:
             self.assertIn(f'data-sort-key="{key}"', html)
         self.assertIn('aria-sort="none"', html)
         self.assertIn("data-sort-indicator", html)
@@ -374,7 +374,7 @@ class DashboardV2Tests(unittest.TestCase):
             generate_dashboard_v2(output_dir, data=MOCK_PRESENTATION_DATA)
             html = (output_dir / "product_explorer.html").read_text(encoding="utf-8")
 
-        for label in ["Product", "Why It Matters", "Momentum", "Proof", "Open"]:
+        for label in ["Product", "Why It Matters", "Momentum", "Proof", "Bought/mo", "Open"]:
             self.assertIn(label, html)
         for key in ["select", "image", "seller", "product_type", "primary_evidence", "legacy_score", "growth", "reviews", "price", "source"]:
             self.assertIn(f'data-column-toggle="{key}"', html)
@@ -388,6 +388,9 @@ class DashboardV2Tests(unittest.TestCase):
         self.assertIn('const subtitle = [product.seller, product.product_type]', html)
         self.assertIn("whyItMatters(product)", html)
         self.assertIn("marketProof(product)", html)
+        self.assertIn("boughtPastMonthDisplay(product)", html)
+        self.assertIn("boughtPastMonthBadgeHtml(product)", html)
+        self.assertIn('class="demand-badge"', html)
 
     def test_product_explorer_more_filters_keep_advanced_data_accessible(self) -> None:
         with tempfile.TemporaryDirectory() as temp_dir:
@@ -476,6 +479,9 @@ class DashboardV2Tests(unittest.TestCase):
         self.assertIn("Dad Gift", html)
         self.assertIn("Personalized Mug", html)
         self.assertIn("data-preview-asin", html)
+        self.assertIn("data-preview-bought", html)
+        self.assertIn('"bought_past_month":3000', html)
+        self.assertIn("formatBoughtPastMonth", html)
         self.assertIn("B0REAL0001", html)
         for action in ["amazon", "seller", "source", "copy-asin", "copy-url"]:
             self.assertIn(f'data-preview-action="{action}"', html)
@@ -529,6 +535,9 @@ class DashboardV2Tests(unittest.TestCase):
         self.assertIn("seller-thumbnail-meta", competitor_html)
         self.assertIn("Display Order", competitor_html)
         self.assertIn("subCategoryLabel(row)", competitor_html)
+        self.assertIn("boughtPastMonthMeta(row)", competitor_html)
+        self.assertIn("Bought/mo", competitor_html)
+        self.assertIn("demand-badge-compact", competitor_html)
         self.assertIn("No Sub-category", competitor_html)
         self.assertNotIn("View Seller Products", competitor_html)
         self.assertIn('addEventListener("pointerover"', competitor_html)
@@ -988,6 +997,7 @@ class DashboardV2Tests(unittest.TestCase):
         self.assertEqual(v2_pages._market_proof(all_evidence), "Best Seller #12")
         self.assertEqual(v2_pages._market_proof({"bsr_evidence_best_sub_bsr": 842, "review_count": 42}), "Sub-BSR #842")
         self.assertEqual(v2_pages._market_proof({"review_count": 42, "seller_evidence_best_rank": 7}), "42 reviews")
+        self.assertEqual(v2_pages._market_proof({"bought_past_month": 3000, "review_count": 42}), "42 reviews")
         self.assertEqual(v2_pages._market_proof({"seller_evidence_best_rank": 7}), "Seller #7")
 
     def test_product_explorer_evidence_inspector_sections_exist(self) -> None:
@@ -1033,7 +1043,7 @@ class DashboardV2Tests(unittest.TestCase):
         summary_end = html.index("</section>", summary_start)
         summary_block = html[summary_start:summary_end]
 
-        for label in ["Product Summary", "Why It Matters", "Momentum", "Market Proof"]:
+        for label in ["Product Summary", "Why It Matters", "Momentum", "Market Proof", "Bought / month"]:
             self.assertIn(label, summary_block)
         self.assertNotIn("Seller", summary_block)
         self.assertNotIn("Winner Score", summary_block)
@@ -1043,6 +1053,7 @@ class DashboardV2Tests(unittest.TestCase):
             "data-preview-seller",
             "data-preview-price",
             "data-preview-reviews",
+            "data-preview-bought",
             "data-preview-bsr",
             "data-preview-score",
             "data-inspector-source-details",
@@ -1713,6 +1724,7 @@ def _write_service_fixture(output_dir: Path) -> None:
             "product_url",
             "image_url",
             "review_count",
+            "bought_past_month",
             "price",
         ],
         [
@@ -1727,6 +1739,7 @@ def _write_service_fixture(output_dir: Path) -> None:
                 "product_url": "https://www.amazon.com/dp/B0REAL0001",
                 "image_url": "https://example.com/mug.jpg",
                 "review_count": "17",
+                "bought_past_month": "3000",
                 "price": "",
             },
             {

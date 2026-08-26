@@ -234,6 +234,7 @@ def quick_preview_shell(product: dict[str, object]) -> str:
             {preview_meta_row("Why It Matters", "-", "preview-why")}
             {preview_meta_row("Momentum", "-", "preview-momentum")}
             {preview_meta_row("Market Proof", "-", "preview-proof")}
+            {preview_meta_row("Bought / month", "-", "preview-bought", "rising")}
           </div>
         </section>
         <div class="preview-actions">
