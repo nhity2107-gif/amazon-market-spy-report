@@ -1593,6 +1593,44 @@
     gap: var(--space-12);
     align-items: start;
   }
+  .demand-badge,
+  .status-badge[data-preview-bought] {
+    display: inline-flex;
+    min-height: 24px;
+    align-items: center;
+    justify-content: center;
+    padding: 0 9px;
+    border: 1px solid #e79a2f;
+    border-radius: var(--radius-pill);
+    background: linear-gradient(180deg, #fff8e8 0%, #ffedc4 100%);
+    color: #914600;
+    box-shadow: 0 1px 2px rgba(145, 70, 0, .14);
+    font-size: var(--type-caption);
+    font-style: normal;
+    font-weight: 850;
+    line-height: 1;
+    white-space: nowrap;
+  }
+  .demand-badge::before,
+  .status-badge[data-preview-bought]::before {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: #e8790a;
+    content: "";
+    margin-right: 5px;
+    box-shadow: 0 0 0 2px rgba(232, 121, 10, .14);
+  }
+  .demand-badge-compact {
+    min-height: 18px;
+    padding: 0 5px;
+    font-size: 9px;
+  }
+  .demand-badge-compact::before {
+    width: 4px;
+    height: 4px;
+    margin-right: 3px;
+  }
   .competitor-explorer-layout {
     grid-template-columns: minmax(500px, 2fr) minmax(0, 3fr);
   }
@@ -1882,7 +1920,7 @@
       </nav>
       <div class="dataset-strip" aria-label="Dataset status">
         <span class="dataset-pill">Ready</span>
-        <span class="dataset-generated">Generated 2026-08-26 08:56:32</span>
+        <span class="dataset-generated">Generated 2026-08-26 11:28:52</span>
         <a class="utility-link" href="#dataset-information">Dataset Information</a>
         <a class="utility-link" href="../evidence_human_review_analysis.html">Human Review: 0 / 587 completed</a>
       </div>
@@ -2727,7 +2765,7 @@
     function boughtPastMonthMeta(row) {
       const value = Number(row.bought_past_month);
       if (!Number.isFinite(value) || value <= 0) return "";
-      return `<span><strong>Bought/mo</strong><em>${escapeHtml(formatBoughtPastMonth(value))}</em></span>`;
+      return `<span><strong>Bought/mo</strong><em class="demand-badge demand-badge-compact">${escapeHtml(formatBoughtPastMonth(value))}</em></span>`;
     }
     function formatBoughtPastMonth(value) {
       if (value >= 1000000 && value % 1000000 === 0) return `${value / 1000000}M+`;

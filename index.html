@@ -1593,6 +1593,44 @@
     gap: var(--space-12);
     align-items: start;
   }
+  .demand-badge,
+  .status-badge[data-preview-bought] {
+    display: inline-flex;
+    min-height: 24px;
+    align-items: center;
+    justify-content: center;
+    padding: 0 9px;
+    border: 1px solid #e79a2f;
+    border-radius: var(--radius-pill);
+    background: linear-gradient(180deg, #fff8e8 0%, #ffedc4 100%);
+    color: #914600;
+    box-shadow: 0 1px 2px rgba(145, 70, 0, .14);
+    font-size: var(--type-caption);
+    font-style: normal;
+    font-weight: 850;
+    line-height: 1;
+    white-space: nowrap;
+  }
+  .demand-badge::before,
+  .status-badge[data-preview-bought]::before {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: #e8790a;
+    content: "";
+    margin-right: 5px;
+    box-shadow: 0 0 0 2px rgba(232, 121, 10, .14);
+  }
+  .demand-badge-compact {
+    min-height: 18px;
+    padding: 0 5px;
+    font-size: 9px;
+  }
+  .demand-badge-compact::before {
+    width: 4px;
+    height: 4px;
+    margin-right: 3px;
+  }
   .competitor-explorer-layout {
     grid-template-columns: minmax(500px, 2fr) minmax(0, 3fr);
   }
@@ -1882,7 +1920,7 @@
       </nav>
       <div class="dataset-strip" aria-label="Dataset status">
         <span class="dataset-pill">Ready</span>
-        <span class="dataset-generated">Generated 2026-08-26 08:56:32</span>
+        <span class="dataset-generated">Generated 2026-08-26 11:28:52</span>
         <a class="utility-link" href="#dataset-information">Dataset Information</a>
         <a class="utility-link" href="../evidence_human_review_analysis.html">Human Review: 0 / 587 completed</a>
       </div>
@@ -1943,10 +1981,10 @@
             <span class="activity-copy"><strong>Custom T-Shirts for Men Women, Personalized Shirt Design Your Own, Custom Cotton Tee Shirts with Front &amp; Back Print</strong><span class="caption">Men&#x27;s Novelty T-Shirts New Releases - No primary evidence</span></span>
             <span class="status-badge tone-neutral">Best Seller #36</span>
           </a>
-          <a class="activity-item research-queue-item" href="product_explorer.html?preset=research_today&focus=B0HB9LZRW8" data-home-preview-item data-queue-asin="B0HB9LZRW8" data-preview-title="NAZENTI Personalized Vintage Photo Senior Mom Shirt, Custom Class of 2027 Graduation Family Shirt, Proud Mom of Senior Tee" data-preview-seller="Dily Pod" data-preview-type="Custom Shirt" data-preview-reason="Seller Leader at rank #1" data-preview-metric="300+ bought/mo" data-preview-image="https://m.media-amazon.com/images/I/71X300c9MCL._AC_UY218_.jpg" data-preview-href="product_explorer.html?preset=research_today&amp;focus=B0HB9LZRW8">
+          <a class="activity-item research-queue-item" href="product_explorer.html?preset=research_today&focus=B0HB9LZRW8" data-home-preview-item data-queue-asin="B0HB9LZRW8" data-preview-title="NAZENTI Personalized Vintage Photo Senior Mom Shirt, Custom Class of 2027 Graduation Family Shirt, Proud Mom of Senior Tee" data-preview-seller="Dily Pod" data-preview-type="Custom Shirt" data-preview-reason="Seller Leader at rank #1" data-preview-metric="7 reviews" data-preview-image="https://m.media-amazon.com/images/I/71X300c9MCL._AC_UY218_.jpg" data-preview-href="product_explorer.html?preset=research_today&amp;focus=B0HB9LZRW8">
             <img class="activity-thumbnail" src="https://m.media-amazon.com/images/I/71X300c9MCL._AC_UY218_.jpg" alt="NAZENTI Personalized Vintage Photo Senior Mom Shirt, Custom Class of 2027 Graduation Family Shirt, Proud Mom of Senior Tee thumbnail">
             <span class="activity-copy"><strong>NAZENTI Personalized Vintage Photo Senior Mom Shirt, Custom Class of 2027 Graduation Family Shirt, Proud Mom of Senior Tee</strong><span class="caption">Dily Pod - Seller Leader at rank #1</span></span>
-            <span class="status-badge tone-winner">300+ bought/mo</span>
+            <span class="status-badge tone-winner">7 reviews</span>
           </a>
           <a class="activity-item research-queue-item" href="product_explorer.html?preset=research_today&focus=B0HDTFLZ18" data-home-preview-item data-queue-asin="B0HDTFLZ18" data-preview-title="6/12Pcs Wooden Christmas Ornaments DIY Pearl Art Kits for Adults, Hanging Diamond Art Christmas Ornaments Set with Pearls, Sp" data-preview-seller="Decorative Hanging Ornaments New Releases" data-preview-type="Decorated Blank Product" data-preview-reason="Category Winner at rank #2" data-preview-metric="Best Seller #2" data-preview-image="https://images-na.ssl-images-amazon.com/images/I/91ncqRYJSQL._AC_UL600_SR600,400_.jpg" data-preview-href="product_explorer.html?preset=research_today&amp;focus=B0HDTFLZ18">
             <img class="activity-thumbnail" src="https://images-na.ssl-images-amazon.com/images/I/91ncqRYJSQL._AC_UL600_SR600,400_.jpg" alt="6/12Pcs Wooden Christmas Ornaments DIY Pearl Art Kits for Adults, Hanging Diamond Art Christmas Ornaments Set with Pearls, Sp thumbnail">
@@ -2021,7 +2059,7 @@
       </article>
       <article class="kpi-card tone-neutral">
         <span class="kpi-label">Generated</span>
-        <strong class="kpi-value">2026-08-26 08:56:32</strong>
+        <strong class="kpi-value">2026-08-26 11:28:52</strong>
         <span class="kpi-caption">Latest V2 build</span>
       </article>
     </section>
@@ -2513,7 +2551,7 @@
         </div>
                 <div class="quality-item">
           <span>Generated</span>
-          <strong>2026-08-26 08:56:32</strong>
+          <strong>2026-08-26 11:28:52</strong>
         </div>
                 <div class="quality-item">
           <span>Dashboard version</span>
