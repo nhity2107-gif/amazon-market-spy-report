@@ -3285,6 +3285,20 @@ def parse_source_pages(pages: list[FetchedPage], source: Source, fetched_at: str
     seen_asins: set[str] = set()
     for page in pages:
         page_products = parse_amazon_search_results(page.html, source, fetched_at, page.url)
+        if source.source_type == "seller" and page.product_asins:
+            # Playwright collects these from the actual search-result cards.
+            # Treat that ordered list as authoritative so unrelated data-asin
+            # blocks elsewhere in the document cannot pollute seller results.
+            products_by_asin = {
+                product.get("asin", "").strip().upper(): product
+                for product in page_products
+                if product.get("asin", "").strip()
+            }
+            page_products = [
+                products_by_asin[asin]
+                for asin in dict.fromkeys(value.strip().upper() for value in page.product_asins)
+                if asin and asin in products_by_asin
+            ]
         for product in page_products:
             asin = product.get("asin", "").strip().upper()
             if asin and asin in seen_asins:

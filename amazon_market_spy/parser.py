@@ -282,15 +282,21 @@ def parse_amazon_search_results(
         seen.add(tile.asin)
         records.append(_tile_to_record(tile, source, fetched_at, page_url))
 
-    link_parser = AmazonProductLinkParser()
-    link_parser.feed(html)
-    link_parser.close()
-    for candidate in link_parser.candidates:
-        if candidate.asin in seen:
-            continue
-        seen.add(candidate.asin)
-        rank = len(records) + 1
-        records.append(_candidate_to_record(candidate, rank, html, source, fetched_at, page_url))
+    # Seller search pages expose their real result cards through data-asin.  A
+    # second pass over every /dp/ link also finds variation swatches, carousels,
+    # and recommendations, which must not be treated as additional seller
+    # results.  Keep the link parser as a fallback for layouts (notably rank
+    # pages) where no ASIN containers were found.
+    if not records or source.source_type != "seller":
+        link_parser = AmazonProductLinkParser()
+        link_parser.feed(html)
+        link_parser.close()
+        for candidate in link_parser.candidates:
+            if candidate.asin in seen:
+                continue
+            seen.add(candidate.asin)
+            rank = len(records) + 1
+            records.append(_candidate_to_record(candidate, rank, html, source, fetched_at, page_url))
 
     return records
 

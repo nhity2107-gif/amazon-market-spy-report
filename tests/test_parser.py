@@ -146,6 +146,28 @@ class ParserTests(unittest.TestCase):
         self.assertEqual(rows[0]["image_source"], "listing_card")
         self.assertEqual(rows[0]["image_fixed"], "false")
 
+    def test_seller_parser_does_not_add_variation_links_as_products(self) -> None:
+        source = Source(
+            source_name="Competitor Store 1",
+            source_type="seller",
+            category="Mugs",
+            url="https://www.amazon.com/s?me=A123",
+            priority=1,
+            active=True,
+            row_number=1,
+        )
+        html = """
+        <div data-component-type="s-search-result" data-asin="B0PARENT11">
+          <a href="/dp/B0PARENT11"><h2><span>Personalized Ceramic Mug</span></h2></a>
+          <a aria-label="Ceramic 02" href="/dp/B0SWATCH11">Ceramic 02</a>
+        </div>
+        <aside><a href="/dp/B0RELATED1">Related product</a></aside>
+        """
+
+        rows = parse_amazon_search_results(html, source, "2026-06-11T00:00:00+00:00")
+
+        self.assertEqual([row["asin"] for row in rows], ["B0PARENT11"])
+
     def test_listing_title_uses_line_clamp_selector_before_image_alt(self) -> None:
         source = Source(
             source_name="Competitor Store 1",

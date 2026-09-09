@@ -1820,15 +1820,20 @@ class CliTests(unittest.TestCase):
                 """,
                 url="https://www.amazon.com/s?me=A123&page=1",
                 page_number=1,
+                product_asins=("B0PAGE1111", "B0PAGE2222"),
             ),
             FetchedPage(
                 html="""
                 <div data-component-type="s-search-result" data-asin="B0PAGE3333">
                   <a href="/dp/B0PAGE3333"><h2><span>Third Personalized Mug</span></h2></a>
                 </div>
+                <div data-asin="B0RELATED1">
+                  <a href="/dp/B0RELATED1"><span>Unrelated recommendation</span></a>
+                </div>
                 """,
                 url="https://www.amazon.com/s?me=A123&page=2",
                 page_number=2,
+                product_asins=("B0PAGE3333",),
             ),
         ]
 
