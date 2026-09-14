@@ -1894,7 +1894,7 @@
   </style>
 
 </head>
-<body><div style="padding:12px 24px;background:#fff8e6;color:#433515">All scanned products are included in overview pages. <a href="product_explorer.html?pod=pod">20 confirmed POD</a> | <a href="product_explorer.html?pod=unknown">5,610 Needs Image Review</a> | <a href="product_explorer.html?pod=all">View all products</a></div>
+<body>
   <div class="app-shell">
     <header class="top-shell">
       <div class="brand">
@@ -1921,7 +1921,7 @@
       </nav>
       <div class="dataset-strip" aria-label="Dataset status">
         <span class="dataset-pill">Ready</span>
-        <span class="dataset-generated">Generated 2026-09-14 17:27:46</span>
+        <span class="dataset-generated">Generated 2026-09-14 17:33:40</span>
         <a class="utility-link" href="#dataset-information">Dataset Information</a>
 
       </div>
@@ -1941,7 +1941,10 @@
         <section>
           <h2>Preset</h2>
           <div class="preset-list" data-preset-list>
-            <button class="preset-button is-active" type="button" data-product-preset="research_today" aria-current="true">
+            <button class="preset-button is-active" type="button" data-product-preset="all" aria-current="true">
+              <span>All Products</span>
+              <strong>5,631</strong>
+            </button><button class="preset-button" type="button" data-product-preset="research_today">
               <span>Research Today</span>
               <strong>1,209</strong>
             </button><button class="preset-button" type="button" data-product-preset="proven_demand">
@@ -1968,7 +1971,7 @@
                       <label class="filter-control minimal-filter-control" for="product-filter-pod">
               <span>POD Product</span>
               <select id="product-filter-pod" class="select-input" data-pod-filter aria-label="POD Product filter">
-                <option value="all">All Products</option><option value="pod" selected>POD Products</option><option value="non_pod">Non-POD Products</option><option value="unknown">Needs Image Review</option>
+                <option value="all" selected>All Products</option><option value="pod">POD Products</option><option value="non_pod">Non-POD Products</option><option value="unknown">Needs Image Review</option>
               </select>
             </label>
         </section>
@@ -2203,7 +2206,7 @@
           <p class="result-count" data-result-count aria-live="polite">Showing 0 of 5631 products</p>
           <p class="caption result-cap" data-result-cap hidden></p>
         </div>
-        <p class="guidance-line" data-filter-guidance>Start with Research Today to find products with recent movement.</p>
+        <p class="guidance-line" data-filter-guidance>All products. Choose a preset or filter to narrow results.</p>
         <p class="filter-text-summary" data-filter-text-summary hidden></p>
         <details class="compact-result-details">
           <summary>Result Details</summary>
@@ -2446,8 +2449,8 @@
     const DEFAULT_PAGE_SIZE = 100;
     const PAGE_SIZES = [50, 100, 200];
     const LOW_REVIEW_LIMIT = 50;
-    const DEFAULT_PRESET = "research_today";
-    const DEFAULT_POD_FILTER = "pod";
+    const DEFAULT_PRESET = "all";
+    const DEFAULT_POD_FILTER = "all";
     const DEFAULT_COLUMNS = new Set(["why", "momentum", "market_proof"]);
     const OPTIONAL_COLUMNS = {
       select: "Row Select",
@@ -2575,6 +2578,7 @@
       new_launch: { label: "New Launch", predicate: (product) => product.isNewLaunch },
     };
     const PRODUCT_PRESETS = {
+      all: { label: "All Products", guidance: "All products. Choose a preset or filter to narrow results.", empty: "No products match the current filters.", next: "All Products", evidence: [] },
       research_today: {
         label: "Research Today",
         guidance: "Start with Research Today to find products with recent movement.",
@@ -3385,7 +3389,7 @@
     }
 
     function productMatchesPreset(product, presetKey, preset) {
-      if (!preset) return true;
+      if (!preset || presetKey === "all") return true;
       const segment = normalizeSearch(product.researchSegment || "");
       if (presetKey === "research_today") {
         if (["fast mover", "early opportunity", "proven winner"].includes(segment)) return true;
@@ -3608,7 +3612,7 @@
       if (!filterSummary || !filterChips) return;
       const chips = [];
       const preset = PRODUCT_PRESETS[state.preset] || PRODUCT_PRESETS[DEFAULT_PRESET];
-      chips.push(chipHtml(`Preset: ${preset.label}`, "preset", state.preset));
+      if (state.preset !== "all") chips.push(chipHtml(`Preset: ${preset.label}`, "preset", state.preset));
       if (state.savedView !== "all") {
         chips.push(chipHtml(`Saved View: ${SAVED_VIEWS[state.savedView]?.label || state.savedView}`, "saved_view", state.savedView));
       }
@@ -3638,9 +3642,9 @@
       filterSummary.hidden = chips.length === 0;
       if (filterGuidance) filterGuidance.textContent = preset.guidance;
       if (filterTextSummary) {
-        const filterCount = chips.length;
+        const filterCount = chips.length - (state.preset !== "all" ? 1 : 0);
         filterTextSummary.hidden = false;
-        filterTextSummary.textContent = `${preset.label}: ${formatNumber(currentMatched.length)} matching products across ${formatNumber(uniqueMeaningfulCount(currentMatched, "seller"))} sellers. ${filterCount > 1 ? `${formatNumber(filterCount - 1)} additional filters active.` : "No additional filters active."}`;
+        filterTextSummary.textContent = `${preset.label}: ${formatNumber(currentMatched.length)} matching products across ${formatNumber(uniqueMeaningfulCount(currentMatched, "seller"))} sellers. ${filterCount > 0 ? `${formatNumber(filterCount)} additional filters active.` : "No additional filters active."}`;
       }
     }
 

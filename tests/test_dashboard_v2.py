@@ -186,7 +186,7 @@ class DashboardV2Tests(unittest.TestCase):
         for label in ["All Products", "POD Products", "Non-POD Products", "Unknown"]:
             self.assertIn(label, html)
         self.assertIn("const POD_FILTERS", html)
-        self.assertIn('const DEFAULT_POD_FILTER = "pod"', html)
+        self.assertIn('const DEFAULT_POD_FILTER = "all"', html)
         self.assertIn('all: { label: "All Products" }', html)
         self.assertIn('pod: { label: "POD Products" }', html)
         self.assertIn('next.pod = validPodFilter(params.get("pod_filter") || params.get("pod") || DEFAULT_POD_FILTER, DEFAULT_POD_FILTER)', html)
@@ -195,7 +195,7 @@ class DashboardV2Tests(unittest.TestCase):
         self.assertIn('pod: DEFAULT_POD_FILTER', html)
         self.assertIn('if (state.pod !== "all" && product.pod_filter !== state.pod) return false', html)
         self.assertIn('if (type === "pod") state.pod = "all"', html)
-        self.assertIn('<option value="pod" selected>POD Products</option>', html)
+        self.assertIn('<option value="all" selected>All Products</option>', html)
 
     def test_pod_filter_bucket_preserves_existing_classification_semantics(self) -> None:
         self.assertEqual(v2_pages._pod_filter_bucket({"is_pod": "yes"}), "pod")
@@ -203,7 +203,7 @@ class DashboardV2Tests(unittest.TestCase):
         self.assertEqual(v2_pages._pod_filter_bucket({"is_pod": "no"}), "non_pod")
         self.assertEqual(v2_pages._pod_filter_bucket({"is_pod": ""}), "unknown")
         self.assertEqual(v2_pages._pod_filter_bucket({}), "unknown")
-        self.assertEqual(v2_pages._normalize_pod_filter(""), "pod")
+        self.assertEqual(v2_pages._normalize_pod_filter(""), "all")
         self.assertEqual(v2_pages._normalize_pod_filter("all"), "all")
         self.assertEqual(v2_pages._normalize_pod_filter("non_pod"), "non_pod")
 
@@ -217,7 +217,7 @@ class DashboardV2Tests(unittest.TestCase):
 
         self.assertEqual(
             [product["asin"] for product in v2_pages._filter_products_by_pod(products)],
-            ["B0PODYES"],
+            ["B0PODYES", "B0PODMAYBE", "B0NONPOD", "B0UNKNOWN"],
         )
         self.assertEqual(len(v2_pages._filter_products_by_pod(products, "all")), 4)
         self.assertEqual(
@@ -229,9 +229,11 @@ class DashboardV2Tests(unittest.TestCase):
             ["B0PODMAYBE", "B0UNKNOWN"],
         )
 
-    def test_product_explorer_presets_default_to_pod_products(self) -> None:
+    def test_product_explorer_presets_support_explicit_pod_filter(self) -> None:
         products = []
         for preset, config in v2_pages.PRODUCT_PRESETS.items():
+            if preset == "all":
+                continue
             evidence = next(iter(config["evidence"]))
             products.extend(
                 [
@@ -241,16 +243,19 @@ class DashboardV2Tests(unittest.TestCase):
                 ]
             )
 
+        self.assertEqual(v2_pages._preset_products(products, "all"), products)
         for preset in v2_pages.PRODUCT_PRESETS:
+            if preset == "all":
+                continue
             preset_rows = v2_pages._preset_products(products, preset)
-            default_rows = v2_pages._filter_products_by_pod(preset_rows)
+            default_rows = v2_pages._filter_products_by_pod(preset_rows, "pod")
 
             self.assertTrue(default_rows, preset)
             self.assertTrue(all(v2_pages._pod_filter_bucket(product) == "pod" for product in default_rows), preset)
             self.assertTrue(any(product["asin"] == f"{preset}-NONPOD" for product in preset_rows), preset)
             self.assertFalse(any(product["asin"] == f"{preset}-NONPOD" for product in default_rows), preset)
 
-    def test_default_research_today_excludes_branded_non_pod_examples(self) -> None:
+    def test_default_research_today_keeps_all_pod_statuses(self) -> None:
         products = [
             {"asin": "B0POD001", "title": "Custom POD Sign", "is_pod": "yes", "category_breakout": True},
             {"asin": "B0HALLMARK", "title": "Hallmark Branded Ornament", "is_pod": "no", "category_breakout": True},
@@ -262,7 +267,7 @@ class DashboardV2Tests(unittest.TestCase):
         all_rows = v2_pages._filter_products_by_pod(research_today, "all")
         non_pod_rows = v2_pages._filter_products_by_pod(research_today, "non_pod")
 
-        self.assertEqual([product["asin"] for product in default_rows], ["B0POD001"])
+        self.assertEqual([product["asin"] for product in default_rows], ["B0POD001", "B0HALLMARK", "B0DOORMAT"])
         self.assertEqual(len(all_rows), 3)
         self.assertEqual([product["asin"] for product in non_pod_rows], ["B0HALLMARK", "B0DOORMAT"])
 
@@ -911,6 +916,7 @@ class DashboardV2Tests(unittest.TestCase):
 
     def test_product_explorer_presets_use_explicit_evidence_fields(self) -> None:
         expected = {
+            "all": set(),
             "research_today": {"category_breakout", "new_release_breakout", "seller_mover", "seller_new_push"},
             "proven_demand": {"category_winner", "very_strong_sub_bsr", "seller_leader"},
             "early_opportunity": {"seller_new_push", "new_release_rising", "new_release_watch"},

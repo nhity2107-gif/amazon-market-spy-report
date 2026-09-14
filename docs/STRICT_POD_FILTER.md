@@ -51,3 +51,6 @@ keeps separate POD/non-POD/Needs Image Review filters. Coverage-page deep links
 include pod=all so a seller does not appear empty while image review is pending.
 Rebuild with scripts/rebuild_image_dashboard.py SOURCE OUTPUT; this preserves
 complete history and source tables and does not filter them through POD approval.
+
+Product Explorer opens with All Products and no preset filter. Reset Filters restores
+this unfiltered state. Explicit URL filters and user-selected presets still apply.

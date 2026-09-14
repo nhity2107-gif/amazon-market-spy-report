@@ -231,7 +231,7 @@ def render_product_explorer(data: dict[str, object]) -> str:
           <p class="result-count" data-result-count aria-live="polite">Showing 0 of {len(products)} products</p>
           <p class="caption result-cap" data-result-cap hidden></p>
         </div>
-        <p class="guidance-line" data-filter-guidance>Start with Research Today to find products with recent movement.</p>
+        <p class="guidance-line" data-filter-guidance>All products. Choose a preset or filter to narrow results.</p>
         <p class="filter-text-summary" data-filter-text-summary hidden></p>
         <details class="compact-result-details">
           <summary>Result Details</summary>
@@ -544,6 +544,7 @@ PRIMARY_EVIDENCE_PRIORITY = [
 ]
 
 PRODUCT_PRESETS = {
+    "all": {"label": "All Products", "guidance": "All products. Choose a preset or filter to narrow results.", "empty": "No products match the current filters.", "next": "All Products", "evidence": []},
     "research_today": {
         "label": "Research Today",
         "guidance": "Start with Research Today to find products with recent movement.",
@@ -757,7 +758,7 @@ def _home_research_preview_script() -> str:
 
 def _preset_products(products: list[dict[str, object]], preset: str) -> list[dict[str, object]]:
     config = PRODUCT_PRESETS.get(preset)
-    if not config:
+    if not config or preset == "all":
         return list(products)
     evidence_keys = config["evidence"]
     return [
@@ -1022,8 +1023,8 @@ def _product_preset_rows(products: list[dict[str, object]]) -> list[str]:
     rows = []
     for key, config in PRODUCT_PRESETS.items():
         count = len(_preset_products(products, key))
-        active = " is-active" if key == "research_today" else ""
-        current = ' aria-current="true"' if key == "research_today" else ""
+        active = " is-active" if key == "all" else ""
+        current = ' aria-current="true"' if key == "all" else ""
         rows.append(
             f"""<button class="preset-button{active}" type="button" data-product-preset="{escape(key)}"{current}>
               <span>{escape(str(config["label"]))}</span>
@@ -2532,7 +2533,7 @@ def _single_category_filter_control(field: str, label: str) -> str:
             </label>"""
 
 
-DEFAULT_POD_FILTER = "pod"
+DEFAULT_POD_FILTER = "all"
 POD_FILTER_OPTIONS = (
     ("all", "All Products"),
     ("pod", "POD Products"),
@@ -2905,8 +2906,8 @@ def _product_explorer_script() -> str:
     const DEFAULT_PAGE_SIZE = 100;
     const PAGE_SIZES = [50, 100, 200];
     const LOW_REVIEW_LIMIT = 50;
-    const DEFAULT_PRESET = "research_today";
-    const DEFAULT_POD_FILTER = "pod";
+    const DEFAULT_PRESET = "all";
+    const DEFAULT_POD_FILTER = "all";
     const DEFAULT_COLUMNS = new Set(["why", "momentum", "market_proof"]);
     const OPTIONAL_COLUMNS = {
       select: "Row Select",
@@ -3034,6 +3035,7 @@ def _product_explorer_script() -> str:
       new_launch: { label: "New Launch", predicate: (product) => product.isNewLaunch },
     };
     const PRODUCT_PRESETS = {
+      all: { label: "All Products", guidance: "All products. Choose a preset or filter to narrow results.", empty: "No products match the current filters.", next: "All Products", evidence: [] },
       research_today: {
         label: "Research Today",
         guidance: "Start with Research Today to find products with recent movement.",
@@ -3844,7 +3846,7 @@ def _product_explorer_script() -> str:
     }
 
     function productMatchesPreset(product, presetKey, preset) {
-      if (!preset) return true;
+      if (!preset || presetKey === "all") return true;
       const segment = normalizeSearch(product.researchSegment || "");
       if (presetKey === "research_today") {
         if (["fast mover", "early opportunity", "proven winner"].includes(segment)) return true;
@@ -4067,7 +4069,7 @@ def _product_explorer_script() -> str:
       if (!filterSummary || !filterChips) return;
       const chips = [];
       const preset = PRODUCT_PRESETS[state.preset] || PRODUCT_PRESETS[DEFAULT_PRESET];
-      chips.push(chipHtml(`Preset: ${preset.label}`, "preset", state.preset));
+      if (state.preset !== "all") chips.push(chipHtml(`Preset: ${preset.label}`, "preset", state.preset));
       if (state.savedView !== "all") {
         chips.push(chipHtml(`Saved View: ${SAVED_VIEWS[state.savedView]?.label || state.savedView}`, "saved_view", state.savedView));
       }
@@ -4097,9 +4099,9 @@ def _product_explorer_script() -> str:
       filterSummary.hidden = chips.length === 0;
       if (filterGuidance) filterGuidance.textContent = preset.guidance;
       if (filterTextSummary) {
-        const filterCount = chips.length;
+        const filterCount = chips.length - (state.preset !== "all" ? 1 : 0);
         filterTextSummary.hidden = false;
-        filterTextSummary.textContent = `${preset.label}: ${formatNumber(currentMatched.length)} matching products across ${formatNumber(uniqueMeaningfulCount(currentMatched, "seller"))} sellers. ${filterCount > 1 ? `${formatNumber(filterCount - 1)} additional filters active.` : "No additional filters active."}`;
+        filterTextSummary.textContent = `${preset.label}: ${formatNumber(currentMatched.length)} matching products across ${formatNumber(uniqueMeaningfulCount(currentMatched, "seller"))} sellers. ${filterCount > 0 ? `${formatNumber(filterCount)} additional filters active.` : "No additional filters active."}`;
       }
     }
 
