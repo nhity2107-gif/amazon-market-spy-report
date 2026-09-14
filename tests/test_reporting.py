@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import tempfile
 import unittest
+from unittest.mock import patch
 from datetime import date, timedelta
 from pathlib import Path
 
@@ -784,7 +785,7 @@ class ReportingTests(unittest.TestCase):
         self.assertEqual(by_asin["B0RANK1111"]["rank_change_vs_previous_seen"], "13")
         self.assertEqual(by_asin["B0RANK1111"]["historical_status"], "improved_vs_previous_seen")
         self.assertEqual(by_asin["B0RANK1111"]["classification"], "new_win;rising")
-        self.assertEqual(by_asin["B0RANK1111"]["opportunity_score"], "20")
+        self.assertEqual(by_asin["B0RANK1111"]["opportunity_score"], "56")
         self.assertEqual(by_asin["B0RANK1111"]["pod_component"], "0")
         self.assertEqual(by_asin["B0RANK1111"]["momentum_component"], "19")
         self.assertEqual(by_asin["B0RANK1111"]["market_component"], "19")
@@ -811,28 +812,28 @@ class ReportingTests(unittest.TestCase):
         self.assertEqual(by_asin["B0RANK1111"]["price_change_vs_previous_seen"], "-1.00")
         self.assertEqual(by_asin["B0NEW11111"]["historical_status"], "new_vs_history")
         self.assertEqual(by_asin["B0NEW11111"]["classification"], "")
-        self.assertEqual(by_asin["B0NEW11111"]["opportunity_score"], "9")
+        self.assertEqual(by_asin["B0NEW11111"]["opportunity_score"], "40")
         self.assertEqual(by_asin["B0NEW11111"]["days_seen"], "1")
         self.assertEqual(by_asin["B0NEW11111"]["best_rank_7d"], "10")
         self.assertEqual(by_asin["B0NEW11111"]["avg_rank_7d"], "10.00")
         self.assertEqual(by_asin["B0NEW11111"]["appearances_7d"], "1")
         self.assertEqual(by_asin["B0WIN11111"]["classification"], "new_win;rising;winner")
-        self.assertEqual(by_asin["B0WIN11111"]["opportunity_score"], "19")
+        self.assertEqual(by_asin["B0WIN11111"]["opportunity_score"], "61")
         self.assertEqual(by_asin["B0TREND111"]["classification"], "rising")
-        self.assertEqual(by_asin["B0TREND111"]["opportunity_score"], "11")
+        self.assertEqual(by_asin["B0TREND111"]["opportunity_score"], "44")
         self.assertEqual(by_asin["B0LOSE1111"]["classification"], "declining")
         self.assertEqual(by_asin["B0LOSE1111"]["opportunity_score"], "0")
 
         alerts = build_trend_alerts(comparisons)
         self.assertEqual(
             [row["asin"] for row in alerts],
-            ["B0RANK1111", "B0WIN11111", "B0TREND111", "B0LOSE1111"],
+            ["B0WIN11111", "B0RANK1111", "B0TREND111", "B0LOSE1111"],
         )
 
         lark_alerts = build_lark_trend_alerts(comparisons, include_non_pod=True)
         self.assertEqual(
             [row["asin"] for row in lark_alerts],
-            ["B0RANK1111", "B0WIN11111", "B0TREND111"],
+            ["B0WIN11111", "B0RANK1111", "B0TREND111"],
         )
         self.assertEqual(list(lark_alerts[0].keys()), LARK_TREND_ALERT_FIELDS)
         rank_alert = next(row for row in lark_alerts if row["asin"] == "B0RANK1111")
@@ -924,13 +925,14 @@ class ReportingTests(unittest.TestCase):
 
         self.assertEqual(comparisons[0]["sub_bsr_rank"], "149")
         self.assertEqual(comparisons[0]["subcategory_rank_score"], "90")
-        self.assertEqual(comparisons[0]["opportunity_score"], "7")
-        self.assertEqual(comparisons[0]["pod_component"], "16")
+        self.assertEqual(comparisons[0]["opportunity_score"], "36")
+        self.assertEqual(comparisons[0]["pod_component"], "0")
         self.assertEqual(comparisons[0]["momentum_component"], "12")
         self.assertEqual(comparisons[0]["market_component"], "11")
         self.assertEqual(comparisons[0]["competition_component"], "0")
         self.assertEqual(comparisons[0]["niche_component"], "15")
 
+    @patch("amazon_market_spy.pod._lookup_main_image", new=lambda row: {"status": "no" if row.get("asin") == "B0RETAIL01" else "yes", "confidence": 95, "evidence": "Fixture main-image review"})
     def test_research_scores_follow_display_order_and_subcategory_rank_patterns(self) -> None:
         cases = [
             {
@@ -1033,6 +1035,7 @@ class ReportingTests(unittest.TestCase):
         self.assertLess(_score_int(retail, "opportunity_score"), 40)
         self.assertNotEqual(retail["research_segment"], "Early Opportunity")
 
+    @patch("amazon_market_spy.pod._lookup_main_image", new=lambda row: {"status": "yes" if row.get("asin") == "B0CUST1111" else "no", "confidence": 95, "evidence": "Fixture main-image review"})
     def test_build_lark_trend_alerts_filters_non_pod_by_default(self) -> None:
         rows = [
             {
@@ -1125,6 +1128,7 @@ class ReportingTests(unittest.TestCase):
         self.assertEqual(lark_alerts[1]["seller_id"], "")
         self.assertEqual(lark_alerts[1]["seller_url"], "")
 
+    @patch("amazon_market_spy.pod._lookup_main_image", new=lambda row: {"status": "yes" if row.get("asin") == "B0NICHE001" else "no", "confidence": 95, "evidence": "Fixture main-image review"})
     def test_build_niche_intelligence_summarizes_pod_niches(self) -> None:
         rows = [
             {

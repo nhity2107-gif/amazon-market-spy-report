@@ -7,6 +7,7 @@ from dataclasses import dataclass
 from pathlib import Path
 
 from .utils import ensure_parent, normalize_space
+from .main_image_review import lookup as _lookup_main_image
 
 
 LEGACY_POD_FIELDS = ["is_pod", "pod_type", "pod_score", "pod_reason"]
@@ -486,37 +487,25 @@ def classify_pod_row(
     row: dict[str, str],
     seller_profiles: dict[str, SellerProductionProfile] | None = None,
 ) -> dict[str, str]:
-    evidence = _collect_evidence(row, seller_profiles=seller_profiles)
-    production_model, confidence, reason = _production_decision(evidence)
-    if production_model != "non_pod" and not has_product_decoration(row):
-        production_model, confidence, reason = (
-            "non_pod", 60,
-            "Excluded: no product-level evidence of printed or engraved text/image.",
-        )
-    pod_type = _pod_type(evidence, production_model)
-    is_pod = PRODUCTION_MODEL_TO_IS_POD[production_model]
-    pod_score = evidence["pod_score"] - evidence["non_pod_score"]
-    pod_confidence = _confidence_label(confidence)
-
-    detail_reasons = [
-        *evidence["pod_reasons"],
-        *evidence["non_pod_reasons"],
-        reason,
-        (
-            f"pod_score={evidence['pod_score']}; non_pod_score={evidence['non_pod_score']}; "
-            f"production_model={production_model}; production_confidence={confidence}; "
-            f"is_pod={is_pod}; pod_type={pod_type}"
-        ),
-    ]
+    # No title, description, category or seller can establish image decoration.
+    visual = _visual_decoration_review(row)
+    status = visual["status"] if visual else "uncertain"
+    confidence = int(visual.get("confidence", 0)) if visual else 0
+    if confidence < 85:
+        status = "uncertain"
+    model = {"yes": "pod", "no": "non_pod", "uncertain": "unknown"}[status]
+    # Text may name the product type, but cannot alter image status/confidence.
+    product_type = _pod_type(_collect_evidence(row, seller_profiles=None), "pod")
+    reason = ("Main image reviewed: " + visual["evidence"]) if visual else "Needs image review: main image unavailable or not yet reviewed."
     return {
-        "is_pod": is_pod,
-        "production_model": production_model,
+        "is_pod": PRODUCTION_MODEL_TO_IS_POD[model],
+        "production_model": model,
         "production_confidence": str(confidence),
         "production_reason": reason,
-        "pod_type": pod_type,
-        "pod_score": str(pod_score),
-        "pod_confidence": pod_confidence,
-        "pod_reason": "; ".join(part for part in detail_reasons if part),
+        "pod_type": product_type,
+        "pod_score": str(confidence if status == "yes" else -confidence if status == "no" else 0),
+        "pod_confidence": _confidence_label(confidence),
+        "pod_reason": reason,
     }
 
 
@@ -574,25 +563,7 @@ def refresh_pod_fields_for_rows(rows: list[dict[str, str]]) -> list[dict[str, st
 
 
 def ensure_pod_fields(row: dict[str, str]) -> dict[str, str]:
-    if row.get("is_pod") == "no" and all(str(row.get(field, "")).strip() for field in POD_FIELDS):
-        return row  # An already excluded product cannot bypass the inclusion gate.
-    # Apply the mandatory gate even to cached and legacy classifications.
-    if not has_product_decoration(row):
-        row.update(classify_pod_row(row))
-        return row
-    if all(str(row.get(field, "")).strip() for field in POD_FIELDS):
-        return row
-    if all(str(row.get(field, "")).strip() for field in LEGACY_POD_FIELDS):
-        production_model = row.get("production_model", "") or _production_model_from_is_pod(row.get("is_pod", ""))
-        row["production_model"] = production_model
-        row["production_confidence"] = row.get("production_confidence", "") or _confidence_number_from_legacy(
-            row.get("pod_confidence", ""), row.get("pod_score", ""), production_model
-        )
-        row["production_reason"] = row.get("production_reason", "") or _short_reason(row.get("pod_reason", ""))
-        row["pod_confidence"] = row.get("pod_confidence", "") or _confidence_label(
-            _int_value(row["production_confidence"])
-        )
-        return row
+    # Recompute even complete legacy labels: keyword results are not visual proof.
     row.update(classify_pod_row(row))
     return row
 
@@ -610,42 +581,13 @@ def pod_allowed(row: dict[str, str]) -> bool:
     return row.get("is_pod", "") == "yes" and has_product_decoration(row)
 
 
+def _visual_decoration_review(row: dict[str, str]) -> dict[str, str] | None:
+    return _lookup_main_image(row)
+
+
 def has_product_decoration(row: dict[str, str]) -> bool:
-    """Conservative text evidence gate, not image verification or a POD score.
-
-    Seller/category/URL labels never establish decoration. Missing evidence is
-    excluded; printing equipment, blanks, packaging and embroidery alone do not
-    satisfy the required print/engraving condition.
-    """
-    fields = _field_text(row)
-    title = fields["title"]
-    if re.search(
-        r"\b(?:blank|unprinted|unengraved|undecorated|unadorned)\b"
-        r"|\b(?:no|without)\s+(?:any\s+)?(?:print(?:ing)?|engraving|text|design|logo)\b"
-        r"|\b(?:printer|engraver|printing machine|engraving machine|3d printed|3d print)\b", title
-    ):
-        return False
-
-    methods = r"(?:printed|print|screen print(?:ed)?|uv print(?:ed)?|sublimated|laser engraved|engraved|etched|etching|engraving)"
-    designs = r"(?:quote|saying|phrase|graphic|monogram|custom (?:name|text|photo|image|portrait)|(?:add|upload) (?:photo|text|image))"
-    for text in (title, fields["description"]):
-        for clause in re.split(r"[.!?;|\n]+", text):
-            # A mixed/ambiguous packaging clause cannot prove product decoration.
-            if re.search(r"\b(?:packaging|package|gift box|box|gift card|greeting card|insert|advertisement|watermark|overlay|mockup)\b", clause):
-                continue
-            if re.search(r"\b(?:no|not|without|never)\b|\b(?:blank|unprinted|unengraved|undecorated)\b", clause):
-                continue
-            if re.search(r"\b(?:for|ready for|suitable for)\s+(?:sublimation|printing|engraving)\b", clause):
-                continue
-            if re.search(r"\b(?:embroidery|embroidered|embroider|woven|knitted|crochet)\b", clause) and not re.search(r"\b" + methods + r"\b", clause):
-                continue
-            if not _contains_any(clause, BASE_PRODUCT_KEYWORDS):
-                continue
-            if re.search(r"\b(?:" + methods + "|" + designs + r")\b", clause):
-                return True
-            if "personalized" in clause and re.search(r"\b(?:name|names|text|photo|image|portrait)\b", clause):
-                return True
-    return False
+    review = _visual_decoration_review(row)
+    return bool(review and review["status"] == "yes" and int(review.get("confidence", 0)) >= 85)
 
 
 def write_production_model_report(path: Path, rows: list[dict[str, str]]) -> None:

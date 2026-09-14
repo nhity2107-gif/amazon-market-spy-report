@@ -2534,10 +2534,10 @@ POD_FILTER_OPTIONS = (
     ("all", "All Products"),
     ("pod", "POD Products"),
     ("non_pod", "Non-POD Products"),
-    ("unknown", "Unknown"),
+    ("unknown", "Needs Image Review"),
 )
 POD_FILTER_VALUES = {value for value, _ in POD_FILTER_OPTIONS}
-POD_PRODUCT_VALUES = {"yes", "maybe"}
+POD_PRODUCT_VALUES = {"yes"}
 NON_POD_PRODUCT_VALUES = {"no"}
 
 
@@ -2930,7 +2930,7 @@ def _product_explorer_script() -> str:
       all: { label: "All Products" },
       pod: { label: "POD Products" },
       non_pod: { label: "Non-POD Products" },
-      unknown: { label: "Unknown" },
+      unknown: { label: "Needs Image Review" },
     };
     const POD_BUCKETS = new Set(["pod", "non_pod", "unknown"]);
     const RANGE_FIELDS = {
@@ -4242,7 +4242,7 @@ def _product_explorer_script() -> str:
 
     function podFilterBucket(value) {
       const normalized = textValue(value, "").toLowerCase();
-      if (normalized === "yes" || normalized === "maybe") return "pod";
+      if (normalized === "yes") return "pod";
       if (normalized === "no") return "non_pod";
       return "unknown";
     }

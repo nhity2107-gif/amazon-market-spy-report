@@ -181,7 +181,7 @@ class DashboardV2Tests(unittest.TestCase):
 
     def test_pod_filter_bucket_preserves_existing_classification_semantics(self) -> None:
         self.assertEqual(v2_pages._pod_filter_bucket({"is_pod": "yes"}), "pod")
-        self.assertEqual(v2_pages._pod_filter_bucket({"is_pod": "maybe"}), "pod")
+        self.assertEqual(v2_pages._pod_filter_bucket({"is_pod": "maybe"}), "unknown")
         self.assertEqual(v2_pages._pod_filter_bucket({"is_pod": "no"}), "non_pod")
         self.assertEqual(v2_pages._pod_filter_bucket({"is_pod": ""}), "unknown")
         self.assertEqual(v2_pages._pod_filter_bucket({}), "unknown")
@@ -199,7 +199,7 @@ class DashboardV2Tests(unittest.TestCase):
 
         self.assertEqual(
             [product["asin"] for product in v2_pages._filter_products_by_pod(products)],
-            ["B0PODYES", "B0PODMAYBE"],
+            ["B0PODYES"],
         )
         self.assertEqual(len(v2_pages._filter_products_by_pod(products, "all")), 4)
         self.assertEqual(
@@ -208,7 +208,7 @@ class DashboardV2Tests(unittest.TestCase):
         )
         self.assertEqual(
             [product["asin"] for product in v2_pages._filter_products_by_pod(products, "unknown")],
-            ["B0UNKNOWN"],
+            ["B0PODMAYBE", "B0UNKNOWN"],
         )
 
     def test_product_explorer_presets_default_to_pod_products(self) -> None:
@@ -258,12 +258,12 @@ class DashboardV2Tests(unittest.TestCase):
 
         by_asin = {product["asin"]: product for product in products}
         self.assertEqual(len(products), 3)
-        self.assertEqual(by_asin["B0REAL0001"]["is_pod"], "yes")
-        self.assertEqual(by_asin["B0REAL0001"]["pod_filter"], "pod")
-        self.assertEqual(by_asin["B0REAL0002"]["is_pod"], "no")
-        self.assertEqual(by_asin["B0REAL0002"]["pod_filter"], "non_pod")
-        self.assertEqual(by_asin["B0REAL0003"]["is_pod"], "no")
-        self.assertEqual(by_asin["B0REAL0003"]["pod_filter"], "non_pod")
+        self.assertEqual(by_asin["B0REAL0001"]["is_pod"], "maybe")
+        self.assertEqual(by_asin["B0REAL0001"]["pod_filter"], "unknown")
+        self.assertEqual(by_asin["B0REAL0002"]["is_pod"], "maybe")
+        self.assertEqual(by_asin["B0REAL0002"]["pod_filter"], "unknown")
+        self.assertEqual(by_asin["B0REAL0003"]["is_pod"], "maybe")
+        self.assertEqual(by_asin["B0REAL0003"]["pod_filter"], "unknown")
 
     def test_product_explorer_indexes_complete_latest_products_without_changing_page_data(self) -> None:
         with tempfile.TemporaryDirectory() as temp_dir:
@@ -277,9 +277,9 @@ class DashboardV2Tests(unittest.TestCase):
         self.assertEqual([product["asin"] for product in explorer_products], ["B0REAL0001", "B0REAL0002", "B0REAL0003"])
         buckets = Counter(v2_pages._pod_filter_bucket(product) for product in explorer_products)
         self.assertEqual(buckets["pod"] + buckets["non_pod"] + buckets["unknown"], len(explorer_products))
-        self.assertEqual(buckets["pod"], 1)
-        self.assertEqual(buckets["non_pod"], 2)
-        self.assertEqual(buckets["unknown"], 0)
+        self.assertEqual(buckets["pod"], 0)
+        self.assertEqual(buckets["non_pod"], 0)
+        self.assertEqual(buckets["unknown"], 3)
 
     def test_product_explorer_deduplicates_asins_without_changing_competitor_rows(self) -> None:
         products = [
@@ -1470,8 +1470,8 @@ class DashboardV2ServiceTests(unittest.TestCase):
             self.assertEqual(data["products"][0]["occasion"], "Unknown")
             self.assertEqual(data["products"][0]["amazon_url"], "https://www.amazon.com/dp/B0REAL0001")
             self.assertEqual(data["products"][0]["source_url"], "https://www.amazon.com/gp/bestsellers/test")
-            self.assertEqual(data["products"][0]["is_pod"], "yes")
-            self.assertEqual(data["products"][1]["is_pod"], "no")
+            self.assertEqual(data["products"][0]["is_pod"], "maybe")
+            self.assertEqual(data["products"][1]["is_pod"], "maybe")
             self.assertEqual(len(data["product_explorer_products"]), 3)
             self.assertTrue(data["products"][0]["is_winner"])
             self.assertTrue(data["products"][0]["is_rising"])

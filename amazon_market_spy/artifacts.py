@@ -145,6 +145,7 @@ PRODUCT_TYPE_TERMS = {
     "personalized_mug": "Mug",
     "quote_mug": "Mug",
     "custom_shirt": "Shirt",
+    "printed_shirt": "Shirt",
     "engraved_gift": "Engraved Gift",
     "custom_doormat": "Doormat",
     "personalized_onesie": "Baby Onesie",

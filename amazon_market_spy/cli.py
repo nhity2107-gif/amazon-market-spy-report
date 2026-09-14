@@ -1911,6 +1911,21 @@ def write_outputs(
                     include_non_pod=include_non_pod,
                 )
 
+    # Main image is finalized after detail repair. Never classify from listing text.
+    from .main_image_review import review_rows
+    review_rows(products)
+    for product in products:
+        ensure_pod_fields(product)
+    write_csv(snapshot_path, products, PRODUCT_FIELDS)
+    write_latest_products_csv(latest_path, products)
+    write_csv(today_snapshot_path, products, PRODUCT_FIELDS)
+    historical_rows = build_historical_comparison(snapshot_dir, snapshot_path, sources)
+    apply_display_rank_metrics(products, historical_rows)
+    trend_alerts = build_trend_alerts(historical_rows)
+    lark_trend_alerts = build_lark_trend_alerts(
+        historical_rows, source_metadata=sources, include_non_pod=include_non_pod,
+    )
+
     product_trends = build_rank_trends(snapshot_dir, sources)
     product_history_rows = build_product_history_rows(snapshot_dir, sources)
     source_trends = build_source_trends(snapshot_dir, sources)
@@ -3454,6 +3469,21 @@ def write_trend_outputs(
                     source_metadata=sources,
                     include_non_pod=include_non_pod,
                 )
+
+    from .main_image_review import review_rows
+    review_rows(products)
+    for product in products:
+        ensure_pod_fields(product)
+    if latest_snapshot_path is not None:
+        write_csv(latest_snapshot_path, products, PRODUCT_FIELDS)
+    write_latest_products_csv(output_dir / "latest_products.csv", products)
+    write_csv(output_dir / "today_snapshot.csv", products, PRODUCT_FIELDS)
+    historical_rows = build_historical_comparison(snapshot_dir, latest_snapshot_path, sources)
+    apply_display_rank_metrics(products, historical_rows)
+    trend_alerts = build_trend_alerts(historical_rows)
+    lark_trend_alerts = build_lark_trend_alerts(
+        historical_rows, source_metadata=sources, include_non_pod=include_non_pod,
+    )
 
     product_trends = build_rank_trends(snapshot_dir, sources)
     product_history_rows = build_product_history_rows(snapshot_dir, sources)

@@ -8,6 +8,7 @@ from typing import Any
 
 from ...evidence import OBSERVATION_EVIDENCE_BOOLEAN_FIELDS, PRODUCT_EVIDENCE_FIELDS
 from ...reporting import read_csv
+from ...pod import ensure_pod_fields
 
 
 REQUIRED_TOP_LEVEL_KEYS = {"morning_brief", "ideas", "products", "competitors", "market"}
@@ -295,6 +296,11 @@ class DashboardService:
             latest_by_asin.get(asin, {}),
             trend_by_asin.get(asin, {}),
         )
+        # Priority exports may contain an older image and old keyword labels.
+        current_image = latest_by_asin.get(asin, {}).get("image_url")
+        if current_image:
+            merged["image_url"] = current_image
+        ensure_pod_fields(merged)
         evidence_rows = historical_by_asin.get(asin) or ([merged] if _has_source_context(merged) else [])
         title = _first_text(merged, "title", "raw_title", default=asin or "Untitled Product")
         product_type = _product_type(merged)

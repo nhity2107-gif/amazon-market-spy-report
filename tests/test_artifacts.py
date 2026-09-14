@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import tempfile
 import unittest
+from unittest.mock import patch
 from pathlib import Path
 
 from amazon_market_spy.artifacts import write_lark_opportunity_artifacts
@@ -98,6 +99,7 @@ class ArtifactTests(unittest.TestCase):
         self.assertNotIn("Competitor Product 11", html)
         self.assertNotIn("Competitor Product 12", html)
 
+    @patch("amazon_market_spy.pod._lookup_main_image", new=lambda row: {"status": "yes", "confidence": 95, "evidence": "Fixture main-image review"})
     def test_trend_explorer_clusters_pod_idea_dimensions(self) -> None:
         rows = [
             _row("B0TREND001", "Printed Funny Baseball Dad T-Shirt Gift", display_rank="7", previous_display_rank="30", display_rank_change="23"),

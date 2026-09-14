@@ -1,21 +1,44 @@
-# Required decoration gate
+# Main-image POD eligibility
 
-POD inclusion requires product-level evidence of printed or engraved text or an
-image. Plain products, uncertain classifications, undecorated shapes, embroidery
-alone, printing blanks and printing equipment are excluded from POD reports.
-Generic custom/design/gift terms, category names, seller profiles and URLs cannot
-supply the required evidence. Printing or engraving on packaging does not count.
+POD eligibility is determined only from the selected main-image bytes. Titles,
+descriptions, seller identity and category are never sent to vision and never
+produce a yes/no decision. Text still names product types/niches for navigation.
 
-This gate reads listing titles and descriptions; it does not inspect pixels.
-Missing or ambiguous evidence is excluded conservatively. It is an inclusion
-policy, not proof of how a manufacturer fulfills orders. False exclusions remain
-possible when only the product photo shows the decoration.
+- Yes: visible printed/engraved text, artwork or printed decorative pattern on the product.
+- No: clearly no qualifying surface decoration.
+- Needs Image Review: unprocessed/missing/unclear images, ambiguous technique, non-product images, or API/download failures.
 
-The gate also applies when old cached POD fields are loaded. Unknown/maybe is no
-longer included by `pod_allowed`. Existing retail-brand exclusions still apply.
-Raw scan records remain available; non-POD inclusion can still be explicitly
-requested for all-product reports. This does not label them POD.
+Packaging, watermarks, screen UI, payment-card numbers, molded/painted figurine
+details and embroidery do not establish qualifying decoration. AI decisions are
+fallible; individual manual image reviews are stored with evidence and byte hash.
 
-Validation: classifier tests cover direct decoration, seller/category leakage,
-packaging, blanks, embroidery and cached labels. Parser, offline scan, scoring
-and report tests cover propagation to downstream outputs.
+The scan and data-rebuild paths run visual review after detail/image repair and
+before final analytics. CSV dashboard loads invalidate all old keyword labels.
+The raw dataset is retained; only reviewed positives enter confirmed-POD views.
+
+## Configuration and resuming
+
+Set GEMINI_API_KEY in the process environment. No key is stored in source or logs.
+The default model is gemini-2.5-flash. Default pacing is 4 requests/minute; quota
+and authorization failures stop the run after saving progress. Unprocessed images
+remain reviewable and are never automatically excluded.
+
+Run from the project root:
+
+```powershell
+python -m amazon_market_spy.main_image_review output/latest_products.csv --workers 1 --rpm 4
+```
+
+Use --limit 20 for a bounded run and --refresh to request fresh AI decisions.
+POD_IMAGE_REVIEW_CACHE optionally selects the JSON cache; default is
+output/main_image_reviews.json. Keep this cache alongside the source installation
+when regenerating reports. Cache entries bind exact URL, SHA256, policy version,
+model, confidence, timestamp and visual evidence. A normal scan redownloads the
+main image to check byte changes, reuses matching reviewed bytes, and invalidates
+failed downloads. Offline dashboard rendering uses the last successful image
+review; it does not claim to fetch a fresh Amazon image.
+
+The current account reported a free-tier limit of 5 requests/minute. A full pass
+of roughly 5,800 distinct image URLs therefore takes about 24 hours at the default
+pace, subject to daily quota. The local preview is a partial image review, not a
+completed full-dataset vision pass. Its unprocessed rows remain in Needs Image Review.
