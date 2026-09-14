@@ -5,7 +5,7 @@ import tempfile
 import unittest
 from pathlib import Path
 
-from amazon_market_spy.pod import build_seller_profiles, classify_pod, classify_pod_row, write_production_model_report
+from amazon_market_spy.pod import build_seller_profiles, classify_pod, classify_pod_row, write_production_model_report, pod_allowed, ensure_pod_fields
 
 
 class PodClassifierTests(unittest.TestCase):
@@ -108,12 +108,11 @@ class PodClassifierTests(unittest.TestCase):
         self.assertEqual(result["is_pod"], "yes")
         self.assertEqual(result["pod_type"], "printed_ornament")
 
-    def test_classifies_friendship_elephant_ornament_as_pod(self) -> None:
+    def test_elephant_shape_alone_is_not_decoration_evidence(self) -> None:
         result = classify_pod("Friendship Elephant Ornament")
 
-        self.assertEqual(result["production_model"], "pod")
-        self.assertEqual(result["is_pod"], "yes")
-        self.assertEqual(result["pod_type"], "printed_ornament")
+        self.assertEqual(result["production_model"], "non_pod")
+        self.assertEqual(result["is_pod"], "no")
 
     def test_classifies_printed_quote_doormat_as_pod(self) -> None:
         result = classify_pod("Funny Quote Printed Doormat for Front Porch")
@@ -130,12 +129,11 @@ class PodClassifierTests(unittest.TestCase):
         self.assertGreaterEqual(int(result["production_confidence"]), 97)
         self.assertEqual(result["pod_type"], "engraved_glass")
 
-    def test_classifies_embroidered_cap_as_pod(self) -> None:
+    def test_embroidery_alone_does_not_meet_print_or_engraving_requirement(self) -> None:
         result = classify_pod("Embroidered Baseball Cap with Mountain Artwork")
 
-        self.assertEqual(result["production_model"], "pod")
-        self.assertEqual(result["is_pod"], "yes")
-        self.assertEqual(result["pod_type"], "embroidered_cap")
+        self.assertEqual(result["production_model"], "non_pod")
+        self.assertEqual(result["is_pod"], "no")
 
     def test_classifies_licensed_figurine_as_non_pod(self) -> None:
         result = classify_pod("Disney Star Wars Collectible Figurine")
@@ -147,11 +145,9 @@ class PodClassifierTests(unittest.TestCase):
     def test_classifies_unknown_physical_product_with_insufficient_evidence(self) -> None:
         result = classify_pod("Ceramic Table Vase Home Decor")
 
-        self.assertEqual(result["is_pod"], "maybe")
-        self.assertEqual(result["production_model"], "unknown")
-        self.assertLessEqual(int(result["production_confidence"]), 45)
-        self.assertEqual(result["production_reason"], "Insufficient evidence.")
-        self.assertEqual(result["pod_type"], "unknown")
+        self.assertEqual(result["is_pod"], "no")
+        self.assertEqual(result["production_model"], "non_pod")
+        self.assertIn("no product-level evidence", result["production_reason"])
 
     def test_strong_customization_overrides_generic_product_type(self) -> None:
         result = classify_pod("Add Photo Personalized Ceramic Ornament")
@@ -180,7 +176,7 @@ class PodClassifierTests(unittest.TestCase):
         self.assertEqual(result["production_confidence"], "99")
         self.assertIn("Retail brand", result["production_reason"])
 
-    def test_seller_profile_resolves_uncertain_products_from_pod_seller(self) -> None:
+    def test_seller_profile_cannot_supply_missing_product_decoration(self) -> None:
         rows = [
             {"title": f"Personalized Family Mug Custom Name {index}", "seller_name": "Profile Decor Studio"}
             for index in range(5)
@@ -188,10 +184,52 @@ class PodClassifierTests(unittest.TestCase):
         profiles = build_seller_profiles(rows)
         result = classify_pod_row({"title": "Design 12", "seller_name": "Profile Decor Studio"}, profiles)
 
-        self.assertEqual(result["production_model"], "pod")
-        self.assertEqual(result["is_pod"], "yes")
-        self.assertGreaterEqual(int(result["production_confidence"]), 84)
-        self.assertIn("Seller profile pod", result["production_reason"])
+        self.assertEqual(result["production_model"], "non_pod")
+        self.assertEqual(result["is_pod"], "no")
+        self.assertIn("no product-level evidence", result["production_reason"])
+
+    def test_strict_decoration_exclusions(self) -> None:
+        for title in (
+            "Plain Ceramic Mug", "Custom Size Brown Doormat", "Personalized Gift Jar",
+            "Funny Halloween Witch Figurine", "Friendship Elephant Ornament",
+            "Blank Mug for Sublimation Printing", "Unprinted Custom Name Shirt",
+            "Mug without printed text", "Mug in a Printed Gift Box",
+            "Glass with Engraved Gift Box", "Mug with Custom Name Gift Card",
+            "Custom Name Embroidered Cap", "Laser Engraving Machine for Glass",
+            "3D Printed Elephant Statue",
+        ):
+            with self.subTest(title=title):
+                row = {"title": title, "seller_name": "Wrappiness", "category": "Printed Gifts"}
+                self.assertFalse(pod_allowed(row))
+                self.assertEqual(row["is_pod"], "no")
+
+    def test_metadata_cannot_supply_decoration(self) -> None:
+        for field in ("seller_name", "source_name", "category", "product_type", "brand", "product_url"):
+            with self.subTest(field=field):
+                row = {"title": "Ceramic Mug", field: "Custom Name Printed Mug"}
+                self.assertFalse(pod_allowed(row))
+
+    def test_cached_and_legacy_pod_labels_cannot_bypass_gate(self) -> None:
+        for cached in (
+            {"is_pod": "maybe", "pod_type": "unknown", "pod_score": "20", "pod_reason": "old"},
+            classify_pod("Custom Name Printed Mug"),
+        ):
+            row = {"title": "Plain Ceramic Mug", **cached}
+            ensure_pod_fields(row)
+            self.assertEqual(row["is_pod"], "no")
+            self.assertFalse(pod_allowed(row))
+
+    def test_product_description_can_provide_direct_evidence(self) -> None:
+        row = {"title": "Ceramic Coffee Mug", "description": "The mug is printed with a dog portrait."}
+        self.assertTrue(pod_allowed(row))
+
+    def test_packaging_evidence_is_not_product_evidence(self) -> None:
+        row = {"title": "Glass Cup", "description": "The gift box is engraved with a name."}
+        self.assertFalse(pod_allowed(row))
+
+    def test_separate_product_decoration_is_kept_with_packaging(self) -> None:
+        row = {"title": "Engraved Glass. Supplied in a gift box."}
+        self.assertTrue(pod_allowed(row))
 
     def test_writes_production_model_report(self) -> None:
         row = {"asin": "B0REPORT01", "title": "Printed Quote Mug", "seller_name": "QA Seller"}

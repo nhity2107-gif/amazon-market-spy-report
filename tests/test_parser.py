@@ -59,11 +59,11 @@ class ParserTests(unittest.TestCase):
         self.assertEqual(rows[0]["sub_bsr_rank"], "")
         self.assertEqual(rows[0]["all_bsr_ranks"], "")
         self.assertEqual(rows[0]["subcategory_rank_score"], "")
-        self.assertEqual(rows[0]["is_pod"], "yes")
-        self.assertEqual(rows[0]["pod_type"], "personalized_mug")
+        self.assertEqual(rows[0]["is_pod"], "no")
+        self.assertEqual(rows[0]["pod_type"], "finished_retail_product")
         self.assertGreaterEqual(int(rows[0]["pod_score"]), 40)
         self.assertEqual(rows[0]["niche_primary"], "Dog Mom")
-        self.assertIn("Personalized Mug", rows[0]["niche_tags"])
+        self.assertNotIn("Personalized Mug", rows[0]["niche_tags"])
         self.assertEqual(rows[1]["sponsored"], "yes")
 
     def test_parse_rank_page_links_without_data_asin(self) -> None:

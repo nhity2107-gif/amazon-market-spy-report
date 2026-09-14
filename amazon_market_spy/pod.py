@@ -488,6 +488,11 @@ def classify_pod_row(
 ) -> dict[str, str]:
     evidence = _collect_evidence(row, seller_profiles=seller_profiles)
     production_model, confidence, reason = _production_decision(evidence)
+    if production_model != "non_pod" and not has_product_decoration(row):
+        production_model, confidence, reason = (
+            "non_pod", 60,
+            "Excluded: no product-level evidence of printed or engraved text/image.",
+        )
     pod_type = _pod_type(evidence, production_model)
     is_pod = PRODUCTION_MODEL_TO_IS_POD[production_model]
     pod_score = evidence["pod_score"] - evidence["non_pod_score"]
@@ -569,6 +574,12 @@ def refresh_pod_fields_for_rows(rows: list[dict[str, str]]) -> list[dict[str, st
 
 
 def ensure_pod_fields(row: dict[str, str]) -> dict[str, str]:
+    if row.get("is_pod") == "no" and all(str(row.get(field, "")).strip() for field in POD_FIELDS):
+        return row  # An already excluded product cannot bypass the inclusion gate.
+    # Apply the mandatory gate even to cached and legacy classifications.
+    if not has_product_decoration(row):
+        row.update(classify_pod_row(row))
+        return row
     if all(str(row.get(field, "")).strip() for field in POD_FIELDS):
         return row
     if all(str(row.get(field, "")).strip() for field in LEGACY_POD_FIELDS):
@@ -596,7 +607,45 @@ def refresh_pod_fields(
 
 def pod_allowed(row: dict[str, str]) -> bool:
     ensure_pod_fields(row)
-    return row.get("is_pod", "") in {"yes", "maybe"}
+    return row.get("is_pod", "") == "yes" and has_product_decoration(row)
+
+
+def has_product_decoration(row: dict[str, str]) -> bool:
+    """Conservative text evidence gate, not image verification or a POD score.
+
+    Seller/category/URL labels never establish decoration. Missing evidence is
+    excluded; printing equipment, blanks, packaging and embroidery alone do not
+    satisfy the required print/engraving condition.
+    """
+    fields = _field_text(row)
+    title = fields["title"]
+    if re.search(
+        r"\b(?:blank|unprinted|unengraved|undecorated|unadorned)\b"
+        r"|\b(?:no|without)\s+(?:any\s+)?(?:print(?:ing)?|engraving|text|design|logo)\b"
+        r"|\b(?:printer|engraver|printing machine|engraving machine|3d printed|3d print)\b", title
+    ):
+        return False
+
+    methods = r"(?:printed|print|screen print(?:ed)?|uv print(?:ed)?|sublimated|laser engraved|engraved|etched|etching|engraving)"
+    designs = r"(?:quote|saying|phrase|graphic|monogram|custom (?:name|text|photo|image|portrait)|(?:add|upload) (?:photo|text|image))"
+    for text in (title, fields["description"]):
+        for clause in re.split(r"[.!?;|\n]+", text):
+            # A mixed/ambiguous packaging clause cannot prove product decoration.
+            if re.search(r"\b(?:packaging|package|gift box|box|gift card|greeting card|insert|advertisement|watermark|overlay|mockup)\b", clause):
+                continue
+            if re.search(r"\b(?:no|not|without|never)\b|\b(?:blank|unprinted|unengraved|undecorated)\b", clause):
+                continue
+            if re.search(r"\b(?:for|ready for|suitable for)\s+(?:sublimation|printing|engraving)\b", clause):
+                continue
+            if re.search(r"\b(?:embroidery|embroidered|embroider|woven|knitted|crochet)\b", clause) and not re.search(r"\b" + methods + r"\b", clause):
+                continue
+            if not _contains_any(clause, BASE_PRODUCT_KEYWORDS):
+                continue
+            if re.search(r"\b(?:" + methods + "|" + designs + r")\b", clause):
+                return True
+            if "personalized" in clause and re.search(r"\b(?:name|names|text|photo|image|portrait)\b", clause):
+                return True
+    return False
 
 
 def write_production_model_report(path: Path, rows: list[dict[str, str]]) -> None:

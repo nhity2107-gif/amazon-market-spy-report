@@ -100,9 +100,9 @@ class ArtifactTests(unittest.TestCase):
 
     def test_trend_explorer_clusters_pod_idea_dimensions(self) -> None:
         rows = [
-            _row("B0TREND001", "Funny Baseball Dad T-Shirt Gift", display_rank="7", previous_display_rank="30", display_rank_change="23"),
-            _row("B0TREND002", "Best Dad Baseball Shirt for Fathers Day", display_rank="12", previous_display_rank="44", display_rank_change="32"),
-            _row("B0TREND003", "Coffee Mom Mug Birthday Gift", display_rank="8", previous_display_rank="20", display_rank_change="12"),
+            _row("B0TREND001", "Printed Funny Baseball Dad T-Shirt Gift", display_rank="7", previous_display_rank="30", display_rank_change="23"),
+            _row("B0TREND002", "Printed Best Dad Baseball Shirt for Fathers Day", display_rank="12", previous_display_rank="44", display_rank_change="32"),
+            _row("B0TREND003", "Printed Coffee Mom Mug Birthday Gift", display_rank="8", previous_display_rank="20", display_rank_change="12"),
         ]
         rows[0]["pod_type"] = "custom_shirt"
         rows[1]["pod_type"] = "custom_shirt"

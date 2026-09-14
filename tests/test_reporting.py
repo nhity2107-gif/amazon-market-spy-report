@@ -784,7 +784,7 @@ class ReportingTests(unittest.TestCase):
         self.assertEqual(by_asin["B0RANK1111"]["rank_change_vs_previous_seen"], "13")
         self.assertEqual(by_asin["B0RANK1111"]["historical_status"], "improved_vs_previous_seen")
         self.assertEqual(by_asin["B0RANK1111"]["classification"], "new_win;rising")
-        self.assertEqual(by_asin["B0RANK1111"]["opportunity_score"], "56")
+        self.assertEqual(by_asin["B0RANK1111"]["opportunity_score"], "20")
         self.assertEqual(by_asin["B0RANK1111"]["pod_component"], "0")
         self.assertEqual(by_asin["B0RANK1111"]["momentum_component"], "19")
         self.assertEqual(by_asin["B0RANK1111"]["market_component"], "19")
@@ -811,31 +811,31 @@ class ReportingTests(unittest.TestCase):
         self.assertEqual(by_asin["B0RANK1111"]["price_change_vs_previous_seen"], "-1.00")
         self.assertEqual(by_asin["B0NEW11111"]["historical_status"], "new_vs_history")
         self.assertEqual(by_asin["B0NEW11111"]["classification"], "")
-        self.assertEqual(by_asin["B0NEW11111"]["opportunity_score"], "40")
+        self.assertEqual(by_asin["B0NEW11111"]["opportunity_score"], "9")
         self.assertEqual(by_asin["B0NEW11111"]["days_seen"], "1")
         self.assertEqual(by_asin["B0NEW11111"]["best_rank_7d"], "10")
         self.assertEqual(by_asin["B0NEW11111"]["avg_rank_7d"], "10.00")
         self.assertEqual(by_asin["B0NEW11111"]["appearances_7d"], "1")
         self.assertEqual(by_asin["B0WIN11111"]["classification"], "new_win;rising;winner")
-        self.assertEqual(by_asin["B0WIN11111"]["opportunity_score"], "61")
+        self.assertEqual(by_asin["B0WIN11111"]["opportunity_score"], "19")
         self.assertEqual(by_asin["B0TREND111"]["classification"], "rising")
-        self.assertEqual(by_asin["B0TREND111"]["opportunity_score"], "44")
+        self.assertEqual(by_asin["B0TREND111"]["opportunity_score"], "11")
         self.assertEqual(by_asin["B0LOSE1111"]["classification"], "declining")
         self.assertEqual(by_asin["B0LOSE1111"]["opportunity_score"], "0")
 
         alerts = build_trend_alerts(comparisons)
         self.assertEqual(
             [row["asin"] for row in alerts],
-            ["B0WIN11111", "B0RANK1111", "B0TREND111", "B0LOSE1111"],
+            ["B0RANK1111", "B0WIN11111", "B0TREND111", "B0LOSE1111"],
         )
 
         lark_alerts = build_lark_trend_alerts(comparisons, include_non_pod=True)
         self.assertEqual(
             [row["asin"] for row in lark_alerts],
-            ["B0WIN11111", "B0RANK1111", "B0TREND111"],
+            ["B0RANK1111", "B0WIN11111", "B0TREND111"],
         )
         self.assertEqual(list(lark_alerts[0].keys()), LARK_TREND_ALERT_FIELDS)
-        rank_alert = lark_alerts[1]
+        rank_alert = next(row for row in lark_alerts if row["asin"] == "B0RANK1111")
         self.assertEqual(rank_alert["image_url"], "https://example.com/rank-new.jpg")
         self.assertEqual(rank_alert["local_image_path"], "")
         self.assertEqual(rank_alert["bsr_rank"], "12")
@@ -924,7 +924,7 @@ class ReportingTests(unittest.TestCase):
 
         self.assertEqual(comparisons[0]["sub_bsr_rank"], "149")
         self.assertEqual(comparisons[0]["subcategory_rank_score"], "90")
-        self.assertEqual(comparisons[0]["opportunity_score"], "60")
+        self.assertEqual(comparisons[0]["opportunity_score"], "7")
         self.assertEqual(comparisons[0]["pod_component"], "16")
         self.assertEqual(comparisons[0]["momentum_component"], "12")
         self.assertEqual(comparisons[0]["market_component"], "11")
@@ -1133,7 +1133,7 @@ class ReportingTests(unittest.TestCase):
                 "source_type": "best_seller",
                 "seller_name": "Seller A",
                 "asin": "B0NICHE001",
-                "title": "Dog Mom Custom Shirt",
+                "title": "Dog Mom Custom Name Printed Shirt",
                 "classification": "new_win;rising",
                 "opportunity_score": "90",
                 "today_rank": "2",
@@ -1187,13 +1187,13 @@ class ReportingTests(unittest.TestCase):
         self.assertEqual(by_niche["Dog Mom"]["best_rank"], "2")
         self.assertEqual(by_niche["Dog Mom"]["best_bsr_rank"], "65003")
         self.assertEqual(by_niche["Dog Mom"]["best_subcategory_rank"], "149")
-        self.assertEqual(by_niche["Dog Mom"]["best_subcategory_product"], "Dog Mom Custom Shirt")
+        self.assertEqual(by_niche["Dog Mom"]["best_subcategory_product"], "Dog Mom Custom Name Printed Shirt")
         self.assertEqual(by_niche["Dog Mom"]["total_review_growth"], "8")
         self.assertEqual(by_niche["Dog Mom"]["avg_review_rating"], "4.8")
         self.assertEqual(by_niche["Dog Mom"]["top_seller"], "Seller A")
         self.assertEqual(by_niche["Dog Mom"]["top_product_asin"], "B0NICHE001")
-        self.assertEqual(by_niche["Dog Mom"]["top_product_title"], "Dog Mom Custom Shirt")
-        self.assertEqual(by_niche["Dog Mom"]["best_mover"], "Dog Mom Custom Shirt")
+        self.assertEqual(by_niche["Dog Mom"]["top_product_title"], "Dog Mom Custom Name Printed Shirt")
+        self.assertEqual(by_niche["Dog Mom"]["best_mover"], "Dog Mom Custom Name Printed Shirt")
         self.assertEqual(by_niche["Dog Mom"]["best_rank_change"], "28")
         self.assertEqual(by_niche["Dog Mom"]["niche_momentum_score"], "74")
 
