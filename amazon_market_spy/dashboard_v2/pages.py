@@ -46,7 +46,8 @@ def render_data_error_page(title: str, active_key: str, message: str) -> str:
 
 
 def render_morning_brief(data: dict[str, object]) -> str:
-    products = data["products"]
+    # Coverage pages use all observations; POD is a product-level review label.
+    products = data.get("product_explorer_products", data["products"])
     dataset_info = _dataset_info(data)
     research_queue = _home_research_today(products)
     market_pulse = _home_market_pulse(products)
@@ -335,7 +336,8 @@ def write_product_explorer_detail_assets(output_dir: Path, data: dict[str, objec
 
 
 def render_competitor(data: dict[str, object]) -> str:
-    products = data["products"]
+    # Coverage pages use all observations; POD is a product-level review label.
+    products = data.get("product_explorer_products", data["products"])
     sellers = _seller_summaries(products)
     total_sellers = len(sellers)
     total_leaders = sum(row["seller_leaders"] for row in sellers)
@@ -405,7 +407,8 @@ def render_competitor(data: dict[str, object]) -> str:
 
 
 def render_market_explorer(data: dict[str, object]) -> str:
-    products = data["products"]
+    # Coverage pages use all observations; POD is a product-level review label.
+    products = data.get("product_explorer_products", data["products"])
     market_payload = _market_group_payload(products)
     market_json = _safe_json_script(market_payload)
     body = f"""
@@ -1320,7 +1323,7 @@ def _seller_summaries(products: list[dict[str, object]]) -> list[dict[str, objec
             "latest_activity": max([str(row.get("date", "") or "") for row in rows] or [""]) or _missing(),
             "preview_limit": preview_limit,
             "representative_products": _seller_product_cards(rows, "title", reverse=False, limit=preview_limit),
-            "product_explorer_url": f"product_explorer.html?seller={quote_param(seller)}",
+            "product_explorer_url": f"product_explorer.html?seller={quote_param(seller)}&pod=all",
             "seller_url": _seller_storefront_url(rows),
             "amazon_page_url": _seller_amazon_page_url(rows),
         }
@@ -1991,8 +1994,8 @@ def _market_group_label(product: dict[str, object], mode: str) -> str:
 
 def _market_deep_link(mode: str, label: str) -> str:
     if mode == "product_type":
-        return f"product_explorer.html?type={quote_param(label)}"
-    return f"product_explorer.html?q={quote_param(label)}"
+        return f"product_explorer.html?type={quote_param(label)}&pod=all"
+    return f"product_explorer.html?q={quote_param(label)}&pod=all"
 
 
 def _market_script() -> str:

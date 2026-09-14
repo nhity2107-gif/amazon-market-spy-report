@@ -42,3 +42,12 @@ The current account reported a free-tier limit of 5 requests/minute. A full pass
 of roughly 5,800 distinct image URLs therefore takes about 24 hours at the default
 pace, subject to daily quota. The local preview is a partial image review, not a
 completed full-dataset vision pass. Its unprocessed rows remain in Needs Image Review.
+
+## Overview coverage
+
+Home, Competitor Explorer and Market Explorer always use all current observations.
+Unreviewed images never remove a seller, source or market group. Product Explorer
+keeps separate POD/non-POD/Needs Image Review filters. Coverage-page deep links
+include pod=all so a seller does not appear empty while image review is pending.
+Rebuild with scripts/rebuild_image_dashboard.py SOURCE OUTPUT; this preserves
+complete history and source tables and does not filter them through POD approval.

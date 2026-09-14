@@ -174,7 +174,7 @@ class DashboardService:
             "product_explorer_products": product_explorer_products,
             "competitors": competitors,
             "market": self._market(niche_rows),
-            "dataset_info": self._dataset_info(historical_rows, products),
+            "dataset_info": self._dataset_info(historical_rows, product_explorer_products),
         }
 
     def _read_csv(self, filename: str) -> list[dict[str, str]]:

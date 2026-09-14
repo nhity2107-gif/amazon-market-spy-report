@@ -26,6 +26,24 @@ from amazon_market_spy.dashboard_v2.services import (
 
 
 class DashboardV2Tests(unittest.TestCase):
+    def test_coverage_pages_keep_unreviewed_sellers_and_categories(self):
+        import copy
+        data = copy.deepcopy(MOCK_PRESENTATION_DATA)
+        reviewed = dict(data["products"][0], seller="Confirmed seller", is_pod="yes")
+        pending = dict(reviewed, asin="B0PENDING1", title="Pending image product",
+                       seller="Pending seller", category="Pending category", idea="Pending category", is_pod="maybe")
+        data["dataset_info"] = {}
+        data["products"] = [reviewed]  # Simulate a filtered priority export.
+        data["product_explorer_products"] = [reviewed, pending]
+        competitor = v2_pages.render_competitor(data)
+        market = v2_pages.render_market_explorer(data)
+        home = v2_pages.render_morning_brief(data)
+        self.assertIn("Pending seller", competitor)
+        self.assertIn("Pending category", market)
+        self.assertRegex(home, r'Unique Products</span>\s*<strong class="kpi-value">2</strong>')
+        self.assertIn("pod=all", competitor)
+        self.assertEqual(pending["is_pod"], "maybe")
+
     def test_mock_data_contract_has_required_top_level_keys(self) -> None:
         validate_mock_data_contract(MOCK_PRESENTATION_DATA)
 
@@ -1325,7 +1343,7 @@ class DashboardV2Tests(unittest.TestCase):
                 "B0MARK0010",
             ],
         )
-        self.assertTrue(all(card["url"].startswith("product_explorer.html?q=Lake%20House&focus=") for card in row["representative_products"]))
+        self.assertTrue(all(card["url"].startswith("product_explorer.html?q=Lake%20House&pod=all&focus=") for card in row["representative_products"]))
 
     def test_dashboard_v2_finalization_exposes_research_scores_without_score_cards(self) -> None:
         with tempfile.TemporaryDirectory() as temp_dir:
