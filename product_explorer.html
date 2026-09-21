@@ -1921,7 +1921,7 @@
       </nav>
       <div class="dataset-strip" aria-label="Dataset status">
         <span class="dataset-pill">Ready</span>
-        <span class="dataset-generated">Generated 2026-09-21 10:19:34</span>
+        <span class="dataset-generated">Generated 2026-09-21 11:43:45</span>
         <a class="utility-link" href="#dataset-information">Dataset Information</a>
         <a class="utility-link" href="../evidence_human_review_analysis.html">Human Review: 0 / 587 completed</a>
       </div>
@@ -3319,7 +3319,7 @@
         ranges: Object.fromEntries(Object.keys(RANGE_FIELDS).map((field) => [field, { min: "", max: "" }])),
         evidence: Object.fromEntries(Object.keys(EVIDENCE_FILTER_GROUPS).map((family) => [family, new Set()])),
         quick: new Set(),
-        sort: { key: "", direction: "" },
+        sort: { key: "momentum", direction: "desc" },
         columns: new Set(),
         page: 1,
         pageSize: DEFAULT_PAGE_SIZE,
