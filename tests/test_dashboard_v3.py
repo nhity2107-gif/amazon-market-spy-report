@@ -72,7 +72,7 @@ class DashboardV3RestoredV2ExperienceTests(unittest.TestCase):
             "Market Pulse",
             "Data Details",
             "Product Explorer",
-            'class="product-workspace"',
+            'class="product-workspace is-grid-view"',
             "data-filter-panel",
             "Evidence Inspector",
             "Saved Views",

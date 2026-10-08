@@ -118,7 +118,9 @@ def render_product_explorer(data: dict[str, object]) -> str:
     products = _product_explorer_products(data)
     first_product = products[0] if products else {}
     product_json = _safe_json_script(_product_index_payload(products))
-    table = f"""    <div class="table-shell product-table-shell">
+    table = f"""    <div data-product-results>
+    <div class="product-card-grid" data-product-grid role="list" aria-label="Products"></div>
+    <div class="table-shell product-table-shell" hidden>
       <table class="product-table">
         <thead>
           <tr>
@@ -144,10 +146,11 @@ def render_product_explorer(data: dict[str, object]) -> str:
         <tbody data-product-tbody>
         </tbody>
       </table>
+    </div>
     </div>"""
     body = f"""
 {page_header("Product Explorer", "Search, filter, inspect, and open source-backed product evidence", secondary_button("Press / to search"))}
-    <div class="product-workspace" data-product-workspace>
+    <div class="product-workspace is-grid-view" data-product-workspace>
       <aside class="panel filter-panel" aria-label="Product filters" data-filter-panel>
         <section>
           <h2>Preset</h2>
@@ -203,6 +206,10 @@ def render_product_explorer(data: dict[str, object]) -> str:
           <div class="toolbar-actions">
             <div class="control-group">
               {_sort_controls()}
+              <div class="product-view-toggle" role="group" aria-label="Product view">
+                <button class="btn btn-secondary" type="button" data-product-view="grid" aria-pressed="true">Grid</button>
+                <button class="btn btn-secondary" type="button" data-product-view="table" aria-pressed="false">Table</button>
+              </div>
               <div class="column-menu-wrap">
                 <button class="btn btn-secondary btn-dropdown" type="button" data-columns-toggle aria-expanded="false">Columns</button>
                 <div class="column-menu" data-column-menu hidden>
@@ -219,7 +226,6 @@ def render_product_explorer(data: dict[str, object]) -> str:
                   <label><input type="checkbox" data-column-toggle="source"> Source</label>
                 </div>
               </div>
-              {dropdown_button("Density")}
             </div>
             <span class="toolbar-divider" aria-hidden="true"></span>
             <div class="control-group">
@@ -260,8 +266,8 @@ def render_product_explorer(data: dict[str, object]) -> str:
         <div class="pagination-bar" data-pagination>
           <span class="caption" data-page-range>Showing 0 of 0 products</span>
           <div class="control-group">
-            <label class="caption" for="product-page-size">Rows</label>
-            <select id="product-page-size" class="select-input page-size-select" data-page-size aria-label="Rows per page">
+            <label class="caption" for="product-page-size">Products</label>
+            <select id="product-page-size" class="select-input page-size-select" data-page-size aria-label="Products per page">
               <option value="50">50</option>
               <option value="100" selected>100</option>
               <option value="200">200</option>
@@ -2866,7 +2872,11 @@ def _safe_json_script(value: object) -> str:
 def _product_explorer_script() -> str:
     return r"""(() => {
     const dataElement = document.getElementById("product-explorer-data");
-    const tbody = document.querySelector("[data-product-tbody]");
+    const tbody = document.querySelector("[data-product-results]");
+    const tableBody = document.querySelector("[data-product-tbody]");
+    const productGrid = document.querySelector("[data-product-grid]");
+    const productWorkspace = document.querySelector("[data-product-workspace]");
+    let productView = "grid";
     const table = document.querySelector(".product-table");
     const tableShell = document.querySelector(".product-table-shell");
     const searchInput = document.getElementById("product-search");
@@ -3156,6 +3166,19 @@ def _product_explorer_script() -> str:
       applyWorkspace({ updateUrl: true });
     });
 
+    document.querySelectorAll("[data-product-view]").forEach((button) => {
+      button.addEventListener("click", () => {
+        productView = button.dataset.productView;
+        productWorkspace?.classList.toggle("is-grid-view", productView === "grid");
+        productWorkspace?.classList.remove("is-inspector-open");
+        document.querySelectorAll("[data-product-view]").forEach((item) => {
+          item.setAttribute("aria-pressed", String(item.dataset.productView === productView));
+        });
+        renderRows();
+        syncColumnVisibility();
+      });
+    });
+
     columnsToggle?.addEventListener("click", () => {
       const isOpen = !columnMenu?.hidden;
       if (columnMenu) columnMenu.hidden = isOpen;
@@ -3267,6 +3290,7 @@ def _product_explorer_script() -> str:
     });
 
     tbody?.addEventListener("click", (event) => {
+      if (event.target.closest("[data-product-amazon]")) return;
       const rowAction = event.target.closest("[data-row-action]");
       if (rowAction) {
         event.stopPropagation();
@@ -3275,7 +3299,9 @@ def _product_explorer_script() -> str:
       }
       if (event.target.closest("[data-row-checkbox]")) return;
       const row = event.target.closest("[data-product-row]");
-      if (row) focusProduct(row.dataset.productId, { scroll: false, updateUrl: true, moveDomFocus: true });
+      if (row) {
+        focusProduct(row.dataset.productId, { scroll: false, updateUrl: true, moveDomFocus: true, loadDetail: productView === "table" });
+      }
     });
 
     tbody?.addEventListener("change", (event) => {
@@ -3296,7 +3322,7 @@ def _product_explorer_script() -> str:
       hoverId = row.dataset.productId;
       row.classList.add("is-hovered");
       updatePreview(productById.get(hoverId), { loadDetail: false });
-      scheduleHoverDetailLoad(hoverId);
+      if (productView === "table") scheduleHoverDetailLoad(hoverId);
     });
 
     tbody?.addEventListener("pointerout", (event) => {
@@ -3311,7 +3337,7 @@ def _product_explorer_script() -> str:
 
     tbody?.addEventListener("error", (event) => {
       const image = event.target;
-      if (!image.matches?.(".thumbnail, .product-title-thumbnail") || image.dataset.fallback === "true") return;
+      if (!image.matches?.(".thumbnail, .product-title-thumbnail, .product-card-image") || image.dataset.fallback === "true") return;
       const product = productById.get(image.closest("[data-product-row]")?.dataset.productId || "");
       image.dataset.fallback = "true";
       image.src = fallbackImage(product);
@@ -3372,7 +3398,7 @@ def _product_explorer_script() -> str:
       }
       if (event.key === "Enter") {
         event.preventDefault();
-        focusProduct(focusedId, { scroll: true, updateUrl: true, moveDomFocus: true });
+        focusProduct(focusedId, { scroll: true, updateUrl: true, moveDomFocus: true, loadDetail: productView === "table" });
         return;
       }
       event.preventDefault();
@@ -3950,10 +3976,15 @@ def _product_explorer_script() -> str:
 
     function renderRows() {
       if (!tbody) return;
-      tbody.innerHTML = currentPageItems.map(productRowHtml).join("");
+      if (tableBody) tableBody.innerHTML = productView === "table" ? currentPageItems.map(productRowHtml).join("") : "";
+      if (productGrid) {
+        productGrid.innerHTML = productView === "grid" ? currentPageItems.map(productCardHtml).join("") : "";
+        productGrid.hidden = productView !== "grid" || currentMatched.length === 0;
+      }
+      if (columnsToggle) columnsToggle.parentElement.hidden = productView === "grid";
       if (emptyState) emptyState.hidden = products.length === 0 || currentMatched.length !== 0;
       renderEmptyStateMessage();
-      tableShell?.toggleAttribute("hidden", products.length === 0 || currentMatched.length === 0);
+      tableShell?.toggleAttribute("hidden", productView !== "table" || products.length === 0 || currentMatched.length === 0);
       document.querySelector("[data-pagination]")?.toggleAttribute("hidden", products.length === 0 || currentMatched.length === 0);
       if (resultCap) resultCap.hidden = true;
     }
@@ -3968,6 +3999,34 @@ def _product_explorer_script() -> str:
         emptyStateTitle.textContent = "No products match the current search and filters.";
         emptyStateCaption.textContent = "Adjust the search or remove filters to see products.";
       }
+    }
+
+    function productCardHtml(product) {
+      const focused = product.__id === focusedId;
+      const checked = selectedIds.has(product.__id);
+      const amazonUrl = productAmazonUrl(product);
+      return `<article class="product-card ${focused ? "is-focused" : ""} ${checked ? "is-checked" : ""}" role="listitem" tabindex="${focused ? "0" : "-1"}" data-product-row data-product-id="${escapeHtml(product.__id)}" data-product-index="${product.__index}" aria-label="${escapeHtml(product.title)}">
+        <div class="product-card-photo">
+          ${amazonUrl ? `<a class="product-card-amazon" data-product-amazon href="${escapeHtml(amazonUrl)}" target="_blank" rel="noopener noreferrer" aria-label="Open ${escapeHtml(product.title)} on Amazon">` : ""}
+          <img class="product-card-image" loading="lazy" src="${escapeHtml(productImage(product))}" alt="${escapeHtml(product.title)}">
+          ${amazonUrl ? "</a>" : ""}
+          <label class="product-card-select"><input type="checkbox" data-row-checkbox value="${escapeHtml(product.__id)}" ${checked ? "checked" : ""} aria-label="Select ${escapeHtml(product.title)}"></label>
+        </div>
+        <div class="product-card-body">
+          <p class="product-card-seller">${escapeHtml(product.seller)}</p>
+          <h3 class="product-card-title">${escapeHtml(product.title)}</h3>
+          <div class="product-card-price">${displayValueHtml(priceDisplay(product))}<span>${escapeHtml(reviewDisplay(product))} reviews</span></div>
+          <div class="product-card-metrics"><div><span>Momentum</span><strong>${displayValueHtml(momentumLabel(product))}</strong></div><div><span>Bought / month</span>${boughtPastMonthBadgeHtml(product)}</div></div>
+          <div class="product-card-signal">${whyItMattersHtml(product)}</div>
+          <div class="product-card-hint">Hover for details <span aria-hidden="true">âŒ„</span></div>
+        </div>
+        <div class="product-card-expand">
+          <p class="product-card-full-title">${escapeHtml(product.title)}</p>
+          <p class="product-card-reason">${escapeHtml(whyItMatters(product))}</p>
+          <dl><div><dt>Market proof</dt><dd>${escapeHtml(marketProof(product))}</dd></div><div><dt>Product type</dt><dd>${escapeHtml(product.product_type)}</dd></div><div><dt>BSR</dt><dd>${escapeHtml(bsrDisplay(product))}</dd></div><div><dt>Idea</dt><dd>${escapeHtml(product.idea)}</dd></div><div><dt>ASIN</dt><dd>${escapeHtml(product.asin)}</dd></div></dl>
+          ${rowActionsHtml(product)}
+        </div>
+      </article>`;
     }
 
     function productRowHtml(product) {
@@ -4304,7 +4363,7 @@ def _product_explorer_script() -> str:
       tbody?.querySelectorAll("[data-product-row]").forEach((row) => {
         const focused = row.dataset.productId === focusedId;
         row.classList.toggle("is-focused", focused);
-        row.setAttribute("aria-selected", focused ? "true" : "false");
+        if (row.tagName === "TR") row.setAttribute("aria-selected", focused ? "true" : "false");
         row.tabIndex = focused ? 0 : -1;
       });
     }
@@ -4446,6 +4505,7 @@ def _product_explorer_script() -> str:
     }
 
     function collapseInspectorDetails() {
+      productWorkspace?.classList.remove("is-inspector-open");
       hoverId = "";
       clearHoverClass();
       const product = focusedProduct();

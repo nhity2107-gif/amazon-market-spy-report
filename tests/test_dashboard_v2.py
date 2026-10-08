@@ -128,7 +128,7 @@ class DashboardV2Tests(unittest.TestCase):
             generate_dashboard_v2(output_dir, data=MOCK_PRESENTATION_DATA)
             html = (output_dir / "product_explorer.html").read_text(encoding="utf-8")
 
-        self.assertIn('class="product-workspace"', html)
+        self.assertIn('class="product-workspace is-grid-view"', html)
         self.assertIn("data-filter-panel", html)
         self.assertIn('class="product-table"', html)
         self.assertIn("data-quick-preview", html)
@@ -522,7 +522,7 @@ class DashboardV2Tests(unittest.TestCase):
         self.assertIn("activity-thumbnail", home_html)
         self.assertIn("setPinnedItem", home_html)
         self.assertIn("product-title-thumbnail", product_html)
-        self.assertIn('image.matches?.(".thumbnail, .product-title-thumbnail")', product_html)
+        self.assertIn('image.matches?.(".thumbnail, .product-title-thumbnail, .product-card-image")', product_html)
         self.assertIn("data-filter-panel", product_html)
         self.assertIn("Evidence Inspector", product_html)
         self.assertIn("seller-thumbnail-strip", competitor_html)

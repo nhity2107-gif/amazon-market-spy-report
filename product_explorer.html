@@ -543,6 +543,104 @@
     gap: var(--space-8);
     align-items: start;
   }
+  .product-workspace.is-grid-view {
+    grid-template-columns: 230px minmax(0, 1fr);
+  }
+  .is-grid-view .quick-preview { display: none; }
+  .product-view-toggle { display: flex; gap: 4px; }
+  .product-view-toggle [aria-pressed="true"] { background: var(--color-neutral-800); color: white; border-color: var(--color-neutral-800); }
+  .product-card-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+    gap: 18px;
+    padding: 16px 0;
+    align-items: start;
+  }
+  .product-card {
+    position: relative;
+    min-width: 0;
+    border: 1px solid var(--color-neutral-200);
+    border-radius: 14px;
+    background: var(--color-surface, white);
+    transition: box-shadow 160ms ease, border-color 160ms ease;
+  }
+  .product-card.is-focused { border-color: #a5b4fc; }
+  .product-card.is-checked { background: #f5f7ff; }
+  .product-card:is(:hover, :focus-within) {
+    z-index: 5;
+    border-color: #818cf8;
+    box-shadow: 0 14px 36px rgba(15, 23, 42, .14);
+    outline: none;
+  }
+  .product-card-photo { position: relative; padding: 12px; }
+  .product-card-amazon { display: block; border-radius: 10px; cursor: pointer; }
+  .product-card-image {
+    display: block;
+    width: 100%;
+    aspect-ratio: 1;
+    object-fit: contain;
+    border-radius: 10px;
+    background: white;
+  }
+  .product-card-select { position: absolute; top: 18px; left: 18px; padding: 4px; background: rgba(255,255,255,.92); border-radius: 6px; }
+  .product-card-select input { display: block; width: 16px; height: 16px; margin: 0; }
+  .product-card-body { padding: 0 14px 12px; }
+  .product-card-seller { margin: 0 0 6px; min-height: 2.9em; font-size: 11px; color: var(--color-neutral-400); }
+  .product-card-title {
+    margin: 0;
+    font-size: 13px;
+    line-height: 1.5;
+    height: 3em;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+  .product-card-price { display: flex; align-items: baseline; justify-content: space-between; gap: 8px; margin: 12px 0; font-size: 17px; font-weight: 750; }
+  .product-card-price > span { font-size: 11px; font-weight: 400; color: var(--color-neutral-400); }
+  .product-card-metrics { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; padding: 10px; background: #f6f8fc; border-radius: 8px; }
+  .product-card-metrics > div { display: flex; flex-direction: column; align-items: flex-start; gap: 5px; min-width: 0; }
+  .product-card-metrics > div > span:first-child { font-size: 10px; color: var(--color-neutral-400); }
+  .product-card-metrics strong { font-size: 16px; }
+  .product-card-signal { margin-top: 12px; height: 24px; overflow: hidden; }
+  .product-card-signal .evidence-badge { max-width: 100%; }
+  .product-card-signal .why-cell > span:not(.evidence-badge) { display: none; }
+  .product-card-hint { display: flex; justify-content: space-between; width: 100%; margin-top: 10px; padding: 8px 0 0; border-top: 1px solid var(--color-neutral-100); color: var(--color-neutral-400); font-size: 11px; }
+  .product-card-expand {
+    position: absolute;
+    top: calc(100% - 8px);
+    left: -1px;
+    right: -1px;
+    padding: 0 14px 14px;
+    background: var(--color-surface, white);
+    border: 1px solid #818cf8;
+    border-top: 0;
+    border-radius: 0 0 14px 14px;
+    box-shadow: 0 18px 24px rgba(15, 23, 42, .12);
+    visibility: hidden;
+    opacity: 0;
+    transition: opacity 160ms ease;
+  }
+  .product-card:is(:hover, :focus-within) .product-card-expand { visibility: visible; opacity: 1; }
+  .product-card-reason { margin: 10px 0; font-size: 12px; line-height: 1.5; }
+  .product-card-full-title { margin: 10px 0; font-size: 12px; font-weight: 650; line-height: 1.5; }
+  .product-card-expand dl { margin: 0 0 12px; font-size: 11px; }
+  .product-card-expand dl > div { display: flex; justify-content: space-between; gap: 10px; padding: 6px 0; border-bottom: 1px solid var(--color-neutral-100); }
+  .product-card-expand dt { color: var(--color-neutral-400); flex-shrink: 0; }
+  .product-card-expand dd { margin: 0; text-align: right; overflow-wrap: anywhere; }
+  @media (max-width: 1100px) {
+    .product-workspace.is-grid-view { grid-template-columns: 190px minmax(0, 1fr); }
+  }
+  @media (max-width: 760px) {
+    .product-workspace.is-grid-view { grid-template-columns: minmax(0, 1fr); }
+    .product-card-grid { grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); gap: 12px; }
+  }
+  @media (hover: none) {
+    .product-card-expand { position: static; visibility: visible; opacity: 1; border: 0; box-shadow: none; border-radius: 0 0 14px 14px; }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .product-card, .product-card-expand { transition: none; }
+  }
   .filter-panel {
     display: grid;
     gap: var(--space-12);
@@ -1081,7 +1179,7 @@
     border: 1px solid var(--color-neutral-100);
     border-radius: 8px;
     background: var(--color-neutral-25);
-    color: var(--color-neutral-500, var(--color-neutral-600));
+    color: var(--color-neutral-400, var(--color-neutral-600));
     font-size: 12px;
   }
   .evidence-status span {
@@ -1140,7 +1238,7 @@
     border: 1px solid var(--color-neutral-100);
     border-radius: 8px;
     background: var(--color-neutral-0);
-    color: var(--color-neutral-500, var(--color-neutral-600));
+    color: var(--color-neutral-400, var(--color-neutral-600));
     font-size: 11px;
   }
   .source-detail-row strong {
@@ -1232,7 +1330,7 @@
     display: grid;
     gap: 6px;
     padding: 0 2px 4px;
-    color: var(--color-neutral-500, var(--color-neutral-600));
+    color: var(--color-neutral-400, var(--color-neutral-600));
     font-size: 10px;
     line-height: 1.35;
   }
@@ -1936,7 +2034,7 @@
       </div>
       <div class="control-group"><button class="btn btn-secondary" type="button">Press / to search</button></div>
     </header>
-    <div class="product-workspace" data-product-workspace>
+    <div class="product-workspace is-grid-view" data-product-workspace>
       <aside class="panel filter-panel" aria-label="Product filters" data-filter-panel>
         <section>
           <h2>Preset</h2>
@@ -2178,6 +2276,10 @@
                 <option value="asc">Asc</option>
                 <option value="desc">Desc</option>
               </select>
+              <div class="product-view-toggle" role="group" aria-label="Product view">
+                <button class="btn btn-secondary" type="button" data-product-view="grid" aria-pressed="true">Grid</button>
+                <button class="btn btn-secondary" type="button" data-product-view="table" aria-pressed="false">Table</button>
+              </div>
               <div class="column-menu-wrap">
                 <button class="btn btn-secondary btn-dropdown" type="button" data-columns-toggle aria-expanded="false">Columns</button>
                 <div class="column-menu" data-column-menu hidden>
@@ -2194,7 +2296,7 @@
                   <label><input type="checkbox" data-column-toggle="source"> Source</label>
                 </div>
               </div>
-              <button class="btn btn-secondary btn-dropdown" type="button">Density</button>
+
             </div>
             <span class="toolbar-divider" aria-hidden="true"></span>
             <div class="control-group">
@@ -2231,7 +2333,9 @@
           <span class="caption" data-hidden-selection-count hidden></span>
           <button class="btn btn-ghost" type="button" data-clear-selection>Clear Selection</button>
         </div>
-    <div class="table-shell product-table-shell">
+    <div data-product-results>
+    <div class="product-card-grid" data-product-grid role="list" aria-label="Products"></div>
+    <div class="table-shell product-table-shell" hidden>
       <table class="product-table">
         <thead>
           <tr>
@@ -2258,11 +2362,12 @@
         </tbody>
       </table>
     </div>
+    </div>
         <div class="pagination-bar" data-pagination>
           <span class="caption" data-page-range>Showing 0 of 0 products</span>
           <div class="control-group">
-            <label class="caption" for="product-page-size">Rows</label>
-            <select id="product-page-size" class="select-input page-size-select" data-page-size aria-label="Rows per page">
+            <label class="caption" for="product-page-size">Products</label>
+            <select id="product-page-size" class="select-input page-size-select" data-page-size aria-label="Products per page">
               <option value="50">50</option>
               <option value="100" selected>100</option>
               <option value="200">200</option>
@@ -2409,7 +2514,11 @@
   <script>
 (() => {
     const dataElement = document.getElementById("product-explorer-data");
-    const tbody = document.querySelector("[data-product-tbody]");
+    const tbody = document.querySelector("[data-product-results]");
+    const tableBody = document.querySelector("[data-product-tbody]");
+    const productGrid = document.querySelector("[data-product-grid]");
+    const productWorkspace = document.querySelector("[data-product-workspace]");
+    let productView = "grid";
     const table = document.querySelector(".product-table");
     const tableShell = document.querySelector(".product-table-shell");
     const searchInput = document.getElementById("product-search");
@@ -2699,6 +2808,19 @@
       applyWorkspace({ updateUrl: true });
     });
 
+    document.querySelectorAll("[data-product-view]").forEach((button) => {
+      button.addEventListener("click", () => {
+        productView = button.dataset.productView;
+        productWorkspace?.classList.toggle("is-grid-view", productView === "grid");
+        productWorkspace?.classList.remove("is-inspector-open");
+        document.querySelectorAll("[data-product-view]").forEach((item) => {
+          item.setAttribute("aria-pressed", String(item.dataset.productView === productView));
+        });
+        renderRows();
+        syncColumnVisibility();
+      });
+    });
+
     columnsToggle?.addEventListener("click", () => {
       const isOpen = !columnMenu?.hidden;
       if (columnMenu) columnMenu.hidden = isOpen;
@@ -2810,6 +2932,7 @@
     });
 
     tbody?.addEventListener("click", (event) => {
+      if (event.target.closest("[data-product-amazon]")) return;
       const rowAction = event.target.closest("[data-row-action]");
       if (rowAction) {
         event.stopPropagation();
@@ -2818,7 +2941,9 @@
       }
       if (event.target.closest("[data-row-checkbox]")) return;
       const row = event.target.closest("[data-product-row]");
-      if (row) focusProduct(row.dataset.productId, { scroll: false, updateUrl: true, moveDomFocus: true });
+      if (row) {
+        focusProduct(row.dataset.productId, { scroll: false, updateUrl: true, moveDomFocus: true, loadDetail: productView === "table" });
+      }
     });
 
     tbody?.addEventListener("change", (event) => {
@@ -2839,7 +2964,7 @@
       hoverId = row.dataset.productId;
       row.classList.add("is-hovered");
       updatePreview(productById.get(hoverId), { loadDetail: false });
-      scheduleHoverDetailLoad(hoverId);
+      if (productView === "table") scheduleHoverDetailLoad(hoverId);
     });
 
     tbody?.addEventListener("pointerout", (event) => {
@@ -2854,7 +2979,7 @@
 
     tbody?.addEventListener("error", (event) => {
       const image = event.target;
-      if (!image.matches?.(".thumbnail, .product-title-thumbnail") || image.dataset.fallback === "true") return;
+      if (!image.matches?.(".thumbnail, .product-title-thumbnail, .product-card-image") || image.dataset.fallback === "true") return;
       const product = productById.get(image.closest("[data-product-row]")?.dataset.productId || "");
       image.dataset.fallback = "true";
       image.src = fallbackImage(product);
@@ -2915,7 +3040,7 @@
       }
       if (event.key === "Enter") {
         event.preventDefault();
-        focusProduct(focusedId, { scroll: true, updateUrl: true, moveDomFocus: true });
+        focusProduct(focusedId, { scroll: true, updateUrl: true, moveDomFocus: true, loadDetail: productView === "table" });
         return;
       }
       event.preventDefault();
@@ -3319,7 +3444,7 @@
         ranges: Object.fromEntries(Object.keys(RANGE_FIELDS).map((field) => [field, { min: "", max: "" }])),
         evidence: Object.fromEntries(Object.keys(EVIDENCE_FILTER_GROUPS).map((family) => [family, new Set()])),
         quick: new Set(),
-        sort: { key: "momentum", direction: "desc" },
+        sort: { key: "", direction: "" },
         columns: new Set(),
         page: 1,
         pageSize: DEFAULT_PAGE_SIZE,
@@ -3493,10 +3618,15 @@
 
     function renderRows() {
       if (!tbody) return;
-      tbody.innerHTML = currentPageItems.map(productRowHtml).join("");
+      if (tableBody) tableBody.innerHTML = productView === "table" ? currentPageItems.map(productRowHtml).join("") : "";
+      if (productGrid) {
+        productGrid.innerHTML = productView === "grid" ? currentPageItems.map(productCardHtml).join("") : "";
+        productGrid.hidden = productView !== "grid" || currentMatched.length === 0;
+      }
+      if (columnsToggle) columnsToggle.parentElement.hidden = productView === "grid";
       if (emptyState) emptyState.hidden = products.length === 0 || currentMatched.length !== 0;
       renderEmptyStateMessage();
-      tableShell?.toggleAttribute("hidden", products.length === 0 || currentMatched.length === 0);
+      tableShell?.toggleAttribute("hidden", productView !== "table" || products.length === 0 || currentMatched.length === 0);
       document.querySelector("[data-pagination]")?.toggleAttribute("hidden", products.length === 0 || currentMatched.length === 0);
       if (resultCap) resultCap.hidden = true;
     }
@@ -3511,6 +3641,34 @@
         emptyStateTitle.textContent = "No products match the current search and filters.";
         emptyStateCaption.textContent = "Adjust the search or remove filters to see products.";
       }
+    }
+
+    function productCardHtml(product) {
+      const focused = product.__id === focusedId;
+      const checked = selectedIds.has(product.__id);
+      const amazonUrl = productAmazonUrl(product);
+      return `<article class="product-card ${focused ? "is-focused" : ""} ${checked ? "is-checked" : ""}" role="listitem" tabindex="${focused ? "0" : "-1"}" data-product-row data-product-id="${escapeHtml(product.__id)}" data-product-index="${product.__index}" aria-label="${escapeHtml(product.title)}">
+        <div class="product-card-photo">
+          ${amazonUrl ? `<a class="product-card-amazon" data-product-amazon href="${escapeHtml(amazonUrl)}" target="_blank" rel="noopener noreferrer" aria-label="Open ${escapeHtml(product.title)} on Amazon">` : ""}
+          <img class="product-card-image" loading="lazy" src="${escapeHtml(productImage(product))}" alt="${escapeHtml(product.title)}">
+          ${amazonUrl ? "</a>" : ""}
+          <label class="product-card-select"><input type="checkbox" data-row-checkbox value="${escapeHtml(product.__id)}" ${checked ? "checked" : ""} aria-label="Select ${escapeHtml(product.title)}"></label>
+        </div>
+        <div class="product-card-body">
+          <p class="product-card-seller">${escapeHtml(product.seller)}</p>
+          <h3 class="product-card-title">${escapeHtml(product.title)}</h3>
+          <div class="product-card-price">${displayValueHtml(priceDisplay(product))}<span>${escapeHtml(reviewDisplay(product))} reviews</span></div>
+          <div class="product-card-metrics"><div><span>Momentum</span><strong>${displayValueHtml(momentumLabel(product))}</strong></div><div><span>Bought / month</span>${boughtPastMonthBadgeHtml(product)}</div></div>
+          <div class="product-card-signal">${whyItMattersHtml(product)}</div>
+          <div class="product-card-hint">Hover for details <span aria-hidden="true">âŒ„</span></div>
+        </div>
+        <div class="product-card-expand">
+          <p class="product-card-full-title">${escapeHtml(product.title)}</p>
+          <p class="product-card-reason">${escapeHtml(whyItMatters(product))}</p>
+          <dl><div><dt>Market proof</dt><dd>${escapeHtml(marketProof(product))}</dd></div><div><dt>Product type</dt><dd>${escapeHtml(product.product_type)}</dd></div><div><dt>BSR</dt><dd>${escapeHtml(bsrDisplay(product))}</dd></div><div><dt>Idea</dt><dd>${escapeHtml(product.idea)}</dd></div><div><dt>ASIN</dt><dd>${escapeHtml(product.asin)}</dd></div></dl>
+          ${rowActionsHtml(product)}
+        </div>
+      </article>`;
     }
 
     function productRowHtml(product) {
@@ -3847,7 +4005,7 @@
       tbody?.querySelectorAll("[data-product-row]").forEach((row) => {
         const focused = row.dataset.productId === focusedId;
         row.classList.toggle("is-focused", focused);
-        row.setAttribute("aria-selected", focused ? "true" : "false");
+        if (row.tagName === "TR") row.setAttribute("aria-selected", focused ? "true" : "false");
         row.tabIndex = focused ? 0 : -1;
       });
     }
@@ -3989,6 +4147,7 @@
     }
 
     function collapseInspectorDetails() {
+      productWorkspace?.classList.remove("is-inspector-open");
       hoverId = "";
       clearHoverClass();
       const product = focusedProduct();
