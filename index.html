@@ -543,6 +543,104 @@
     gap: var(--space-8);
     align-items: start;
   }
+  .product-workspace.is-grid-view {
+    grid-template-columns: 230px minmax(0, 1fr);
+  }
+  .is-grid-view .quick-preview { display: none; }
+  .product-view-toggle { display: flex; gap: 4px; }
+  .product-view-toggle [aria-pressed="true"] { background: var(--color-neutral-800); color: white; border-color: var(--color-neutral-800); }
+  .product-card-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+    gap: 18px;
+    padding: 16px 0;
+    align-items: start;
+  }
+  .product-card {
+    position: relative;
+    min-width: 0;
+    border: 1px solid var(--color-neutral-200);
+    border-radius: 14px;
+    background: var(--color-surface, white);
+    transition: box-shadow 160ms ease, border-color 160ms ease;
+  }
+  .product-card.is-focused { border-color: #a5b4fc; }
+  .product-card.is-checked { background: #f5f7ff; }
+  .product-card:is(:hover, :focus-within) {
+    z-index: 5;
+    border-color: #818cf8;
+    box-shadow: 0 14px 36px rgba(15, 23, 42, .14);
+    outline: none;
+  }
+  .product-card-photo { position: relative; padding: 12px; }
+  .product-card-amazon { display: block; border-radius: 10px; cursor: pointer; }
+  .product-card-image {
+    display: block;
+    width: 100%;
+    aspect-ratio: 1;
+    object-fit: contain;
+    border-radius: 10px;
+    background: white;
+  }
+  .product-card-select { position: absolute; top: 18px; left: 18px; padding: 4px; background: rgba(255,255,255,.92); border-radius: 6px; }
+  .product-card-select input { display: block; width: 16px; height: 16px; margin: 0; }
+  .product-card-body { padding: 0 14px 12px; }
+  .product-card-seller { margin: 0 0 6px; min-height: 2.9em; font-size: 11px; color: var(--color-neutral-400); }
+  .product-card-title {
+    margin: 0;
+    font-size: 13px;
+    line-height: 1.5;
+    height: 3em;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+  .product-card-price { display: flex; align-items: baseline; justify-content: space-between; gap: 8px; margin: 12px 0; font-size: 17px; font-weight: 750; }
+  .product-card-price > span { font-size: 11px; font-weight: 400; color: var(--color-neutral-400); }
+  .product-card-metrics { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; padding: 10px; background: #f6f8fc; border-radius: 8px; }
+  .product-card-metrics > div { display: flex; flex-direction: column; align-items: flex-start; gap: 5px; min-width: 0; }
+  .product-card-metrics > div > span:first-child { font-size: 10px; color: var(--color-neutral-400); }
+  .product-card-metrics strong { font-size: 16px; }
+  .product-card-signal { margin-top: 12px; height: 24px; overflow: hidden; }
+  .product-card-signal .evidence-badge { max-width: 100%; }
+  .product-card-signal .why-cell > span:not(.evidence-badge) { display: none; }
+  .product-card-hint { display: flex; justify-content: space-between; width: 100%; margin-top: 10px; padding: 8px 0 0; border-top: 1px solid var(--color-neutral-100); color: var(--color-neutral-400); font-size: 11px; }
+  .product-card-expand {
+    position: absolute;
+    top: calc(100% - 8px);
+    left: -1px;
+    right: -1px;
+    padding: 0 14px 14px;
+    background: var(--color-surface, white);
+    border: 1px solid #818cf8;
+    border-top: 0;
+    border-radius: 0 0 14px 14px;
+    box-shadow: 0 18px 24px rgba(15, 23, 42, .12);
+    visibility: hidden;
+    opacity: 0;
+    transition: opacity 160ms ease;
+  }
+  .product-card:is(:hover, :focus-within) .product-card-expand { visibility: visible; opacity: 1; }
+  .product-card-reason { margin: 10px 0; font-size: 12px; line-height: 1.5; }
+  .product-card-full-title { margin: 10px 0; font-size: 12px; font-weight: 650; line-height: 1.5; }
+  .product-card-expand dl { margin: 0 0 12px; font-size: 11px; }
+  .product-card-expand dl > div { display: flex; justify-content: space-between; gap: 10px; padding: 6px 0; border-bottom: 1px solid var(--color-neutral-100); }
+  .product-card-expand dt { color: var(--color-neutral-400); flex-shrink: 0; }
+  .product-card-expand dd { margin: 0; text-align: right; overflow-wrap: anywhere; }
+  @media (max-width: 1100px) {
+    .product-workspace.is-grid-view { grid-template-columns: 190px minmax(0, 1fr); }
+  }
+  @media (max-width: 760px) {
+    .product-workspace.is-grid-view { grid-template-columns: minmax(0, 1fr); }
+    .product-card-grid { grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); gap: 12px; }
+  }
+  @media (hover: none) {
+    .product-card-expand { position: static; visibility: visible; opacity: 1; border: 0; box-shadow: none; border-radius: 0 0 14px 14px; }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .product-card, .product-card-expand { transition: none; }
+  }
   .filter-panel {
     display: grid;
     gap: var(--space-12);
@@ -1081,7 +1179,7 @@
     border: 1px solid var(--color-neutral-100);
     border-radius: 8px;
     background: var(--color-neutral-25);
-    color: var(--color-neutral-500, var(--color-neutral-600));
+    color: var(--color-neutral-400, var(--color-neutral-600));
     font-size: 12px;
   }
   .evidence-status span {
@@ -1140,7 +1238,7 @@
     border: 1px solid var(--color-neutral-100);
     border-radius: 8px;
     background: var(--color-neutral-0);
-    color: var(--color-neutral-500, var(--color-neutral-600));
+    color: var(--color-neutral-400, var(--color-neutral-600));
     font-size: 11px;
   }
   .source-detail-row strong {
@@ -1232,7 +1330,7 @@
     display: grid;
     gap: 6px;
     padding: 0 2px 4px;
-    color: var(--color-neutral-500, var(--color-neutral-600));
+    color: var(--color-neutral-400, var(--color-neutral-600));
     font-size: 10px;
     line-height: 1.35;
   }
@@ -1921,7 +2019,7 @@
       </nav>
       <div class="dataset-strip" aria-label="Dataset status">
         <span class="dataset-pill">Ready</span>
-        <span class="dataset-generated">Generated 2026-10-08 13:47:25</span>
+        <span class="dataset-generated">Generated 2026-10-09 14:06:00</span>
         <a class="utility-link" href="#dataset-information">Dataset Information</a>
         <a class="utility-link" href="../evidence_human_review_analysis.html">Human Review: 0 / 587 completed</a>
       </div>
@@ -1957,35 +2055,35 @@
             <span class="activity-copy"><strong>Wrappiness Personalized Beach Shorts for Men, Funny Man Swim Trunks Gift</strong><span class="caption">Wrappiness - Seller Leader at rank #9</span></span>
             <span class="status-badge tone-winner">1 reviews</span>
           </a>
-          <a class="activity-item research-queue-item" href="product_explorer.html?preset=research_today&focus=B0HJ7BFHBJ" data-home-preview-item data-queue-asin="B0HJ7BFHBJ" data-preview-title="Personalized Grandma Grandpa Christmas Crew Runner Rug, Xmas Home Decor" data-preview-seller="Wrappiness" data-preview-type="Decorated Blank Product" data-preview-reason="No primary evidence" data-preview-metric="4 reviews" data-preview-image="https://m.media-amazon.com/images/I/81fjTwBLmJL._AC_UY218_.jpg" data-preview-href="product_explorer.html?preset=research_today&amp;focus=B0HJ7BFHBJ">
-            <img class="activity-thumbnail" src="https://m.media-amazon.com/images/I/81fjTwBLmJL._AC_UY218_.jpg" alt="Personalized Grandma Grandpa Christmas Crew Runner Rug, Xmas Home Decor thumbnail">
-            <span class="activity-copy"><strong>Personalized Grandma Grandpa Christmas Crew Runner Rug, Xmas Home Decor</strong><span class="caption">Wrappiness - No primary evidence</span></span>
-            <span class="status-badge tone-neutral">4 reviews</span>
+          <a class="activity-item research-queue-item" href="product_explorer.html?preset=research_today&focus=B0029SEORG" data-home-preview-item data-queue-asin="B0029SEORG" data-preview-title="Old World Christmas Volleyball Glass Blown Ornament for Christmas Tree, Handcrafted Holiday Decoration, Sport Collection" data-preview-seller="Best Sellers in Christmas Figurine Ornaments" data-preview-type="Printed Ornament" data-preview-reason="Category Winner at rank #11" data-preview-metric="Best Seller #11" data-preview-image="https://images-na.ssl-images-amazon.com/images/I/612j5dyMCtL._AC_UL600_SR600,400_.jpg" data-preview-href="product_explorer.html?preset=research_today&amp;focus=B0029SEORG">
+            <img class="activity-thumbnail" src="https://images-na.ssl-images-amazon.com/images/I/612j5dyMCtL._AC_UL600_SR600,400_.jpg" alt="Old World Christmas Volleyball Glass Blown Ornament for Christmas Tree, Handcrafted Holiday Decoration, Sport Collection thumbnail">
+            <span class="activity-copy"><strong>Old World Christmas Volleyball Glass Blown Ornament for Christmas Tree, Handcrafted Holiday Decoration, Sport Collection</strong><span class="caption">Best Sellers in Christmas Figurine Ornaments - Category Winner at rank #11</span></span>
+            <span class="status-badge tone-winner">Best Seller #11</span>
           </a>
-          <a class="activity-item research-queue-item" href="product_explorer.html?preset=research_today&focus=B0HFX3QRPK" data-home-preview-item data-queue-asin="B0HFX3QRPK" data-preview-title="NAZENTI Personalized Floral Embroidered Grandma Sweatshirt, Custom Mama Crewneck, Mother&#x27;s Day, Grandma Gifts, Mom Present" data-preview-seller="Only Gift 4U" data-preview-type="Unknown" data-preview-reason="Seller Leader at rank #1" data-preview-metric="35 reviews" data-preview-image="https://m.media-amazon.com/images/I/81+PQKLMS9L._AC_UY218_.jpg" data-preview-href="product_explorer.html?preset=research_today&amp;focus=B0HFX3QRPK">
-            <img class="activity-thumbnail" src="https://m.media-amazon.com/images/I/81+PQKLMS9L._AC_UY218_.jpg" alt="NAZENTI Personalized Floral Embroidered Grandma Sweatshirt, Custom Mama Crewneck, Mother&#x27;s Day, Grandma Gifts, Mom Present thumbnail">
-            <span class="activity-copy"><strong>NAZENTI Personalized Floral Embroidered Grandma Sweatshirt, Custom Mama Crewneck, Mother&#x27;s Day, Grandma Gifts, Mom Present</strong><span class="caption">Only Gift 4U - Seller Leader at rank #1</span></span>
-            <span class="status-badge tone-winner">35 reviews</span>
-          </a>
-          <a class="activity-item research-queue-item" href="product_explorer.html?preset=research_today&focus=B0DD1MSNS6" data-home-preview-item data-queue-asin="B0DD1MSNS6" data-preview-title="Sesame Street Full Face Costume Unisex Adult T Shirt Collection" data-preview-seller="Men&#x27;s Novelty T-Shirts Best Sellers" data-preview-type="Unknown" data-preview-reason="No primary evidence" data-preview-metric="Best Seller #4" data-preview-image="https://images-na.ssl-images-amazon.com/images/I/51+V5P356BL._AC_UL600_SR600,400_.jpg" data-preview-href="product_explorer.html?preset=research_today&amp;focus=B0DD1MSNS6">
-            <img class="activity-thumbnail" src="https://images-na.ssl-images-amazon.com/images/I/51+V5P356BL._AC_UL600_SR600,400_.jpg" alt="Sesame Street Full Face Costume Unisex Adult T Shirt Collection thumbnail">
-            <span class="activity-copy"><strong>Sesame Street Full Face Costume Unisex Adult T Shirt Collection</strong><span class="caption">Men&#x27;s Novelty T-Shirts Best Sellers - No primary evidence</span></span>
-            <span class="status-badge tone-neutral">Best Seller #4</span>
+          <a class="activity-item research-queue-item" href="product_explorer.html?preset=research_today&focus=B0H8T4YJ8S" data-home-preview-item data-queue-asin="B0H8T4YJ8S" data-preview-title="IPEDWO Natural Travertine Jewelry Dish,5.5&quot; Stone Tray for Ring and Earring | Handmade Round Stone Trinket Tray for Vanity Ba" data-preview-seller="Jewelry Trays New Releases" data-preview-type="Unknown" data-preview-reason="No primary evidence" data-preview-metric="26 reviews" data-preview-image="https://images-na.ssl-images-amazon.com/images/I/61pfYnWu7DL._AC_UL600_SR600,400_.jpg" data-preview-href="product_explorer.html?preset=research_today&amp;focus=B0H8T4YJ8S">
+            <img class="activity-thumbnail" src="https://images-na.ssl-images-amazon.com/images/I/61pfYnWu7DL._AC_UL600_SR600,400_.jpg" alt="IPEDWO Natural Travertine Jewelry Dish,5.5&quot; Stone Tray for Ring and Earring | Handmade Round Stone Trinket Tray for Vanity Ba thumbnail">
+            <span class="activity-copy"><strong>IPEDWO Natural Travertine Jewelry Dish,5.5&quot; Stone Tray for Ring and Earring | Handmade Round Stone Trinket Tray for Vanity Ba</strong><span class="caption">Jewelry Trays New Releases - No primary evidence</span></span>
+            <span class="status-badge tone-neutral">26 reviews</span>
           </a>
           <a class="activity-item research-queue-item" href="product_explorer.html?preset=research_today&focus=B0H98X1Y7V" data-home-preview-item data-queue-asin="B0H98X1Y7V" data-preview-title="OLANRUN Halloween Decorations Indoor, 13&quot; Wooden BOO Light Up Letters Sign | Vintage Farmhouse Halloween Table Decor Centerpi" data-preview-seller="Decorative Signs &amp; Plaques New Releases" data-preview-type="Unknown" data-preview-reason="No primary evidence" data-preview-metric="20 reviews" data-preview-image="https://images-na.ssl-images-amazon.com/images/I/718mVDzANXL._AC_UL600_SR600,400_.jpg" data-preview-href="product_explorer.html?preset=research_today&amp;focus=B0H98X1Y7V">
             <img class="activity-thumbnail" src="https://images-na.ssl-images-amazon.com/images/I/718mVDzANXL._AC_UL600_SR600,400_.jpg" alt="OLANRUN Halloween Decorations Indoor, 13&quot; Wooden BOO Light Up Letters Sign | Vintage Farmhouse Halloween Table Decor Centerpi thumbnail">
             <span class="activity-copy"><strong>OLANRUN Halloween Decorations Indoor, 13&quot; Wooden BOO Light Up Letters Sign | Vintage Farmhouse Halloween Table Decor Centerpi</strong><span class="caption">Decorative Signs &amp; Plaques New Releases - No primary evidence</span></span>
             <span class="status-badge tone-neutral">20 reviews</span>
           </a>
-          <a class="activity-item research-queue-item" href="product_explorer.html?preset=research_today&focus=B0BBN5YY3R" data-home-preview-item data-queue-asin="B0BBN5YY3R" data-preview-title="Mini Christmas Ornaments 24pcs, Miniature Christmas Tree Ornaments Set | Small 3-D Figurines with Gold Loops for Easy Hanging" data-preview-seller="Best Sellers in Christmas Figurine Ornaments" data-preview-type="Mass Retail Product" data-preview-reason="Category Winner at rank #3" data-preview-metric="Best Seller #3" data-preview-image="https://images-na.ssl-images-amazon.com/images/I/81Ewx0emGvL._AC_UL600_SR600,400_.jpg" data-preview-href="product_explorer.html?preset=research_today&amp;focus=B0BBN5YY3R">
+          <a class="activity-item research-queue-item" href="product_explorer.html?preset=research_today&focus=B0HJ7KNPNP" data-home-preview-item data-queue-asin="B0HJ7KNPNP" data-preview-title="Crystal Sun Catcher, Hanging Ornament for Indoor Outdoor Decoration, Crystal Hanging Wind Chimes for Car" data-preview-seller="Decorative Hanging Ornaments Best Sellers" data-preview-type="Unknown" data-preview-reason="New Release watch seen 4 days" data-preview-metric="Best Seller #5" data-preview-image="https://images-na.ssl-images-amazon.com/images/I/71fn2DLRFoL._AC_UL600_SR600,400_.jpg" data-preview-href="product_explorer.html?preset=research_today&amp;focus=B0HJ7KNPNP">
+            <img class="activity-thumbnail" src="https://images-na.ssl-images-amazon.com/images/I/71fn2DLRFoL._AC_UL600_SR600,400_.jpg" alt="Crystal Sun Catcher, Hanging Ornament for Indoor Outdoor Decoration, Crystal Hanging Wind Chimes for Car thumbnail">
+            <span class="activity-copy"><strong>Crystal Sun Catcher, Hanging Ornament for Indoor Outdoor Decoration, Crystal Hanging Wind Chimes for Car</strong><span class="caption">Decorative Hanging Ornaments Best Sellers - New Release watch seen 4 days</span></span>
+            <span class="status-badge tone-idea">Best Seller #5</span>
+          </a>
+          <a class="activity-item research-queue-item" href="product_explorer.html?preset=research_today&focus=B0BBN5YY3R" data-home-preview-item data-queue-asin="B0BBN5YY3R" data-preview-title="Mini Christmas Ornaments 24pcs, Miniature Christmas Tree Ornaments Set | Small 3-D Figurines with Gold Loops for Easy Hanging" data-preview-seller="Best Sellers in Christmas Ornaments" data-preview-type="Finished Retail Product" data-preview-reason="Category Winner at rank #3" data-preview-metric="Best Seller #3" data-preview-image="https://images-na.ssl-images-amazon.com/images/I/81Ewx0emGvL._AC_UL600_SR600,400_.jpg" data-preview-href="product_explorer.html?preset=research_today&amp;focus=B0BBN5YY3R">
             <img class="activity-thumbnail" src="https://images-na.ssl-images-amazon.com/images/I/81Ewx0emGvL._AC_UL600_SR600,400_.jpg" alt="Mini Christmas Ornaments 24pcs, Miniature Christmas Tree Ornaments Set | Small 3-D Figurines with Gold Loops for Easy Hanging thumbnail">
-            <span class="activity-copy"><strong>Mini Christmas Ornaments 24pcs, Miniature Christmas Tree Ornaments Set | Small 3-D Figurines with Gold Loops for Easy Hanging</strong><span class="caption">Best Sellers in Christmas Figurine Ornaments - Category Winner at rank #3</span></span>
+            <span class="activity-copy"><strong>Mini Christmas Ornaments 24pcs, Miniature Christmas Tree Ornaments Set | Small 3-D Figurines with Gold Loops for Easy Hanging</strong><span class="caption">Best Sellers in Christmas Ornaments - Category Winner at rank #3</span></span>
             <span class="status-badge tone-winner">Best Seller #3</span>
           </a>
-          <a class="activity-item research-queue-item" href="product_explorer.html?preset=research_today&focus=B0B2SDJR4V" data-home-preview-item data-queue-asin="B0B2SDJR4V" data-preview-title="Old World Christmas Rudolph The Red-Nosed Reindeer Tree Ornament | Classic, Glass Blown Vintage Christmas Tree Ornament, Hand" data-preview-seller="Best Sellers in Christmas Figurine Ornaments" data-preview-type="Mass Retail Product" data-preview-reason="Category Winner at rank #20" data-preview-metric="Best Seller #20" data-preview-image="https://images-na.ssl-images-amazon.com/images/I/61IgQRldMIL._AC_UL600_SR600,400_.jpg" data-preview-href="product_explorer.html?preset=research_today&amp;focus=B0B2SDJR4V">
+          <a class="activity-item research-queue-item" href="product_explorer.html?preset=research_today&focus=B0B2SDJR4V" data-home-preview-item data-queue-asin="B0B2SDJR4V" data-preview-title="Old World Christmas Rudolph The Red-Nosed Reindeer Tree Ornament | Classic, Glass Blown Vintage Christmas Tree Ornament, Hand" data-preview-seller="Best Sellers in Christmas Figurine Ornaments" data-preview-type="Mass Retail Product" data-preview-reason="Category Winner at rank #19" data-preview-metric="Best Seller #19" data-preview-image="https://images-na.ssl-images-amazon.com/images/I/61IgQRldMIL._AC_UL600_SR600,400_.jpg" data-preview-href="product_explorer.html?preset=research_today&amp;focus=B0B2SDJR4V">
             <img class="activity-thumbnail" src="https://images-na.ssl-images-amazon.com/images/I/61IgQRldMIL._AC_UL600_SR600,400_.jpg" alt="Old World Christmas Rudolph The Red-Nosed Reindeer Tree Ornament | Classic, Glass Blown Vintage Christmas Tree Ornament, Hand thumbnail">
-            <span class="activity-copy"><strong>Old World Christmas Rudolph The Red-Nosed Reindeer Tree Ornament | Classic, Glass Blown Vintage Christmas Tree Ornament, Hand</strong><span class="caption">Best Sellers in Christmas Figurine Ornaments - Category Winner at rank #20</span></span>
-            <span class="status-badge tone-winner">Best Seller #20</span>
+            <span class="activity-copy"><strong>Old World Christmas Rudolph The Red-Nosed Reindeer Tree Ornament | Classic, Glass Blown Vintage Christmas Tree Ornament, Hand</strong><span class="caption">Best Sellers in Christmas Figurine Ornaments - Category Winner at rank #19</span></span>
+            <span class="status-badge tone-winner">Best Seller #19</span>
           </a></div>
       </section>
       <aside class="panel home-preview-panel" aria-label="Research Today product preview" data-home-preview-panel>
@@ -2016,22 +2114,22 @@
     <section class="market-pulse-grid" aria-label="Market pulse">
       <article class="kpi-card tone-rising">
         <span class="kpi-label">Momentum</span>
-        <strong class="kpi-value">575</strong>
+        <strong class="kpi-value">550</strong>
         <span class="kpi-caption">Seller movers + New Release rising</span>
       </article>
       <article class="kpi-card tone-winner">
         <span class="kpi-label">Validation</span>
-        <strong class="kpi-value">2,033</strong>
+        <strong class="kpi-value">2,049</strong>
         <span class="kpi-caption">Winners + Strong Sub-BSR</span>
       </article>
       <article class="kpi-card tone-idea">
         <span class="kpi-label">Breakouts</span>
-        <strong class="kpi-value">367</strong>
+        <strong class="kpi-value">191</strong>
         <span class="kpi-caption">Category + New Release breakouts</span>
       </article>
       <article class="kpi-card tone-stable">
         <span class="kpi-label">New Pushes</span>
-        <strong class="kpi-value">183</strong>
+        <strong class="kpi-value">198</strong>
         <span class="kpi-caption">Fresh seller pushes</span>
       </article>
     </section>
@@ -2045,17 +2143,17 @@
     <section class="data-status-grid" aria-label="Data status">
       <article class="kpi-card tone-stable">
         <span class="kpi-label">Products</span>
-        <strong class="kpi-value">6,322</strong>
+        <strong class="kpi-value">6,279</strong>
         <span class="kpi-caption">Visible in V2</span>
       </article>
       <article class="kpi-card tone-idea">
         <span class="kpi-label">Observations</span>
-        <strong class="kpi-value">6,322</strong>
+        <strong class="kpi-value">6,279</strong>
         <span class="kpi-caption">Source-aware rows</span>
       </article>
       <article class="kpi-card tone-neutral">
         <span class="kpi-label">Generated</span>
-        <strong class="kpi-value">2026-10-08 13:47:25</strong>
+        <strong class="kpi-value">2026-10-09 14:06:00</strong>
         <span class="kpi-caption">Latest V2 build</span>
       </article>
     </section>
@@ -2071,90 +2169,90 @@
       <section class="evidence-card-grid" aria-label="Evidence overview">
       <a class="kpi-card evidence-overview-card tone-winner" href="product_explorer.html?seller_evidence=seller_leader">
         <h3>Seller Leader</h3>
-        <strong class="kpi-value">319</strong>
+        <strong class="kpi-value">316</strong>
         <div class="card-metrics">
           <span>1,644 eligible</span>
-          <span>19.4% rate</span>
+          <span>19.2% rate</span>
         </div>
       </a>
       <a class="kpi-card evidence-overview-card tone-rising" href="product_explorer.html?seller_evidence=seller_mover">
         <h3>Seller Mover</h3>
-        <strong class="kpi-value">137</strong>
+        <strong class="kpi-value">155</strong>
         <div class="card-metrics">
           <span>1,644 eligible</span>
-          <span>8.3% rate</span>
+          <span>9.4% rate</span>
         </div>
       </a>
       <a class="kpi-card evidence-overview-card tone-idea" href="product_explorer.html?seller_evidence=seller_new_push">
         <h3>Seller New Push</h3>
-        <strong class="kpi-value">183</strong>
+        <strong class="kpi-value">198</strong>
         <div class="card-metrics">
           <span>1,644 eligible</span>
-          <span>11.1% rate</span>
+          <span>12.0% rate</span>
         </div>
       </a>
       <a class="kpi-card evidence-overview-card tone-winner" href="product_explorer.html?best_seller_evidence=category_winner">
         <h3>Category Winner</h3>
-        <strong class="kpi-value">697</strong>
+        <strong class="kpi-value">688</strong>
         <div class="card-metrics">
-          <span>2,870 eligible</span>
-          <span>24.3% rate</span>
+          <span>2,798 eligible</span>
+          <span>24.6% rate</span>
         </div>
       </a>
       <a class="kpi-card evidence-overview-card tone-rising" href="product_explorer.html?best_seller_evidence=category_breakout">
         <h3>Category Breakout</h3>
-        <strong class="kpi-value">315</strong>
+        <strong class="kpi-value">158</strong>
         <div class="card-metrics">
-          <span>2,870 eligible</span>
-          <span>11.0% rate</span>
+          <span>2,798 eligible</span>
+          <span>5.6% rate</span>
         </div>
       </a>
       <a class="kpi-card evidence-overview-card tone-stable" href="product_explorer.html?best_seller_evidence=category_stable">
         <h3>Category Stable</h3>
-        <strong class="kpi-value">1,494</strong>
+        <strong class="kpi-value">1,436</strong>
         <div class="card-metrics">
-          <span>2,870 eligible</span>
-          <span>52.1% rate</span>
+          <span>2,798 eligible</span>
+          <span>51.3% rate</span>
         </div>
       </a>
       <a class="kpi-card evidence-overview-card tone-rising" href="product_explorer.html?new_release_evidence=new_release_rising">
         <h3>New Release Rising</h3>
-        <strong class="kpi-value">438</strong>
+        <strong class="kpi-value">397</strong>
         <div class="card-metrics">
-          <span>2,334 eligible</span>
-          <span>18.8% rate</span>
+          <span>2,317 eligible</span>
+          <span>17.1% rate</span>
         </div>
       </a>
       <a class="kpi-card evidence-overview-card tone-winner" href="product_explorer.html?new_release_evidence=new_release_breakout">
         <h3>New Release Breakout</h3>
-        <strong class="kpi-value">52</strong>
+        <strong class="kpi-value">38</strong>
         <div class="card-metrics">
-          <span>2,334 eligible</span>
-          <span>2.2% rate</span>
+          <span>2,317 eligible</span>
+          <span>1.6% rate</span>
         </div>
       </a>
       <a class="kpi-card evidence-overview-card tone-idea" href="product_explorer.html?new_release_evidence=new_release_watch">
         <h3>New Release Candidate</h3>
-        <strong class="kpi-value">1,234</strong>
+        <strong class="kpi-value">1,199</strong>
         <div class="card-metrics">
-          <span>2,334 eligible</span>
-          <span>52.9% rate</span>
+          <span>2,317 eligible</span>
+          <span>51.7% rate</span>
         </div>
       </a>
       <a class="kpi-card evidence-overview-card tone-stable" href="product_explorer.html?supporting_evidence=strong_sub_bsr">
         <h3>Strong Sub-BSR</h3>
-        <strong class="kpi-value">1,549</strong>
+        <strong class="kpi-value">1,560</strong>
         <div class="card-metrics">
-          <span>1,967 eligible</span>
-          <span>78.7% rate</span>
+          <span>1,993 eligible</span>
+          <span>78.3% rate</span>
         </div>
       </a>
       <a class="kpi-card evidence-overview-card tone-winner" href="product_explorer.html?supporting_evidence=very_strong_sub_bsr">
         <h3>Very Strong Sub-BSR</h3>
-        <strong class="kpi-value">1,326</strong>
+        <strong class="kpi-value">1,342</strong>
         <div class="card-metrics">
-          <span>1,967 eligible</span>
-          <span>67.4% rate</span>
+          <span>1,993 eligible</span>
+          <span>67.3% rate</span>
         </div>
       </a>
       </section>
@@ -2174,17 +2272,17 @@
       </div>
       
     </div>
-        <div class="activity-list">          <a class="activity-item" href="product_explorer.html?seller_evidence=seller_mover&focus=B0HJZ4R569">
-            <span><strong>NAZENTI Personalized Photo Friendship Ceramic Plant Pot, Custom Portrait Besties Flower Pot, Bestie Planters, Best Friend Planters, Friendship Gifts, Gift for BFF, Besties, Best Friend 06</strong><span class="caption">AGift2U</span></span>
-            <span class="status-badge tone-rising">#2,334</span>
+        <div class="activity-list">          <a class="activity-item" href="product_explorer.html?seller_evidence=seller_mover&focus=B0HJGS3Q3C">
+            <span><strong>NAZENTI Personalized 3D Relief Baby&#x27;s First Christmas Ornament 2026, 250th Anniversary Baby Ornament for Christmas Tree, Newborn Keepsake, Baby Girl Boy Xmas Gifts for New Parents 06</strong><span class="caption">AGift2U</span></span>
+            <span class="status-badge tone-rising">#14,254</span>
           </a>
-          <a class="activity-item" href="product_explorer.html?seller_evidence=seller_mover&focus=B0CX8KF9G2">
-            <span><strong>NAZENTI Custom Bootleg Your Own Rap Tee Shirts for Boyfriend Girlfriend Custom Face Tshirt Vintage Graphic 90s Shirt</strong><span class="caption">AGift2U</span></span>
-            <span class="status-badge tone-rising">#18,801</span>
+          <a class="activity-item" href="product_explorer.html?seller_evidence=seller_mover&focus=B0FX8M6BZ8">
+            <span><strong>NAZENTI Custom Funny Christmas Ornament Gift for Best Friends, Personalized We&#x27;ll Be Friends Until We&#x27;re Old and Senile Christmas Ornament with 2-6 Names, Xmas Home Decor Gift for Friend</strong><span class="caption">AGift2U</span></span>
+            <span class="status-badge tone-rising">#24,661</span>
           </a>
-          <a class="activity-item" href="product_explorer.html?seller_evidence=seller_mover&focus=B0CCSW3CHS">
-            <span><strong>NAZENTI Cat Memorial Suncatcher, Loss of Cat Sympathy Gift for Pet Lovers, Pet Remembrance Gift, Stained Glass Suncatcher</strong><span class="caption">BEAUTIFS</span></span>
-            <span class="status-badge tone-rising">#240</span>
+          <a class="activity-item" href="product_explorer.html?seller_evidence=seller_mover&focus=B0HHJDPMGX">
+            <span><strong>Personalized Just a Girl Who Loves Books Wooden Block Sign, Custom Reading Girl Wooden Plaque, Book Lover Reading, Bookish Gifts for Women, Readers, Librarians, Teachers, Bookshelf Library Decor 08</strong><span class="caption">BEAUTIFS</span></span>
+            <span class="status-badge tone-rising">#18,647</span>
           </a></div>
       </section>
       <section class="panel">
@@ -2195,17 +2293,17 @@
       </div>
       
     </div>
-        <div class="activity-list">          <a class="activity-item" href="product_explorer.html?seller_evidence=seller_new_push&focus=B0HKYPD9NK">
-            <span><strong>NAZENTI Personalized Soccer Glass Christmas Ornament, Custom 3D Soccer Player Ornament, Sport Xmas Tree Holiday Hanging Decor, for Soccers Lovers, Coaches, Fans, Athlete</strong><span class="caption">AGift2U</span></span>
-            <span class="status-badge tone-rising">#11,671</span>
+        <div class="activity-list">          <a class="activity-item" href="product_explorer.html?seller_evidence=seller_new_push&focus=B0HLDPV98W">
+            <span><strong>NAZENTI Personalized Volleyball Ornament, Custom Name Volleyball Girl Christmas Ornament, Player Gift Sports Keepsake for Daughter Sister, Teammate Coach Holiday Tree Decor, Decoration for Athlete 2</strong><span class="caption">AGift2U</span></span>
+            <span class="status-badge tone-rising">#2,830</span>
           </a>
-          <a class="activity-item" href="product_explorer.html?seller_evidence=seller_new_push&focus=B0DFCCX7PL">
-            <span><strong>Personalized Thanksgiving Sweatshirt for Women Mom Grandma with Kids Name</strong><span class="caption">AGift2U</span></span>
-            <span class="status-badge tone-rising">#994</span>
+          <a class="activity-item" href="product_explorer.html?seller_evidence=seller_new_push&focus=B0HLVXFPLC">
+            <span><strong>NAZENTI Personalized Horse Christmas Ornament, Custom Horse Lover Girl Keepsake with Name, Equestrian Ornament for Womens, Horse Riding Gift, Girl Who Loves Her Horse Tree Decoration, Gift for Xmas 3</strong><span class="caption">AGift2U</span></span>
+            <span class="status-badge tone-rising">#7,383</span>
           </a>
-          <a class="activity-item" href="product_explorer.html?seller_evidence=seller_new_push&focus=B0HFCBMM8J">
-            <span><strong>Personalized Just A Girl Who Loves Books Plaque, Custom Wooden Book Lover Plaque, Christmas Birthday Gifts for Books Lovers</strong><span class="caption">BEAUTIFS</span></span>
-            <span class="status-badge tone-rising">#18,907</span>
+          <a class="activity-item" href="product_explorer.html?seller_evidence=seller_new_push&focus=B0HK6SS1WG">
+            <span><strong>NAZENTI Personalized Custom Baby Christmas Ornament 2026, Custom 250 Anniversary Ornament for Baby, Babies Cute 2D Flat Acrylic Xmas Tree Hanging, Baby 1st Christmas Keepsake for Boys Girls 2</strong><span class="caption">BEAUTIFS</span></span>
+            <span class="status-badge tone-rising">#16,609</span>
           </a></div>
       </section>
       <section class="panel">
@@ -2216,17 +2314,21 @@
       </div>
       
     </div>
-        <div class="activity-list">          <a class="activity-item" href="product_explorer.html?best_seller_evidence=category_breakout&focus=B075MY3NFW">
-            <span><strong>Aytai DIY Felt Christmas Tree for Toddlers, Hanging Christmas Decorations | 3FT Felt Christmas Tree for Kids Wall with 26 Chr</strong><span class="caption">Best Sellers in Christmas Ornaments</span></span>
-            <span class="status-badge tone-rising">#24</span>
+        <div class="activity-list">          <a class="activity-item" href="product_explorer.html?best_seller_evidence=category_breakout&focus=B0CC8B1D8L">
+            <span><strong>Dancing Skeleton Shirt for Women Happy Halloween T-Shirt Short Sleeve | Women Halloween Shirts Funny Skeleton Graphic Tees Fa</strong><span class="caption">Women&#x27;s Novelty T-Shirts Best Sellers</span></span>
+            <span class="status-badge tone-rising">#29</span>
           </a>
-          <a class="activity-item" href="product_explorer.html?best_seller_evidence=category_breakout&focus=B0FT7NQZ1S">
-            <span><strong>Funny Golf Socks for Men Dad,Christmas Birthday Gift From Daughter Wife Son | Anniversary Christmas Valentines Gifts for Husb</strong><span class="caption">Men&#x27;s Novelty Socks Best Sellers</span></span>
-            <span class="status-badge tone-rising">category_best_seller</span>
-          </a>
-          <a class="activity-item" href="product_explorer.html?best_seller_evidence=category_breakout&focus=B0DCKF98VB">
+          <a class="activity-item" href="product_explorer.html?best_seller_evidence=category_breakout&focus=B0HBR1T5K9">
             <span><strong>FUAOIS Stocking Stuffers for Men, Funny Gifts for Men Dad Husband Boyfriend</strong><span class="caption">Men&#x27;s Novelty Socks Best Sellers</span></span>
-            <span class="status-badge tone-rising">category_best_seller</span>
+            <span class="status-badge tone-rising">#118</span>
+          </a>
+          <a class="activity-item" href="product_explorer.html?best_seller_evidence=category_breakout&focus=B07PQ9TSWF">
+            <span><strong>Valery Madelyn Small Christmas Tree Decorations Ball Ornaments 24ct 1.57&quot; | Red Green and Gold Shatterproof Christmas Decorat</strong><span class="caption">Best Sellers in Christmas Ornaments</span></span>
+            <span class="status-badge tone-rising">#13</span>
+          </a>
+          <a class="activity-item" href="product_explorer.html?best_seller_evidence=category_breakout&focus=B0797MGBFP">
+            <span><strong>Old World Christmas Marching Band Drum Glass Blown Ornament for Christmas Tree, Handcrafted Holiday Decoration, Music Collect</strong><span class="caption">Best Sellers in Christmas Figurine Ornaments</span></span>
+            <span class="status-badge tone-rising">#27</span>
           </a></div>
       </section>
       <section class="panel">
@@ -2237,17 +2339,17 @@
       </div>
       
     </div>
-        <div class="activity-list">          <a class="activity-item" href="product_explorer.html?new_release_evidence=new_release_breakout&focus=B0HD748W8T">
-            <span><strong>Glowing Christmas Story Ornament, Light-Up Mini Holiday Scene with Warm LED Light, Festive Keepsake Gift for Home Christmas P</strong><span class="caption">Best Sellers in Christmas Figurine Ornaments</span></span>
-            <span class="status-badge tone-rising">#15</span>
+        <div class="activity-list">          <a class="activity-item" href="product_explorer.html?new_release_evidence=new_release_breakout&focus=B0HDT9Q3P7">
+            <span><strong>Book Ornament, Dragon Gifts for Women, Book Gifts for Book Lovers Women | Bookish Gifts for Readers and Bookworms, Unique Gif</strong><span class="caption">Best Sellers in Christmas Figurine Ornaments</span></span>
+            <span class="status-badge tone-rising">#81</span>
           </a>
-          <a class="activity-item" href="product_explorer.html?new_release_evidence=new_release_breakout&focus=B0HJ2C2CXS">
-            <span><strong>1PC Christmas Tree Squishy Figurine, Slow Rising Holiday Desk Ornament | Layered Green Leaf Shape with Red Accents and a Soft</strong><span class="caption">Best Sellers in Christmas Figurine Ornaments</span></span>
+          <a class="activity-item" href="product_explorer.html?new_release_evidence=new_release_breakout&focus=B0HHS7JBDF">
+            <span><strong>1 Pcs Snowman Squeeze Ornament, Pink‑Hat Holiday Desktop Table Decor | Drip‑glue molded surface, portable palm‑fit size, for</strong><span class="caption">Best Sellers in Christmas Figurine Ornaments</span></span>
             <span class="status-badge tone-rising">category_best_seller</span>
           </a>
-          <a class="activity-item" href="product_explorer.html?new_release_evidence=new_release_breakout&focus=B0HJ2QJXW8">
-            <span><strong>Christmas Decorations Llluminated Scripture Christmas Ball | Christmas Story Ornament, Light-Up Mini Scene, Christmas Tree De</strong><span class="caption">Best Sellers in Christmas Ornaments</span></span>
-            <span class="status-badge tone-rising">#55</span>
+          <a class="activity-item" href="product_explorer.html?new_release_evidence=new_release_breakout&focus=B0HCP3GSCB">
+            <span><strong>Christmas Decorations Funny Santa Christmas Bathroom Decor Wooden Box Sign | Christmas Bathroom Table Decoration Gifts He See</strong><span class="caption">Decorative Signs &amp; Plaques New Releases</span></span>
+            <span class="status-badge tone-rising">category_new_release</span>
           </a></div>
       </section>
       <section class="panel">
@@ -2270,13 +2372,13 @@
             <span><strong>Read This When Bible Verses Jar – Birthday Gifts for Women, Christian Gifts, Christmas Gift for Women, Gift for Mom from Daug</strong><span class="caption">Best Sellers in Decorative Jars</span></span>
             <span class="status-badge tone-rising">#1</span>
           </a>
+          <a class="activity-item" href="product_explorer.html?supporting_evidence=very_strong_sub_bsr&focus=B00157YL3Y">
+            <span><strong>Old World Christmas Golden Retriever Tree Ornament | Classic, Glass Blown Vintage Christmas Tree Ornament, Handcrafted Holida</strong><span class="caption">Best Sellers in Christmas Figurine Ornaments</span></span>
+            <span class="status-badge tone-rising">#4</span>
+          </a>
           <a class="activity-item" href="product_explorer.html?supporting_evidence=very_strong_sub_bsr&focus=B0H9LB27ML">
             <span><strong>Christmas Decorations - Santa Claus HO HO HO Welcome Sign for Front Door | 2D Printed Flat Rustic Round Wooden Hanging Sign f</strong><span class="caption">Best Sellers in Christmas Figurine Ornaments</span></span>
             <span class="status-badge tone-rising">#14</span>
-          </a>
-          <a class="activity-item" href="product_explorer.html?supporting_evidence=very_strong_sub_bsr&focus=B0BXN252Z9">
-            <span><strong>Okllen 12 Pack Artificial White Birds, Feathered Mini Doves Decor with Clips, White Dove Ornaments for Christmas Tree Home Ga</strong><span class="caption">Best Sellers in Christmas Figurine Ornaments</span></span>
-            <span class="status-badge tone-rising">#18</span>
           </a>
           <a class="activity-item" href="product_explorer.html?supporting_evidence=very_strong_sub_bsr&focus=B0HHMC7L7Z">
             <span><strong>Floating Santa Sleigh, Magnetic Levitation Santa&#x27;s Flying Sleigh Ornament Built‑in Warm LED Lighting Santa Claus Tabletop Dec</strong><span class="caption">New Releases in Christmas Figurine Ornaments</span></span>
@@ -2286,9 +2388,9 @@
             <span><strong>Wrappiness Custom Granddaughter Compact Mirror, Beauty Gift from Grandma</strong><span class="caption">Wrappiness</span></span>
             <span class="status-badge tone-rising">#281</span>
           </a>
-          <a class="activity-item" href="product_explorer.html?supporting_evidence=very_strong_sub_bsr&focus=B0GQXJPFLK">
-            <span><strong>Wrappiness Funny Sister Gift Coffee Cup, Personalized Name 11oz 15oz Ceramic Mug for Birthday Christmas, Best Friend Sibling Present for Her, Unique Humor Gift for Women Family Bond</strong><span class="caption">Wrappiness</span></span>
-            <span class="status-badge tone-rising">#344</span>
+          <a class="activity-item" href="product_explorer.html?supporting_evidence=very_strong_sub_bsr&focus=B0HF88M18Y">
+            <span><strong>Wrappiness Baby First Christmas Ornament, Custom New Baby Keepsake 3D Gift</strong><span class="caption">Wrappiness</span></span>
+            <span class="status-badge tone-rising">#699</span>
           </a></div>
       </section>
       </div>
@@ -2302,12 +2404,12 @@
       <section class="dashboard-grid" aria-label="Dataset overview">
       <article class="kpi-card tone-stable">
         <span class="kpi-label">Unique Products</span>
-        <strong class="kpi-value">5,848</strong>
+        <strong class="kpi-value">5,827</strong>
         <span class="kpi-caption">Across source-aware history</span>
       </article>
       <article class="kpi-card tone-idea">
         <span class="kpi-label">Source-aware Observations</span>
-        <strong class="kpi-value">6,322</strong>
+        <strong class="kpi-value">6,279</strong>
         <span class="kpi-caption">Source-aware rows</span>
       </article>
       <article class="kpi-card tone-stable">
@@ -2332,12 +2434,12 @@
       </article>
       <article class="kpi-card tone-stable">
         <span class="kpi-label">Valid Sub-BSR</span>
-        <strong class="kpi-value">1,966</strong>
+        <strong class="kpi-value">1,992</strong>
         <span class="kpi-caption">Products with valid Sub-BSR</span>
       </article>
       <article class="kpi-card tone-neutral">
         <span class="kpi-label">Last Crawl</span>
-        <strong class="kpi-value">2026-10-08</strong>
+        <strong class="kpi-value">2026-10-09</strong>
         <span class="kpi-caption">Latest observed timestamp</span>
       </article>
       </section>
@@ -2356,27 +2458,27 @@
       </article>
       <article class="kpi-card tone-rising">
         <span class="kpi-label">Best Seller Coverage</span>
-        <strong class="kpi-value">2,870</strong>
+        <strong class="kpi-value">2,798</strong>
         <span class="kpi-caption">Products with Best Seller observations</span>
       </article>
       <article class="kpi-card tone-alert">
         <span class="kpi-label">New Release Coverage</span>
-        <strong class="kpi-value">2,334</strong>
+        <strong class="kpi-value">2,317</strong>
         <span class="kpi-caption">Products with New Release observations</span>
       </article>
       <article class="kpi-card tone-stable">
         <span class="kpi-label">BSR Coverage</span>
-        <strong class="kpi-value">1,967</strong>
+        <strong class="kpi-value">1,993</strong>
         <span class="kpi-caption">Products with valid Sub-BSR</span>
       </article>
       <article class="kpi-card tone-neutral">
         <span class="kpi-label">One Source Family</span>
-        <strong class="kpi-value">6,141</strong>
+        <strong class="kpi-value">6,080</strong>
         <span class="kpi-caption">Exactly one source family</span>
       </article>
       <article class="kpi-card tone-idea">
         <span class="kpi-label">Two Source Families</span>
-        <strong class="kpi-value">181</strong>
+        <strong class="kpi-value">199</strong>
         <span class="kpi-caption">Two source families</span>
       </article>
       <article class="kpi-card tone-winner">
@@ -2395,7 +2497,7 @@
       <div class="data-quality-list">
         <div class="quality-item">
           <span>Unknown product type</span>
-          <strong>6,303</strong>
+          <strong>6,258</strong>
         </div>
         <div class="quality-item">
           <span>Missing image</span>
@@ -2407,15 +2509,15 @@
         </div>
         <div class="quality-item">
           <span>Missing review data</span>
-          <strong>1,270</strong>
+          <strong>1,277</strong>
         </div>
         <div class="quality-item">
           <span>Missing price</span>
-          <strong>155</strong>
+          <strong>144</strong>
         </div>
         <div class="quality-item">
           <span>Multiple source families</span>
-          <strong>181</strong>
+          <strong>199</strong>
         </div>
         <div class="quality-item">
           <span>Latest generation status</span>
@@ -2455,11 +2557,11 @@
       <div class="data-quality-list">
                 <div class="quality-item">
           <span>Dataset products</span>
-          <strong>6,322</strong>
+          <strong>6,279</strong>
         </div>
                 <div class="quality-item">
           <span>Source-aware Observations</span>
-          <strong>6,322</strong>
+          <strong>6,279</strong>
         </div>
                 <div class="quality-item">
           <span>Marketplaces</span>
@@ -2467,7 +2569,7 @@
         </div>
                 <div class="quality-item">
           <span>Generated</span>
-          <strong>2026-10-08 13:47:25</strong>
+          <strong>2026-10-09 14:06:00</strong>
         </div>
                 <div class="quality-item">
           <span>Dashboard version</span>
